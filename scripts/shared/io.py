@@ -40,9 +40,12 @@ def write_json(path: Path | str, payload: Any) -> None:
 
 
 def download_text(url: str) -> str:
+    requests = [
+        Request(url, headers={"User-Agent": "market-weather-map/0.1"}),
+        Request(url),
+    ]
     last_error: TimeoutError | None = None
-    for _ in range(2):
-        request = Request(url, headers={"User-Agent": "market-weather-map/0.1"})
+    for request in requests:
         try:
             with urlopen(request, timeout=30) as response:
                 return response.read().decode("utf-8-sig")

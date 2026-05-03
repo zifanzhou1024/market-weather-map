@@ -40,12 +40,12 @@ def test_download_text_retries_transient_timeouts(monkeypatch):
     assert len(attempts) == 2
     assert [attempt[0].get_header("User-agent") for attempt in attempts] == [
         "market-weather-map/0.1",
-        "market-weather-map/0.1",
+        None,
     ]
     assert [attempt[1] for attempt in attempts] == [30, 30]
 
 
-def test_download_text_preserves_user_agent_on_every_retry(monkeypatch):
+def test_download_text_retries_with_provider_compatible_default_request(monkeypatch):
     attempts = []
 
     class FakeResponse:
@@ -69,7 +69,7 @@ def test_download_text_preserves_user_agent_on_every_retry(monkeypatch):
     assert download_text("https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2") == "ok"
     assert attempts == [
         ("market-weather-map/0.1", 30),
-        ("market-weather-map/0.1", 30),
+        (None, 30),
     ]
 
 
