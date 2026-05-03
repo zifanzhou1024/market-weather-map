@@ -47,8 +47,8 @@ Phase 1 uses official or stable public CSV endpoints that do not require secrets
 | Liquidity | Reverse repo | FRED graph CSV | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD` |
 | Liquidity | Treasury General Account proxy | FRED graph CSV | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN` |
 | Liquidity | SOFR | FRED graph CSV | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=SOFR` |
-| Credit | High-yield OAS | FRED graph CSV | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLH0A0HYM2` |
-| Credit | Investment-grade OAS | FRED graph CSV | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLC0A0CM` |
+| Credit | St. Louis Fed Financial Stress Index | FRED graph CSV | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=STLFSI4` |
+| Credit | Chicago Fed National Financial Conditions Index | FRED graph CSV | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=NFCI` |
 
 Derived Phase 1 metrics:
 
@@ -133,8 +133,8 @@ market-weather-map/
         reverse_repo.json
         treasury_general_account.json
         sofr.json
-        high_yield_oas.json
-        investment_grade_oas.json
+        financial_stress.json
+        financial_conditions.json
       derived/
         us10y_minus_us2y.json
         bucket_scores.json
@@ -225,7 +225,7 @@ The Phase 1 regime file is stable even before all buckets exist.
     "commodities": 0,
     "sentiment": 0
   },
-  "top_supports": ["Credit spreads", "VIX level"],
+  "top_supports": ["Financial stress", "VIX level"],
   "top_risks": ["Treasury yield pressure"],
   "method_version": "phase-1.0"
 }
@@ -276,7 +276,7 @@ Phase 1 bucket weights:
 Initial scoring should use simple, documented heuristics:
 
 - high VIX percentile is riskier; low VIX percentile is more supportive
-- widening credit spreads are riskier; tightening spreads are more supportive
+- rising financial stress and tighter financial conditions are riskier; easing stress and looser conditions are more supportive
 - sharply rising yields are a headwind; stable or falling yields are contextual
 - liquidity metrics use conservative neutral scoring until the methodology is more mature
 
@@ -302,7 +302,7 @@ Shows Fed assets, reverse repo, Treasury General Account proxy, SOFR, source not
 
 ### Credit `/credit`
 
-Shows high-yield OAS, investment-grade OAS, spread trend, percentile state, and divergence notes.
+Shows Fed-published financial stress and financial conditions indexes with percentile state and source notes.
 
 ### Methodology `/methodology`
 

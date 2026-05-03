@@ -736,26 +736,26 @@ FRED_SERIES = [
         "notes": "Fetched from FRED graph CSV without an API key."
     },
     {
-        "id": "high_yield_oas",
-        "fred_id": "BAMLH0A0HYM2",
-        "name": "ICE BofA U.S. High Yield OAS",
+        "id": "financial_stress",
+        "fred_id": "STLFSI4",
+        "name": "St. Louis Fed Financial Stress Index",
         "category": "credit",
-        "units": "percent",
+        "units": "index",
         "higher_is": "riskier",
-        "frequency": "daily",
-        "max_stale_days": 7,
-        "notes": "Fetched from FRED graph CSV without an API key."
+        "frequency": "weekly",
+        "max_stale_days": 14,
+        "notes": "Fed-published financial stress index fetched from FRED graph CSV without an API key."
     },
     {
-        "id": "investment_grade_oas",
-        "fred_id": "BAMLC0A0CM",
-        "name": "ICE BofA U.S. Corporate OAS",
+        "id": "financial_conditions",
+        "fred_id": "NFCI",
+        "name": "Chicago Fed National Financial Conditions Index",
         "category": "credit",
-        "units": "percent",
+        "units": "index",
         "higher_is": "riskier",
-        "frequency": "daily",
-        "max_stale_days": 7,
-        "notes": "Fetched from FRED graph CSV without an API key."
+        "frequency": "weekly",
+        "max_stale_days": 14,
+        "notes": "Fed-published financial conditions index fetched from FRED graph CSV without an API key."
     }
 ]
 
@@ -1068,8 +1068,8 @@ public/data/series/fed_assets.json
 public/data/series/reverse_repo.json
 public/data/series/treasury_general_account.json
 public/data/series/sofr.json
-public/data/series/high_yield_oas.json
-public/data/series/investment_grade_oas.json
+public/data/series/financial_stress.json
+public/data/series/financial_conditions.json
 ```
 
 - [ ] **Step 9: Commit data pipeline**
@@ -1249,11 +1249,11 @@ def score_inverse_percentile(percentile: float | None) -> int:
 
 
 def score_credit() -> int:
-    hy = latest_summary("high_yield_oas")
-    ig = latest_summary("investment_grade_oas")
-    hy_score = score_inverse_percentile(hy["percentile_252d"])
-    ig_score = score_inverse_percentile(ig["percentile_252d"])
-    return clamp((hy_score * 0.65) + (ig_score * 0.35))
+    stress = latest_summary("financial_stress")
+    conditions = latest_summary("financial_conditions")
+    stress_score = score_inverse_percentile(stress["percentile_252d"])
+    conditions_score = score_inverse_percentile(conditions["percentile_252d"])
+    return clamp((stress_score * 0.55) + (conditions_score * 0.45))
 
 
 def score_volatility() -> int:
@@ -1645,8 +1645,8 @@ export default function Credit() {
     <main className="page-shell">
       <section className="page-heading">
         <p className="eyebrow">Credit</p>
-        <h2>Credit spreads</h2>
-        <p>High-yield and investment-grade option-adjusted spreads.</p>
+        <h2>Financial stress</h2>
+        <p>Fed-published financial stress and conditions indexes.</p>
       </section>
     </main>
   );
@@ -2052,7 +2052,7 @@ import RegimeBadge from "../components/RegimeBadge";
 import { loadCatalog, loadDataStatus, loadRegimeScore, loadSeries } from "../lib/data";
 import type { DataStatusFile, RegimeScoreFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 
-const overviewSeries = ["vix", "us10y", "fed_assets", "high_yield_oas"];
+const overviewSeries = ["vix", "us10y", "fed_assets", "financial_stress"];
 
 export default function Overview() {
   const [catalog, setCatalog] = useState<SeriesCatalogEntry[]>([]);
@@ -2246,7 +2246,7 @@ import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadSeries } from "../lib/data";
 import type { TimeSeriesFile } from "../lib/types";
 
-const ids = ["high_yield_oas", "investment_grade_oas"];
+const ids = ["financial_stress", "financial_conditions"];
 
 export default function Credit() {
   const [series, setSeries] = useState<TimeSeriesFile[]>([]);
@@ -2259,8 +2259,8 @@ export default function Credit() {
     <main className="page-shell">
       <section className="page-heading">
         <p className="eyebrow">Credit</p>
-        <h2>Credit spreads</h2>
-        <p>High-yield and investment-grade option-adjusted spreads.</p>
+        <h2>Financial stress</h2>
+        <p>Fed-published financial stress and conditions indexes.</p>
       </section>
       <section className="metric-list">
         {series.map((item) => (
@@ -2762,8 +2762,8 @@ Phase 1 uses public endpoints that do not require secrets.
 | Reverse repo | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD` |
 | Treasury General Account | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN` |
 | SOFR | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=SOFR` |
-| High-yield OAS | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLH0A0HYM2` |
-| Investment-grade OAS | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLC0A0CM` |
+| St. Louis Fed Financial Stress Index | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=STLFSI4` |
+| Chicago Fed National Financial Conditions Index | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=NFCI` |
 
 The frontend does not call these endpoints. GitHub Actions fetches them and writes static JSON files.
 ```
