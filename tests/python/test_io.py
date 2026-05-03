@@ -38,11 +38,15 @@ def test_download_text_retries_transient_timeouts(monkeypatch):
 
     assert download_text("https://example.com/data.csv") == "ok"
     assert len(attempts) == 2
-    assert attempts[0][1] == 30
+    assert [attempt[0].get_header("User-agent") for attempt in attempts] == [
+        "market-weather-map/0.1",
+        "market-weather-map/0.1",
+    ]
+    assert [attempt[1] for attempt in attempts] == [30, 30]
 
 
-def test_download_text_falls_back_after_user_agent_timeout(monkeypatch):
-    user_agents = []
+def test_download_text_preserves_user_agent_on_every_retry(monkeypatch):
+    attempts = []
 
     class FakeResponse:
         def __enter__(self):
@@ -55,16 +59,18 @@ def test_download_text_falls_back_after_user_agent_timeout(monkeypatch):
             return b"ok"
 
     def fake_urlopen(request, timeout):
-        user_agent = request.get_header("User-agent")
-        user_agents.append(user_agent)
-        if user_agent == "market-weather-map/0.1":
+        attempts.append((request.get_header("User-agent"), timeout))
+        if len(attempts) == 1:
             raise TimeoutError("timed out")
         return FakeResponse()
 
     monkeypatch.setattr(io, "urlopen", fake_urlopen)
 
     assert download_text("https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2") == "ok"
-    assert user_agents == ["market-weather-map/0.1", None]
+    assert attempts == [
+        ("market-weather-map/0.1", 30),
+        ("market-weather-map/0.1", 30),
+    ]
 
 
 def test_catalog_higher_is_values_match_frontend_contract():
