@@ -67,7 +67,7 @@ GITHUB_PAGES=true npm run build
 
 ## Deployment
 
-The data workflow runs on weekdays and can also be started manually from GitHub Actions. It fetches public data, writes static JSON under `public/data`, validates schema and freshness, and commits changed data files back to the repository.
+The data workflow runs on weekdays and can also be started manually from GitHub Actions. It fetches public data, writes static JSON under `public/data`, validates schema and freshness, commits changed data files back to the repository, then builds and deploys the refreshed GitHub Pages artifact.
 
 The Pages workflow runs on pushes to `main` and can also be started manually. It installs dependencies with `npm ci`, builds with `GITHUB_PAGES=true npm run build`, uploads `dist`, and deploys the static site to GitHub Pages.
 
