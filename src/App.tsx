@@ -1,14 +1,23 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import AppLayout from "./components/AppLayout";
+import Credit from "./routes/Credit";
+import Liquidity from "./routes/Liquidity";
+import Methodology from "./routes/Methodology";
+import Overview from "./routes/Overview";
+import Rates from "./routes/Rates";
+import Volatility from "./routes/Volatility";
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<main className="page-shell">Overview loading...</main>} />
-      <Route path="/volatility" element={<main className="page-shell">Volatility loading...</main>} />
-      <Route path="/rates" element={<main className="page-shell">Rates loading...</main>} />
-      <Route path="/liquidity" element={<main className="page-shell">Liquidity loading...</main>} />
-      <Route path="/credit" element={<main className="page-shell">Credit loading...</main>} />
-      <Route path="/methodology" element={<main className="page-shell">Methodology loading...</main>} />
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<Overview />} />
+        <Route path="/volatility" element={<Volatility />} />
+        <Route path="/rates" element={<Rates />} />
+        <Route path="/liquidity" element={<Liquidity />} />
+        <Route path="/credit" element={<Credit />} />
+        <Route path="/methodology" element={<Methodology />} />
+      </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
