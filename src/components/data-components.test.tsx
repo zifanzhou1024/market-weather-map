@@ -98,6 +98,22 @@ describe("data-driven components", () => {
     expect(fill?.style.width).toBe("100%");
   });
 
+  it("exposes available percentile meter values to assistive technology", () => {
+    const container = render(<PercentileBandChart percentile={42} />);
+    const meter = container.querySelector('[role="meter"]');
+
+    expect(meter?.getAttribute("aria-valuenow")).toBe("42");
+    expect(meter?.getAttribute("aria-valuetext")).toBe("42%");
+  });
+
+  it("does not expose a misleading meter value when percentile is unavailable", () => {
+    const container = render(<PercentileBandChart percentile={null} />);
+    const meter = container.querySelector('[role="meter"]');
+
+    expect(meter?.hasAttribute("aria-valuenow")).toBe(false);
+    expect(meter?.getAttribute("aria-valuetext")).toBe("N/A");
+  });
+
   it("renders source metadata and source reference link", () => {
     const container = render(<SourceNote catalogEntry={catalogEntry} series={series} />);
 

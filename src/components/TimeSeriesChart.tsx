@@ -1,25 +1,24 @@
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from "recharts";
-import { formatNumber } from "../lib/formatters";
+import { lazy, Suspense } from "react";
 import type { SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 
-interface TimeSeriesChartProps {
+const TimeSeriesChartInner = lazy(() => import("./TimeSeriesChartInner"));
+
+export interface TimeSeriesChartProps {
   series: TimeSeriesFile;
   catalogEntry?: SeriesCatalogEntry;
 }
 
-export default function TimeSeriesChart({ series, catalogEntry }: TimeSeriesChartProps) {
-  const data = series.observations.slice(-260);
-
+export default function TimeSeriesChart(props: TimeSeriesChartProps) {
   return (
-    <section className="panel chart-panel">
+    <Suspense fallback={<TimeSeriesChartFallback {...props} />}>
+      <TimeSeriesChartInner {...props} />
+    </Suspense>
+  );
+}
+
+function TimeSeriesChartFallback({ series, catalogEntry }: TimeSeriesChartProps) {
+  return (
+    <section className="panel chart-panel" aria-busy="true">
       <div className="section-header">
         <div>
           <p className="eyebrow">History</p>
@@ -27,32 +26,7 @@ export default function TimeSeriesChart({ series, catalogEntry }: TimeSeriesChar
         </div>
         <p>{catalogEntry?.units ?? series.units}</p>
       </div>
-      <div className="chart-frame">
-        <ResponsiveContainer height="100%" width="100%">
-          <LineChart data={data} margin={{ bottom: 8, left: 0, right: 20, top: 8 }}>
-            <CartesianGrid stroke="#dfe5da" strokeDasharray="3 3" />
-            <XAxis dataKey="date" minTickGap={36} tick={{ fill: "#607066", fontSize: 12 }} />
-            <YAxis
-              tick={{ fill: "#607066", fontSize: 12 }}
-              tickFormatter={(value: number) => formatNumber(value)}
-              width={64}
-            />
-            <Tooltip
-              formatter={(value) => [formatNumber(Number(value)), catalogEntry?.units ?? series.units]}
-              labelFormatter={(label) => String(label)}
-            />
-            <Line
-              dataKey="value"
-              dot={false}
-              isAnimationActive={false}
-              name={catalogEntry?.name ?? series.series_id}
-              stroke="#2f6f73"
-              strokeWidth={2}
-              type="monotone"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      <div className="chart-frame chart-frame--loading">Loading chart</div>
     </section>
   );
 }

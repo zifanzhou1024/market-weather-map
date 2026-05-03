@@ -315,6 +315,13 @@ select {
   height: 340px;
 }
 
+.chart-frame--loading {
+  display: grid;
+  place-items: center;
+  color: #607066;
+  background: #f1f4ee;
+}
+
 .percentile-panel {
   min-height: 184px;
 }
