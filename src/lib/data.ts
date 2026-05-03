@@ -10,6 +10,8 @@ const baseUrl = (import.meta as ImportMeta & { env: { BASE_URL: string } }).env.
   /\/$/,
   ""
 );
+const dataPathPattern = /^\/data\/(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_-]+\.json$/;
+const seriesIdPattern = /^[a-z0-9_]+$/;
 
 export class DataLoadError extends Error {
   constructor(
@@ -23,6 +25,10 @@ export class DataLoadError extends Error {
 }
 
 export async function loadJson<T>(path: string): Promise<T> {
+  if (!dataPathPattern.test(path)) {
+    throw new DataLoadError(`Invalid data path ${path}`, path);
+  }
+
   const response = await fetch(`${baseUrl}${path}`);
 
   if (!response.ok) {
@@ -36,7 +42,11 @@ export function loadCatalog(): Promise<SeriesCatalogEntry[]> {
   return loadJson<SeriesCatalogEntry[]>("/data/catalog/series_catalog.json");
 }
 
-export function loadSeries(seriesId: string): Promise<TimeSeriesFile> {
+export async function loadSeries(seriesId: string): Promise<TimeSeriesFile> {
+  if (!seriesIdPattern.test(seriesId)) {
+    throw new DataLoadError(`Invalid series id ${seriesId}`, seriesId);
+  }
+
   return loadJson<TimeSeriesFile>(`/data/series/${seriesId}.json`);
 }
 
