@@ -127,30 +127,30 @@
   },
   {
     "category": "credit",
-    "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLH0A0HYM2",
-    "frequency": "daily",
+    "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=STLFSI4",
+    "frequency": "weekly",
     "higher_is": "riskier",
-    "id": "high_yield_oas",
-    "max_stale_days": 7,
-    "name": "High Yield Option-Adjusted Spread",
-    "notes": "Daily high yield credit spread from FRED.",
+    "id": "financial_stress",
+    "max_stale_days": 14,
+    "name": "St. Louis Fed Financial Stress Index",
+    "notes": "Weekly financial stress index published by the St. Louis Fed.",
     "public": true,
     "source": "FRED",
-    "source_url": "https://fred.stlouisfed.org/series/BAMLH0A0HYM2",
-    "units": "percent"
+    "source_url": "https://fred.stlouisfed.org/series/STLFSI4",
+    "units": "index"
   },
   {
     "category": "credit",
-    "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLC0A0CM",
-    "frequency": "daily",
+    "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=NFCI",
+    "frequency": "weekly",
     "higher_is": "riskier",
-    "id": "investment_grade_oas",
-    "max_stale_days": 7,
-    "name": "Investment Grade Option-Adjusted Spread",
-    "notes": "Daily investment grade credit spread from FRED.",
+    "id": "financial_conditions",
+    "max_stale_days": 14,
+    "name": "Chicago Fed National Financial Conditions Index",
+    "notes": "Weekly national financial conditions index published by the Chicago Fed.",
     "public": true,
     "source": "FRED",
-    "source_url": "https://fred.stlouisfed.org/series/BAMLC0A0CM",
-    "units": "percent"
+    "source_url": "https://fred.stlouisfed.org/series/NFCI",
+    "units": "index"
   }
 ]
