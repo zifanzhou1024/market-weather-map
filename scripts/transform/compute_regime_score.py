@@ -44,7 +44,7 @@ def latest_summary(series: dict[str, Any]) -> dict[str, Any]:
     summary = series.get("summary")
     if isinstance(summary, dict):
         return summary
-    return series_summary(series.get("observations", []))
+    return series_summary(series.get("observations", []), str(series.get("frequency", "daily")))
 
 
 def score_inverse_percentile(summary: dict[str, Any]) -> float:
@@ -150,7 +150,10 @@ def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_
         current_date = datetime.fromisoformat(generated_at.replace("Z", "+00:00")).date()
         observed_date = datetime.fromisoformat(latest_date).date()
         freshness_days = (current_date - observed_date).days
-        if freshness_days > int(entry["max_stale_days"]):
+        if freshness_days < 0:
+            status = "failed"
+            message = "Latest observation is future-dated."
+        elif freshness_days > int(entry["max_stale_days"]):
             status = "stale"
             message = f"Latest observation is {freshness_days} days old."
         else:

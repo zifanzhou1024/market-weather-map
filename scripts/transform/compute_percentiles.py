@@ -24,7 +24,13 @@ def change_from_index(observations: list[dict[str, Any]], offset: int) -> float 
     return round(float(latest) - float(previous), 4)
 
 
-def series_summary(observations: list[dict[str, Any]]) -> dict[str, Any]:
+def change_offsets(frequency: str = "daily") -> dict[str, int]:
+    if frequency == "weekly":
+        return {"change_1d": 1, "change_1w": 1, "change_1m": 4}
+    return {"change_1d": 1, "change_1w": 5, "change_1m": 21}
+
+
+def series_summary(observations: list[dict[str, Any]], frequency: str = "daily") -> dict[str, Any]:
     if not observations:
         return {
             "latest_date": None,
@@ -48,12 +54,13 @@ def series_summary(observations: list[dict[str, Any]]) -> dict[str, Any]:
         else None
     )
 
+    offsets = change_offsets(frequency)
     return {
         "latest_date": latest.get("date"),
         "latest_value": latest_value,
-        "change_1d": change_from_index(observations, 1),
-        "change_1w": change_from_index(observations, 5),
-        "change_1m": change_from_index(observations, 21),
+        "change_1d": change_from_index(observations, offsets["change_1d"]),
+        "change_1w": change_from_index(observations, offsets["change_1w"]),
+        "change_1m": change_from_index(observations, offsets["change_1m"]),
         "percentile_252d": percentile,
     }
 
@@ -84,7 +91,7 @@ def enrich_file(path: Path | str) -> dict[str, Any]:
     payload = json.loads(target.read_text(encoding="utf-8"))
     observations = enrich_observations(payload.get("observations", []))
     payload["observations"] = observations
-    payload["summary"] = series_summary(observations)
+    payload["summary"] = series_summary(observations, str(payload.get("frequency", "daily")))
     write_json(target, payload)
     return payload
 
