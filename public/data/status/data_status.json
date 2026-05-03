@@ -1,0 +1,106 @@
+{
+  "generated_at_utc": "2026-05-03T18:25:39Z",
+  "last_successful_update_utc": "2026-05-03T18:25:39Z",
+  "overall_status": "ok",
+  "series": {
+    "fed_assets": {
+      "expected_frequency": "weekly",
+      "freshness_days": 4,
+      "last_observation": "2026-04-29",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "financial_conditions": {
+      "expected_frequency": "weekly",
+      "freshness_days": 9,
+      "last_observation": "2026-04-24",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "financial_stress": {
+      "expected_frequency": "weekly",
+      "freshness_days": 9,
+      "last_observation": "2026-04-24",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "reverse_repo": {
+      "expected_frequency": "daily",
+      "freshness_days": 2,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "sofr": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "treasury_general_account": {
+      "expected_frequency": "weekly",
+      "freshness_days": 4,
+      "last_observation": "2026-04-29",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "us10y": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "us20y": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "us2y": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "us30y": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "vix": {
+      "expected_frequency": "daily",
+      "freshness_days": 2,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "Cboe",
+      "status": "ok"
+    }
+  }
+}
