@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadSeries } from "../lib/data";
-import type { SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadCatalog, loadDerivedSeries, loadSeries } from "../lib/data";
+import type { DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 
 const ratesSeriesIds = ["us2y", "us10y", "us20y", "us30y"];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
+  curve: DerivedSeriesFile;
   series: TimeSeriesFile[];
 }
 
@@ -20,11 +21,12 @@ export default function Rates() {
 
     async function loadRates() {
       try {
-        const [catalog, series] = await Promise.all([
+        const [catalog, series, curve] = await Promise.all([
           loadCatalog(),
-          Promise.all(ratesSeriesIds.map((seriesId) => loadSeries(seriesId)))
+          Promise.all(ratesSeriesIds.map((seriesId) => loadSeries(seriesId))),
+          loadDerivedSeries("us10y_minus_us2y")
         ]);
-        if (active) setData({ catalog, series });
+        if (active) setData({ catalog, curve, series });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load rates data.");
       }
@@ -36,6 +38,23 @@ export default function Rates() {
       active = false;
     };
   }, []);
+
+  const us10y = data?.series.find((series) => series.series_id === "us10y");
+  const curveCatalogEntry: SeriesCatalogEntry | undefined = data
+    ? {
+        category: "rates",
+        frequency: data.curve.frequency,
+        higher_is: "contextual",
+        id: data.curve.series_id,
+        max_stale_days: 7,
+        name: "10Y-2Y spread",
+        notes: data.curve.method,
+        public: true,
+        source: data.curve.source,
+        source_url: data.curve.source_url,
+        units: data.curve.units
+      }
+    : undefined;
 
   return (
     <main className="page-shell">
@@ -55,11 +74,12 @@ export default function Rates() {
                 series={series}
               />
             ))}
+            <MetricCard catalogEntry={curveCatalogEntry} series={data.curve} />
           </section>
-          {data.series.find((series) => series.series_id === "us10y") ? (
+          {us10y ? (
             <TimeSeriesChart
               catalogEntry={data.catalog.find((entry) => entry.id === "us10y")}
-              series={data.series.find((series) => series.series_id === "us10y") as TimeSeriesFile}
+              series={us10y}
             />
           ) : null}
         </div>

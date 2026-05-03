@@ -3,6 +3,7 @@ import DataStatusTable from "../components/DataStatusTable";
 import MetricCard from "../components/MetricCard";
 import RegimeBadge from "../components/RegimeBadge";
 import { loadCatalog, loadDataStatus, loadRegimeScore, loadSeries } from "../lib/data";
+import { formatSigned } from "../lib/formatters";
 import type { DataStatusFile, RegimeScoreFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 
 const overviewSeriesIds = ["vix", "us10y", "fed_assets", "financial_stress"];
@@ -12,6 +13,13 @@ interface OverviewState {
   regime: RegimeScoreFile;
   status: DataStatusFile;
   series: TimeSeriesFile[];
+}
+
+function titleCaseBucket(bucket: string) {
+  return bucket
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
 export default function Overview() {
@@ -77,6 +85,22 @@ export default function Overview() {
                 </ul>
               </section>
             </div>
+          </section>
+          <section className="panel bucket-panel">
+            <div className="section-header">
+              <div>
+                <p className="eyebrow">Regime inputs</p>
+                <h3>Bucket scores</h3>
+              </div>
+            </div>
+            <dl className="bucket-grid">
+              {Object.entries(data.regime.buckets).map(([bucket, score]) => (
+                <div className="bucket-score" key={bucket}>
+                  <dt>{titleCaseBucket(bucket)}</dt>
+                  <dd>{formatSigned(score)}</dd>
+                </div>
+              ))}
+            </dl>
           </section>
           <section className="metric-grid" aria-label="Overview metrics">
             {data.series.map((series) => (

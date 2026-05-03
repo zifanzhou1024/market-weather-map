@@ -1,6 +1,7 @@
 import type {
   BucketScoresFile,
   DataStatusFile,
+  DerivedSeriesFile,
   RegimeScoreFile,
   SeriesCatalogEntry,
   TimeSeriesFile
@@ -48,6 +49,14 @@ export async function loadSeries(seriesId: string): Promise<TimeSeriesFile> {
   }
 
   return loadJson<TimeSeriesFile>(`/data/series/${seriesId}.json`);
+}
+
+export async function loadDerivedSeries(seriesId: string): Promise<DerivedSeriesFile> {
+  if (!seriesIdPattern.test(seriesId)) {
+    throw new DataLoadError(`Invalid derived series id ${seriesId}`, seriesId);
+  }
+
+  return loadJson<DerivedSeriesFile>(`/data/derived/${seriesId}.json`);
 }
 
 export function loadRegimeScore(): Promise<RegimeScoreFile> {

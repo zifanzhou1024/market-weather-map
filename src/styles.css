@@ -247,11 +247,13 @@ select {
 }
 
 .metric-stats div,
+.bucket-score,
 .detail-list div {
   min-width: 0;
 }
 
 .metric-stats dt,
+.bucket-score dt,
 .detail-list dt {
   color: #607066;
   font-size: 0.78rem;
@@ -260,6 +262,7 @@ select {
 }
 
 .metric-stats dd,
+.bucket-score dd,
 .detail-list dd {
   margin: 3px 0 0;
   color: #24332a;
@@ -348,6 +351,17 @@ select {
   font-weight: 800;
 }
 
+.bucket-panel {
+  margin-bottom: 20px;
+}
+
+.bucket-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
 .source-note p {
   color: #536157;
 }
@@ -422,6 +436,10 @@ code {
     grid-template-columns: 1fr;
   }
 
+  .bucket-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .section-header {
     display: block;
   }
@@ -439,5 +457,9 @@ code {
   .metric-grid,
   .methodology-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bucket-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
