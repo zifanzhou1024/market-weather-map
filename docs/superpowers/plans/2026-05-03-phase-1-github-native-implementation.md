@@ -45,7 +45,7 @@ Workers are not alone in the codebase. Do not revert edits made by other workers
 
 - `requirements.txt`: Python test dependency.
 - `scripts/shared/catalog.py`: canonical source registry and freshness policy.
-- `scripts/shared/io.py`: repository paths, JSON writing, CSV download and parsing helpers.
+- `scripts/shared/io.py`: repository paths, JSON writing, provider-compatible CSV download and parsing helpers.
 - `scripts/ingest/fetch_cboe.py`: fetches Cboe VIX CSV into `public/data/series/vix.json`.
 - `scripts/ingest/fetch_fred_csv.py`: fetches configured FRED graph CSVs into `public/data/series/*.json`.
 - `scripts/transform/normalize_series.py`: writes catalog and enforces sorted unique observations.
@@ -822,9 +822,20 @@ def write_json(path: Path, payload: object) -> None:
 
 
 def download_text(url: str) -> str:
-    request = Request(url, headers={"User-Agent": "market-weather-map/0.1"})
-    with urlopen(request, timeout=30) as response:
-        return response.read().decode("utf-8-sig")
+    requests = [
+        Request(url, headers={"User-Agent": "market-weather-map/0.1"}),
+        Request(url),
+    ]
+    last_error: TimeoutError | None = None
+    for request in requests:
+        try:
+            with urlopen(request, timeout=30) as response:
+                return response.read().decode("utf-8-sig")
+        except TimeoutError as error:
+            last_error = error
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError("download failed without an exception")
 
 
 def parse_float(value: str) -> float | None:
@@ -857,6 +868,37 @@ def test_parse_float_handles_missing_values():
 def test_parse_csv_rows_handles_header_and_rows():
     rows = parse_csv_rows("observation_date,DGS10\n2026-05-01,4.28\n")
     assert rows == [{"observation_date": "2026-05-01", "DGS10": "4.28"}]
+
+
+def test_download_text_retries_with_provider_compatible_request_after_timeout(monkeypatch):
+    import scripts.shared.io as io
+    from scripts.shared.io import download_text
+
+    attempts = []
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, traceback):
+            return False
+
+        def read(self):
+            return b"ok"
+
+    def fake_urlopen(request, timeout):
+        attempts.append((request.get_header("User-agent"), timeout))
+        if len(attempts) == 1:
+            raise TimeoutError("timed out")
+        return FakeResponse()
+
+    monkeypatch.setattr(io, "urlopen", fake_urlopen)
+
+    assert download_text("https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2") == "ok"
+    assert attempts == [
+        ("market-weather-map/0.1", 30),
+        (None, 30),
+    ]
 ```
 
 - [ ] **Step 5: Add Cboe VIX fetcher**
