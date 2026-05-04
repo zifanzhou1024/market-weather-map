@@ -566,7 +566,7 @@ def test_build_score_summary_returns_three_scores_with_specific_drivers():
         "reverse_repo": _summary(latest_value=450.0, change_1m=30.0, percentile_252d=55.0),
         "sofr": _summary(latest_value=5.3, change_1m=0.05, percentile_252d=70.0),
         "net_liquidity": _summary(latest_value=5700000.0, change_1m=-120000.0, percentile_252d=35.0),
-        "high_yield_oas": _summary(latest_value=4.4, change_1m=0.45, percentile_252d=76.0),
+        "high_yield_oas": _summary(latest_value=4.4, change_1m=0.45, percentile_252d=95.0),
         "investment_grade_oas": _summary(latest_value=1.4, change_1m=0.05, percentile_252d=60.0),
         "hy_minus_ig_oas": _summary(latest_value=3.0, change_1m=0.4, percentile_252d=78.0),
         "financial_stress": _summary(latest_value=0.2, change_1m=0.1, percentile_252d=65.0),
@@ -687,6 +687,50 @@ def test_market_weather_uses_phase_3_buckets_and_bucket_drivers_for_top_risks():
     }
     assert "Commodity inflation impulse is elevated." in market["top_risks"]
     assert "Leveraged-money S&P 500 positioning is crowded." in market["top_risks"]
+
+
+def test_supportive_credit_bucket_does_not_force_high_yield_widening_risk():
+    series = {
+        "high_yield_oas": _summary(latest_value=3.0, change_1m=0.01, percentile_252d=10.0),
+        "investment_grade_oas": _summary(latest_value=1.0, change_1m=-0.05, percentile_252d=15.0),
+        "bbb_oas": _summary(latest_value=1.5, change_1m=-0.05, percentile_252d=20.0),
+        "vix": _summary(percentile_252d=80.0),
+        "real_yield_10y": _summary(percentile_252d=85.0),
+        "commodity_inflation_impulse": _summary(latest_value=-60.0, change_1m=-5.0, percentile_252d=80.0),
+        "cftc_sp500_asset_mgr_net": _summary(percentile_252d=50.0),
+        "cftc_sp500_lev_money_net": _summary(percentile_252d=50.0),
+    }
+
+    market = compute_regime_score.build_score_summary(
+        series, "2026-05-04T00:00:00Z"
+    )["scores"]["market_weather"]
+
+    assert market["bucket_scores"]["credit_spreads"] > 0
+    assert "High-yield spreads widened over the past month." not in market["top_risks"]
+    assert "Credit spread pressure is contained." in market["top_supports"]
+
+
+def test_commodity_impulse_reweights_without_breakeven_and_notes_missing_confirmation():
+    series = {
+        "wti_crude": _summary(latest_value=100.0, change_1m=5.0, percentile_252d=95.0),
+        "brent_crude": _summary(latest_value=110.0, change_1m=5.0, percentile_252d=95.0),
+        "corn_price": _summary(latest_value=300.0, change_1m=10.0, percentile_252d=95.0),
+        "wheat_price": _summary(latest_value=400.0, change_1m=10.0, percentile_252d=95.0),
+        "soybean_price": _summary(latest_value=500.0, change_1m=10.0, percentile_252d=95.0),
+    }
+
+    impulse = compute_regime_score.build_commodity_inflation_impulse(
+        series, "2026-05-04T00:00:00Z"
+    )
+    series["commodity_inflation_impulse"] = impulse
+
+    market = compute_regime_score.build_score_summary(
+        series, "2026-05-04T00:00:00Z"
+    )["scores"]["market_weather"]
+
+    assert impulse["observations"]
+    assert market["bucket_scores"]["commodities_inflation_impulse"] == impulse["value"]
+    assert any("breakeven_10y" in note for note in market["missing_or_stale_notes"])
 
 
 def test_build_status_marks_missing_active_public_catalog_entries_unavailable(monkeypatch):

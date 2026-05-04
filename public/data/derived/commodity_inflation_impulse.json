@@ -1,0 +1,34 @@
+{
+  "depends_on": [
+    "wti_crude",
+    "brent_crude",
+    "corn_price",
+    "wheat_price",
+    "soybean_price"
+  ],
+  "frequency": "daily",
+  "generated_at_utc": "2026-05-04T10:15:32Z",
+  "method": "Momentum impulse from oil 3-month change (40%), oil 12-month change (20%), crop basket 3-month momentum (20%), and 10-year breakeven confirmation (20%). Absolute summary changes are converted to percent change versus the prior value where applicable; positive inflation impulse is mapped to negative support-risk score.",
+  "observations": [
+    {
+      "date": "2026-04-27",
+      "percentile_252d": 100.0,
+      "value": -51.71
+    }
+  ],
+  "series_id": "commodity_inflation_impulse",
+  "source": "Derived",
+  "source_url": "/data/series/wti_crude.json",
+  "summary": {
+    "change_12m": null,
+    "change_1d": null,
+    "change_1m": null,
+    "change_1w": null,
+    "change_3m": null,
+    "latest_date": "2026-04-27",
+    "latest_value": -51.71,
+    "percentile_252d": 100.0
+  },
+  "units": "score",
+  "value": -51.71
+}

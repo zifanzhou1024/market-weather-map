@@ -11,7 +11,7 @@
       "Missing macro inflation coverage: headline_cpi, core_cpi, core_pce, ppi_final_demand.",
       "Missing macro labor coverage: nonfarm_payrolls, unemployment_rate, initial_claims, sahm_rule.",
       "Missing macro real_yields coverage: real_yield_10y.",
-      "Missing market weather commodities_inflation_impulse coverage: commodity_inflation_impulse.",
+      "Missing market weather commodities_inflation_impulse coverage: breakeven_10y.",
       "Missing market weather credit_spreads coverage: high_yield_oas, investment_grade_oas, bbb_oas.",
       "Missing market weather dollar_global coverage: broad_dollar.",
       "Missing market weather rates_real_yields coverage: real_yield_10y.",
@@ -20,7 +20,7 @@
     ]
   },
   "date": "2026-05-01",
-  "generated_at_utc": "2026-05-04T10:06:54Z",
+  "generated_at_utc": "2026-05-04T10:15:32Z",
   "method_version": "phase3-three-score-v1",
   "scores": {
     "fragility": {
@@ -296,7 +296,7 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -90.18,
+        "commodities_inflation_impulse": -51.71,
         "credit_spreads": 23.66,
         "dollar_global": 0.0,
         "liquidity_funding": -4.11,
@@ -321,7 +321,7 @@
         "Missing market weather rates_real_yields coverage: real_yield_10y.",
         "Missing market weather volatility_tail_risk coverage: vvix, vix9d, vix3m.",
         "Missing market weather dollar_global coverage: broad_dollar.",
-        "Missing market weather commodities_inflation_impulse coverage: commodity_inflation_impulse."
+        "Missing market weather commodities_inflation_impulse coverage: breakeven_10y."
       ],
       "recent_changes": [
         "Commodity inflation impulse is elevated.",
@@ -329,17 +329,18 @@
         "Credit spread pressure is contained.",
         "Volatility tail risk is contained."
       ],
-      "score": -6.74,
+      "score": -2.9,
       "source_coverage": {
         "available": [
           "net_liquidity",
           "reverse_repo",
           "sofr",
           "vix",
+          "commodity_inflation_impulse",
           "cftc_sp500_asset_mgr_net",
           "cftc_sp500_lev_money_net"
         ],
-        "coverage_ratio": 0.4,
+        "coverage_ratio": 0.44,
         "expected": [
           "high_yield_oas",
           "investment_grade_oas",
@@ -354,18 +355,22 @@
           "vix3m",
           "broad_dollar",
           "commodity_inflation_impulse",
+          "breakeven_10y",
           "cftc_sp500_asset_mgr_net",
           "cftc_sp500_lev_money_net"
         ],
         "groups": {
           "commodities_inflation_impulse": {
-            "available": [],
-            "coverage_ratio": 0.0,
-            "expected": [
+            "available": [
               "commodity_inflation_impulse"
             ],
+            "coverage_ratio": 0.5,
+            "expected": [
+              "commodity_inflation_impulse",
+              "breakeven_10y"
+            ],
             "missing": [
-              "commodity_inflation_impulse"
+              "breakeven_10y"
             ]
           },
           "credit_spreads": {
@@ -455,7 +460,7 @@
           "vix9d",
           "vix3m",
           "broad_dollar",
-          "commodity_inflation_impulse"
+          "breakeven_10y"
         ]
       },
       "top_risks": [

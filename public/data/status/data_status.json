@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-04T10:06:54Z",
-  "last_successful_update_utc": "2026-05-04T10:06:54Z",
+  "generated_at_utc": "2026-05-04T10:15:32Z",
+  "last_successful_update_utc": "2026-05-04T10:15:32Z",
   "overall_status": "partial",
   "series": {
     "bank_credit": {
@@ -118,6 +118,15 @@
       "max_stale_days": 14,
       "message": "Fresh.",
       "source": "CFTC",
+      "status": "ok"
+    },
+    "commodity_inflation_impulse": {
+      "expected_frequency": "daily",
+      "freshness_days": 7,
+      "last_observation": "2026-04-27",
+      "max_stale_days": 75,
+      "message": "Fresh.",
+      "source": "Derived",
       "status": "ok"
     },
     "core_cpi": {

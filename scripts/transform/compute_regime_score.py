@@ -55,7 +55,7 @@ MARKET_COVERAGE_GROUPS = {
     "rates_real_yields": ["real_yield_10y"],
     "volatility_tail_risk": ["vix", "vvix", "vix9d", "vix3m"],
     "dollar_global": ["broad_dollar"],
-    "commodities_inflation_impulse": ["commodity_inflation_impulse"],
+    "commodities_inflation_impulse": ["commodity_inflation_impulse", "breakeven_10y"],
     "sentiment_positioning": ["cftc_sp500_asset_mgr_net", "cftc_sp500_lev_money_net"],
 }
 MACRO_COVERAGE_GROUPS = {
@@ -377,7 +377,7 @@ def _valid_component_average(
     values = []
     dates = []
     for series_id in series_ids:
-        summary = latest_summary(series_by_id[series_id])
+        summary = _impulse_summary(series_by_id[series_id])
         value = _change_pct(summary, change_key)
         date = summary.get("latest_date")
         if value is None or not isinstance(date, str):
@@ -640,6 +640,13 @@ def _safe_score_commodities(series_by_id: dict[str, dict[str, Any]]) -> float:
     return 0.0
 
 
+def _impulse_summary(series: dict[str, Any]) -> dict[str, Any]:
+    summary = latest_summary(series)
+    if _finite_number(summary.get("change_3m")) or _finite_number(summary.get("change_12m")):
+        return summary
+    return series_summary(series.get("observations", []), str(series.get("frequency", "daily")))
+
+
 def _safe_score_sentiment(series_by_id: dict[str, dict[str, Any]]) -> float:
     if {"cftc_sp500_asset_mgr_net", "cftc_sp500_lev_money_net"} <= set(series_by_id):
         return score_sentiment(series_by_id)
@@ -651,7 +658,13 @@ def _market_weather_scores(series_by_id: dict[str, dict[str, Any]]) -> dict[str,
         latest_summary(series_by_id["commodity_inflation_impulse"]),
         "latest_value",
     ) if "commodity_inflation_impulse" in series_by_id else None
-    commodity_score = commodity_impulse if commodity_impulse is not None else _safe_score_commodities(series_by_id)
+    commodity_score = (
+        commodity_impulse
+        if commodity_impulse is not None
+        else 0.0
+        if "commodity_inflation_impulse" in series_by_id
+        else _safe_score_commodities(series_by_id)
+    )
     rates_score = _score_inverse_percentile_for_first(series_by_id, ["real_yield_10y"])
     if rates_score is None:
         rates_score = score_rates(series_by_id) if "us10y" in series_by_id else 0.0
@@ -685,12 +698,19 @@ def _market_weather_drivers(
     direct_credit_score = _score_inverse_percentile_for_first(
         series_by_id, [series_id] if series_id is not None else []
     )
-    if series_id is not None and change_1m is not None and change_1m > 0:
+    if (
+        series_id is not None
+        and change_1m is not None
+        and change_1m > 0
+        and direct_credit_score is not None
+        and direct_credit_score < 0
+        and bucket_scores["credit_spreads"] < 0
+    ):
         drivers.append(
             _series_driver(
                 "credit_spreads",
                 "risk",
-                min(direct_credit_score if direct_credit_score is not None else -20.0, -85.0),
+                direct_credit_score,
                 "High-yield spreads widened over the past month.",
                 series_id,
                 summary,
@@ -1142,15 +1162,14 @@ def main() -> None:
         write_json(data_dir() / "derived" / "vix_vix3m_ratio.json", vix_vix3m_ratio)
         series_by_id["vix_vix3m_ratio"] = vix_vix3m_ratio
 
-    commodity_inflation_dependencies = {
+    commodity_inflation_components = {
         "wti_crude",
         "brent_crude",
         "corn_price",
         "wheat_price",
         "soybean_price",
-        "breakeven_10y",
     }
-    if commodity_inflation_dependencies <= set(series_by_id):
+    if commodity_inflation_components & set(series_by_id):
         commodity_inflation_impulse = build_commodity_inflation_impulse(series_by_id, generated_at)
         write_json(
             data_dir() / "derived" / "commodity_inflation_impulse.json",
