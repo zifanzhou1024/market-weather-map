@@ -132,3 +132,29 @@ def test_update_runner_returns_failure_status_and_cleans_snapshot(tmp_path, monk
     assert payload["update_message"] == "RuntimeError: scripts.ingest.fetch_cftc failed"
     assert snapshots
     assert not snapshots[0].exists()
+
+
+def test_update_runner_converts_module_system_exit_to_failed_update(tmp_path, monkeypatch):
+    data_root = tmp_path / "public" / "data"
+    status_dir = data_root / "status"
+    status_dir.mkdir(parents=True)
+    (status_dir / "data_status.json").write_text(
+        json.dumps(
+            {
+                "generated_at_utc": "2026-05-02T00:00:00Z",
+                "last_successful_update_utc": "2026-05-02T00:00:00Z",
+                "overall_status": "ok",
+                "series": {},
+            }
+        )
+    )
+
+    monkeypatch.setattr(update_data, "data_dir", lambda: data_root)
+    monkeypatch.setattr(update_data, "MODULES", ["scripts.validate.validate_freshness"])
+    monkeypatch.setattr(update_data, "run_module", lambda module: (_ for _ in ()).throw(SystemExit("stale data")))
+
+    assert update_data.main() == 1
+
+    payload = json.loads((status_dir / "data_status.json").read_text())
+    assert payload["update_status"] == "failed"
+    assert payload["update_message"] == "SystemExit: stale data"

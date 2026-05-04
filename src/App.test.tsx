@@ -39,8 +39,8 @@ describe("App routing", () => {
 
     expect(container.querySelector("h1")?.textContent).toBe("Market Weather Map");
     expect(container.querySelector(".eyebrow")?.textContent).toBe("Delayed public data");
-    expect(container.querySelector("h2")?.textContent).toBe("Financial stress");
-    expect(container.textContent).toContain("Fed-published financial stress and conditions indexes.");
+    expect(container.querySelector("h2")?.textContent).toBe("Credit & Banking");
+    expect(container.textContent).toContain("Credit spreads, financial stress, banking system liquidity, lending, and deposits.");
     expect(container.querySelector('a[href="/credit"]')?.className).toContain("active");
   });
 
@@ -48,7 +48,7 @@ describe("App routing", () => {
     const container = renderAt("/methodology");
 
     expect(container.querySelector('a[href="/commodities"]')?.textContent).toBe("Commodities");
-    expect(container.querySelector('a[href="/sentiment"]')?.textContent).toBe("Sentiment");
+    expect(container.querySelector('a[href="/sentiment"]')?.textContent).toBe("Sentiment & Positioning");
   });
 
   it("redirects unknown routes to the overview", async () => {

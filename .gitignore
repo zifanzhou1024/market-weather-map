@@ -47,6 +47,10 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+# Python cache
+__pycache__/
+*.py[cod]
+
 # Optional npm cache directory
 .npm
 
@@ -144,3 +148,6 @@ vite.config.ts.timestamp-*
 
 # Local implementation worktrees
 .worktrees/
+
+# Superpowers brainstorming companion artifacts
+.superpowers/

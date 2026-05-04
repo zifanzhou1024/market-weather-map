@@ -1,8 +1,53 @@
 {
-  "generated_at_utc": "2026-05-04T06:47:09Z",
-  "last_successful_update_utc": "2026-05-04T06:47:09Z",
-  "overall_status": "ok",
+  "generated_at_utc": "2026-05-04T14:46:53Z",
+  "last_successful_update_utc": "2026-05-04T14:46:53Z",
+  "overall_status": "partial",
   "series": {
+    "bank_credit": {
+      "expected_frequency": "weekly",
+      "freshness_days": 12,
+      "last_observation": "2026-04-22",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "bank_deposits": {
+      "expected_frequency": "weekly",
+      "freshness_days": 12,
+      "last_observation": "2026-04-22",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "bbb_oas": {
+      "expected_frequency": "daily",
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "breakeven_10y": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "breakeven_5y": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
     "brent_crude": {
       "expected_frequency": "daily",
       "freshness_days": 7,
@@ -20,6 +65,42 @@
       "message": "Fresh.",
       "source": "Derived",
       "status": "ok"
+    },
+    "broad_dollar": {
+      "expected_frequency": "daily",
+      "freshness_days": 10,
+      "last_observation": "2026-04-24",
+      "max_stale_days": 7,
+      "message": "Latest observation is 10 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
+    "business_loans": {
+      "expected_frequency": "weekly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 14,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
+    "cfnai": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
+    "cfnai_3m_avg": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
     },
     "cftc_sp500_asset_mgr_net": {
       "expected_frequency": "weekly",
@@ -39,6 +120,33 @@
       "source": "CFTC",
       "status": "ok"
     },
+    "commodity_inflation_impulse": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 75,
+      "message": "Fresh.",
+      "source": "Derived",
+      "status": "ok"
+    },
+    "core_cpi": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
+    "core_pce": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
     "corn_price": {
       "expected_frequency": "monthly",
       "freshness_days": 64,
@@ -47,6 +155,24 @@
       "message": "Fresh.",
       "source": "FRED",
       "status": "ok"
+    },
+    "durable_goods_orders": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
+    "eurusd": {
+      "expected_frequency": "daily",
+      "freshness_days": 10,
+      "last_observation": "2026-04-24",
+      "max_stale_days": 7,
+      "message": "Latest observation is 10 days old.",
+      "source": "FRED",
+      "status": "stale"
     },
     "fed_assets": {
       "expected_frequency": "weekly",
@@ -75,6 +201,96 @@
       "source": "FRED",
       "status": "ok"
     },
+    "forward_inflation_5y5y": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "headline_cpi": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
+    "high_yield_oas": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "hy_minus_ig_oas": {
+      "expected_frequency": "daily",
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 10,
+      "message": "Fresh.",
+      "source": "Derived",
+      "status": "ok"
+    },
+    "industrial_production": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
+    "initial_claims": {
+      "expected_frequency": "weekly",
+      "freshness_days": 9,
+      "last_observation": "2026-04-25",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "investment_grade_oas": {
+      "expected_frequency": "daily",
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "ism_manufacturing_pmi": {
+      "expected_frequency": "monthly",
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "source": "ISM",
+      "status": "terms_review_needed"
+    },
+    "loans_and_leases": {
+      "expected_frequency": "weekly",
+      "freshness_days": 12,
+      "last_observation": "2026-04-22",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "move_index": {
+      "expected_frequency": "daily",
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "source": "ICE",
+      "status": "terms_review_needed"
+    },
     "net_liquidity": {
       "expected_frequency": "weekly",
       "freshness_days": 5,
@@ -82,6 +298,60 @@
       "max_stale_days": 14,
       "message": "Fresh.",
       "source": "Derived",
+      "status": "ok"
+    },
+    "nonfarm_payrolls": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
+    "ppi_final_demand": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
+    "real_retail_sales": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
+    "real_yield_10y": {
+      "expected_frequency": "daily",
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "real_yield_5y": {
+      "expected_frequency": "daily",
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "reserve_balances": {
+      "expected_frequency": "weekly",
+      "freshness_days": 5,
+      "last_observation": "2026-04-29",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "FRED",
       "status": "ok"
     },
     "reverse_repo": {
@@ -93,10 +363,19 @@
       "source": "FRED",
       "status": "ok"
     },
+    "sahm_rule": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
     "sofr": {
       "expected_frequency": "daily",
-      "freshness_days": 4,
-      "last_observation": "2026-04-30",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
       "max_stale_days": 7,
       "message": "Fresh.",
       "source": "FRED",
@@ -119,6 +398,15 @@
       "message": "Fresh.",
       "source": "FRED",
       "status": "ok"
+    },
+    "unemployment_rate": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 45,
+      "message": "Latest observation is 64 days old.",
+      "source": "FRED",
+      "status": "stale"
     },
     "us10y": {
       "expected_frequency": "daily",
@@ -165,7 +453,61 @@
       "source": "FRED",
       "status": "ok"
     },
+    "usdjpy": {
+      "expected_frequency": "daily",
+      "freshness_days": 10,
+      "last_observation": "2026-04-24",
+      "max_stale_days": 7,
+      "message": "Latest observation is 10 days old.",
+      "source": "FRED",
+      "status": "stale"
+    },
     "vix": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "Cboe",
+      "status": "ok"
+    },
+    "vix3m": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "Cboe",
+      "status": "ok"
+    },
+    "vix9d": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "Cboe",
+      "status": "ok"
+    },
+    "vix9d_vix_ratio": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "Derived",
+      "status": "ok"
+    },
+    "vix_vix3m_ratio": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "Derived",
+      "status": "ok"
+    },
+    "vvix": {
       "expected_frequency": "daily",
       "freshness_days": 3,
       "last_observation": "2026-05-01",

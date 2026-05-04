@@ -3,22 +3,90 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from scripts.shared.io import data_dir
+from scripts.shared.source_registry import source_registry_entries
 
 
-CBOE_VIX = {
-    "id": "vix",
-    "name": "CBOE Volatility Index",
-    "category": "volatility",
-    "source": "Cboe",
-    "source_url": "https://www.cboe.com/tradable_products/vix/vix_historical_data/",
-    "endpoint_url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
-    "frequency": "daily",
-    "units": "index",
-    "higher_is": "riskier",
-    "public": True,
-    "max_stale_days": 7,
-    "notes": "Daily VIX close from Cboe public historical data.",
-}
+def governance(
+    provider_id: str,
+    score_status: str = "active",
+    access_status: str | None = None,
+    terms_status: str | None = None,
+    citation_notes: str | None = None,
+) -> dict[str, object]:
+    registry = source_registry_entries()[provider_id]
+    return {
+        "provider_id": provider_id,
+        "access_status": access_status or str(registry["access_status"]),
+        "terms_status": terms_status or str(registry["terms_status"]),
+        "score_status": score_status,
+        "citation_notes": citation_notes or str(registry["notes"]),
+    }
+
+
+CBOE_INDEX_SOURCE_URL = "https://www.cboe.com/us/indices/dashboard/"
+CBOE_INDEX_ENDPOINT_BASE = "https://cdn.cboe.com/api/global/us_indices/daily_prices"
+
+
+def cboe_index_series(
+    series_id: str,
+    name: str,
+    filename: str,
+    value_columns: tuple[str, ...],
+    notes: str,
+) -> dict[str, object]:
+    return {
+        "id": series_id,
+        "name": name,
+        "category": "volatility",
+        "source": "Cboe",
+        "source_url": CBOE_INDEX_SOURCE_URL,
+        "endpoint_url": f"{CBOE_INDEX_ENDPOINT_BASE}/{filename}",
+        "value_columns": value_columns,
+        "frequency": "daily",
+        "units": "index",
+        "higher_is": "riskier",
+        "public": True,
+        "max_stale_days": 7,
+        "notes": notes,
+        **governance(
+            "cboe",
+            citation_notes="Cboe public historical index data; displayed with source caveats.",
+        ),
+    }
+
+
+CBOE_VIX = cboe_index_series(
+    "vix",
+    "Cboe Volatility Index",
+    "VIX_History.csv",
+    ("CLOSE", "VIX"),
+    "Daily VIX close from Cboe public historical data.",
+)
+
+CBOE_INDEX_SERIES = [
+    CBOE_VIX,
+    cboe_index_series(
+        "vvix",
+        "Cboe VIX Volatility Index",
+        "VVIX_History.csv",
+        ("CLOSE", "VVIX"),
+        "Daily VVIX close from Cboe public historical data.",
+    ),
+    cboe_index_series(
+        "vix9d",
+        "Cboe 9-Day Volatility Index",
+        "VIX9D_History.csv",
+        ("CLOSE", "VIX9D"),
+        "Daily VIX9D close from Cboe public historical data.",
+    ),
+    cboe_index_series(
+        "vix3m",
+        "Cboe 3-Month Volatility Index",
+        "VIX3M_History.csv",
+        ("CLOSE", "VIX3M"),
+        "Daily VIX3M close from Cboe public historical data.",
+    ),
+]
 
 
 FRED_SERIES = [
@@ -187,6 +255,328 @@ FRED_SERIES = [
         "max_stale_days": 75,
         "notes": "Monthly global soybean price from FRED graph CSV.",
     },
+    {
+        "id": "high_yield_oas",
+        "fred_id": "BAMLH0A0HYM2",
+        "name": "ICE BofA US High Yield Option-Adjusted Spread",
+        "category": "credit",
+        "frequency": "daily",
+        "units": "percent",
+        "higher_is": "riskier",
+        "max_stale_days": 7,
+        "notes": "Daily high-yield option-adjusted spread from FRED graph CSV.",
+        "citation_notes": "Active via FRED graph CSV; source-specific citation and terms review required for ICE BofA OAS data.",
+    },
+    {
+        "id": "investment_grade_oas",
+        "fred_id": "BAMLC0A0CM",
+        "name": "ICE BofA US Corporate Option-Adjusted Spread",
+        "category": "credit",
+        "frequency": "daily",
+        "units": "percent",
+        "higher_is": "riskier",
+        "max_stale_days": 7,
+        "notes": "Daily investment-grade corporate option-adjusted spread from FRED graph CSV.",
+        "citation_notes": "Active via FRED graph CSV; source-specific citation and terms review required for ICE BofA OAS data.",
+    },
+    {
+        "id": "bbb_oas",
+        "fred_id": "BAMLC0A4CBBB",
+        "name": "ICE BofA BBB US Corporate Option-Adjusted Spread",
+        "category": "credit",
+        "frequency": "daily",
+        "units": "percent",
+        "higher_is": "riskier",
+        "max_stale_days": 7,
+        "notes": "Daily BBB corporate option-adjusted spread from FRED graph CSV.",
+        "citation_notes": "Active via FRED graph CSV; source-specific citation and terms review required for ICE BofA OAS data.",
+    },
+    {
+        "id": "real_yield_10y",
+        "fred_id": "DFII10",
+        "name": "10-Year Treasury Inflation-Indexed Security Real Yield",
+        "category": "rates",
+        "frequency": "daily",
+        "units": "percent",
+        "higher_is": "contextual",
+        "max_stale_days": 7,
+        "notes": "Daily 10-year Treasury real yield from FRED graph CSV.",
+    },
+    {
+        "id": "real_yield_5y",
+        "fred_id": "DFII5",
+        "name": "5-Year Treasury Inflation-Indexed Security Real Yield",
+        "category": "rates",
+        "frequency": "daily",
+        "units": "percent",
+        "higher_is": "contextual",
+        "max_stale_days": 7,
+        "notes": "Daily 5-year Treasury real yield from FRED graph CSV.",
+    },
+    {
+        "id": "breakeven_10y",
+        "fred_id": "T10YIE",
+        "name": "10-Year Breakeven Inflation Rate",
+        "category": "inflation",
+        "frequency": "daily",
+        "units": "percent",
+        "higher_is": "riskier",
+        "max_stale_days": 7,
+        "notes": "Daily 10-year breakeven inflation rate from FRED graph CSV.",
+    },
+    {
+        "id": "breakeven_5y",
+        "fred_id": "T5YIE",
+        "name": "5-Year Breakeven Inflation Rate",
+        "category": "inflation",
+        "frequency": "daily",
+        "units": "percent",
+        "higher_is": "riskier",
+        "max_stale_days": 7,
+        "notes": "Daily 5-year breakeven inflation rate from FRED graph CSV.",
+    },
+    {
+        "id": "forward_inflation_5y5y",
+        "fred_id": "T5YIFR",
+        "name": "5-Year, 5-Year Forward Inflation Expectation Rate",
+        "category": "inflation",
+        "frequency": "daily",
+        "units": "percent",
+        "higher_is": "riskier",
+        "max_stale_days": 7,
+        "notes": "Daily 5-year, 5-year forward inflation expectation rate from FRED graph CSV.",
+    },
+    {
+        "id": "cfnai",
+        "fred_id": "CFNAI",
+        "name": "Chicago Fed National Activity Index",
+        "category": "growth",
+        "frequency": "monthly",
+        "units": "index",
+        "higher_is": "supportive",
+        "max_stale_days": 45,
+        "notes": "Monthly Chicago Fed National Activity Index from FRED graph CSV.",
+    },
+    {
+        "id": "cfnai_3m_avg",
+        "fred_id": "CFNAIMA3",
+        "name": "Chicago Fed National Activity Index 3-Month Moving Average",
+        "category": "growth",
+        "frequency": "monthly",
+        "units": "index",
+        "higher_is": "supportive",
+        "max_stale_days": 45,
+        "notes": "Monthly CFNAI 3-month moving average from FRED graph CSV.",
+    },
+    {
+        "id": "real_retail_sales",
+        "fred_id": "RRSFS",
+        "name": "Real Retail and Food Services Sales",
+        "category": "growth",
+        "frequency": "monthly",
+        "units": "millions_chained_2017_usd",
+        "higher_is": "supportive",
+        "max_stale_days": 45,
+        "notes": "Monthly real retail and food services sales from FRED graph CSV.",
+    },
+    {
+        "id": "industrial_production",
+        "fred_id": "INDPRO",
+        "name": "Industrial Production Index",
+        "category": "growth",
+        "frequency": "monthly",
+        "units": "index",
+        "higher_is": "supportive",
+        "max_stale_days": 45,
+        "notes": "Monthly industrial production index from FRED graph CSV.",
+    },
+    {
+        "id": "durable_goods_orders",
+        "fred_id": "DGORDER",
+        "name": "Manufacturers' New Orders: Durable Goods",
+        "category": "growth",
+        "frequency": "monthly",
+        "units": "millions_usd",
+        "higher_is": "supportive",
+        "max_stale_days": 45,
+        "notes": "Monthly durable goods orders from FRED graph CSV.",
+    },
+    {
+        "id": "unemployment_rate",
+        "fred_id": "UNRATE",
+        "name": "Unemployment Rate",
+        "category": "labor",
+        "frequency": "monthly",
+        "units": "percent",
+        "higher_is": "riskier",
+        "max_stale_days": 45,
+        "notes": "Monthly unemployment rate from FRED graph CSV.",
+    },
+    {
+        "id": "nonfarm_payrolls",
+        "fred_id": "PAYEMS",
+        "name": "All Employees, Total Nonfarm",
+        "category": "labor",
+        "frequency": "monthly",
+        "units": "thousands",
+        "higher_is": "supportive",
+        "max_stale_days": 45,
+        "notes": "Monthly nonfarm payroll employment level from FRED graph CSV.",
+    },
+    {
+        "id": "initial_claims",
+        "fred_id": "ICSA",
+        "name": "Initial Claims",
+        "category": "labor",
+        "frequency": "weekly",
+        "units": "number",
+        "higher_is": "riskier",
+        "max_stale_days": 14,
+        "notes": "Weekly initial unemployment insurance claims from FRED graph CSV.",
+    },
+    {
+        "id": "sahm_rule",
+        "fred_id": "SAHMREALTIME",
+        "name": "Real-Time Sahm Rule Recession Indicator",
+        "category": "labor",
+        "frequency": "monthly",
+        "units": "percentage_points",
+        "higher_is": "riskier",
+        "max_stale_days": 45,
+        "notes": "Monthly real-time Sahm Rule recession indicator from FRED graph CSV.",
+    },
+    {
+        "id": "headline_cpi",
+        "fred_id": "CPIAUCSL",
+        "name": "Consumer Price Index for All Urban Consumers",
+        "category": "inflation",
+        "frequency": "monthly",
+        "units": "index",
+        "higher_is": "riskier",
+        "max_stale_days": 45,
+        "notes": "Monthly headline CPI index from FRED graph CSV.",
+    },
+    {
+        "id": "core_cpi",
+        "fred_id": "CPILFESL",
+        "name": "Consumer Price Index Less Food and Energy",
+        "category": "inflation",
+        "frequency": "monthly",
+        "units": "index",
+        "higher_is": "riskier",
+        "max_stale_days": 45,
+        "notes": "Monthly core CPI index from FRED graph CSV.",
+    },
+    {
+        "id": "core_pce",
+        "fred_id": "PCEPILFE",
+        "name": "Core Personal Consumption Expenditures Price Index",
+        "category": "inflation",
+        "frequency": "monthly",
+        "units": "index",
+        "higher_is": "riskier",
+        "max_stale_days": 45,
+        "notes": "Monthly core PCE price index from FRED graph CSV.",
+    },
+    {
+        "id": "ppi_final_demand",
+        "fred_id": "PPIFIS",
+        "name": "Producer Price Index by Commodity: Final Demand",
+        "category": "inflation",
+        "frequency": "monthly",
+        "units": "index",
+        "higher_is": "riskier",
+        "max_stale_days": 45,
+        "notes": "Monthly PPI final demand index from FRED graph CSV.",
+    },
+    {
+        "id": "broad_dollar",
+        "fred_id": "DTWEXBGS",
+        "name": "Nominal Broad U.S. Dollar Index",
+        "category": "dollar",
+        "frequency": "daily",
+        "units": "index",
+        "higher_is": "contextual",
+        "max_stale_days": 7,
+        "notes": "Daily broad U.S. dollar index from FRED graph CSV.",
+    },
+    {
+        "id": "usdjpy",
+        "fred_id": "DEXJPUS",
+        "name": "Japanese Yen to U.S. Dollar Exchange Rate",
+        "category": "dollar",
+        "frequency": "daily",
+        "units": "jpy_per_usd",
+        "higher_is": "contextual",
+        "max_stale_days": 7,
+        "notes": "Daily USD/JPY exchange rate from FRED graph CSV.",
+    },
+    {
+        "id": "eurusd",
+        "fred_id": "DEXUSEU",
+        "name": "U.S. Dollars to Euro Exchange Rate",
+        "category": "dollar",
+        "frequency": "daily",
+        "units": "usd_per_eur",
+        "higher_is": "contextual",
+        "max_stale_days": 7,
+        "notes": "Daily EUR/USD exchange rate from FRED graph CSV.",
+    },
+    {
+        "id": "reserve_balances",
+        "fred_id": "WRESBAL",
+        "name": "Reserve Balances with Federal Reserve Banks",
+        "category": "liquidity",
+        "frequency": "weekly",
+        "units": "millions_usd",
+        "higher_is": "supportive",
+        "max_stale_days": 14,
+        "notes": "Weekly reserve balances with Federal Reserve Banks from FRED graph CSV.",
+    },
+    {
+        "id": "bank_credit",
+        "fred_id": "TOTBKCR",
+        "name": "Bank Credit, All Commercial Banks",
+        "category": "credit",
+        "frequency": "weekly",
+        "units": "billions_usd",
+        "higher_is": "supportive",
+        "max_stale_days": 14,
+        "notes": "Weekly bank credit from FRED graph CSV.",
+    },
+    {
+        "id": "loans_and_leases",
+        "fred_id": "TOTLL",
+        "name": "Loans and Leases in Bank Credit",
+        "category": "credit",
+        "frequency": "weekly",
+        "units": "billions_usd",
+        "higher_is": "supportive",
+        "max_stale_days": 14,
+        "notes": "Weekly loans and leases in bank credit from FRED graph CSV.",
+    },
+    {
+        "id": "business_loans",
+        "fred_id": "BUSLOANS",
+        "name": "Commercial and Industrial Loans",
+        "category": "credit",
+        "frequency": "weekly",
+        "units": "billions_usd",
+        "higher_is": "supportive",
+        "max_stale_days": 14,
+        "notes": "Weekly commercial and industrial loans from FRED graph CSV.",
+    },
+    {
+        "id": "bank_deposits",
+        "fred_id": "DPSACBW027SBOG",
+        "name": "Deposits, All Commercial Banks",
+        "category": "liquidity",
+        "frequency": "weekly",
+        "units": "billions_usd",
+        "higher_is": "supportive",
+        "max_stale_days": 14,
+        "notes": "Weekly commercial bank deposits from FRED graph CSV.",
+    },
 ]
 
 
@@ -216,6 +606,40 @@ CFTC_POSITIONING_SERIES = [
 ]
 
 
+CANDIDATE_SERIES = [
+    {
+        "id": "ism_manufacturing_pmi",
+        "name": "ISM Manufacturing PMI",
+        "category": "growth",
+        "source": "ISM",
+        "source_url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/",
+        "endpoint_url": None,
+        "frequency": "monthly",
+        "units": "index",
+        "higher_is": "contextual",
+        "public": False,
+        "max_stale_days": 45,
+        "notes": "Candidate fast growth input; requires terms and redistribution review before automated ingestion.",
+        **governance("terms_review", score_status="candidate"),
+    },
+    {
+        "id": "move_index",
+        "name": "MOVE Index",
+        "category": "volatility",
+        "source": "ICE",
+        "source_url": "https://developer.ice.com/fixed-income-data-services/catalog/ice-data-indices-move-index",
+        "endpoint_url": None,
+        "frequency": "daily",
+        "units": "index",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Treasury volatility input; not active because automated access and redistribution need review.",
+        **governance("terms_review", score_status="candidate"),
+    },
+]
+
+
 def fred_endpoint(fred_id: str) -> str:
     return f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
 
@@ -225,7 +649,7 @@ def cftc_tff_year_url(year: int) -> str:
 
 
 def catalog_entries() -> list[dict[str, object]]:
-    entries = [CBOE_VIX.copy()]
+    entries = [series.copy() for series in CBOE_INDEX_SERIES]
     for series in FRED_SERIES:
         entries.append(
             {
@@ -241,6 +665,13 @@ def catalog_entries() -> list[dict[str, object]]:
                 "public": True,
                 "max_stale_days": series["max_stale_days"],
                 "notes": series["notes"],
+                **governance(
+                    "fred",
+                    score_status=str(series.get("score_status", "active")),
+                    access_status=str(series.get("access_status", "free_public")),
+                    terms_status=str(series.get("terms_status", "review_each_series")),
+                    citation_notes=str(series.get("citation_notes", "FRED graph CSV endpoint; review source-specific citation and copyright fields.")),
+                ),
             }
         )
     for series in CFTC_POSITIONING_SERIES:
@@ -258,8 +689,10 @@ def catalog_entries() -> list[dict[str, object]]:
                 "public": True,
                 "max_stale_days": series["max_stale_days"],
                 "notes": series["notes"],
+                **governance("cftc", citation_notes="Public CFTC historical compressed report transformed into derived positioning context."),
             }
         )
+    entries.extend([series.copy() for series in CANDIDATE_SERIES])
     return entries
 
 
@@ -269,4 +702,6 @@ def available_catalog_entries() -> list[dict[str, object]]:
         entry
         for entry in catalog_entries()
         if (series_dir / f"{entry['id']}.json").exists()
+        and entry.get("score_status") == "active"
+        and entry.get("public") is True
     ]

@@ -5,6 +5,39 @@ from scripts.shared import catalog as catalog_module
 from scripts.shared.catalog import catalog_entries
 
 
+PHASE3_FRED_SERIES = {
+    "high_yield_oas": "BAMLH0A0HYM2",
+    "investment_grade_oas": "BAMLC0A0CM",
+    "bbb_oas": "BAMLC0A4CBBB",
+    "real_yield_10y": "DFII10",
+    "real_yield_5y": "DFII5",
+    "breakeven_10y": "T10YIE",
+    "breakeven_5y": "T5YIE",
+    "forward_inflation_5y5y": "T5YIFR",
+    "cfnai": "CFNAI",
+    "cfnai_3m_avg": "CFNAIMA3",
+    "real_retail_sales": "RRSFS",
+    "industrial_production": "INDPRO",
+    "durable_goods_orders": "DGORDER",
+    "unemployment_rate": "UNRATE",
+    "nonfarm_payrolls": "PAYEMS",
+    "initial_claims": "ICSA",
+    "sahm_rule": "SAHMREALTIME",
+    "headline_cpi": "CPIAUCSL",
+    "core_cpi": "CPILFESL",
+    "core_pce": "PCEPILFE",
+    "ppi_final_demand": "PPIFIS",
+    "broad_dollar": "DTWEXBGS",
+    "usdjpy": "DEXJPUS",
+    "eurusd": "DEXUSEU",
+    "reserve_balances": "WRESBAL",
+    "bank_credit": "TOTBKCR",
+    "loans_and_leases": "TOTLL",
+    "business_loans": "BUSLOANS",
+    "bank_deposits": "DPSACBW027SBOG",
+}
+
+
 def test_phase2_catalog_contains_no_secret_commodity_sources():
     entries = {str(entry["id"]): entry for entry in catalog_entries()}
 
@@ -51,3 +84,130 @@ def test_checked_in_catalog_artifact_includes_phase2_metadata():
 
     assert "wti_crude" in entries
     assert "cftc_sp500_asset_mgr_net" in entries
+
+
+def test_checked_in_source_registry_artifact_includes_access_metadata():
+    registry_path = Path("public/data/catalog/source_registry.json")
+    registry = json.loads(registry_path.read_text())
+
+    assert registry["fred"]["access_status"] == "free_public"
+
+
+def test_checked_in_catalog_artifact_includes_phase3_governance_metadata():
+    catalog_path = Path("public/data/catalog/series_catalog.json")
+    entries = {str(entry["id"]): entry for entry in json.loads(catalog_path.read_text())}
+
+    assert entries["vix"]["provider_id"] == "cboe"
+    assert entries["vix"]["score_status"] == "active"
+    assert entries["ism_manufacturing_pmi"]["score_status"] == "candidate"
+
+
+def test_checked_in_catalog_artifact_matches_generated_catalog_ids():
+    catalog_path = Path("public/data/catalog/series_catalog.json")
+    checked_in_ids = {
+        str(entry["id"]) for entry in json.loads(catalog_path.read_text(encoding="utf-8"))
+    }
+    generated_ids = {str(entry["id"]) for entry in catalog_entries()}
+
+    assert checked_in_ids == generated_ids
+    assert {"vvix", "vix9d", "vix3m", "high_yield_oas", "broad_dollar"} <= checked_in_ids
+
+
+def test_checked_in_catalog_artifact_uses_dollar_category_for_phase3_dollar_series():
+    catalog_path = Path("public/data/catalog/series_catalog.json")
+    entries = {
+        str(entry["id"]): entry for entry in json.loads(catalog_path.read_text(encoding="utf-8"))
+    }
+
+    for series_id in ("broad_dollar", "usdjpy", "eurusd"):
+        assert entries[series_id]["category"] == "dollar"
+
+
+def test_catalog_entries_include_phase3_governance_fields():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    vix = entries["vix"]
+    assert vix["provider_id"] == "cboe"
+    assert vix["access_status"] == "free_public"
+    assert vix["terms_status"] == "ok"
+    assert vix["score_status"] == "active"
+    assert isinstance(vix["citation_notes"], str)
+
+
+def test_catalog_entries_include_phase3_active_fred_macro_series():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    for series_id, fred_id in PHASE3_FRED_SERIES.items():
+        entry = entries[series_id]
+        assert entry["provider_id"] == "fred"
+        assert entry["access_status"] == "free_public"
+        assert entry["score_status"] == "active"
+        assert entry["endpoint_url"].endswith(fred_id)
+
+
+def test_catalog_entries_use_dollar_category_for_phase3_dollar_series():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    for series_id in ("broad_dollar", "usdjpy", "eurusd"):
+        assert entries[series_id]["category"] == "dollar"
+
+
+def test_oas_series_include_source_specific_citation_notes():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    for series_id in ("high_yield_oas", "investment_grade_oas", "bbb_oas"):
+        entry = entries[series_id]
+        assert entry["score_status"] == "active"
+        assert "FRED graph CSV" in str(entry["citation_notes"])
+        assert "source-specific citation and terms review" in str(entry["citation_notes"])
+
+
+def test_catalog_entries_include_expanded_cboe_volatility_series():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    expected_files = {
+        "vix": "VIX_History.csv",
+        "vvix": "VVIX_History.csv",
+        "vix9d": "VIX9D_History.csv",
+        "vix3m": "VIX3M_History.csv",
+    }
+    expected_value_columns = {
+        "vix": ("CLOSE", "VIX"),
+        "vvix": ("CLOSE", "VVIX"),
+        "vix9d": ("CLOSE", "VIX9D"),
+        "vix3m": ("CLOSE", "VIX3M"),
+    }
+
+    for series_id, filename in expected_files.items():
+        entry = entries[series_id]
+        assert entry["provider_id"] == "cboe"
+        assert entry["access_status"] == "free_public"
+        assert entry["score_status"] == "active"
+        assert str(entry["endpoint_url"]).endswith(filename)
+        assert tuple(entry["value_columns"]) == expected_value_columns[series_id]
+
+
+def test_catalog_can_include_candidate_sources_without_making_them_available(tmp_path, monkeypatch):
+    series_dir = tmp_path / "series"
+    series_dir.mkdir()
+    monkeypatch.setattr(catalog_module, "data_dir", lambda: tmp_path, raising=False)
+
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+    assert entries["ism_manufacturing_pmi"]["score_status"] == "candidate"
+    assert entries["ism_manufacturing_pmi"]["access_status"] == "terms_review_needed"
+    assert "ism_manufacturing_pmi" not in {
+        str(entry["id"]) for entry in catalog_module.available_catalog_entries()
+    }
+
+
+def test_available_catalog_entries_excludes_candidate_even_if_series_file_exists(tmp_path, monkeypatch):
+    series_dir = tmp_path / "series"
+    series_dir.mkdir()
+    (series_dir / "ism_manufacturing_pmi.json").write_text("{}", encoding="utf-8")
+    (series_dir / "vix.json").write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(catalog_module, "data_dir", lambda: tmp_path, raising=False)
+
+    available_entries = {str(entry["id"]) for entry in catalog_module.available_catalog_entries()}
+
+    assert "vix" in available_entries
+    assert "ism_manufacturing_pmi" not in available_entries

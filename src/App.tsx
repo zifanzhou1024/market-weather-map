@@ -2,6 +2,9 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
 import Commodities from "./routes/Commodities";
 import Credit from "./routes/Credit";
+import DollarGlobal from "./routes/DollarGlobal";
+import Growth from "./routes/Growth";
+import Inflation from "./routes/Inflation";
 import Liquidity from "./routes/Liquidity";
 import Methodology from "./routes/Methodology";
 import Overview from "./routes/Overview";
@@ -14,10 +17,13 @@ export default function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Overview />} />
-        <Route path="/volatility" element={<Volatility />} />
+        <Route path="/growth" element={<Growth />} />
+        <Route path="/inflation" element={<Inflation />} />
         <Route path="/rates" element={<Rates />} />
         <Route path="/liquidity" element={<Liquidity />} />
         <Route path="/credit" element={<Credit />} />
+        <Route path="/volatility" element={<Volatility />} />
+        <Route path="/dollar-global" element={<DollarGlobal />} />
         <Route path="/commodities" element={<Commodities />} />
         <Route path="/sentiment" element={<Sentiment />} />
         <Route path="/methodology" element={<Methodology />} />

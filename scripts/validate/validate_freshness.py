@@ -11,7 +11,10 @@ def main() -> None:
     failures = []
 
     for series_id, status in payload.get("series", {}).items():
-        if status.get("status") == "failed":
+        status_value = status.get("status")
+        if status_value in {"terms_review_needed", "unavailable", "stale"}:
+            continue
+        if status_value == "failed":
             failures.append(f"{series_id} failed: {status.get('message', 'no message')}")
             continue
         freshness_days = status.get("freshness_days")

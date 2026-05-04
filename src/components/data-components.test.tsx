@@ -2,11 +2,14 @@ import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it } from "vitest";
 import DataStatusTable from "./DataStatusTable";
+import HowToReadPanel from "./HowToReadPanel";
 import MetricCard from "./MetricCard";
 import PercentileBandChart from "./PercentileBandChart";
 import RegimeBadge from "./RegimeBadge";
+import ScoreCard from "./ScoreCard";
 import SourceNote from "./SourceNote";
-import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import SourceAccessBadge from "./SourceAccessBadge";
+import type { DataStatusFile, ScoreBlock, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT =
   true;
@@ -44,6 +47,9 @@ const catalogEntry: SeriesCatalogEntry = {
   public: true,
   source: "Cboe",
   source_url: "https://example.com/vix",
+  access_status: "free_public",
+  citation_notes: "Cboe public historical index data; displayed with source caveats.",
+  terms_status: "ok",
   units: "index"
 };
 
@@ -61,11 +67,26 @@ const series: TimeSeriesFile = {
     change_1d: 0.4,
     change_1m: -1.25,
     change_1w: null,
+    change_3m: 2.5,
+    change_12m: -4.75,
     latest_date: "2026-04-30",
     latest_value: 17.1,
     percentile_252d: 59
   },
   units: "index"
+};
+
+const scoreBlock: ScoreBlock = {
+  bucket_scores: { credit_spreads: -25 },
+  bucket_weights: { credit_spreads: 0.2 },
+  confidence: 0.82,
+  confidence_reasons: ["Sentiment is limited to CFTC positioning."],
+  label: "Mixed",
+  missing_or_stale_notes: ["Treasury/bond volatility source is not active."],
+  recent_changes: ["High-yield spreads widened over the past month."],
+  score: -12.34,
+  top_risks: ["High-yield spreads widened over the past month."],
+  top_supports: ["Reserve balances improved over the past month."]
 };
 
 describe("data-driven components", () => {
@@ -81,11 +102,15 @@ describe("data-driven components", () => {
     const container = render(<MetricCard catalogEntry={catalogEntry} series={series} />);
 
     expect(container.textContent).toContain("Cboe");
+    expect(container.textContent).toContain("Free public");
+    expect(container.textContent).toContain("Terms ok");
     expect(container.textContent).toContain("CBOE Volatility Index");
     expect(container.textContent).toContain("17.10 index");
     expect(container.textContent).toContain("+0.40");
     expect(container.textContent).toContain("N/A");
     expect(container.textContent).toContain("-1.25");
+    expect(container.textContent).toContain("+2.50");
+    expect(container.textContent).toContain("-4.75");
     expect(container.textContent).toContain("59%");
     expect(container.textContent).toContain("2026-04-30");
   });
@@ -120,7 +145,70 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Cboe");
     expect(container.textContent).toContain("daily");
     expect(container.textContent).toContain("Daily VIX close from Cboe public historical data.");
+    expect(container.textContent).toContain("Free public");
+    expect(container.textContent).toContain("Terms ok");
+    expect(container.textContent).toContain("Cboe public historical index data; displayed with source caveats.");
     expect(container.querySelector("a")?.getAttribute("href")).toBe("https://example.com/vix");
+  });
+
+  it("renders phase 3 score card details", () => {
+    const container = render(<ScoreCard title="Market Weather" score={scoreBlock} />);
+
+    expect(container.textContent).toContain("Market Weather");
+    expect(container.querySelector("h3")?.textContent).toBe("Market Weather");
+    expect(container.textContent).toContain("-12.34");
+    expect(container.textContent).toContain("Mixed");
+    expect(container.textContent).toContain("82%");
+    expect(container.textContent).toContain("Confidence notes");
+    expect(container.textContent).toContain("Sentiment is limited to CFTC positioning.");
+    expect(container.textContent).toContain("High-yield spreads widened over the past month.");
+    expect(container.textContent).toContain("Reserve balances improved over the past month.");
+  });
+
+  it("renders score card fallbacks for stale partial score payloads", () => {
+    const partialScore = {
+      confidence: 1.5,
+      label: "Mixed",
+      score: Number.NaN
+    } as unknown as ScoreBlock;
+
+    const container = render(<ScoreCard title="Partial Score" score={partialScore} />);
+
+    expect(container.textContent).toContain("Partial Score");
+    expect(container.textContent).toContain("0.00");
+    expect(container.textContent).toContain("100%");
+    expect(container.textContent).toContain("N/A");
+  });
+
+  it("renders how-to-read panel without exposing advice language", () => {
+    const container = render(
+      <HowToReadPanel description="Positive values are supportive; negative values indicate observed stress." />
+    );
+
+    expect(container.textContent).toContain("How to read this");
+    expect(container.textContent).toContain("observed stress");
+    expect((container.textContent ?? "").toLowerCase()).not.toContain("buy");
+  });
+
+  it("renders source access status", () => {
+    const container = render(
+      <SourceAccessBadge accessStatus="terms_review_needed" termsStatus="review_needed" />
+    );
+
+    expect(container.textContent).toContain("Terms review needed");
+    expect(container.textContent).toContain("Review needed");
+  });
+
+  it("renders safe fallbacks for unknown source access runtime strings", () => {
+    const container = render(
+      <SourceAccessBadge
+        accessStatus={"pending_license" as never}
+        termsStatus={"needs_counsel" as never}
+      />
+    );
+
+    expect(container.textContent).toContain("Pending license");
+    expect(container.textContent).toContain("Needs counsel");
   });
 
   it("filters data status rows by selected series ids", () => {

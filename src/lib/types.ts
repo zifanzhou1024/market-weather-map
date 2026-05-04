@@ -1,6 +1,40 @@
-export type DataStatus = "ok" | "stale" | "partial" | "failed";
+export type DataStatus =
+  | "ok"
+  | "stale"
+  | "partial"
+  | "failed"
+  | "terms_review_needed"
+  | "unavailable";
 export type SeriesFrequency = "daily" | "weekly" | "monthly";
 export type UpdateStatus = "ok" | "failed";
+
+export type SeriesCategory =
+  | "volatility"
+  | "rates"
+  | "liquidity"
+  | "credit"
+  | "commodities"
+  | "sentiment"
+  | "growth"
+  | "labor"
+  | "inflation"
+  | "dollar"
+  | "banking";
+
+export type SourceAccessStatus =
+  | "free_public"
+  | "terms_review_needed"
+  | "restricted"
+  | "unavailable";
+
+export type SourceTermsStatus =
+  | "ok"
+  | "review_each_series"
+  | "review_needed"
+  | "restricted"
+  | "unknown";
+
+export type ScoreStatus = "active" | "candidate" | "unavailable";
 
 export type WeatherLabel =
   | "Supportive"
@@ -10,11 +44,66 @@ export type WeatherLabel =
   | "Stressed"
   | "Crowded";
 
+export interface SourceRegistryEntry {
+  name: string;
+  base_url: string;
+  requires_secret: boolean;
+  access_status: SourceAccessStatus;
+  terms_status: SourceTermsStatus;
+  update_cadence: string;
+  notes: string;
+}
+
+export type SourceRegistryFile = Record<string, SourceRegistryEntry>;
+
+export interface ScoreBlock {
+  score: number;
+  label:
+    | WeatherLabel
+    | "Goldilocks"
+    | "Reflation"
+    | "Disinflationary Slowdown"
+    | "Stagflation Pressure"
+    | "Credit Stress"
+    | "Liquidity Stress"
+    | "Crowded Calm"
+    | "Risk-Off"
+    | "Moderate"
+    | "Low Fragility"
+    | "Elevated Fragility"
+    | "High Fragility";
+  confidence: number;
+  confidence_reasons: string[];
+  bucket_scores: Record<string, number>;
+  bucket_weights: Record<string, number>;
+  top_supports: string[];
+  top_risks: string[];
+  recent_changes: string[];
+  missing_or_stale_notes: string[];
+}
+
+export interface ScoreSummaryFile {
+  generated_at_utc: string;
+  date: string;
+  method_version: string;
+  scores: {
+    market_weather: ScoreBlock;
+    macro_climate: ScoreBlock;
+    fragility: ScoreBlock;
+  };
+  conflicting_signals: string[];
+  data_quality: {
+    overall_confidence: number;
+    reasons: string[];
+  };
+}
+
 export interface SeriesCatalogEntry {
   id: string;
   name: string;
-  category: "volatility" | "rates" | "liquidity" | "credit" | "commodities" | "sentiment";
+  category: SeriesCategory;
   source: string;
+  provider_id?: string;
   source_url: string;
   endpoint_url?: string;
   frequency: SeriesFrequency;
@@ -23,6 +112,10 @@ export interface SeriesCatalogEntry {
   public: boolean;
   max_stale_days: number;
   notes: string;
+  citation_notes?: string;
+  access_status?: SourceAccessStatus;
+  terms_status?: SourceTermsStatus;
+  score_status?: ScoreStatus;
 }
 
 export interface Observation {
@@ -37,6 +130,8 @@ export interface SeriesSummary {
   change_1d: number | null;
   change_1w: number | null;
   change_1m: number | null;
+  change_3m?: number | null;
+  change_12m?: number | null;
   percentile_252d: number | null;
 }
 

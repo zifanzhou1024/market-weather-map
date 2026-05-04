@@ -111,7 +111,8 @@ select {
 
 .hero-panel,
 .panel,
-.metric-card {
+.metric-card,
+.score-card {
   border: 1px solid #d9ded2;
   border-radius: 8px;
   background: #fffef9;
@@ -194,6 +195,17 @@ select {
   margin-bottom: 20px;
 }
 
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.overview-detail-grid {
+  margin-bottom: 20px;
+}
+
 .metric-grid.single {
   grid-template-columns: minmax(260px, 420px);
 }
@@ -204,6 +216,79 @@ select {
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.score-card {
+  padding: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.score-card__header {
+  display: flex;
+  gap: 14px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.score-card__value {
+  display: block;
+  color: #1f3730;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.score-confidence {
+  width: fit-content;
+  margin: 0;
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: #31516b;
+  font-size: 0.86rem;
+  font-weight: 700;
+  background: #e1edf6;
+}
+
+.score-card__lists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.score-card h4 {
+  margin: 0 0 8px;
+  color: #233029;
+  font-size: 0.9rem;
+}
+
+.score-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #37463c;
+}
+
+.score-list li + li {
+  margin-top: 6px;
+}
+
+.score-notes {
+  border-top: 1px solid #e4e8df;
+  padding-top: 14px;
+}
+
+.score-note {
+  margin: 0;
+  color: #607066;
+}
+
+.how-to-read h3,
+.how-to-read p {
+  margin-top: 0;
+}
+
+.how-to-read p:last-child {
+  margin-bottom: 0;
+  color: #536157;
 }
 
 .metric-card__header h3 {
@@ -219,6 +304,23 @@ select {
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.source-access {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+}
+
+.source-access span {
+  border: 1px solid #d7ded1;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: #344238;
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: #f4f6f0;
 }
 
 .metric-value {
@@ -366,6 +468,10 @@ select {
   color: #536157;
 }
 
+.source-citation {
+  font-size: 0.9rem;
+}
+
 .detail-list {
   display: grid;
   gap: 12px;
@@ -432,7 +538,14 @@ code {
   }
 
   .metric-grid,
-  .metric-grid.single {
+  .metric-grid.single,
+  .score-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .score-card__header,
+  .score-card__lists {
+    display: grid;
     grid-template-columns: 1fr;
   }
 
@@ -455,7 +568,8 @@ code {
 
 @media (min-width: 761px) and (max-width: 1080px) {
   .metric-grid,
-  .methodology-grid {
+  .methodology-grid,
+  .score-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

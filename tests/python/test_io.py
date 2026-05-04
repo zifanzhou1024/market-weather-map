@@ -3,6 +3,10 @@ from scripts.shared.catalog import catalog_entries
 from scripts.shared.io import download_text, parse_csv_rows, parse_float
 
 
+def setup_function():
+    io._HOSTS_REQUIRING_DEFAULT_REQUEST.clear()
+
+
 def test_parse_float_handles_missing_dot_and_numeric_values():
     assert parse_float("") is None
     assert parse_float(".") is None
@@ -70,6 +74,36 @@ def test_download_text_retries_with_provider_compatible_default_request(monkeypa
     assert attempts == [
         ("market-weather-map/0.1", 30),
         (None, 30),
+    ]
+
+
+def test_download_text_prefers_default_request_after_host_timeout(monkeypatch):
+    attempts = []
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, traceback):
+            return False
+
+        def read(self):
+            return b"ok"
+
+    def fake_urlopen(request, timeout):
+        attempts.append((request.full_url, request.get_header("User-agent"), timeout))
+        if len(attempts) == 1:
+            raise TimeoutError("timed out")
+        return FakeResponse()
+
+    monkeypatch.setattr(io, "urlopen", fake_urlopen)
+
+    assert download_text("https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2") == "ok"
+    assert download_text("https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10") == "ok"
+    assert attempts == [
+        ("https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2", "market-weather-map/0.1", 30),
+        ("https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2", None, 30),
+        ("https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10", None, 30),
     ]
 
 

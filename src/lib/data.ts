@@ -3,7 +3,9 @@ import type {
   DataStatusFile,
   DerivedSeriesFile,
   RegimeScoreFile,
+  ScoreSummaryFile,
   SeriesCatalogEntry,
+  SourceRegistryFile,
   TimeSeriesFile
 } from "./types";
 
@@ -69,4 +71,12 @@ export function loadBucketScores(): Promise<BucketScoresFile> {
 
 export function loadDataStatus(): Promise<DataStatusFile> {
   return loadJson<DataStatusFile>("/data/status/data_status.json");
+}
+
+export function loadSourceRegistry(): Promise<SourceRegistryFile> {
+  return loadJson<SourceRegistryFile>("/data/catalog/source_registry.json");
+}
+
+export function loadScoreSummary(): Promise<ScoreSummaryFile> {
+  return loadJson<ScoreSummaryFile>("/data/derived/score_summary.json");
 }

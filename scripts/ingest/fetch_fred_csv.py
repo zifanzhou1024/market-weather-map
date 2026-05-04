@@ -44,8 +44,17 @@ def normalize_fred_rows(rows: list[dict[str, str]], fred_id: str) -> list[dict[s
     return observations
 
 
+def active_fred_series() -> list[dict[str, object]]:
+    return [
+        series
+        for series in FRED_SERIES
+        if series.get("score_status", "active") == "active"
+        and series.get("access_status", "free_public") == "free_public"
+    ]
+
+
 def main() -> None:
-    for series in FRED_SERIES:
+    for series in active_fred_series():
         fred_id = str(series["fred_id"])
         rows = parse_csv_rows(download_text(fred_endpoint(fred_id)))
         observations = normalize_fred_rows(rows, fred_id)

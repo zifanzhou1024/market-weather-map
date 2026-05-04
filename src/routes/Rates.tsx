@@ -1,15 +1,28 @@
 import { useEffect, useState } from "react";
+import DataStatusTable from "../components/DataStatusTable";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDerivedSeries, loadSeries } from "../lib/data";
-import type { DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadCatalog, loadDataStatus, loadDerivedSeries } from "../lib/data";
+import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { hasObservations, loadRouteSeries } from "./routeSeries";
 
-const ratesSeriesIds = ["us2y", "us10y", "us20y", "us30y"];
+const ratesSeriesIds = [
+  "us2y",
+  "us10y",
+  "us20y",
+  "us30y",
+  "real_yield_5y",
+  "real_yield_10y",
+  "breakeven_5y",
+  "breakeven_10y",
+  "forward_inflation_5y5y"
+];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
   curve: DerivedSeriesFile;
   series: TimeSeriesFile[];
+  status: DataStatusFile;
 }
 
 export default function Rates() {
@@ -21,12 +34,12 @@ export default function Rates() {
 
     async function loadRates() {
       try {
-        const [catalog, series, curve] = await Promise.all([
-          loadCatalog(),
-          Promise.all(ratesSeriesIds.map((seriesId) => loadSeries(seriesId))),
+        const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
+        const [series, curve] = await Promise.all([
+          loadRouteSeries(ratesSeriesIds, catalog, status),
           loadDerivedSeries("us10y_minus_us2y")
         ]);
-        if (active) setData({ catalog, curve, series });
+        if (active) setData({ catalog, curve, series, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load rates data.");
       }
@@ -59,11 +72,15 @@ export default function Rates() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow">Rates</p>
-        <h2>Treasury curve</h2>
-        <p>U.S. Treasury yields across the 2Y, 10Y, 20Y, and 30Y maturities.</p>
+        <p className="eyebrow">Rates & Policy</p>
+        <h2>Rates & Policy</h2>
+        <p>Nominal yields, real yields, and breakevens.</p>
       </section>
-      {error ? <p className="data-error">Data error: {error}</p> : null}
+      {error ? (
+        <p className="data-error" role="alert">
+          Data error: {error}
+        </p>
+      ) : null}
       {data ? (
         <div className="route-stack">
           <section className="metric-grid" aria-label="Rates metrics">
@@ -76,12 +93,24 @@ export default function Rates() {
             ))}
             <MetricCard catalogEntry={curveCatalogEntry} series={data.curve} />
           </section>
-          {us10y ? (
+          {hasObservations(us10y) ? (
             <TimeSeriesChart
               catalogEntry={data.catalog.find((entry) => entry.id === "us10y")}
               series={us10y}
             />
-          ) : null}
+          ) : (
+            <section className="panel chart-panel">
+              <div className="section-header">
+                <div>
+                  <p className="eyebrow">History</p>
+                  <h3>{data.catalog.find((entry) => entry.id === "us10y")?.name ?? "us10y"}</h3>
+                </div>
+                <p>{data.catalog.find((entry) => entry.id === "us10y")?.units ?? ""}</p>
+              </div>
+              <p>Featured chart unavailable until source data is available.</p>
+            </section>
+          )}
+          <DataStatusTable seriesIds={ratesSeriesIds} status={data.status} />
         </div>
       ) : null}
     </main>

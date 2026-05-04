@@ -29,6 +29,26 @@ Phase 2 adds:
 - `/commodities` and `/sentiment` routes.
 - A safe data update runner that preserves prior good JSON and surfaces failed update attempts in `data_status.json`.
 
+Phase 3 direction:
+
+- Expand from one descriptive weather score into three related score families: Market Weather, Macro Climate, and Fragility.
+- Market Weather keeps the cross-asset market read across volatility, rates, liquidity, credit, commodities, and positioning.
+- Macro Climate separates slower growth, labor, inflation, consumer and production, and real-yield inputs from the market tape.
+- Breakeven inputs are used as Market Weather commodity impulse and rate context when available.
+- Fragility focuses on stress channels that can amplify drawdowns, including credit spreads, financial conditions, dollar pressure, banking data, liquidity, and volatility.
+- Preserve the no-backend GitHub Pages model by favoring active no-secret public inputs and documenting access status before sources enter the score.
+
+## Data Access Status
+
+Source access is tracked before data is treated as production scoring input.
+
+| Status | Meaning | Examples |
+| --- | --- | --- |
+| `free_public` | Active no-secret public source that can be fetched in GitHub Actions and published as static JSON. | FRED graph CSV, Cboe historical VIX CSV, CFTC historical compressed reports. |
+| `terms_review_needed` | Candidate source with useful coverage, but access terms, redistribution rules, cadence, or automation constraints must be reviewed before ingestion. | ISM, AAII, NAAIM, SLOOS, MOVE, put-call, NY Fed ACM. |
+| `restricted` | Source is paid, gated, license-restricted, or otherwise not suitable for static public redistribution under current terms. | Licensed index feeds, vendor-only datasets. |
+| `unavailable` | Source cannot currently be fetched or redistributed by the no-secret static workflow. | Missing historical files, sources without a compliant public endpoint. |
+
 ## Local Setup
 
 Install Node and Python dependencies:

@@ -1,21 +1,23 @@
 {
   "buckets": {
-    "commodities": -90.18,
-    "credit": 23.66,
-    "liquidity": -4.11,
-    "rates": -2.45,
-    "sentiment": -30.15,
-    "volatility": 7.94
+    "commodities_inflation_impulse": -42.47,
+    "credit_spreads": 26.0,
+    "dollar_global": 72.22,
+    "liquidity_funding": 0.3,
+    "rates_real_yields": -32.54,
+    "sentiment_positioning": -30.15,
+    "volatility_tail_risk": 31.88
   },
   "date": "2026-05-01",
-  "generated_at_utc": "2026-05-04T06:47:09Z",
-  "method_version": "phase2-public-data-v1",
+  "generated_at_utc": "2026-05-04T14:46:53Z",
+  "method_version": "phase3-three-score-v1",
   "weights": {
-    "commodities": 0.1,
-    "credit": 0.2,
-    "liquidity": 0.2,
-    "rates": 0.15,
-    "sentiment": 0.15,
-    "volatility": 0.2
+    "commodities_inflation_impulse": 0.1,
+    "credit_spreads": 0.22,
+    "dollar_global": 0.1,
+    "liquidity_funding": 0.18,
+    "rates_real_yields": 0.15,
+    "sentiment_positioning": 0.1,
+    "volatility_tail_risk": 0.15
   }
 }
