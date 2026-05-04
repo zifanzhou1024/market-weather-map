@@ -1,6 +1,7 @@
 import pytest
 
 from scripts.ingest import fetch_cboe
+from scripts.ingest import fetch_fred_csv
 from scripts.ingest.fetch_fred_csv import normalize_fred_rows
 from scripts.shared.catalog import FRED_SERIES, catalog_entries
 
@@ -33,6 +34,28 @@ def test_normalize_fred_rows_rejects_all_missing_observations():
 
     with pytest.raises(ValueError, match="no observations parsed for DGS10"):
         normalize_fred_rows(rows, "DGS10")
+
+
+def test_active_fred_series_excludes_candidate_and_non_public_entries(monkeypatch):
+    monkeypatch.setattr(
+        fetch_fred_csv,
+        "FRED_SERIES",
+        [
+            {"id": "active_default", "fred_id": "ACTIVE"},
+            {"id": "candidate", "fred_id": "CANDIDATE", "score_status": "candidate"},
+            {"id": "terms_review", "fred_id": "TERMS", "access_status": "terms_review_needed"},
+            {
+                "id": "active_explicit",
+                "fred_id": "EXPLICIT",
+                "score_status": "active",
+                "access_status": "free_public",
+            },
+        ],
+    )
+
+    active_ids = {str(series["id"]) for series in fetch_fred_csv.active_fred_series()}
+
+    assert active_ids == {"active_default", "active_explicit"}
 
 
 def test_normalize_vix_rows_requires_date_and_close_columns():

@@ -102,6 +102,27 @@ def test_checked_in_catalog_artifact_includes_phase3_governance_metadata():
     assert entries["ism_manufacturing_pmi"]["score_status"] == "candidate"
 
 
+def test_checked_in_catalog_artifact_matches_generated_catalog_ids():
+    catalog_path = Path("public/data/catalog/series_catalog.json")
+    checked_in_ids = {
+        str(entry["id"]) for entry in json.loads(catalog_path.read_text(encoding="utf-8"))
+    }
+    generated_ids = {str(entry["id"]) for entry in catalog_entries()}
+
+    assert checked_in_ids == generated_ids
+    assert {"vvix", "vix9d", "vix3m", "high_yield_oas", "broad_dollar"} <= checked_in_ids
+
+
+def test_checked_in_catalog_artifact_uses_dollar_category_for_phase3_dollar_series():
+    catalog_path = Path("public/data/catalog/series_catalog.json")
+    entries = {
+        str(entry["id"]): entry for entry in json.loads(catalog_path.read_text(encoding="utf-8"))
+    }
+
+    for series_id in ("broad_dollar", "usdjpy", "eurusd"):
+        assert entries[series_id]["category"] == "dollar"
+
+
 def test_catalog_entries_include_phase3_governance_fields():
     entries = {str(entry["id"]): entry for entry in catalog_entries()}
 
@@ -122,6 +143,23 @@ def test_catalog_entries_include_phase3_active_fred_macro_series():
         assert entry["access_status"] == "free_public"
         assert entry["score_status"] == "active"
         assert entry["endpoint_url"].endswith(fred_id)
+
+
+def test_catalog_entries_use_dollar_category_for_phase3_dollar_series():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    for series_id in ("broad_dollar", "usdjpy", "eurusd"):
+        assert entries[series_id]["category"] == "dollar"
+
+
+def test_oas_series_include_source_specific_citation_notes():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    for series_id in ("high_yield_oas", "investment_grade_oas", "bbb_oas"):
+        entry = entries[series_id]
+        assert entry["score_status"] == "active"
+        assert "FRED graph CSV" in str(entry["citation_notes"])
+        assert "source-specific citation and terms review" in str(entry["citation_notes"])
 
 
 def test_catalog_entries_include_expanded_cboe_volatility_series():
