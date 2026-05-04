@@ -4,7 +4,7 @@ import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { loadRouteSeries } from "./routeSeries";
+import { hasObservations, loadRouteSeries } from "./routeSeries";
 
 const growthSeriesIds = [
   "cfnai",
@@ -31,11 +31,10 @@ export default function Growth() {
 
     async function loadGrowth() {
       try {
-        const catalog = await loadCatalog();
-        const [status, growthSeries, laborSeries] = await Promise.all([
-          loadDataStatus(),
-          loadRouteSeries(growthSeriesIds, catalog),
-          loadRouteSeries(laborSeriesIds, catalog)
+        const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
+        const [growthSeries, laborSeries] = await Promise.all([
+          loadRouteSeries(growthSeriesIds, catalog, status),
+          loadRouteSeries(laborSeriesIds, catalog, status)
         ]);
         if (active) setData({ catalog, growthSeries, laborSeries, status });
       } catch (loadError) {
@@ -59,7 +58,11 @@ export default function Growth() {
         <h2>Growth</h2>
         <p>Growth breadth, real demand, production, and cyclical risk.</p>
       </section>
-      {error ? <p className="data-error">Data error: {error}</p> : null}
+      {error ? (
+        <p className="data-error" role="alert">
+          Data error: {error}
+        </p>
+      ) : null}
       {data ? (
         <div className="route-stack">
           <section className="metric-grid" aria-label="Growth metrics">
@@ -85,9 +88,20 @@ export default function Growth() {
               ))}
             </section>
           </section>
-          {cfnai ? (
+          {hasObservations(cfnai) ? (
             <TimeSeriesChart catalogEntry={data.catalog.find((entry) => entry.id === "cfnai")} series={cfnai} />
-          ) : null}
+          ) : (
+            <section className="panel chart-panel">
+              <div className="section-header">
+                <div>
+                  <p className="eyebrow">History</p>
+                  <h3>{data.catalog.find((entry) => entry.id === "cfnai")?.name ?? "cfnai"}</h3>
+                </div>
+                <p>{data.catalog.find((entry) => entry.id === "cfnai")?.units ?? ""}</p>
+              </div>
+              <p>Featured chart unavailable until source data is available.</p>
+            </section>
+          )}
           <DataStatusTable seriesIds={[...growthSeriesIds, ...laborSeriesIds]} status={data.status} />
         </div>
       ) : null}

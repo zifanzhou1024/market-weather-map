@@ -52,11 +52,20 @@ function h3Texts(container: HTMLElement) {
   return Array.from(container.querySelectorAll("h3"), (heading) => heading.textContent);
 }
 
-function mockStaticFetch(files: Record<string, unknown>) {
+function mockStaticFetch(files: Record<string, unknown>, failures: Record<string, number> = {}) {
   vi.stubGlobal(
     "fetch",
     vi.fn(async (input: RequestInfo | URL) => {
       const path = String(input);
+      const failureStatus = failures[path];
+      if (failureStatus !== undefined) {
+        return {
+          ok: false,
+          status: failureStatus,
+          json: async () => ({})
+        };
+      }
+
       const data = files[path];
 
       return {
@@ -362,6 +371,20 @@ function seriesFiles(seriesIds: string[]): Record<string, TimeSeriesFile> {
   );
 }
 
+function statusRow(
+  statusValue: DataStatusFile["series"][string]["status"],
+  frequency: SeriesFrequency = "daily"
+): DataStatusFile["series"][string] {
+  return {
+    expected_frequency: frequency,
+    freshness_days: statusValue === "unavailable" ? null : 2,
+    last_observation: statusValue === "unavailable" ? null : "2026-05-01",
+    max_stale_days: frequency === "weekly" ? 14 : 7,
+    source: "FRED",
+    status: statusValue
+  };
+}
+
 const status: DataStatusFile = {
   generated_at_utc: "2026-05-03T18:32:54Z",
   last_successful_update_utc: "2026-05-03T18:32:54Z",
@@ -380,6 +403,14 @@ const status: DataStatusFile = {
       freshness_days: 9,
       last_observation: "2026-04-24",
       max_stale_days: 14,
+      source: "FRED",
+      status: "ok"
+    },
+    us2y: {
+      expected_frequency: "daily",
+      freshness_days: 3,
+      last_observation: "2026-04-30",
+      max_stale_days: 7,
       source: "FRED",
       status: "ok"
     },
@@ -470,7 +501,37 @@ const status: DataStatusFile = {
       max_stale_days: 14,
       source: "CFTC",
       status: "ok"
-    }
+    },
+    cfnai: statusRow("unavailable", "monthly"),
+    cfnai_3m_avg: statusRow("unavailable", "monthly"),
+    real_retail_sales: statusRow("unavailable", "monthly"),
+    industrial_production: statusRow("unavailable", "monthly"),
+    durable_goods_orders: statusRow("unavailable", "monthly"),
+    unemployment_rate: statusRow("unavailable"),
+    nonfarm_payrolls: statusRow("unavailable", "monthly"),
+    initial_claims: statusRow("unavailable", "weekly"),
+    sahm_rule: statusRow("unavailable", "monthly"),
+    headline_cpi: statusRow("unavailable", "monthly"),
+    core_cpi: statusRow("unavailable", "monthly"),
+    core_pce: statusRow("unavailable", "monthly"),
+    ppi_final_demand: statusRow("unavailable", "monthly"),
+    breakeven_10y: statusRow("unavailable"),
+    breakeven_5y: statusRow("unavailable"),
+    forward_inflation_5y5y: statusRow("unavailable"),
+    real_yield_5y: statusRow("unavailable"),
+    real_yield_10y: statusRow("unavailable"),
+    high_yield_oas: statusRow("unavailable"),
+    investment_grade_oas: statusRow("unavailable"),
+    bbb_oas: statusRow("unavailable"),
+    financial_conditions: statusRow("unavailable", "weekly"),
+    reserve_balances: statusRow("unavailable", "weekly"),
+    bank_credit: statusRow("unavailable", "weekly"),
+    loans_and_leases: statusRow("unavailable", "weekly"),
+    business_loans: statusRow("unavailable", "weekly"),
+    bank_deposits: statusRow("unavailable", "weekly"),
+    broad_dollar: statusRow("unavailable"),
+    usdjpy: statusRow("unavailable"),
+    eurusd: statusRow("unavailable")
   }
 };
 
@@ -745,7 +806,72 @@ describe("data-backed routes", () => {
     await waitForContent(container, "Labor and recession risk");
 
     expect(container.textContent).toContain("Chicago Fed National Activity Index");
+    expect(container.textContent).toContain("N/A index");
+    expect(container.textContent).toContain("Featured chart unavailable until source data is available.");
+    expect(container.querySelector('[aria-label="Chart placeholder"]')).toBeNull();
     expect(container.querySelector(".data-error")).toBeNull();
+  });
+
+  it("surfaces a data error when a missing core series is marked ok", async () => {
+    const curve: DerivedSeriesFile = {
+      depends_on: ["us10y", "us2y"],
+      frequency: "daily",
+      generated_at_utc: "2026-05-03T18:32:54Z",
+      method: "10-year Treasury yield minus 2-year Treasury yield by matched observation date.",
+      observations: [{ date: "2026-05-01", percentile_252d: 47, value: 0.42 }],
+      series_id: "us10y_minus_us2y",
+      source: "FRED",
+      source_url: "https://example.com/us10y-minus-us2y",
+      summary: {
+        change_1d: 0.03,
+        change_1m: -0.2,
+        change_1w: 0.08,
+        latest_date: "2026-05-01",
+        latest_value: 0.42,
+        percentile_252d: 47
+      },
+      units: "percentage points"
+    };
+
+    mockStaticFetch({
+      "/data/catalog/series_catalog.json": catalog,
+      "/data/derived/us10y_minus_us2y.json": curve,
+      ...seriesFiles(["breakeven_10y", "breakeven_5y", "forward_inflation_5y5y", "real_yield_10y", "real_yield_5y"]),
+      "/data/series/us20y.json": seriesFile("us20y", 4.7),
+      "/data/series/us2y.json": seriesFile("us2y", 3.78),
+      "/data/series/us30y.json": seriesFile("us30y", 4.9),
+      "/data/status/data_status.json": status
+    });
+
+    const container = render(<Rates />);
+    await waitForContent(container, "Data error:");
+
+    expect(container.querySelector(".data-error")?.getAttribute("role")).toBe("alert");
+    expect(container.textContent).toContain("Failed to load /data/series/us10y.json");
+    expect(container.textContent).not.toContain("10-Year Treasury Constant Maturity Rate");
+  });
+
+  it("surfaces a data error when a series load fails with a non-404 response", async () => {
+    mockStaticFetch(
+      {
+        "/data/catalog/series_catalog.json": catalog,
+        ...seriesFiles(["cfnai_3m_avg", "real_retail_sales", "industrial_production", "durable_goods_orders"]),
+        ...seriesFiles(["unemployment_rate", "nonfarm_payrolls", "initial_claims", "sahm_rule"]),
+        "/data/status/data_status.json": status
+      },
+      { "/data/series/cfnai.json": 500 }
+    );
+
+    const container = render(
+      <MemoryRouter initialEntries={["/growth"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Data error:");
+
+    expect(container.querySelector(".data-error")?.getAttribute("role")).toBe("alert");
+    expect(container.textContent).toContain("Failed to load /data/series/cfnai.json");
+    expect(container.textContent).not.toContain("Labor and recession risk");
   });
 
   it("renders the inflation route with price and expectations series", async () => {
@@ -778,6 +904,32 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Static feed freshness");
   });
 
+  it("renders an unavailable featured chart panel when headline CPI is a placeholder", async () => {
+    mockStaticFetch({
+      "/data/catalog/series_catalog.json": catalog,
+      ...seriesFiles([
+        "core_cpi",
+        "core_pce",
+        "ppi_final_demand",
+        "breakeven_10y",
+        "breakeven_5y",
+        "forward_inflation_5y5y"
+      ]),
+      "/data/status/data_status.json": status
+    });
+
+    const container = render(
+      <MemoryRouter initialEntries={["/inflation"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Featured chart unavailable until source data is available.");
+
+    expect(container.textContent).toContain("Headline CPI");
+    expect(container.querySelector('[aria-label="Chart placeholder"]')).toBeNull();
+    expect(container.querySelector(".data-error")).toBeNull();
+  });
+
   it("renders the dollar global route with dollar and currency series", async () => {
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
@@ -797,6 +949,25 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("USD/JPY");
     expect(container.textContent).toContain("EUR/USD");
     expect(container.textContent).toContain("Static feed freshness");
+  });
+
+  it("renders an unavailable featured chart panel when broad dollar is a placeholder", async () => {
+    mockStaticFetch({
+      "/data/catalog/series_catalog.json": catalog,
+      ...seriesFiles(["usdjpy", "eurusd"]),
+      "/data/status/data_status.json": status
+    });
+
+    const container = render(
+      <MemoryRouter initialEntries={["/dollar-global"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Featured chart unavailable until source data is available.");
+
+    expect(container.textContent).toContain("Nominal Broad U.S. Dollar Index");
+    expect(container.querySelector('[aria-label="Chart placeholder"]')).toBeNull();
+    expect(container.querySelector(".data-error")).toBeNull();
   });
 
   it("renders the commodities route with series and the Brent-WTI spread from static files", async () => {

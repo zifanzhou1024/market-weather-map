@@ -4,7 +4,7 @@ import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { loadRouteSeries } from "./routeSeries";
+import { hasObservations, loadRouteSeries } from "./routeSeries";
 
 const creditSeriesIds = [
   "high_yield_oas",
@@ -34,11 +34,8 @@ export default function Credit() {
 
     async function loadCredit() {
       try {
-        const catalog = await loadCatalog();
-        const [status, series] = await Promise.all([
-          loadDataStatus(),
-          loadRouteSeries(creditSeriesIds, catalog)
-        ]);
+        const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
+        const series = await loadRouteSeries(creditSeriesIds, catalog, status);
         if (active) setData({ catalog, series, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load credit data.");
@@ -61,10 +58,14 @@ export default function Credit() {
         <h2>Credit & Banking</h2>
         <p>Credit spreads, financial stress, banking system liquidity, lending, and deposits.</p>
       </section>
-      {error ? <p className="data-error">Data error: {error}</p> : null}
+      {error ? (
+        <p className="data-error" role="alert">
+          Data error: {error}
+        </p>
+      ) : null}
       {data ? (
         <div className="route-stack">
-          <section className="metric-grid" aria-label="Financial stress metrics">
+          <section className="metric-grid" aria-label="Credit and banking metrics">
             {data.series.map((series) => (
               <MetricCard
                 catalogEntry={data.catalog.find((entry) => entry.id === series.series_id)}
@@ -73,12 +74,23 @@ export default function Credit() {
               />
             ))}
           </section>
-          {financialStress ? (
+          {hasObservations(financialStress) ? (
             <TimeSeriesChart
               catalogEntry={data.catalog.find((entry) => entry.id === "financial_stress")}
               series={financialStress}
             />
-          ) : null}
+          ) : (
+            <section className="panel chart-panel">
+              <div className="section-header">
+                <div>
+                  <p className="eyebrow">History</p>
+                  <h3>{data.catalog.find((entry) => entry.id === "financial_stress")?.name ?? "financial_stress"}</h3>
+                </div>
+                <p>{data.catalog.find((entry) => entry.id === "financial_stress")?.units ?? ""}</p>
+              </div>
+              <p>Featured chart unavailable until source data is available.</p>
+            </section>
+          )}
           <DataStatusTable seriesIds={creditSeriesIds} status={data.status} />
         </div>
       ) : null}

@@ -4,7 +4,7 @@ import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { loadRouteSeries } from "./routeSeries";
+import { hasObservations, loadRouteSeries } from "./routeSeries";
 
 const dollarSeriesIds = ["broad_dollar", "usdjpy", "eurusd"];
 
@@ -23,11 +23,8 @@ export default function DollarGlobal() {
 
     async function loadDollarGlobal() {
       try {
-        const catalog = await loadCatalog();
-        const [status, series] = await Promise.all([
-          loadDataStatus(),
-          loadRouteSeries(dollarSeriesIds, catalog)
-        ]);
+        const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
+        const series = await loadRouteSeries(dollarSeriesIds, catalog, status);
         if (active) setData({ catalog, series, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load dollar data.");
@@ -50,7 +47,11 @@ export default function DollarGlobal() {
         <h2>Dollar & Global</h2>
         <p>Broad dollar and major currency pairs.</p>
       </section>
-      {error ? <p className="data-error">Data error: {error}</p> : null}
+      {error ? (
+        <p className="data-error" role="alert">
+          Data error: {error}
+        </p>
+      ) : null}
       {data ? (
         <div className="route-stack">
           <section className="metric-grid" aria-label="Dollar and global metrics">
@@ -62,12 +63,23 @@ export default function DollarGlobal() {
               />
             ))}
           </section>
-          {broadDollar ? (
+          {hasObservations(broadDollar) ? (
             <TimeSeriesChart
               catalogEntry={data.catalog.find((entry) => entry.id === "broad_dollar")}
               series={broadDollar}
             />
-          ) : null}
+          ) : (
+            <section className="panel chart-panel">
+              <div className="section-header">
+                <div>
+                  <p className="eyebrow">History</p>
+                  <h3>{data.catalog.find((entry) => entry.id === "broad_dollar")?.name ?? "broad_dollar"}</h3>
+                </div>
+                <p>{data.catalog.find((entry) => entry.id === "broad_dollar")?.units ?? ""}</p>
+              </div>
+              <p>Featured chart unavailable until source data is available.</p>
+            </section>
+          )}
           <DataStatusTable seriesIds={dollarSeriesIds} status={data.status} />
         </div>
       ) : null}

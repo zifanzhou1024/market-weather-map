@@ -4,7 +4,7 @@ import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus, loadDerivedSeries } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { loadRouteSeries } from "./routeSeries";
+import { hasObservations, loadRouteSeries } from "./routeSeries";
 
 const ratesSeriesIds = [
   "us2y",
@@ -34,10 +34,9 @@ export default function Rates() {
 
     async function loadRates() {
       try {
-        const catalog = await loadCatalog();
-        const [status, series, curve] = await Promise.all([
-          loadDataStatus(),
-          loadRouteSeries(ratesSeriesIds, catalog),
+        const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
+        const [series, curve] = await Promise.all([
+          loadRouteSeries(ratesSeriesIds, catalog, status),
           loadDerivedSeries("us10y_minus_us2y")
         ]);
         if (active) setData({ catalog, curve, series, status });
@@ -77,7 +76,11 @@ export default function Rates() {
         <h2>Rates & Policy</h2>
         <p>Nominal yields, real yields, and breakevens.</p>
       </section>
-      {error ? <p className="data-error">Data error: {error}</p> : null}
+      {error ? (
+        <p className="data-error" role="alert">
+          Data error: {error}
+        </p>
+      ) : null}
       {data ? (
         <div className="route-stack">
           <section className="metric-grid" aria-label="Rates metrics">
@@ -90,12 +93,23 @@ export default function Rates() {
             ))}
             <MetricCard catalogEntry={curveCatalogEntry} series={data.curve} />
           </section>
-          {us10y ? (
+          {hasObservations(us10y) ? (
             <TimeSeriesChart
               catalogEntry={data.catalog.find((entry) => entry.id === "us10y")}
               series={us10y}
             />
-          ) : null}
+          ) : (
+            <section className="panel chart-panel">
+              <div className="section-header">
+                <div>
+                  <p className="eyebrow">History</p>
+                  <h3>{data.catalog.find((entry) => entry.id === "us10y")?.name ?? "us10y"}</h3>
+                </div>
+                <p>{data.catalog.find((entry) => entry.id === "us10y")?.units ?? ""}</p>
+              </div>
+              <p>Featured chart unavailable until source data is available.</p>
+            </section>
+          )}
           <DataStatusTable seriesIds={ratesSeriesIds} status={data.status} />
         </div>
       ) : null}
