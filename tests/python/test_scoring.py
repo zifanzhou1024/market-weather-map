@@ -723,6 +723,24 @@ def test_missing_phase_3_macro_coverage_lowers_confidence_and_adds_notes():
     assert any("consumer/production" in note and "real_retail_sales" in note for note in macro["missing_or_stale_notes"])
 
 
+def test_score_summary_does_not_embed_candidate_source_ids():
+    series = {
+        "vix": _summary(percentile_252d=50.0),
+        "reverse_repo": _summary(percentile_252d=50.0),
+        "net_liquidity": _summary(percentile_252d=50.0),
+        "financial_stress": _summary(percentile_252d=50.0),
+        "financial_conditions": _summary(percentile_252d=50.0),
+    }
+
+    summary_text = json.dumps(
+        compute_regime_score.build_score_summary(series, "2026-05-04T00:00:00Z")
+    )
+
+    assert "ism_manufacturing_pmi" not in summary_text
+    assert "move_index" not in summary_text
+    assert "Treasury/bond volatility source is not active." in summary_text
+
+
 def test_macro_climate_uses_phase_3_catalog_ids_not_legacy_aliases():
     series = {
         "cfnai": _summary(percentile_252d=90.0),

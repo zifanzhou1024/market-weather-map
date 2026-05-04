@@ -71,7 +71,7 @@ FRAGILITY_COVERAGE_GROUPS = {
     "dollar_spike": ["broad_dollar"],
     "liquidity_drain": ["net_liquidity"],
     "positioning_crowding": ["cftc_sp500_asset_mgr_net", "cftc_sp500_lev_money_net"],
-    "treasury_bond_volatility": ["move_index"],
+    "treasury_bond_volatility": [],
 }
 DERIVED_STATUS_METADATA = {
     "us10y_minus_us2y": {"max_stale_days": 7},
