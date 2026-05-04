@@ -1059,6 +1059,6 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("commodity_inflation_impulse");
     expect(container.textContent).toContain("Net liquidity");
     expect(container.textContent).toContain("0.0 neutral fallbacks");
-    expect(container.textContent).not.toContain("breakevens");
+    expect(container.textContent).toContain("breakeven_10y can confirm commodity inflation pressure");
   });
 });

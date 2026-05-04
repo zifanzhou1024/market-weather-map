@@ -48,7 +48,8 @@ export default function Methodology() {
           <h3>Transformations and caveats</h3>
           <p>
             Net liquidity is transformed as Fed assets minus Treasury General Account minus Reverse Repo.
-            Commodity pressure is summarized through <code>commodity_inflation_impulse</code>, and CFTC
+            Commodity pressure is summarized through <code>commodity_inflation_impulse</code>;
+            <code>breakeven_10y</code> can confirm commodity inflation pressure when available. CFTC
             positioning is transformed into net exposure as a share of open interest.
           </p>
           <p>

@@ -30,4 +30,4 @@
 - Confidence is a data-quality indicator, not a probability that a market outcome will occur.
 - A high-confidence score can still be wrong as an interpretation of market risk because the model is intentionally simple and descriptive.
 - A low-confidence score can still contain useful context, but it should be read with the missing or stale source notes.
-- Scores normalize across available buckets when some inputs are unavailable, so users should read the confidence reasons and source status alongside the headline values.
+- Score builders emit all weighted bucket keys. Missing or stale coverage may enter as `0.0` neutral fallback values and lower confidence, so users should read confidence reasons and source status alongside headline values.
