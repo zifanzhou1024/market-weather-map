@@ -1,3 +1,4 @@
+from scripts.shared import catalog as catalog_module
 from scripts.shared.catalog import catalog_entries
 
 
@@ -24,3 +25,18 @@ def test_phase2_catalog_contains_cftc_positioning_sources():
     assert asset_mgr["category"] == "sentiment"
     assert lev_money["frequency"] == "weekly"
     assert "HistoricalCompressed" in str(asset_mgr["source_url"])
+
+
+def test_available_catalog_entries_excludes_pending_series_files(tmp_path, monkeypatch):
+    series_dir = tmp_path / "series"
+    series_dir.mkdir()
+    (series_dir / "vix.json").write_text("{}", encoding="utf-8")
+
+    monkeypatch.setattr(catalog_module, "data_dir", lambda: tmp_path, raising=False)
+
+    full_entries = {str(entry["id"]) for entry in catalog_entries()}
+    available_entries = {str(entry["id"]) for entry in catalog_module.available_catalog_entries()}
+
+    assert "cftc_sp500_asset_mgr_net" in full_entries
+    assert "cftc_sp500_asset_mgr_net" not in available_entries
+    assert available_entries == {"vix"}

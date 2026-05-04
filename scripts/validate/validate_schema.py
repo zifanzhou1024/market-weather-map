@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from scripts.shared.catalog import catalog_entries
+from scripts.shared.catalog import available_catalog_entries
 from scripts.shared.io import data_dir, series_path
 
 
@@ -89,7 +89,7 @@ def validate_generated_files() -> None:
 
 
 def main() -> None:
-    for entry in catalog_entries():
+    for entry in available_catalog_entries():
         validate_series_file(str(entry["id"]))
     validate_generated_files()
 

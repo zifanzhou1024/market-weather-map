@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
+from scripts.shared.io import data_dir
+
 
 CBOE_VIX = {
     "id": "vix",
@@ -259,3 +261,12 @@ def catalog_entries() -> list[dict[str, object]]:
             }
         )
     return entries
+
+
+def available_catalog_entries() -> list[dict[str, object]]:
+    series_dir = data_dir() / "series"
+    return [
+        entry
+        for entry in catalog_entries()
+        if (series_dir / f"{entry['id']}.json").exists()
+    ]

@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timezone
 from typing import Any
 
-from scripts.shared.catalog import catalog_entries
+from scripts.shared.catalog import available_catalog_entries
 from scripts.shared.io import data_dir, series_path, write_json
 from scripts.transform.compute_percentiles import enrich_observations, series_summary
 
@@ -173,7 +173,7 @@ def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_
 def build_status(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> dict[str, Any]:
     statuses = {
         str(entry["id"]): _status_for_series(entry, series_by_id[str(entry["id"])], generated_at)
-        for entry in catalog_entries()
+        for entry in available_catalog_entries()
     }
     values = [status["status"] for status in statuses.values()]
     if any(status == "failed" for status in values):
@@ -192,7 +192,10 @@ def build_status(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> 
 
 def main() -> None:
     generated_at = now_iso()
-    series_by_id = {str(entry["id"]): load_series(str(entry["id"])) for entry in catalog_entries()}
+    series_by_id = {
+        str(entry["id"]): load_series(str(entry["id"]))
+        for entry in available_catalog_entries()
+    }
 
     curve = build_curve(generated_at)
     write_json(data_dir() / "derived" / "us10y_minus_us2y.json", curve)
