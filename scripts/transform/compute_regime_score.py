@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timezone
 from typing import Any
 
-from scripts.shared.catalog import catalog_entries
+from scripts.shared.catalog import available_catalog_entries
 from scripts.shared.io import data_dir, series_path, write_json
 from scripts.transform.compute_percentiles import enrich_observations, series_summary
 
@@ -17,7 +17,12 @@ WEIGHTS = {
     "commodities": 0.10,
     "sentiment": 0.15,
 }
-METHOD_VERSION = "phase1-github-native-v1"
+METHOD_VERSION = "phase2-public-data-v1"
+DERIVED_STATUS_METADATA = {
+    "us10y_minus_us2y": {"max_stale_days": 7},
+    "brent_wti_spread": {"max_stale_days": 10},
+    "net_liquidity": {"max_stale_days": 14},
+}
 
 
 def now_iso() -> str:
@@ -63,6 +68,50 @@ def score_credit(series: dict[str, dict[str, Any]]) -> float:
     )
 
 
+def _average(values: list[float]) -> float:
+    if not values:
+        return 0.0
+    return clamp(sum(values) / len(values))
+
+
+def score_commodities(series: dict[str, dict[str, Any]]) -> float:
+    oil_scores = [
+        score_inverse_percentile(latest_summary(series[series_id]))
+        for series_id in ["wti_crude", "brent_crude"]
+        if series_id in series
+    ]
+    crop_scores = [
+        score_inverse_percentile(latest_summary(series[series_id]))
+        for series_id in ["corn_price", "wheat_price", "soybean_price"]
+        if series_id in series
+    ]
+    return weighted_score(
+        {"oil": _average(oil_scores), "crops": _average(crop_scores)},
+        {"oil": 0.65, "crops": 0.35},
+    )
+
+
+def score_positioning_percentile(summary: dict[str, Any]) -> float:
+    percentile = summary.get("percentile_252d")
+    if not isinstance(percentile, int | float):
+        return 0.0
+    value = float(percentile)
+    if value >= 85:
+        return clamp(-40 - ((value - 85) * 4))
+    if value <= 15:
+        return clamp(20 + ((15 - value) * 2))
+    return clamp(10 - abs(value - 50) * 0.4)
+
+
+def score_sentiment(series: dict[str, dict[str, Any]]) -> float:
+    asset_mgr = score_positioning_percentile(latest_summary(series["cftc_sp500_asset_mgr_net"]))
+    lev_money = score_positioning_percentile(latest_summary(series["cftc_sp500_lev_money_net"]))
+    return weighted_score(
+        {"asset_mgr": asset_mgr, "lev_money": lev_money},
+        {"asset_mgr": 0.40, "lev_money": 0.60},
+    )
+
+
 def score_volatility(series: dict[str, dict[str, Any]]) -> float:
     return score_inverse_percentile(latest_summary(series["vix"]))
 
@@ -86,44 +135,116 @@ def _pct_change(summary: dict[str, Any]) -> float | None:
 
 
 def score_liquidity(series: dict[str, dict[str, Any]]) -> float:
-    fed_change = _pct_change(latest_summary(series["fed_assets"]))
+    net_change = _pct_change(latest_summary(series["net_liquidity"])) if "net_liquidity" in series else None
     reverse_repo_change = _pct_change(latest_summary(series["reverse_repo"]))
+    sofr_score = score_inverse_percentile(latest_summary(series["sofr"])) if "sofr" in series else 0.0
 
-    fed_score = clamp((fed_change or 0.0) * 20)
+    net_score = clamp((net_change or 0.0) * 20)
     reverse_repo_score = clamp(-(reverse_repo_change or 0.0) * 10)
     return weighted_score(
-        {"fed_assets": fed_score, "reverse_repo": reverse_repo_score},
-        {"fed_assets": 0.60, "reverse_repo": 0.40},
+        {"net_liquidity": net_score, "reverse_repo": reverse_repo_score, "sofr": sofr_score},
+        {"net_liquidity": 0.70, "reverse_repo": 0.15, "sofr": 0.15},
     )
 
 
-def build_curve(generated_at: str) -> dict[str, Any]:
-    us10y = load_series("us10y")
-    us2y = load_series("us2y")
-    us2y_by_date = {
-        observation["date"]: observation["value"] for observation in us2y.get("observations", [])
-    }
-    observations = []
-    for observation in us10y.get("observations", []):
-        date = observation.get("date")
-        value_10y = observation.get("value")
-        value_2y = us2y_by_date.get(date)
-        if isinstance(value_10y, int | float) and isinstance(value_2y, int | float):
-            observations.append({"date": date, "value": round(float(value_10y) - float(value_2y), 4)})
+def _latest_on_or_before(observations: list[dict[str, Any]], date: str) -> float | None:
+    latest_value = None
+    for observation in observations:
+        observed_date = observation.get("date")
+        value = observation.get("value")
+        if not isinstance(observed_date, str) or observed_date > date:
+            continue
+        if isinstance(value, int | float) and not isinstance(value, bool):
+            latest_value = float(value)
+    return latest_value
 
-    observations = enrich_observations(observations)
+
+def build_net_liquidity(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> dict[str, Any]:
+    fed_assets = series_by_id["fed_assets"]
+    tga_observations = series_by_id["treasury_general_account"].get("observations", [])
+    reverse_repo_observations = series_by_id["reverse_repo"].get("observations", [])
+
+    observations = []
+    for observation in fed_assets.get("observations", []):
+        date = observation.get("date")
+        fed_value = observation.get("value")
+        if not isinstance(date, str) or not isinstance(fed_value, int | float):
+            continue
+
+        tga_value = _latest_on_or_before(tga_observations, date)
+        reverse_repo_value = _latest_on_or_before(reverse_repo_observations, date)
+        if tga_value is None or reverse_repo_value is None:
+            continue
+
+        observations.append(
+            {
+                "date": date,
+                "value": round(float(fed_value) - tga_value - (reverse_repo_value * 1000), 4),
+            }
+        )
+
+    frequency = str(fed_assets.get("frequency", "weekly"))
+    observations = enrich_observations(observations, frequency)
     return {
-        "series_id": "us10y_minus_us2y",
+        "series_id": "net_liquidity",
         "generated_at_utc": generated_at,
         "source": "Derived",
-        "source_url": "/data/series/us10y.json",
-        "frequency": "daily",
-        "units": "percentage_points",
-        "depends_on": ["us10y", "us2y"],
-        "method": "10-year Treasury yield minus 2-year Treasury yield by matched observation date.",
-        "summary": series_summary(observations),
+        "source_url": "/data/series/fed_assets.json",
+        "frequency": frequency,
+        "units": "usd_millions",
+        "depends_on": ["fed_assets", "treasury_general_account", "reverse_repo"],
+        "method": "Fed assets minus Treasury General Account and reverse repo balances aligned to Fed asset observation dates. Reverse repo values are converted from billions to millions before subtraction.",
+        "summary": series_summary(observations, frequency),
         "observations": observations,
     }
+
+
+def build_matched_spread(
+    left_series_id: str,
+    right_series_id: str,
+    spread_series_id: str,
+    generated_at: str,
+    units: str,
+    method: str,
+) -> dict[str, Any]:
+    left = load_series(left_series_id)
+    right = load_series(right_series_id)
+    right_by_date = {
+        observation["date"]: observation["value"] for observation in right.get("observations", [])
+    }
+    observations = []
+    for observation in left.get("observations", []):
+        date = observation.get("date")
+        left_value = observation.get("value")
+        right_value = right_by_date.get(date)
+        if isinstance(left_value, int | float) and isinstance(right_value, int | float):
+            observations.append({"date": date, "value": round(float(left_value) - float(right_value), 4)})
+
+    frequency = str(left.get("frequency", "daily"))
+    observations = enrich_observations(observations, frequency)
+    return {
+        "series_id": spread_series_id,
+        "generated_at_utc": generated_at,
+        "source": "Derived",
+        "source_url": f"/data/series/{left_series_id}.json",
+        "frequency": frequency,
+        "units": units,
+        "depends_on": [left_series_id, right_series_id],
+        "method": method,
+        "summary": series_summary(observations, frequency),
+        "observations": observations,
+    }
+
+
+def build_curve(generated_at: str) -> dict[str, Any]:
+    return build_matched_spread(
+        "us10y",
+        "us2y",
+        "us10y_minus_us2y",
+        generated_at,
+        "percentage_points",
+        "10-year Treasury yield minus 2-year Treasury yield by matched observation date.",
+    )
 
 
 def label_for_score(score: float) -> str:
@@ -173,8 +294,23 @@ def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_
 def build_status(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> dict[str, Any]:
     statuses = {
         str(entry["id"]): _status_for_series(entry, series_by_id[str(entry["id"])], generated_at)
-        for entry in catalog_entries()
+        for entry in available_catalog_entries()
     }
+    for series_id, metadata in DERIVED_STATUS_METADATA.items():
+        series = series_by_id.get(series_id)
+        if series is None:
+            continue
+        statuses[series_id] = _status_for_series(
+            {
+                "id": series_id,
+                "source": "Derived",
+                "frequency": str(series.get("frequency", "daily")),
+                "max_stale_days": metadata["max_stale_days"],
+            },
+            series,
+            generated_at,
+        )
+
     values = [status["status"] for status in statuses.values()]
     if any(status == "failed" for status in values):
         overall = "failed"
@@ -192,18 +328,41 @@ def build_status(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> 
 
 def main() -> None:
     generated_at = now_iso()
-    series_by_id = {str(entry["id"]): load_series(str(entry["id"])) for entry in catalog_entries()}
+    series_by_id = {
+        str(entry["id"]): load_series(str(entry["id"]))
+        for entry in available_catalog_entries()
+    }
 
     curve = build_curve(generated_at)
     write_json(data_dir() / "derived" / "us10y_minus_us2y.json", curve)
+    series_by_id["us10y_minus_us2y"] = curve
+
+    net_liquidity = build_net_liquidity(series_by_id, generated_at)
+    write_json(data_dir() / "derived" / "net_liquidity.json", net_liquidity)
+    series_by_id["net_liquidity"] = net_liquidity
+
+    if "brent_crude" in series_by_id and "wti_crude" in series_by_id:
+        brent_wti_spread = build_matched_spread(
+            "brent_crude",
+            "wti_crude",
+            "brent_wti_spread",
+            generated_at,
+            "usd_per_barrel",
+            "Brent crude spot price minus WTI crude spot price by matched observation date.",
+        )
+        write_json(
+            data_dir() / "derived" / "brent_wti_spread.json",
+            brent_wti_spread,
+        )
+        series_by_id["brent_wti_spread"] = brent_wti_spread
 
     buckets = {
         "volatility": score_volatility(series_by_id),
         "rates": score_rates(series_by_id),
         "liquidity": score_liquidity(series_by_id),
         "credit": score_credit(series_by_id),
-        "commodities": 0.0,
-        "sentiment": 0.0,
+        "commodities": score_commodities(series_by_id),
+        "sentiment": score_sentiment(series_by_id),
     }
     overall_score = weighted_score(buckets, WEIGHTS)
     latest_dates = [

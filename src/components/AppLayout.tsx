@@ -6,6 +6,8 @@ const navItems = [
   { to: "/rates", label: "Rates" },
   { to: "/liquidity", label: "Liquidity" },
   { to: "/credit", label: "Credit" },
+  { to: "/commodities", label: "Commodities" },
+  { to: "/sentiment", label: "Sentiment" },
   { to: "/methodology", label: "Methodology" }
 ];
 

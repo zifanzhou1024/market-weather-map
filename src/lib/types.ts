@@ -1,4 +1,6 @@
 export type DataStatus = "ok" | "stale" | "partial" | "failed";
+export type SeriesFrequency = "daily" | "weekly" | "monthly";
+export type UpdateStatus = "ok" | "failed";
 
 export type WeatherLabel =
   | "Supportive"
@@ -15,7 +17,7 @@ export interface SeriesCatalogEntry {
   source: string;
   source_url: string;
   endpoint_url?: string;
-  frequency: "daily" | "weekly";
+  frequency: SeriesFrequency;
   units: string;
   higher_is: "supportive" | "riskier" | "contextual";
   public: boolean;
@@ -43,7 +45,7 @@ export interface TimeSeriesFile {
   generated_at_utc: string;
   source: string;
   source_url: string;
-  frequency: "daily" | "weekly";
+  frequency: SeriesFrequency;
   units: string;
   summary?: SeriesSummary;
   observations: Observation[];
@@ -77,7 +79,7 @@ export interface SeriesStatus {
   status: DataStatus;
   last_observation: string | null;
   source: string;
-  expected_frequency: "daily" | "weekly";
+  expected_frequency: SeriesFrequency;
   freshness_days: number | null;
   max_stale_days: number;
   message?: string;
@@ -85,7 +87,10 @@ export interface SeriesStatus {
 
 export interface DataStatusFile {
   last_successful_update_utc: string | null;
+  last_attempt_utc?: string;
   generated_at_utc: string;
   overall_status: DataStatus;
+  update_status?: UpdateStatus;
+  update_message?: string;
   series: Record<string, SeriesStatus>;
 }

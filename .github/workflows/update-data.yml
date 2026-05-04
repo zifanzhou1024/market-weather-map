@@ -29,23 +29,13 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install -r requirements.txt
 
-      - name: Fetch public data
-        run: |
-          python -m scripts.ingest.fetch_cboe
-          python -m scripts.ingest.fetch_fred_csv
-
-      - name: Transform and score data
-        run: |
-          python -m scripts.transform.normalize_series
-          python -m scripts.transform.compute_percentiles
-          python -m scripts.transform.compute_regime_score
-
-      - name: Validate data
-        run: |
-          python -m scripts.validate.validate_schema
-          python -m scripts.validate.validate_freshness
+      - name: Fetch, transform, score, and validate data
+        id: data-update
+        continue-on-error: true
+        run: python -m scripts.update_data
 
       - name: Commit data updates
+        if: always()
         run: |
           if git diff --quiet -- public/data; then
             echo "No public data changes to commit."
@@ -58,22 +48,31 @@ jobs:
           git push
 
       - name: Set up Node.js
+        if: always()
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
 
       - name: Install Node dependencies
+        if: always()
         run: npm ci
 
       - name: Build site
+        if: always()
         run: GITHUB_PAGES=true npm run build
 
       - name: Upload GitHub Pages artifact
+        if: always()
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
       - name: Deploy to GitHub Pages
+        if: always()
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Fail workflow after publishing failed update status
+        if: always() && steps.data-update.outcome == 'failure'
+        run: exit 1

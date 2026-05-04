@@ -1,6118 +1,6084 @@
 {
+  "depends_on": [
+    "fed_assets",
+    "treasury_general_account",
+    "reverse_repo"
+  ],
   "frequency": "weekly",
-  "generated_at_utc": "2026-05-04T06:37:05Z",
+  "generated_at_utc": "2026-05-04T06:47:09Z",
+  "method": "Fed assets minus Treasury General Account and reverse repo balances aligned to Fed asset observation dates. Reverse repo values are converted from billions to millions before subtraction.",
   "observations": [
     {
-      "date": "2002-12-18",
-      "percentile_252d": 100.0,
-      "value": 719542.0
-    },
-    {
-      "date": "2002-12-25",
-      "percentile_252d": 100.0,
-      "value": 732059.0
-    },
-    {
-      "date": "2003-01-01",
-      "percentile_252d": 66.67,
-      "value": 730994.0
-    },
-    {
-      "date": "2003-01-08",
-      "percentile_252d": 50.0,
-      "value": 723762.0
-    },
-    {
-      "date": "2003-01-15",
-      "percentile_252d": 40.0,
-      "value": 720074.0
-    },
-    {
-      "date": "2003-01-22",
-      "percentile_252d": 100.0,
-      "value": 735953.0
-    },
-    {
-      "date": "2003-01-29",
-      "percentile_252d": 14.29,
-      "value": 712809.0
-    },
-    {
-      "date": "2003-02-05",
-      "percentile_252d": 37.5,
-      "value": 719643.0
-    },
-    {
       "date": "2003-02-12",
-      "percentile_252d": 22.22,
-      "value": 713281.0
+      "percentile_252d": 100.0,
+      "value": 706100.0
     },
     {
       "date": "2003-02-19",
-      "percentile_252d": 70.0,
-      "value": 730400.0
+      "percentile_252d": 100.0,
+      "value": 722852.0
     },
     {
       "date": "2003-02-26",
-      "percentile_252d": 54.55,
-      "value": 721980.0
+      "percentile_252d": 66.67,
+      "value": 714231.0
     },
     {
       "date": "2003-03-05",
-      "percentile_252d": 58.33,
-      "value": 722649.0
+      "percentile_252d": 75.0,
+      "value": 715240.0
     },
     {
       "date": "2003-03-12",
-      "percentile_252d": 23.08,
-      "value": 717014.0
+      "percentile_252d": 40.0,
+      "value": 709318.0
     },
     {
       "date": "2003-03-19",
-      "percentile_252d": 71.43,
-      "value": 729923.0
+      "percentile_252d": 100.0,
+      "value": 723694.0
     },
     {
       "date": "2003-03-26",
-      "percentile_252d": 66.67,
-      "value": 725019.0
+      "percentile_252d": 71.43,
+      "value": 717853.0
     },
     {
       "date": "2003-04-02",
-      "percentile_252d": 93.75,
-      "value": 732452.0
+      "percentile_252d": 100.0,
+      "value": 725548.0
     },
     {
       "date": "2003-04-09",
-      "percentile_252d": 64.71,
-      "value": 727826.0
+      "percentile_252d": 66.67,
+      "value": 719048.0
     },
     {
       "date": "2003-04-16",
       "percentile_252d": 100.0,
-      "value": 745838.0
+      "value": 737118.0
     },
     {
       "date": "2003-04-23",
-      "percentile_252d": 84.21,
-      "value": 732222.0
+      "percentile_252d": 63.64,
+      "value": 721045.0
     },
     {
       "date": "2003-04-30",
-      "percentile_252d": 100.0,
-      "value": 746294.0
+      "percentile_252d": 91.67,
+      "value": 735281.0
     },
     {
       "date": "2003-05-07",
-      "percentile_252d": 85.71,
-      "value": 733466.0
+      "percentile_252d": 76.92,
+      "value": 724103.0
     },
     {
       "date": "2003-05-14",
-      "percentile_252d": 90.91,
-      "value": 740371.0
+      "percentile_252d": 85.71,
+      "value": 730982.0
     },
     {
       "date": "2003-05-21",
-      "percentile_252d": 82.61,
-      "value": 734699.0
+      "percentile_252d": 80.0,
+      "value": 725550.0
     },
     {
       "date": "2003-05-28",
-      "percentile_252d": 91.67,
-      "value": 744896.0
+      "percentile_252d": 93.75,
+      "value": 737103.0
     },
     {
       "date": "2003-06-04",
-      "percentile_252d": 60.0,
-      "value": 731667.0
+      "percentile_252d": 58.82,
+      "value": 723930.0
     },
     {
       "date": "2003-06-11",
-      "percentile_252d": 88.46,
-      "value": 743236.0
+      "percentile_252d": 88.89,
+      "value": 735471.0
     },
     {
       "date": "2003-06-18",
-      "percentile_252d": 77.78,
-      "value": 735926.0
+      "percentile_252d": 73.68,
+      "value": 726529.0
     },
     {
       "date": "2003-06-25",
-      "percentile_252d": 89.29,
-      "value": 744018.0
+      "percentile_252d": 80.0,
+      "value": 733319.0
     },
     {
       "date": "2003-07-02",
-      "percentile_252d": 79.31,
-      "value": 740126.0
+      "percentile_252d": 71.43,
+      "value": 730539.0
     },
     {
       "date": "2003-07-09",
-      "percentile_252d": 90.0,
-      "value": 744430.0
+      "percentile_252d": 81.82,
+      "value": 734712.0
     },
     {
       "date": "2003-07-16",
-      "percentile_252d": 74.19,
-      "value": 737765.0
+      "percentile_252d": 65.22,
+      "value": 727786.0
     },
     {
       "date": "2003-07-23",
-      "percentile_252d": 93.75,
-      "value": 745665.0
+      "percentile_252d": 91.67,
+      "value": 736098.0
     },
     {
       "date": "2003-07-30",
-      "percentile_252d": 75.76,
-      "value": 740295.0
+      "percentile_252d": 68.0,
+      "value": 730590.0
     },
     {
       "date": "2003-08-06",
-      "percentile_252d": 58.82,
-      "value": 734018.0
+      "percentile_252d": 46.15,
+      "value": 724879.0
     },
     {
       "date": "2003-08-13",
-      "percentile_252d": 62.86,
-      "value": 735386.0
+      "percentile_252d": 55.56,
+      "value": 726275.0
     },
     {
       "date": "2003-08-20",
       "percentile_252d": 100.0,
-      "value": 750825.0
+      "value": 741681.0
     },
     {
       "date": "2003-08-27",
-      "percentile_252d": 78.38,
-      "value": 740637.0
+      "percentile_252d": 72.41,
+      "value": 731163.0
     },
     {
       "date": "2003-09-03",
-      "percentile_252d": 97.37,
-      "value": 750461.0
+      "percentile_252d": 100.0,
+      "value": 742118.0
     },
     {
       "date": "2003-09-10",
-      "percentile_252d": 64.1,
-      "value": 737234.0
+      "percentile_252d": 58.06,
+      "value": 728989.0
     },
     {
       "date": "2003-09-17",
-      "percentile_252d": 80.0,
-      "value": 743939.0
+      "percentile_252d": 75.0,
+      "value": 734355.0
     },
     {
       "date": "2003-09-24",
-      "percentile_252d": 75.61,
-      "value": 741193.0
+      "percentile_252d": 57.58,
+      "value": 730153.0
     },
     {
       "date": "2003-10-01",
       "percentile_252d": 100.0,
-      "value": 753155.0
+      "value": 742733.0
     },
     {
       "date": "2003-10-08",
-      "percentile_252d": 58.14,
-      "value": 737108.0
+      "percentile_252d": 51.43,
+      "value": 728423.0
     },
     {
       "date": "2003-10-15",
       "percentile_252d": 100.0,
-      "value": 754229.0
+      "value": 746984.0
     },
     {
       "date": "2003-10-22",
-      "percentile_252d": 75.56,
-      "value": 743578.0
+      "percentile_252d": 72.97,
+      "value": 734675.0
     },
     {
       "date": "2003-10-29",
-      "percentile_252d": 91.3,
-      "value": 747272.0
+      "percentile_252d": 89.47,
+      "value": 738647.0
     },
     {
       "date": "2003-11-05",
-      "percentile_252d": 78.72,
-      "value": 744116.0
+      "percentile_252d": 79.49,
+      "value": 735686.0
     },
     {
       "date": "2003-11-12",
-      "percentile_252d": 83.33,
-      "value": 745604.0
+      "percentile_252d": 87.5,
+      "value": 737978.0
     },
     {
       "date": "2003-11-19",
-      "percentile_252d": 79.59,
-      "value": 744521.0
+      "percentile_252d": 85.37,
+      "value": 737120.0
     },
     {
       "date": "2003-11-26",
       "percentile_252d": 100.0,
-      "value": 756964.0
+      "value": 748991.0
     },
     {
       "date": "2003-12-03",
-      "percentile_252d": 90.2,
-      "value": 749981.0
+      "percentile_252d": 90.7,
+      "value": 741794.0
     },
     {
       "date": "2003-12-10",
-      "percentile_252d": 98.08,
-      "value": 756585.0
+      "percentile_252d": 97.73,
+      "value": 748861.0
     },
     {
       "date": "2003-12-17",
-      "percentile_252d": 94.23,
-      "value": 753919.0
+      "percentile_252d": 93.33,
+      "value": 746547.0
     },
     {
       "date": "2003-12-24",
       "percentile_252d": 100.0,
-      "value": 767012.0
+      "value": 760561.0
     },
     {
       "date": "2003-12-31",
       "percentile_252d": 100.0,
-      "value": 771551.0
+      "value": 763951.0
     },
     {
       "date": "2004-01-07",
-      "percentile_252d": 92.31,
-      "value": 755829.0
+      "percentile_252d": 91.67,
+      "value": 748010.0
     },
     {
       "date": "2004-01-14",
-      "percentile_252d": 84.62,
-      "value": 752812.0
+      "percentile_252d": 85.71,
+      "value": 745676.0
     },
     {
       "date": "2004-01-21",
       "percentile_252d": 100.0,
-      "value": 775833.0
+      "value": 766209.0
     },
     {
       "date": "2004-01-28",
-      "percentile_252d": 88.46,
-      "value": 755279.0
+      "percentile_252d": 88.24,
+      "value": 747876.0
     },
     {
       "date": "2004-02-04",
-      "percentile_252d": 84.62,
-      "value": 754153.0
+      "percentile_252d": 86.54,
+      "value": 747002.0
     },
     {
       "date": "2004-02-11",
-      "percentile_252d": 76.92,
-      "value": 750999.0
+      "percentile_252d": 78.85,
+      "value": 743397.0
     },
     {
       "date": "2004-02-18",
       "percentile_252d": 94.23,
-      "value": 758759.0
+      "value": 751525.0
     },
     {
       "date": "2004-02-25",
-      "percentile_252d": 71.15,
-      "value": 750666.0
+      "percentile_252d": 75.0,
+      "value": 743269.0
     },
     {
       "date": "2004-03-03",
-      "percentile_252d": 84.62,
-      "value": 754867.0
+      "percentile_252d": 82.69,
+      "value": 746999.0
     },
     {
       "date": "2004-03-10",
-      "percentile_252d": 63.46,
-      "value": 749950.0
+      "percentile_252d": 69.23,
+      "value": 742173.0
     },
     {
       "date": "2004-03-17",
       "percentile_252d": 94.23,
-      "value": 760638.0
+      "value": 752651.0
     },
     {
       "date": "2004-03-24",
-      "percentile_252d": 71.15,
-      "value": 751510.0
+      "percentile_252d": 73.08,
+      "value": 743889.0
     },
     {
       "date": "2004-03-31",
       "percentile_252d": 94.23,
-      "value": 760725.0
+      "value": 753229.0
     },
     {
       "date": "2004-04-07",
       "percentile_252d": 75.0,
-      "value": 754083.0
+      "value": 746823.0
     },
     {
       "date": "2004-04-14",
       "percentile_252d": 94.23,
-      "value": 763734.0
+      "value": 756326.0
     },
     {
       "date": "2004-04-21",
       "percentile_252d": 86.54,
-      "value": 757984.0
+      "value": 749104.0
     },
     {
       "date": "2004-04-28",
-      "percentile_252d": 98.08,
-      "value": 772927.0
+      "percentile_252d": 96.15,
+      "value": 763233.0
     },
     {
       "date": "2004-05-05",
-      "percentile_252d": 86.54,
-      "value": 758838.0
+      "percentile_252d": 84.62,
+      "value": 750563.0
     },
     {
       "date": "2004-05-12",
       "percentile_252d": 92.31,
-      "value": 764835.0
+      "value": 757150.0
     },
     {
       "date": "2004-05-19",
-      "percentile_252d": 76.92,
-      "value": 756874.0
+      "percentile_252d": 80.77,
+      "value": 749291.0
     },
     {
       "date": "2004-05-26",
-      "percentile_252d": 94.23,
-      "value": 771108.0
+      "percentile_252d": 96.15,
+      "value": 763646.0
     },
     {
       "date": "2004-06-02",
-      "percentile_252d": 88.46,
-      "value": 764090.0
+      "percentile_252d": 90.38,
+      "value": 757748.0
     },
     {
       "date": "2004-06-09",
-      "percentile_252d": 96.15,
-      "value": 772187.0
+      "percentile_252d": 98.08,
+      "value": 765239.0
     },
     {
       "date": "2004-06-16",
       "percentile_252d": 82.69,
-      "value": 761834.0
+      "value": 753389.0
     },
     {
       "date": "2004-06-23",
       "percentile_252d": 98.08,
-      "value": 775261.0
+      "value": 765977.0
     },
     {
       "date": "2004-06-30",
       "percentile_252d": 100.0,
-      "value": 779578.0
+      "value": 771367.0
     },
     {
       "date": "2004-07-07",
-      "percentile_252d": 98.08,
-      "value": 778163.0
+      "percentile_252d": 100.0,
+      "value": 771372.0
     },
     {
       "date": "2004-07-14",
-      "percentile_252d": 94.23,
-      "value": 775536.0
+      "percentile_252d": 96.15,
+      "value": 768452.0
     },
     {
       "date": "2004-07-21",
       "percentile_252d": 96.15,
-      "value": 776764.0
+      "value": 769005.0
     },
     {
       "date": "2004-07-28",
-      "percentile_252d": 88.46,
-      "value": 773916.0
+      "percentile_252d": 92.31,
+      "value": 766710.0
     },
     {
       "date": "2004-08-04",
-      "percentile_252d": 82.69,
-      "value": 772085.0
+      "percentile_252d": 84.62,
+      "value": 765134.0
     },
     {
       "date": "2004-08-11",
       "percentile_252d": 76.92,
-      "value": 769265.0
+      "value": 761951.0
     },
     {
       "date": "2004-08-18",
       "percentile_252d": 75.0,
-      "value": 767595.0
+      "value": 760889.0
     },
     {
       "date": "2004-08-25",
-      "percentile_252d": 90.38,
-      "value": 775437.0
+      "percentile_252d": 92.31,
+      "value": 768398.0
     },
     {
       "date": "2004-09-01",
       "percentile_252d": 100.0,
-      "value": 785273.0
+      "value": 777726.0
     },
     {
       "date": "2004-09-08",
       "percentile_252d": 100.0,
-      "value": 788602.0
+      "value": 781442.0
     },
     {
       "date": "2004-09-15",
       "percentile_252d": 100.0,
-      "value": 789128.0
+      "value": 781617.0
     },
     {
       "date": "2004-09-22",
       "percentile_252d": 94.23,
-      "value": 782124.0
+      "value": 772895.0
     },
     {
       "date": "2004-09-29",
       "percentile_252d": 96.15,
-      "value": 786330.0
+      "value": 778962.0
     },
     {
       "date": "2004-10-06",
-      "percentile_252d": 90.38,
-      "value": 781777.0
+      "percentile_252d": 92.31,
+      "value": 774193.0
     },
     {
       "date": "2004-10-13",
       "percentile_252d": 100.0,
-      "value": 795483.0
+      "value": 788551.0
     },
     {
       "date": "2004-10-20",
       "percentile_252d": 90.38,
-      "value": 784954.0
+      "value": 777472.0
     },
     {
       "date": "2004-10-27",
       "percentile_252d": 98.08,
-      "value": 791336.0
+      "value": 784138.0
     },
     {
       "date": "2004-11-03",
       "percentile_252d": 96.15,
-      "value": 790552.0
+      "value": 783027.0
     },
     {
       "date": "2004-11-10",
       "percentile_252d": 100.0,
-      "value": 800473.0
+      "value": 793211.0
     },
     {
       "date": "2004-11-17",
       "percentile_252d": 96.15,
-      "value": 794090.0
+      "value": 787016.0
     },
     {
       "date": "2004-11-24",
       "percentile_252d": 100.0,
-      "value": 809956.0
+      "value": 803287.0
     },
     {
       "date": "2004-12-01",
       "percentile_252d": 98.08,
-      "value": 807063.0
+      "value": 799596.0
     },
     {
       "date": "2004-12-08",
       "percentile_252d": 98.08,
-      "value": 808495.0
+      "value": 801259.0
     },
     {
       "date": "2004-12-15",
-      "percentile_252d": 94.23,
-      "value": 807028.0
+      "percentile_252d": 96.15,
+      "value": 799731.0
     },
     {
       "date": "2004-12-22",
       "percentile_252d": 100.0,
-      "value": 811333.0
+      "value": 803950.0
     },
     {
       "date": "2004-12-29",
-      "percentile_252d": 98.08,
-      "value": 810944.0
+      "percentile_252d": 100.0,
+      "value": 804063.0
     },
     {
       "date": "2005-01-05",
       "percentile_252d": 100.0,
-      "value": 815702.0
+      "value": 807802.0
     },
     {
       "date": "2005-01-12",
       "percentile_252d": 84.62,
-      "value": 798455.0
+      "value": 791060.0
     },
     {
       "date": "2005-01-19",
-      "percentile_252d": 86.54,
-      "value": 806960.0
+      "percentile_252d": 90.38,
+      "value": 799929.0
     },
     {
       "date": "2005-01-26",
-      "percentile_252d": 90.38,
-      "value": 807262.0
+      "percentile_252d": 88.46,
+      "value": 799760.0
     },
     {
       "date": "2005-02-02",
       "percentile_252d": 82.69,
-      "value": 804746.0
+      "value": 797426.0
     },
     {
       "date": "2005-02-09",
       "percentile_252d": 76.92,
-      "value": 797299.0
+      "value": 790136.0
     },
     {
       "date": "2005-02-16",
-      "percentile_252d": 75.0,
-      "value": 795606.0
+      "percentile_252d": 73.08,
+      "value": 788432.0
     },
     {
       "date": "2005-02-23",
       "percentile_252d": 80.77,
-      "value": 804576.0
+      "value": 797076.0
     },
     {
       "date": "2005-03-02",
       "percentile_252d": 78.85,
-      "value": 801252.0
+      "value": 793803.0
     },
     {
       "date": "2005-03-09",
       "percentile_252d": 75.0,
-      "value": 799250.0
+      "value": 792696.0
     },
     {
       "date": "2005-03-16",
       "percentile_252d": 88.46,
-      "value": 807211.0
+      "value": 799843.0
     },
     {
       "date": "2005-03-23",
       "percentile_252d": 67.31,
-      "value": 797094.0
+      "value": 789876.0
     },
     {
       "date": "2005-03-30",
       "percentile_252d": 90.38,
-      "value": 807551.0
+      "value": 800709.0
     },
     {
       "date": "2005-04-06",
-      "percentile_252d": 67.31,
-      "value": 797327.0
+      "percentile_252d": 63.46,
+      "value": 789781.0
     },
     {
       "date": "2005-04-13",
       "percentile_252d": 78.85,
-      "value": 805707.0
+      "value": 798282.0
     },
     {
       "date": "2005-04-20",
       "percentile_252d": 73.08,
-      "value": 801793.0
+      "value": 794342.0
     },
     {
       "date": "2005-04-27",
       "percentile_252d": 92.31,
-      "value": 809797.0
+      "value": 801961.0
     },
     {
       "date": "2005-05-04",
       "percentile_252d": 71.15,
-      "value": 802412.0
+      "value": 795299.0
     },
     {
       "date": "2005-05-11",
       "percentile_252d": 88.46,
-      "value": 808378.0
+      "value": 801135.0
     },
     {
       "date": "2005-05-18",
       "percentile_252d": 65.38,
-      "value": 801546.0
+      "value": 794087.0
     },
     {
       "date": "2005-05-25",
-      "percentile_252d": 94.23,
-      "value": 810160.0
+      "percentile_252d": 92.31,
+      "value": 802974.0
     },
     {
       "date": "2005-06-01",
       "percentile_252d": 100.0,
-      "value": 817335.0
+      "value": 810158.0
     },
     {
       "date": "2005-06-08",
       "percentile_252d": 96.15,
-      "value": 814172.0
+      "value": 807144.0
     },
     {
       "date": "2005-06-15",
-      "percentile_252d": 92.31,
-      "value": 811198.0
+      "percentile_252d": 90.38,
+      "value": 803414.0
     },
     {
       "date": "2005-06-22",
-      "percentile_252d": 88.46,
-      "value": 810429.0
+      "percentile_252d": 86.54,
+      "value": 803197.0
     },
     {
       "date": "2005-06-29",
       "percentile_252d": 84.62,
-      "value": 810082.0
+      "value": 803106.0
     },
     {
       "date": "2005-07-06",
       "percentile_252d": 100.0,
-      "value": 821556.0
+      "value": 815466.0
     },
     {
       "date": "2005-07-13",
       "percentile_252d": 76.92,
-      "value": 808861.0
+      "value": 801768.0
     },
     {
       "date": "2005-07-20",
       "percentile_252d": 96.15,
-      "value": 816804.0
+      "value": 809131.0
     },
     {
       "date": "2005-07-27",
-      "percentile_252d": 92.31,
-      "value": 814259.0
+      "percentile_252d": 90.38,
+      "value": 807131.0
     },
     {
       "date": "2005-08-03",
       "percentile_252d": 98.08,
-      "value": 818841.0
+      "value": 811579.0
     },
     {
       "date": "2005-08-10",
       "percentile_252d": 69.23,
-      "value": 808544.0
+      "value": 801305.0
     },
     {
       "date": "2005-08-17",
       "percentile_252d": 86.54,
-      "value": 813774.0
+      "value": 806719.0
     },
     {
       "date": "2005-08-24",
-      "percentile_252d": 82.69,
-      "value": 811313.0
+      "percentile_252d": 80.77,
+      "value": 803882.0
     },
     {
       "date": "2005-08-31",
       "percentile_252d": 100.0,
-      "value": 823237.0
+      "value": 816078.0
     },
     {
       "date": "2005-09-07",
-      "percentile_252d": 98.08,
-      "value": 822500.0
+      "percentile_252d": 96.15,
+      "value": 815464.0
     },
     {
       "date": "2005-09-14",
       "percentile_252d": 100.0,
-      "value": 823590.0
+      "value": 816367.0
     },
     {
       "date": "2005-09-21",
       "percentile_252d": 78.85,
-      "value": 812926.0
+      "value": 804357.0
     },
     {
       "date": "2005-09-28",
-      "percentile_252d": 100.0,
-      "value": 823771.0
+      "percentile_252d": 98.08,
+      "value": 816155.0
     },
     {
       "date": "2005-10-05",
       "percentile_252d": 86.54,
-      "value": 817137.0
+      "value": 810030.0
     },
     {
       "date": "2005-10-12",
       "percentile_252d": 100.0,
-      "value": 826306.0
+      "value": 819269.0
     },
     {
       "date": "2005-10-19",
       "percentile_252d": 78.85,
-      "value": 814281.0
+      "value": 807476.0
     },
     {
       "date": "2005-10-26",
       "percentile_252d": 88.46,
-      "value": 819105.0
+      "value": 811706.0
     },
     {
       "date": "2005-11-02",
-      "percentile_252d": 76.92,
-      "value": 814571.0
+      "percentile_252d": 75.0,
+      "value": 807340.0
     },
     {
       "date": "2005-11-09",
       "percentile_252d": 98.08,
-      "value": 824991.0
+      "value": 817739.0
     },
     {
       "date": "2005-11-16",
-      "percentile_252d": 92.31,
-      "value": 823263.0
+      "percentile_252d": 96.15,
+      "value": 816491.0
     },
     {
       "date": "2005-11-23",
       "percentile_252d": 100.0,
-      "value": 833124.0
+      "value": 825767.0
     },
     {
       "date": "2005-11-30",
       "percentile_252d": 100.0,
-      "value": 835059.0
+      "value": 827719.0
     },
     {
       "date": "2005-12-07",
       "percentile_252d": 98.08,
-      "value": 833250.0
+      "value": 826068.0
     },
     {
       "date": "2005-12-14",
       "percentile_252d": 94.23,
-      "value": 830950.0
+      "value": 823304.0
     },
     {
       "date": "2005-12-21",
       "percentile_252d": 100.0,
-      "value": 848317.0
+      "value": 840665.0
     },
     {
       "date": "2005-12-28",
       "percentile_252d": 98.08,
-      "value": 847700.0
+      "value": 840597.0
     },
     {
       "date": "2006-01-04",
       "percentile_252d": 100.0,
-      "value": 851856.0
+      "value": 844872.0
     },
     {
       "date": "2006-01-11",
       "percentile_252d": 86.54,
-      "value": 829357.0
+      "value": 822312.0
     },
     {
       "date": "2006-01-18",
       "percentile_252d": 94.23,
-      "value": 836042.0
+      "value": 828982.0
     },
     {
       "date": "2006-01-25",
       "percentile_252d": 82.69,
-      "value": 828901.0
+      "value": 821337.0
     },
     {
       "date": "2006-02-01",
       "percentile_252d": 86.54,
-      "value": 831808.0
+      "value": 824441.0
     },
     {
       "date": "2006-02-08",
       "percentile_252d": 78.85,
-      "value": 827613.0
+      "value": 820003.0
     },
     {
       "date": "2006-02-15",
       "percentile_252d": 92.31,
-      "value": 835240.0
+      "value": 827766.0
     },
     {
       "date": "2006-02-22",
       "percentile_252d": 94.23,
-      "value": 840555.0
+      "value": 833300.0
     },
     {
       "date": "2006-03-01",
       "percentile_252d": 92.31,
-      "value": 839356.0
+      "value": 832026.0
     },
     {
       "date": "2006-03-08",
       "percentile_252d": 90.38,
-      "value": 839234.0
+      "value": 831956.0
     },
     {
       "date": "2006-03-15",
       "percentile_252d": 94.23,
-      "value": 843010.0
+      "value": 836281.0
     },
     {
       "date": "2006-03-22",
       "percentile_252d": 86.54,
-      "value": 838003.0
+      "value": 830611.0
     },
     {
       "date": "2006-03-29",
-      "percentile_252d": 78.85,
-      "value": 833675.0
+      "percentile_252d": 76.92,
+      "value": 826025.0
     },
     {
       "date": "2006-04-05",
       "percentile_252d": 78.85,
-      "value": 834589.0
+      "value": 827111.0
     },
     {
       "date": "2006-04-12",
       "percentile_252d": 84.62,
-      "value": 836862.0
+      "value": 829486.0
     },
     {
       "date": "2006-04-19",
       "percentile_252d": 82.69,
-      "value": 836352.0
+      "value": 829103.0
     },
     {
       "date": "2006-04-26",
       "percentile_252d": 94.23,
-      "value": 844572.0
+      "value": 837369.0
     },
     {
       "date": "2006-05-03",
-      "percentile_252d": 92.31,
-      "value": 843867.0
+      "percentile_252d": 90.38,
+      "value": 836251.0
     },
     {
       "date": "2006-05-10",
       "percentile_252d": 82.69,
-      "value": 838405.0
+      "value": 831004.0
     },
     {
       "date": "2006-05-17",
       "percentile_252d": 80.77,
-      "value": 838153.0
+      "value": 830711.0
     },
     {
       "date": "2006-05-24",
       "percentile_252d": 86.54,
-      "value": 840251.0
+      "value": 832525.0
     },
     {
       "date": "2006-05-31",
       "percentile_252d": 98.08,
-      "value": 851580.0
+      "value": 844460.0
     },
     {
       "date": "2006-06-07",
       "percentile_252d": 96.15,
-      "value": 849074.0
+      "value": 841591.0
     },
     {
       "date": "2006-06-14",
       "percentile_252d": 90.38,
-      "value": 845869.0
+      "value": 838649.0
     },
     {
       "date": "2006-06-21",
       "percentile_252d": 88.46,
-      "value": 844773.0
+      "value": 837516.0
     },
     {
       "date": "2006-06-28",
       "percentile_252d": 84.62,
-      "value": 844436.0
+      "value": 837262.0
     },
     {
       "date": "2006-07-05",
-      "percentile_252d": 98.08,
-      "value": 851659.0
+      "percentile_252d": 96.15,
+      "value": 844075.0
     },
     {
       "date": "2006-07-12",
       "percentile_252d": 80.77,
-      "value": 844391.0
+      "value": 836955.0
     },
     {
       "date": "2006-07-19",
       "percentile_252d": 94.23,
-      "value": 849894.0
+      "value": 842729.0
     },
     {
       "date": "2006-07-26",
       "percentile_252d": 73.08,
-      "value": 841552.0
+      "value": 834285.0
     },
     {
       "date": "2006-08-02",
       "percentile_252d": 94.23,
-      "value": 850263.0
+      "value": 843293.0
     },
     {
       "date": "2006-08-09",
-      "percentile_252d": 65.38,
-      "value": 840006.0
+      "percentile_252d": 67.31,
+      "value": 833113.0
     },
     {
       "date": "2006-08-16",
       "percentile_252d": 71.15,
-      "value": 842876.0
+      "value": 835879.0
     },
     {
       "date": "2006-08-23",
-      "percentile_252d": 51.92,
-      "value": 837987.0
+      "percentile_252d": 55.77,
+      "value": 830740.0
     },
     {
       "date": "2006-08-30",
       "percentile_252d": 94.23,
-      "value": 850925.0
+      "value": 843580.0
     },
     {
       "date": "2006-09-06",
-      "percentile_252d": 86.54,
-      "value": 848594.0
+      "percentile_252d": 88.46,
+      "value": 841813.0
     },
     {
       "date": "2006-09-13",
       "percentile_252d": 63.46,
-      "value": 840886.0
+      "value": 833887.0
     },
     {
       "date": "2006-09-20",
-      "percentile_252d": 50.0,
-      "value": 838192.0
+      "percentile_252d": 44.23,
+      "value": 829829.0
     },
     {
       "date": "2006-09-27",
-      "percentile_252d": 90.38,
-      "value": 849971.0
+      "percentile_252d": 92.31,
+      "value": 843441.0
     },
     {
       "date": "2006-10-04",
-      "percentile_252d": 63.46,
-      "value": 842296.0
+      "percentile_252d": 59.62,
+      "value": 833396.0
     },
     {
       "date": "2006-10-11",
       "percentile_252d": 100.0,
-      "value": 859339.0
+      "value": 851915.0
     },
     {
       "date": "2006-10-18",
-      "percentile_252d": 67.31,
-      "value": 844200.0
+      "percentile_252d": 69.23,
+      "value": 837095.0
     },
     {
       "date": "2006-10-25",
       "percentile_252d": 98.08,
-      "value": 852648.0
+      "value": 845220.0
     },
     {
       "date": "2006-11-01",
       "percentile_252d": 98.08,
-      "value": 855536.0
+      "value": 848304.0
     },
     {
       "date": "2006-11-08",
       "percentile_252d": 98.08,
-      "value": 858630.0
+      "value": 851346.0
     },
     {
       "date": "2006-11-15",
       "percentile_252d": 96.15,
-      "value": 855551.0
+      "value": 848341.0
     },
     {
       "date": "2006-11-22",
       "percentile_252d": 100.0,
-      "value": 865126.0
+      "value": 858213.0
     },
     {
       "date": "2006-11-29",
       "percentile_252d": 94.23,
-      "value": 856671.0
+      "value": 849391.0
     },
     {
       "date": "2006-12-06",
       "percentile_252d": 98.08,
-      "value": 862178.0
+      "value": 854868.0
     },
     {
       "date": "2006-12-13",
       "percentile_252d": 86.54,
-      "value": 853851.0
+      "value": 846861.0
     },
     {
       "date": "2006-12-20",
       "percentile_252d": 98.08,
-      "value": 865010.0
+      "value": 856694.0
     },
     {
       "date": "2006-12-27",
       "percentile_252d": 100.0,
-      "value": 869988.0
+      "value": 862498.0
     },
     {
       "date": "2007-01-03",
       "percentile_252d": 100.0,
-      "value": 874626.0
+      "value": 867349.0
     },
     {
       "date": "2007-01-10",
       "percentile_252d": 80.77,
-      "value": 854819.0
+      "value": 847772.0
     },
     {
       "date": "2007-01-17",
       "percentile_252d": 90.38,
-      "value": 859363.0
+      "value": 852427.0
     },
     {
       "date": "2007-01-24",
-      "percentile_252d": 73.08,
-      "value": 851755.0
+      "percentile_252d": 71.15,
+      "value": 844393.0
     },
     {
       "date": "2007-01-31",
       "percentile_252d": 96.15,
-      "value": 865730.0
+      "value": 858425.0
     },
     {
       "date": "2007-02-07",
-      "percentile_252d": 76.92,
-      "value": 855057.0
+      "percentile_252d": 75.0,
+      "value": 847710.0
     },
     {
       "date": "2007-02-14",
       "percentile_252d": 96.15,
-      "value": 867199.0
+      "value": 859935.0
     },
     {
       "date": "2007-02-21",
       "percentile_252d": 96.15,
-      "value": 869235.0
+      "value": 862045.0
     },
     {
       "date": "2007-02-28",
       "percentile_252d": 100.0,
-      "value": 877409.0
+      "value": 870485.0
     },
     {
       "date": "2007-03-07",
-      "percentile_252d": 84.62,
-      "value": 864505.0
+      "percentile_252d": 86.54,
+      "value": 857530.0
     },
     {
       "date": "2007-03-14",
       "percentile_252d": 98.08,
-      "value": 876108.0
+      "value": 868820.0
     },
     {
       "date": "2007-03-21",
       "percentile_252d": 80.77,
-      "value": 863067.0
+      "value": 855409.0
     },
     {
       "date": "2007-03-28",
-      "percentile_252d": 92.31,
-      "value": 869803.0
+      "percentile_252d": 94.23,
+      "value": 862563.0
     },
     {
       "date": "2007-04-04",
       "percentile_252d": 76.92,
-      "value": 862319.0
+      "value": 855300.0
     },
     {
       "date": "2007-04-11",
-      "percentile_252d": 84.62,
-      "value": 865441.0
+      "percentile_252d": 86.54,
+      "value": 858519.0
     },
     {
       "date": "2007-04-18",
       "percentile_252d": 71.15,
-      "value": 861335.0
+      "value": 853631.0
     },
     {
       "date": "2007-04-25",
       "percentile_252d": 100.0,
-      "value": 879686.0
+      "value": 870902.0
     },
     {
       "date": "2007-05-02",
-      "percentile_252d": 100.0,
-      "value": 890857.0
+      "percentile_252d": 96.15,
+      "value": 870220.0
     },
     {
       "date": "2007-05-09",
-      "percentile_252d": 92.31,
-      "value": 875270.0
+      "percentile_252d": 90.38,
+      "value": 864606.0
     },
     {
       "date": "2007-05-16",
       "percentile_252d": 63.46,
-      "value": 859559.0
+      "value": 853608.0
     },
     {
       "date": "2007-05-23",
-      "percentile_252d": 88.46,
-      "value": 873935.0
+      "percentile_252d": 92.31,
+      "value": 867522.0
     },
     {
       "date": "2007-05-30",
-      "percentile_252d": 94.23,
-      "value": 876986.0
+      "percentile_252d": 96.15,
+      "value": 870303.0
     },
     {
       "date": "2007-06-06",
-      "percentile_252d": 84.62,
-      "value": 872706.0
+      "percentile_252d": 86.54,
+      "value": 866268.0
     },
     {
       "date": "2007-06-13",
-      "percentile_252d": 67.31,
-      "value": 864989.0
+      "percentile_252d": 75.0,
+      "value": 858531.0
     },
     {
       "date": "2007-06-20",
       "percentile_252d": 75.0,
-      "value": 866089.0
+      "value": 859114.0
     },
     {
       "date": "2007-06-27",
-      "percentile_252d": 67.31,
-      "value": 865105.0
+      "percentile_252d": 73.08,
+      "value": 858682.0
     },
     {
       "date": "2007-07-04",
-      "percentile_252d": 92.31,
-      "value": 876611.0
+      "percentile_252d": 98.08,
+      "value": 870504.0
     },
     {
       "date": "2007-07-11",
-      "percentile_252d": 76.92,
-      "value": 869407.0
+      "percentile_252d": 80.77,
+      "value": 862995.0
     },
     {
       "date": "2007-07-18",
-      "percentile_252d": 82.69,
-      "value": 872916.0
+      "percentile_252d": 84.62,
+      "value": 867242.0
     },
     {
       "date": "2007-07-25",
-      "percentile_252d": 53.85,
-      "value": 863890.0
+      "percentile_252d": 55.77,
+      "value": 857338.0
     },
     {
       "date": "2007-08-01",
       "percentile_252d": 78.85,
-      "value": 870261.0
+      "value": 863887.0
     },
     {
       "date": "2007-08-08",
-      "percentile_252d": 63.46,
-      "value": 865453.0
+      "percentile_252d": 65.38,
+      "value": 858955.0
     },
     {
       "date": "2007-08-15",
-      "percentile_252d": 51.92,
-      "value": 864931.0
+      "percentile_252d": 63.46,
+      "value": 858696.0
     },
     {
       "date": "2007-08-22",
-      "percentile_252d": 44.23,
-      "value": 862775.0
+      "percentile_252d": 46.15,
+      "value": 856433.0
     },
     {
       "date": "2007-08-29",
-      "percentile_252d": 80.77,
-      "value": 872873.0
+      "percentile_252d": 82.69,
+      "value": 866284.0
     },
     {
       "date": "2007-09-05",
-      "percentile_252d": 76.92,
-      "value": 871156.0
+      "percentile_252d": 78.85,
+      "value": 864971.0
     },
     {
       "date": "2007-09-12",
-      "percentile_252d": 98.08,
-      "value": 886314.0
+      "percentile_252d": 100.0,
+      "value": 880059.0
     },
     {
       "date": "2007-09-19",
       "percentile_252d": 63.46,
-      "value": 867732.0
+      "value": 860816.0
     },
     {
       "date": "2007-09-26",
-      "percentile_252d": 98.08,
-      "value": 889900.0
+      "percentile_252d": 100.0,
+      "value": 883639.0
     },
     {
       "date": "2007-10-03",
-      "percentile_252d": 61.54,
-      "value": 869051.0
+      "percentile_252d": 63.46,
+      "value": 862121.0
     },
     {
       "date": "2007-10-10",
-      "percentile_252d": 96.15,
-      "value": 886363.0
+      "percentile_252d": 98.08,
+      "value": 880484.0
     },
     {
       "date": "2007-10-17",
-      "percentile_252d": 63.46,
-      "value": 869509.0
+      "percentile_252d": 65.38,
+      "value": 862929.0
     },
     {
       "date": "2007-10-24",
-      "percentile_252d": 92.31,
-      "value": 881395.0
+      "percentile_252d": 94.23,
+      "value": 874849.0
     },
     {
       "date": "2007-10-31",
-      "percentile_252d": 92.31,
-      "value": 883385.0
+      "percentile_252d": 94.23,
+      "value": 876935.0
     },
     {
       "date": "2007-11-07",
-      "percentile_252d": 92.31,
-      "value": 885724.0
+      "percentile_252d": 94.23,
+      "value": 879105.0
     },
     {
       "date": "2007-11-14",
-      "percentile_252d": 96.15,
-      "value": 889537.0
+      "percentile_252d": 98.08,
+      "value": 882894.0
     },
     {
       "date": "2007-11-21",
       "percentile_252d": 100.0,
-      "value": 891028.0
+      "value": 884569.0
     },
     {
       "date": "2007-11-28",
-      "percentile_252d": 80.77,
-      "value": 879417.0
+      "percentile_252d": 84.62,
+      "value": 872741.0
     },
     {
       "date": "2007-12-05",
-      "percentile_252d": 84.62,
-      "value": 882764.0
+      "percentile_252d": 86.54,
+      "value": 876359.0
     },
     {
       "date": "2007-12-12",
-      "percentile_252d": 82.69,
-      "value": 881750.0
+      "percentile_252d": 84.62,
+      "value": 875419.0
     },
     {
       "date": "2007-12-19",
-      "percentile_252d": 92.31,
-      "value": 887983.0
+      "percentile_252d": 88.46,
+      "value": 878983.0
     },
     {
       "date": "2007-12-26",
-      "percentile_252d": 96.15,
-      "value": 890662.0
+      "percentile_252d": 98.08,
+      "value": 884252.0
     },
     {
       "date": "2008-01-02",
       "percentile_252d": 100.0,
-      "value": 922187.0
+      "value": 911994.0
     },
     {
       "date": "2008-01-09",
-      "percentile_252d": 73.08,
-      "value": 880754.0
+      "percentile_252d": 75.0,
+      "value": 874108.0
     },
     {
       "date": "2008-01-16",
       "percentile_252d": 98.08,
-      "value": 893581.0
+      "value": 886910.0
     },
     {
       "date": "2008-01-23",
       "percentile_252d": 63.46,
-      "value": 877253.0
+      "value": 870418.0
     },
     {
       "date": "2008-01-30",
       "percentile_252d": 98.08,
-      "value": 900264.0
+      "value": 894114.0
     },
     {
       "date": "2008-02-06",
       "percentile_252d": 42.31,
-      "value": 871022.0
+      "value": 863974.0
     },
     {
       "date": "2008-02-13",
       "percentile_252d": 75.0,
-      "value": 883005.0
+      "value": 876189.0
     },
     {
       "date": "2008-02-20",
-      "percentile_252d": 61.54,
-      "value": 878949.0
+      "percentile_252d": 67.31,
+      "value": 873588.0
     },
     {
       "date": "2008-02-27",
       "percentile_252d": 96.15,
-      "value": 893825.0
+      "value": 887585.0
     },
     {
       "date": "2008-03-05",
-      "percentile_252d": 65.38,
-      "value": 881208.0
+      "percentile_252d": 67.31,
+      "value": 874841.0
     },
     {
       "date": "2008-03-12",
       "percentile_252d": 96.15,
-      "value": 896565.0
+      "value": 889989.0
     },
     {
       "date": "2008-03-19",
-      "percentile_252d": 80.77,
-      "value": 888646.0
+      "percentile_252d": 71.15,
+      "value": 876244.0
     },
     {
       "date": "2008-03-26",
-      "percentile_252d": 94.23,
-      "value": 893965.0
+      "percentile_252d": 82.69,
+      "value": 880986.0
     },
     {
       "date": "2008-04-02",
-      "percentile_252d": 69.23,
-      "value": 883708.0
+      "percentile_252d": 59.62,
+      "value": 874800.0
     },
     {
       "date": "2008-04-09",
-      "percentile_252d": 88.46,
-      "value": 893029.0
+      "percentile_252d": 86.54,
+      "value": 884152.0
     },
     {
       "date": "2008-04-16",
-      "percentile_252d": 59.62,
-      "value": 881904.0
+      "percentile_252d": 51.92,
+      "value": 873409.0
     },
     {
       "date": "2008-04-23",
       "percentile_252d": 69.23,
-      "value": 885781.0
+      "value": 876594.0
     },
     {
       "date": "2008-04-30",
-      "percentile_252d": 76.92,
-      "value": 888131.0
+      "percentile_252d": 71.15,
+      "value": 878660.0
     },
     {
       "date": "2008-05-07",
-      "percentile_252d": 78.85,
-      "value": 889228.0
+      "percentile_252d": 76.92,
+      "value": 880287.0
     },
     {
       "date": "2008-05-14",
-      "percentile_252d": 46.15,
-      "value": 880175.0
+      "percentile_252d": 42.31,
+      "value": 871768.0
     },
     {
       "date": "2008-05-21",
       "percentile_252d": 96.15,
-      "value": 898487.0
+      "value": 890338.0
     },
     {
       "date": "2008-05-28",
       "percentile_252d": 98.08,
-      "value": 904054.0
+      "value": 895364.0
     },
     {
       "date": "2008-06-04",
-      "percentile_252d": 90.38,
-      "value": 895939.0
+      "percentile_252d": 88.46,
+      "value": 887345.0
     },
     {
       "date": "2008-06-11",
-      "percentile_252d": 76.92,
-      "value": 890610.0
+      "percentile_252d": 75.0,
+      "value": 882011.0
     },
     {
       "date": "2008-06-18",
-      "percentile_252d": 96.15,
-      "value": 902304.0
+      "percentile_252d": 94.23,
+      "value": 893628.0
     },
     {
       "date": "2008-06-25",
-      "percentile_252d": 78.85,
-      "value": 892713.0
+      "percentile_252d": 76.92,
+      "value": 883893.0
     },
     {
       "date": "2008-07-02",
       "percentile_252d": 96.15,
-      "value": 902962.0
+      "value": 894170.0
     },
     {
       "date": "2008-07-09",
-      "percentile_252d": 88.46,
-      "value": 898034.0
+      "percentile_252d": 86.54,
+      "value": 889104.0
     },
     {
       "date": "2008-07-16",
       "percentile_252d": 98.08,
-      "value": 910681.0
+      "value": 902220.0
     },
     {
       "date": "2008-07-23",
       "percentile_252d": 88.46,
-      "value": 899665.0
+      "value": 890496.0
     },
     {
       "date": "2008-07-30",
       "percentile_252d": 98.08,
-      "value": 918625.0
+      "value": 909781.0
     },
     {
       "date": "2008-08-06",
-      "percentile_252d": 88.46,
-      "value": 901710.0
+      "percentile_252d": 86.54,
+      "value": 893080.0
     },
     {
       "date": "2008-08-13",
       "percentile_252d": 96.15,
-      "value": 914632.0
+      "value": 906023.0
     },
     {
       "date": "2008-08-20",
-      "percentile_252d": 80.77,
-      "value": 898611.0
+      "percentile_252d": 78.85,
+      "value": 890096.0
     },
     {
       "date": "2008-08-27",
       "percentile_252d": 92.31,
-      "value": 909982.0
+      "value": 901404.0
     },
     {
       "date": "2008-09-03",
       "percentile_252d": 90.38,
-      "value": 905253.0
+      "value": 896757.0
     },
     {
       "date": "2008-09-10",
       "percentile_252d": 100.0,
-      "value": 925725.0
+      "value": 917252.0
     },
     {
       "date": "2008-09-17",
       "percentile_252d": 100.0,
-      "value": 995093.0
+      "value": 986402.0
     },
     {
       "date": "2008-09-24",
       "percentile_252d": 100.0,
-      "value": 1211825.0
+      "value": 1181737.0
     },
     {
       "date": "2008-10-01",
       "percentile_252d": 100.0,
-      "value": 1503989.0
+      "value": 1475360.0
     },
     {
       "date": "2008-10-08",
       "percentile_252d": 100.0,
-      "value": 1591587.0
+      "value": 1558677.0
     },
     {
       "date": "2008-10-15",
       "percentile_252d": 100.0,
-      "value": 1770809.0
+      "value": 1738471.0
     },
     {
       "date": "2008-10-22",
       "percentile_252d": 100.0,
-      "value": 1802602.0
+      "value": 1754436.0
     },
     {
       "date": "2008-10-29",
       "percentile_252d": 100.0,
-      "value": 1969086.0
+      "value": 1843350.0
     },
     {
       "date": "2008-11-05",
       "percentile_252d": 100.0,
-      "value": 2074205.0
+      "value": 2017405.0
     },
     {
       "date": "2008-11-12",
       "percentile_252d": 100.0,
-      "value": 2212852.0
+      "value": 2126076.0
     },
     {
       "date": "2008-11-19",
       "percentile_252d": 98.08,
-      "value": 2187137.0
+      "value": 2101672.0
     },
     {
       "date": "2008-11-26",
-      "percentile_252d": 96.15,
-      "value": 2106117.0
+      "percentile_252d": 94.23,
+      "value": 2016586.0
     },
     {
       "date": "2008-12-03",
       "percentile_252d": 96.15,
-      "value": 2136924.0
+      "value": 2050875.0
     },
     {
       "date": "2008-12-10",
       "percentile_252d": 100.0,
-      "value": 2250012.0
+      "value": 2175483.0
     },
     {
       "date": "2008-12-17",
-      "percentile_252d": 100.0,
-      "value": 2254983.0
+      "percentile_252d": 98.08,
+      "value": 2150351.0
     },
     {
       "date": "2008-12-24",
-      "percentile_252d": 96.15,
-      "value": 2232311.0
+      "percentile_252d": 92.31,
+      "value": 2081378.0
     },
     {
       "date": "2008-12-31",
-      "percentile_252d": 96.15,
-      "value": 2239457.0
+      "percentile_252d": 92.31,
+      "value": 2100228.0
     },
     {
       "date": "2009-01-07",
       "percentile_252d": 86.54,
-      "value": 2121439.0
+      "value": 2030302.0
     },
     {
       "date": "2009-01-14",
       "percentile_252d": 80.77,
-      "value": 2049714.0
+      "value": 1987888.0
     },
     {
       "date": "2009-01-21",
       "percentile_252d": 78.85,
-      "value": 2037112.0
+      "value": 1976602.0
     },
     {
       "date": "2009-01-28",
-      "percentile_252d": 75.0,
-      "value": 1927082.0
+      "percentile_252d": 76.92,
+      "value": 1846543.0
     },
     {
       "date": "2009-02-04",
       "percentile_252d": 73.08,
-      "value": 1851437.0
+      "value": 1784520.0
     },
     {
       "date": "2009-02-11",
       "percentile_252d": 71.15,
-      "value": 1843400.0
+      "value": 1781894.0
     },
     {
       "date": "2009-02-18",
-      "percentile_252d": 73.08,
-      "value": 1915562.0
+      "percentile_252d": 76.92,
+      "value": 1859480.0
     },
     {
       "date": "2009-02-25",
-      "percentile_252d": 73.08,
-      "value": 1916115.0
+      "percentile_252d": 75.0,
+      "value": 1855532.0
     },
     {
       "date": "2009-03-04",
       "percentile_252d": 69.23,
-      "value": 1901317.0
+      "value": 1823904.0
     },
     {
       "date": "2009-03-11",
-      "percentile_252d": 67.31,
-      "value": 1899514.0
+      "percentile_252d": 69.23,
+      "value": 1825618.0
     },
     {
       "date": "2009-03-18",
-      "percentile_252d": 80.77,
-      "value": 2066942.0
+      "percentile_252d": 76.92,
+      "value": 1969219.0
     },
     {
       "date": "2009-03-25",
-      "percentile_252d": 80.77,
-      "value": 2071556.0
+      "percentile_252d": 75.0,
+      "value": 1968473.0
     },
     {
       "date": "2009-04-01",
-      "percentile_252d": 82.69,
-      "value": 2078936.0
+      "percentile_252d": 80.77,
+      "value": 2006807.0
     },
     {
       "date": "2009-04-08",
-      "percentile_252d": 82.69,
-      "value": 2088573.0
+      "percentile_252d": 84.62,
+      "value": 2027592.0
     },
     {
       "date": "2009-04-15",
-      "percentile_252d": 88.46,
-      "value": 2186498.0
+      "percentile_252d": 94.23,
+      "value": 2119632.0
     },
     {
       "date": "2009-04-22",
-      "percentile_252d": 90.38,
-      "value": 2196812.0
+      "percentile_252d": 92.31,
+      "value": 2106092.0
     },
     {
       "date": "2009-04-29",
-      "percentile_252d": 69.23,
-      "value": 2066712.0
+      "percentile_252d": 65.38,
+      "value": 1956938.0
     },
     {
       "date": "2009-05-06",
-      "percentile_252d": 76.92,
-      "value": 2079758.0
+      "percentile_252d": 65.38,
+      "value": 1967675.0
     },
     {
       "date": "2009-05-13",
-      "percentile_252d": 88.46,
-      "value": 2196351.0
+      "percentile_252d": 86.54,
+      "value": 2095292.0
     },
     {
       "date": "2009-05-20",
-      "percentile_252d": 82.69,
-      "value": 2181632.0
+      "percentile_252d": 92.31,
+      "value": 2106794.0
     },
     {
       "date": "2009-05-27",
-      "percentile_252d": 73.08,
-      "value": 2080115.0
+      "percentile_252d": 76.92,
+      "value": 2028423.0
     },
     {
       "date": "2009-06-03",
-      "percentile_252d": 67.31,
-      "value": 2077695.0
+      "percentile_252d": 73.08,
+      "value": 2020122.0
     },
     {
       "date": "2009-06-10",
-      "percentile_252d": 57.69,
-      "value": 2052297.0
+      "percentile_252d": 65.38,
+      "value": 1995905.0
     },
     {
       "date": "2009-06-17",
-      "percentile_252d": 63.46,
-      "value": 2072527.0
+      "percentile_252d": 65.38,
+      "value": 2005270.0
     },
     {
       "date": "2009-06-24",
       "percentile_252d": 50.0,
-      "value": 2025571.0
+      "value": 1881900.0
     },
     {
       "date": "2009-07-01",
-      "percentile_252d": 48.08,
-      "value": 2005627.0
+      "percentile_252d": 50.0,
+      "value": 1908637.0
     },
     {
       "date": "2009-07-08",
-      "percentile_252d": 46.15,
-      "value": 1992740.0
+      "percentile_252d": 50.0,
+      "value": 1933540.0
     },
     {
       "date": "2009-07-15",
-      "percentile_252d": 61.54,
-      "value": 2072451.0
+      "percentile_252d": 73.08,
+      "value": 2021020.0
     },
     {
       "date": "2009-07-22",
-      "percentile_252d": 50.0,
-      "value": 2039001.0
+      "percentile_252d": 48.08,
+      "value": 1940813.0
     },
     {
       "date": "2009-07-29",
-      "percentile_252d": 42.31,
-      "value": 2000547.0
+      "percentile_252d": 44.23,
+      "value": 1914141.0
     },
     {
       "date": "2009-08-05",
-      "percentile_252d": 38.46,
-      "value": 1989203.0
+      "percentile_252d": 40.38,
+      "value": 1893391.0
     },
     {
       "date": "2009-08-12",
-      "percentile_252d": 44.23,
-      "value": 2014899.0
+      "percentile_252d": 48.08,
+      "value": 1941682.0
     },
     {
       "date": "2009-08-19",
-      "percentile_252d": 53.85,
-      "value": 2060641.0
+      "percentile_252d": 63.46,
+      "value": 2005874.0
     },
     {
       "date": "2009-08-26",
-      "percentile_252d": 65.38,
-      "value": 2074902.0
+      "percentile_252d": 73.08,
+      "value": 2023629.0
     },
     {
       "date": "2009-09-02",
-      "percentile_252d": 73.08,
-      "value": 2083720.0
+      "percentile_252d": 71.15,
+      "value": 2023139.0
     },
     {
       "date": "2009-09-09",
-      "percentile_252d": 73.08,
-      "value": 2087946.0
+      "percentile_252d": 78.85,
+      "value": 2046148.0
     },
     {
       "date": "2009-09-16",
-      "percentile_252d": 80.77,
-      "value": 2139783.0
+      "percentile_252d": 82.69,
+      "value": 2089437.0
     },
     {
       "date": "2009-09-23",
-      "percentile_252d": 80.77,
-      "value": 2158631.0
+      "percentile_252d": 78.85,
+      "value": 2080330.0
     },
     {
       "date": "2009-09-30",
-      "percentile_252d": 78.85,
-      "value": 2141020.0
+      "percentile_252d": 76.92,
+      "value": 2078110.0
     },
     {
       "date": "2009-10-07",
       "percentile_252d": 75.0,
-      "value": 2138086.0
+      "value": 2071507.0
     },
     {
       "date": "2009-10-14",
-      "percentile_252d": 86.54,
-      "value": 2192787.0
+      "percentile_252d": 96.15,
+      "value": 2144614.0
     },
     {
       "date": "2009-10-21",
-      "percentile_252d": 90.38,
-      "value": 2201119.0
+      "percentile_252d": 80.77,
+      "value": 2092658.0
     },
     {
       "date": "2009-10-28",
-      "percentile_252d": 76.92,
-      "value": 2161537.0
+      "percentile_252d": 80.77,
+      "value": 2093296.0
     },
     {
       "date": "2009-11-04",
       "percentile_252d": 76.92,
-      "value": 2165067.0
+      "value": 2090556.0
     },
     {
       "date": "2009-11-11",
-      "percentile_252d": 65.38,
-      "value": 2135035.0
+      "percentile_252d": 63.46,
+      "value": 2035398.0
     },
     {
       "date": "2009-11-18",
-      "percentile_252d": 92.31,
-      "value": 2208721.0
+      "percentile_252d": 94.23,
+      "value": 2122087.0
     },
     {
       "date": "2009-11-25",
-      "percentile_252d": 90.38,
-      "value": 2206359.0
+      "percentile_252d": 98.08,
+      "value": 2155455.0
     },
     {
       "date": "2009-12-02",
-      "percentile_252d": 88.46,
-      "value": 2204074.0
+      "percentile_252d": 92.31,
+      "value": 2140831.0
     },
     {
       "date": "2009-12-09",
-      "percentile_252d": 78.85,
-      "value": 2186383.0
+      "percentile_252d": 98.08,
+      "value": 2154410.0
     },
     {
       "date": "2009-12-16",
-      "percentile_252d": 98.08,
-      "value": 2235763.0
+      "percentile_252d": 100.0,
+      "value": 2158797.0
     },
     {
       "date": "2009-12-23",
-      "percentile_252d": 98.08,
-      "value": 2235803.0
+      "percentile_252d": 90.38,
+      "value": 2140627.0
     },
     {
       "date": "2009-12-30",
-      "percentile_252d": 96.15,
-      "value": 2234067.0
+      "percentile_252d": 84.62,
+      "value": 2115319.0
     },
     {
       "date": "2010-01-06",
-      "percentile_252d": 96.15,
-      "value": 2235304.0
+      "percentile_252d": 63.46,
+      "value": 2056736.0
     },
     {
       "date": "2010-01-13",
-      "percentile_252d": 100.0,
-      "value": 2291700.0
+      "percentile_252d": 96.15,
+      "value": 2155093.0
     },
     {
       "date": "2010-01-20",
-      "percentile_252d": 98.08,
-      "value": 2251806.0
+      "percentile_252d": 80.77,
+      "value": 2107673.0
     },
     {
       "date": "2010-01-27",
-      "percentile_252d": 96.15,
-      "value": 2246886.0
+      "percentile_252d": 80.77,
+      "value": 2111623.0
     },
     {
       "date": "2010-02-03",
-      "percentile_252d": 96.15,
-      "value": 2249319.0
+      "percentile_252d": 86.54,
+      "value": 2139588.0
     },
     {
       "date": "2010-02-10",
-      "percentile_252d": 98.08,
-      "value": 2256679.0
+      "percentile_252d": 100.0,
+      "value": 2176592.0
     },
     {
       "date": "2010-02-17",
-      "percentile_252d": 98.08,
-      "value": 2277574.0
+      "percentile_252d": 100.0,
+      "value": 2230869.0
     },
     {
       "date": "2010-02-24",
-      "percentile_252d": 98.08,
-      "value": 2286127.0
+      "percentile_252d": 100.0,
+      "value": 2253011.0
     },
     {
       "date": "2010-03-03",
-      "percentile_252d": 96.15,
-      "value": 2280147.0
+      "percentile_252d": 98.08,
+      "value": 2241028.0
     },
     {
       "date": "2010-03-10",
-      "percentile_252d": 96.15,
-      "value": 2282474.0
+      "percentile_252d": 98.08,
+      "value": 2246107.0
     },
     {
       "date": "2010-03-17",
       "percentile_252d": 100.0,
-      "value": 2307997.0
+      "value": 2255605.0
     },
     {
       "date": "2010-03-24",
-      "percentile_252d": 100.0,
-      "value": 2313149.0
+      "percentile_252d": 94.23,
+      "value": 2245321.0
     },
     {
       "date": "2010-03-31",
-      "percentile_252d": 96.15,
-      "value": 2307150.0
+      "percentile_252d": 100.0,
+      "value": 2271029.0
     },
     {
       "date": "2010-04-07",
-      "percentile_252d": 96.15,
-      "value": 2307575.0
+      "percentile_252d": 100.0,
+      "value": 2288259.0
     },
     {
       "date": "2010-04-14",
       "percentile_252d": 100.0,
-      "value": 2339345.0
+      "value": 2327454.0
     },
     {
       "date": "2010-04-21",
       "percentile_252d": 98.08,
-      "value": 2337556.0
+      "value": 2291243.0
     },
     {
       "date": "2010-04-28",
-      "percentile_252d": 96.15,
-      "value": 2330472.0
+      "percentile_252d": 94.23,
+      "value": 2273085.0
     },
     {
       "date": "2010-05-05",
-      "percentile_252d": 94.23,
-      "value": 2326164.0
+      "percentile_252d": 86.54,
+      "value": 2249272.0
     },
     {
       "date": "2010-05-12",
-      "percentile_252d": 96.15,
-      "value": 2336103.0
+      "percentile_252d": 98.08,
+      "value": 2301573.0
     },
     {
       "date": "2010-05-19",
       "percentile_252d": 100.0,
-      "value": 2350890.0
+      "value": 2329506.0
     },
     {
       "date": "2010-05-26",
-      "percentile_252d": 92.31,
-      "value": 2334041.0
+      "percentile_252d": 96.15,
+      "value": 2307739.0
     },
     {
       "date": "2010-06-02",
       "percentile_252d": 94.23,
-      "value": 2336216.0
+      "value": 2302856.0
     },
     {
       "date": "2010-06-09",
-      "percentile_252d": 88.46,
-      "value": 2331529.0
+      "percentile_252d": 90.38,
+      "value": 2298508.0
     },
     {
       "date": "2010-06-16",
-      "percentile_252d": 98.08,
-      "value": 2344316.0
+      "percentile_252d": 96.15,
+      "value": 2314892.0
     },
     {
       "date": "2010-06-23",
-      "percentile_252d": 98.08,
-      "value": 2344497.0
+      "percentile_252d": 86.54,
+      "value": 2298420.0
     },
     {
       "date": "2010-06-30",
       "percentile_252d": 82.69,
-      "value": 2330851.0
+      "value": 2290514.0
     },
     {
       "date": "2010-07-07",
-      "percentile_252d": 84.62,
-      "value": 2332017.0
+      "percentile_252d": 92.31,
+      "value": 2305808.0
     },
     {
       "date": "2010-07-14",
-      "percentile_252d": 94.23,
-      "value": 2340717.0
+      "percentile_252d": 96.15,
+      "value": 2322230.0
     },
     {
       "date": "2010-07-21",
-      "percentile_252d": 82.69,
-      "value": 2332322.0
+      "percentile_252d": 75.0,
+      "value": 2280790.0
     },
     {
       "date": "2010-07-28",
-      "percentile_252d": 71.15,
-      "value": 2325298.0
+      "percentile_252d": 75.0,
+      "value": 2283470.0
     },
     {
       "date": "2010-08-04",
-      "percentile_252d": 73.08,
-      "value": 2326479.0
+      "percentile_252d": 84.62,
+      "value": 2298877.0
     },
     {
       "date": "2010-08-11",
-      "percentile_252d": 73.08,
-      "value": 2327533.0
+      "percentile_252d": 76.92,
+      "value": 2291195.0
     },
     {
       "date": "2010-08-18",
-      "percentile_252d": 65.38,
-      "value": 2313662.0
+      "percentile_252d": 71.15,
+      "value": 2285139.0
     },
     {
       "date": "2010-08-25",
-      "percentile_252d": 55.77,
-      "value": 2301015.0
+      "percentile_252d": 67.31,
+      "value": 2282012.0
     },
     {
       "date": "2010-09-01",
-      "percentile_252d": 55.77,
-      "value": 2301996.0
+      "percentile_252d": 63.46,
+      "value": 2278703.0
     },
     {
       "date": "2010-09-08",
-      "percentile_252d": 55.77,
-      "value": 2305802.0
+      "percentile_252d": 67.31,
+      "value": 2282560.0
     },
     {
       "date": "2010-09-15",
-      "percentile_252d": 50.0,
-      "value": 2296079.0
+      "percentile_252d": 59.62,
+      "value": 2273558.0
     },
     {
       "date": "2010-09-22",
-      "percentile_252d": 57.69,
-      "value": 2307171.0
+      "percentile_252d": 40.38,
+      "value": 2229614.0
     },
     {
       "date": "2010-09-29",
-      "percentile_252d": 48.08,
-      "value": 2298691.0
+      "percentile_252d": 42.31,
+      "value": 2240935.0
     },
     {
       "date": "2010-10-06",
-      "percentile_252d": 61.54,
-      "value": 2308092.0
+      "percentile_252d": 50.0,
+      "value": 2249787.0
     },
     {
       "date": "2010-10-13",
-      "percentile_252d": 61.54,
-      "value": 2309885.0
+      "percentile_252d": 71.15,
+      "value": 2286925.0
     },
     {
       "date": "2010-10-20",
-      "percentile_252d": 48.08,
-      "value": 2305227.0
+      "percentile_252d": 50.0,
+      "value": 2255113.0
     },
     {
       "date": "2010-10-27",
-      "percentile_252d": 38.46,
-      "value": 2295392.0
+      "percentile_252d": 51.92,
+      "value": 2257293.0
     },
     {
       "date": "2010-11-03",
-      "percentile_252d": 42.31,
-      "value": 2300353.0
+      "percentile_252d": 51.92,
+      "value": 2265897.0
     },
     {
       "date": "2010-11-10",
-      "percentile_252d": 61.54,
-      "value": 2312768.0
+      "percentile_252d": 75.0,
+      "value": 2291003.0
     },
     {
       "date": "2010-11-17",
-      "percentile_252d": 65.38,
-      "value": 2314757.0
+      "percentile_252d": 78.85,
+      "value": 2292790.0
     },
     {
       "date": "2010-11-24",
-      "percentile_252d": 98.08,
-      "value": 2346001.0
+      "percentile_252d": 94.23,
+      "value": 2316430.0
     },
     {
       "date": "2010-12-01",
-      "percentile_252d": 98.08,
-      "value": 2346920.0
+      "percentile_252d": 90.38,
+      "value": 2311362.0
     },
     {
       "date": "2010-12-08",
       "percentile_252d": 100.0,
-      "value": 2382294.0
+      "value": 2360930.0
     },
     {
       "date": "2010-12-15",
-      "percentile_252d": 100.0,
-      "value": 2385754.0
+      "percentile_252d": 98.08,
+      "value": 2355481.0
     },
     {
       "date": "2010-12-22",
-      "percentile_252d": 100.0,
-      "value": 2427921.0
+      "percentile_252d": 96.15,
+      "value": 2336262.0
     },
     {
       "date": "2010-12-29",
-      "percentile_252d": 98.08,
-      "value": 2420570.0
+      "percentile_252d": 94.23,
+      "value": 2332918.0
     },
     {
       "date": "2011-01-05",
-      "percentile_252d": 100.0,
-      "value": 2436064.0
+      "percentile_252d": 86.54,
+      "value": 2320498.0
     },
     {
       "date": "2011-01-12",
       "percentile_252d": 100.0,
-      "value": 2468131.0
+      "value": 2378844.0
     },
     {
       "date": "2011-01-19",
-      "percentile_252d": 94.23,
-      "value": 2425164.0
+      "percentile_252d": 98.08,
+      "value": 2366026.0
     },
     {
       "date": "2011-01-26",
-      "percentile_252d": 98.08,
-      "value": 2443527.0
+      "percentile_252d": 92.31,
+      "value": 2351643.0
     },
     {
       "date": "2011-02-02",
-      "percentile_252d": 100.0,
-      "value": 2469419.0
+      "percentile_252d": 98.08,
+      "value": 2371925.0
     },
     {
       "date": "2011-02-09",
       "percentile_252d": 100.0,
-      "value": 2500481.0
+      "value": 2419084.0
     },
     {
       "date": "2011-02-16",
       "percentile_252d": 100.0,
-      "value": 2508868.0
+      "value": 2462265.0
     },
     {
       "date": "2011-02-23",
       "percentile_252d": 100.0,
-      "value": 2533221.0
+      "value": 2492483.0
     },
     {
       "date": "2011-03-02",
       "percentile_252d": 100.0,
-      "value": 2545119.0
+      "value": 2497881.0
     },
     {
       "date": "2011-03-09",
       "percentile_252d": 100.0,
-      "value": 2577076.0
+      "value": 2541055.0
     },
     {
       "date": "2011-03-16",
-      "percentile_252d": 100.0,
-      "value": 2583046.0
+      "percentile_252d": 98.08,
+      "value": 2540778.0
     },
     {
       "date": "2011-03-23",
-      "percentile_252d": 100.0,
-      "value": 2601341.0
+      "percentile_252d": 96.15,
+      "value": 2513881.0
     },
     {
       "date": "2011-03-30",
       "percentile_252d": 100.0,
-      "value": 2622523.0
+      "value": 2563238.0
     },
     {
       "date": "2011-04-06",
       "percentile_252d": 100.0,
-      "value": 2648676.0
+      "value": 2593104.0
     },
     {
       "date": "2011-04-13",
       "percentile_252d": 100.0,
-      "value": 2665408.0
+      "value": 2639219.0
     },
     {
       "date": "2011-04-20",
-      "percentile_252d": 100.0,
-      "value": 2685782.0
+      "percentile_252d": 98.08,
+      "value": 2611744.0
     },
     {
       "date": "2011-04-27",
-      "percentile_252d": 100.0,
-      "value": 2690985.0
+      "percentile_252d": 94.23,
+      "value": 2586063.0
     },
     {
       "date": "2011-05-04",
-      "percentile_252d": 100.0,
-      "value": 2718757.0
+      "percentile_252d": 96.15,
+      "value": 2602961.0
     },
     {
       "date": "2011-05-11",
       "percentile_252d": 100.0,
-      "value": 2744498.0
+      "value": 2644135.0
     },
     {
       "date": "2011-05-18",
       "percentile_252d": 100.0,
-      "value": 2758009.0
+      "value": 2665791.0
     },
     {
       "date": "2011-05-25",
       "percentile_252d": 100.0,
-      "value": 2774996.0
+      "value": 2689967.0
     },
     {
       "date": "2011-06-01",
       "percentile_252d": 100.0,
-      "value": 2788723.0
+      "value": 2721961.0
     },
     {
       "date": "2011-06-08",
       "percentile_252d": 100.0,
-      "value": 2811206.0
+      "value": 2772248.0
     },
     {
       "date": "2011-06-15",
       "percentile_252d": 100.0,
-      "value": 2827549.0
+      "value": 2785464.0
     },
     {
       "date": "2011-06-22",
-      "percentile_252d": 100.0,
-      "value": 2856403.0
+      "percentile_252d": 96.15,
+      "value": 2732719.0
     },
     {
       "date": "2011-06-29",
-      "percentile_252d": 100.0,
-      "value": 2865251.0
+      "percentile_252d": 96.15,
+      "value": 2756519.0
     },
     {
       "date": "2011-07-06",
       "percentile_252d": 100.0,
-      "value": 2870103.0
+      "value": 2792794.0
     },
     {
       "date": "2011-07-13",
       "percentile_252d": 100.0,
-      "value": 2878074.0
+      "value": 2826986.0
     },
     {
       "date": "2011-07-20",
-      "percentile_252d": 98.08,
-      "value": 2871301.0
+      "percentile_252d": 94.23,
+      "value": 2779833.0
     },
     {
       "date": "2011-07-27",
-      "percentile_252d": 92.31,
-      "value": 2863576.0
+      "percentile_252d": 96.15,
+      "value": 2785808.0
     },
     {
       "date": "2011-08-03",
-      "percentile_252d": 94.23,
-      "value": 2867215.0
+      "percentile_252d": 98.08,
+      "value": 2809555.0
     },
     {
       "date": "2011-08-10",
-      "percentile_252d": 98.08,
-      "value": 2872423.0
+      "percentile_252d": 100.0,
+      "value": 2848249.0
     },
     {
       "date": "2011-08-17",
-      "percentile_252d": 86.54,
-      "value": 2857906.0
+      "percentile_252d": 98.08,
+      "value": 2837714.0
     },
     {
       "date": "2011-08-24",
-      "percentile_252d": 86.54,
-      "value": 2859433.0
+      "percentile_252d": 98.08,
+      "value": 2838027.0
     },
     {
       "date": "2011-08-31",
-      "percentile_252d": 80.77,
-      "value": 2853888.0
+      "percentile_252d": 94.23,
+      "value": 2832944.0
     },
     {
       "date": "2011-09-07",
-      "percentile_252d": 84.62,
-      "value": 2858660.0
+      "percentile_252d": 96.15,
+      "value": 2837844.0
     },
     {
       "date": "2011-09-14",
-      "percentile_252d": 86.54,
-      "value": 2863540.0
+      "percentile_252d": 100.0,
+      "value": 2849150.0
     },
     {
       "date": "2011-09-21",
-      "percentile_252d": 78.85,
-      "value": 2857747.0
+      "percentile_252d": 82.69,
+      "value": 2792208.0
     },
     {
       "date": "2011-09-28",
-      "percentile_252d": 73.08,
-      "value": 2850921.0
+      "percentile_252d": 84.62,
+      "value": 2794579.0
     },
     {
       "date": "2011-10-05",
-      "percentile_252d": 84.62,
-      "value": 2859701.0
+      "percentile_252d": 86.54,
+      "value": 2815422.0
     },
     {
       "date": "2011-10-12",
-      "percentile_252d": 84.62,
-      "value": 2860822.0
+      "percentile_252d": 96.15,
+      "value": 2838292.0
     },
     {
       "date": "2011-10-19",
-      "percentile_252d": 69.23,
-      "value": 2852390.0
+      "percentile_252d": 80.77,
+      "value": 2808363.0
     },
     {
       "date": "2011-10-26",
-      "percentile_252d": 65.38,
-      "value": 2845685.0
+      "percentile_252d": 69.23,
+      "value": 2780692.0
     },
     {
       "date": "2011-11-02",
-      "percentile_252d": 61.54,
-      "value": 2822034.0
+      "percentile_252d": 63.46,
+      "value": 2763635.0
     },
     {
       "date": "2011-11-09",
-      "percentile_252d": 63.46,
-      "value": 2839786.0
+      "percentile_252d": 78.85,
+      "value": 2802133.0
     },
     {
       "date": "2011-11-16",
-      "percentile_252d": 61.54,
-      "value": 2831576.0
+      "percentile_252d": 76.92,
+      "value": 2801166.0
     },
     {
       "date": "2011-11-23",
-      "percentile_252d": 55.77,
-      "value": 2821980.0
+      "percentile_252d": 61.54,
+      "value": 2777009.0
     },
     {
       "date": "2011-11-30",
-      "percentile_252d": 53.85,
-      "value": 2814235.0
+      "percentile_252d": 57.69,
+      "value": 2769841.0
     },
     {
       "date": "2011-12-07",
-      "percentile_252d": 53.85,
-      "value": 2820691.0
+      "percentile_252d": 69.23,
+      "value": 2791785.0
     },
     {
       "date": "2011-12-14",
       "percentile_252d": 100.0,
-      "value": 2902488.0
+      "value": 2880380.0
     },
     {
       "date": "2011-12-21",
-      "percentile_252d": 100.0,
-      "value": 2916085.0
+      "percentile_252d": 76.92,
+      "value": 2803057.0
     },
     {
       "date": "2011-12-28",
-      "percentile_252d": 100.0,
-      "value": 2926095.0
+      "percentile_252d": 82.69,
+      "value": 2826819.0
     },
     {
       "date": "2012-01-04",
-      "percentile_252d": 98.08,
-      "value": 2917689.0
+      "percentile_252d": 84.62,
+      "value": 2830007.0
     },
     {
       "date": "2012-01-11",
-      "percentile_252d": 92.31,
-      "value": 2899149.0
+      "percentile_252d": 78.85,
+      "value": 2820262.0
     },
     {
       "date": "2012-01-18",
-      "percentile_252d": 98.08,
-      "value": 2919423.0
+      "percentile_252d": 94.23,
+      "value": 2840730.0
     },
     {
       "date": "2012-01-25",
-      "percentile_252d": 98.08,
-      "value": 2919545.0
+      "percentile_252d": 69.23,
+      "value": 2807685.0
     },
     {
       "date": "2012-02-01",
-      "percentile_252d": 98.08,
-      "value": 2924947.0
+      "percentile_252d": 67.31,
+      "value": 2806769.0
     },
     {
       "date": "2012-02-08",
-      "percentile_252d": 100.0,
-      "value": 2928275.0
+      "percentile_252d": 92.31,
+      "value": 2839689.0
     },
     {
       "date": "2012-02-15",
-      "percentile_252d": 100.0,
-      "value": 2937893.0
+      "percentile_252d": 98.08,
+      "value": 2879220.0
     },
     {
       "date": "2012-02-22",
-      "percentile_252d": 98.08,
-      "value": 2932813.0
+      "percentile_252d": 96.15,
+      "value": 2876394.0
     },
     {
       "date": "2012-02-29",
-      "percentile_252d": 92.31,
-      "value": 2925722.0
+      "percentile_252d": 100.0,
+      "value": 2885623.0
     },
     {
       "date": "2012-03-07",
-      "percentile_252d": 76.92,
-      "value": 2884747.0
+      "percentile_252d": 88.46,
+      "value": 2846794.0
     },
     {
       "date": "2012-03-14",
-      "percentile_252d": 76.92,
-      "value": 2893560.0
+      "percentile_252d": 92.31,
+      "value": 2850754.0
     },
     {
       "date": "2012-03-21",
-      "percentile_252d": 75.0,
-      "value": 2892646.0
+      "percentile_252d": 40.38,
+      "value": 2789168.0
     },
     {
       "date": "2012-03-28",
-      "percentile_252d": 71.15,
-      "value": 2878137.0
+      "percentile_252d": 46.15,
+      "value": 2793104.0
     },
     {
       "date": "2012-04-04",
-      "percentile_252d": 59.62,
-      "value": 2865478.0
+      "percentile_252d": 61.54,
+      "value": 2809589.0
     },
     {
       "date": "2012-04-11",
-      "percentile_252d": 59.62,
-      "value": 2867200.0
+      "percentile_252d": 65.38,
+      "value": 2820921.0
     },
     {
       "date": "2012-04-18",
-      "percentile_252d": 67.31,
-      "value": 2875470.0
+      "percentile_252d": 65.38,
+      "value": 2821053.0
     },
     {
       "date": "2012-04-25",
-      "percentile_252d": 55.77,
-      "value": 2866561.0
+      "percentile_252d": 30.77,
+      "value": 2787073.0
     },
     {
       "date": "2012-05-02",
-      "percentile_252d": 50.0,
-      "value": 2864280.0
+      "percentile_252d": 11.54,
+      "value": 2742542.0
     },
     {
       "date": "2012-05-09",
-      "percentile_252d": 48.08,
-      "value": 2864150.0
+      "percentile_252d": 11.54,
+      "value": 2749928.0
     },
     {
       "date": "2012-05-16",
-      "percentile_252d": 25.0,
-      "value": 2850984.0
+      "percentile_252d": 11.54,
+      "value": 2750118.0
     },
     {
       "date": "2012-05-23",
-      "percentile_252d": 38.46,
-      "value": 2859495.0
+      "percentile_252d": 15.38,
+      "value": 2768422.0
     },
     {
       "date": "2012-05-30",
-      "percentile_252d": 17.31,
-      "value": 2842654.0
+      "percentile_252d": 19.23,
+      "value": 2773860.0
     },
     {
       "date": "2012-06-06",
-      "percentile_252d": 23.08,
-      "value": 2852018.0
+      "percentile_252d": 32.69,
+      "value": 2790265.0
     },
     {
       "date": "2012-06-13",
-      "percentile_252d": 59.62,
-      "value": 2869071.0
+      "percentile_252d": 65.38,
+      "value": 2826196.0
     },
     {
       "date": "2012-06-20",
-      "percentile_252d": 61.54,
-      "value": 2870846.0
+      "percentile_252d": 7.69,
+      "value": 2755110.0
     },
     {
       "date": "2012-06-27",
-      "percentile_252d": 42.31,
-      "value": 2863547.0
+      "percentile_252d": 1.92,
+      "value": 2733408.0
     },
     {
       "date": "2012-07-04",
-      "percentile_252d": 51.92,
-      "value": 2865858.0
+      "percentile_252d": 13.46,
+      "value": 2764039.0
     },
     {
       "date": "2012-07-11",
-      "percentile_252d": 53.85,
-      "value": 2866279.0
+      "percentile_252d": 23.08,
+      "value": 2778889.0
     },
     {
       "date": "2012-07-18",
-      "percentile_252d": 26.92,
-      "value": 2855807.0
+      "percentile_252d": 36.54,
+      "value": 2791796.0
     },
     {
       "date": "2012-07-25",
-      "percentile_252d": 17.31,
-      "value": 2846757.0
+      "percentile_252d": 42.31,
+      "value": 2800230.0
     },
     {
       "date": "2012-08-01",
-      "percentile_252d": 23.08,
-      "value": 2851118.0
+      "percentile_252d": 53.85,
+      "value": 2808026.0
     },
     {
       "date": "2012-08-08",
-      "percentile_252d": 32.69,
-      "value": 2856181.0
+      "percentile_252d": 61.54,
+      "value": 2819569.0
     },
     {
       "date": "2012-08-15",
-      "percentile_252d": 11.54,
-      "value": 2833317.0
+      "percentile_252d": 50.0,
+      "value": 2803929.0
     },
     {
       "date": "2012-08-22",
-      "percentile_252d": 9.62,
-      "value": 2825661.0
+      "percentile_252d": 44.23,
+      "value": 2800633.0
     },
     {
       "date": "2012-08-29",
-      "percentile_252d": 1.92,
-      "value": 2812806.0
+      "percentile_252d": 26.92,
+      "value": 2786622.0
     },
     {
       "date": "2012-09-05",
-      "percentile_252d": 11.54,
-      "value": 2822169.0
+      "percentile_252d": 34.62,
+      "value": 2791131.0
     },
     {
       "date": "2012-09-12",
-      "percentile_252d": 13.46,
-      "value": 2823448.0
+      "percentile_252d": 21.15,
+      "value": 2776369.0
     },
     {
       "date": "2012-09-19",
-      "percentile_252d": 7.69,
-      "value": 2821574.0
+      "percentile_252d": 11.54,
+      "value": 2756798.0
     },
     {
       "date": "2012-09-26",
       "percentile_252d": 1.92,
-      "value": 2804457.0
+      "value": 2731158.0
     },
     {
       "date": "2012-10-03",
-      "percentile_252d": 3.85,
-      "value": 2808512.0
+      "percentile_252d": 1.92,
+      "value": 2725155.0
     },
     {
       "date": "2012-10-10",
-      "percentile_252d": 5.77,
-      "value": 2811623.0
+      "percentile_252d": 9.62,
+      "value": 2745718.0
     },
     {
       "date": "2012-10-17",
-      "percentile_252d": 36.54,
-      "value": 2846920.0
+      "percentile_252d": 40.38,
+      "value": 2788387.0
     },
     {
       "date": "2012-10-24",
-      "percentile_252d": 30.77,
-      "value": 2840964.0
+      "percentile_252d": 32.69,
+      "value": 2778166.0
     },
     {
       "date": "2012-10-31",
-      "percentile_252d": 19.23,
-      "value": 2823137.0
+      "percentile_252d": 23.08,
+      "value": 2769172.0
     },
     {
       "date": "2012-11-07",
-      "percentile_252d": 25.0,
-      "value": 2830791.0
+      "percentile_252d": 59.62,
+      "value": 2802729.0
     },
     {
       "date": "2012-11-14",
-      "percentile_252d": 69.23,
-      "value": 2877244.0
+      "percentile_252d": 84.62,
+      "value": 2838520.0
     },
     {
       "date": "2012-11-21",
-      "percentile_252d": 65.38,
-      "value": 2871161.0
+      "percentile_252d": 88.46,
+      "value": 2846668.0
     },
     {
       "date": "2012-11-28",
-      "percentile_252d": 36.54,
-      "value": 2851362.0
+      "percentile_252d": 75.0,
+      "value": 2823398.0
     },
     {
       "date": "2012-12-05",
-      "percentile_252d": 44.23,
-      "value": 2859807.0
+      "percentile_252d": 75.0,
+      "value": 2824630.0
     },
     {
       "date": "2012-12-12",
-      "percentile_252d": 82.69,
-      "value": 2917260.0
+      "percentile_252d": 96.15,
+      "value": 2877100.0
     },
     {
       "date": "2012-12-19",
-      "percentile_252d": 88.46,
-      "value": 2920231.0
+      "percentile_252d": 92.31,
+      "value": 2864065.0
     },
     {
       "date": "2012-12-26",
-      "percentile_252d": 80.77,
-      "value": 2907300.0
+      "percentile_252d": 88.46,
+      "value": 2850557.0
     },
     {
       "date": "2013-01-02",
       "percentile_252d": 82.69,
-      "value": 2917189.0
+      "value": 2844445.0
     },
     {
       "date": "2013-01-09",
-      "percentile_252d": 96.15,
-      "value": 2928728.0
+      "percentile_252d": 92.31,
+      "value": 2867904.0
     },
     {
       "date": "2013-01-16",
       "percentile_252d": 100.0,
-      "value": 2963812.0
+      "value": 2908612.0
     },
     {
       "date": "2013-01-23",
       "percentile_252d": 100.0,
-      "value": 3011697.0
+      "value": 2938310.0
     },
     {
       "date": "2013-01-30",
       "percentile_252d": 98.08,
-      "value": 3008704.0
+      "value": 2936397.0
     },
     {
       "date": "2013-02-06",
       "percentile_252d": 100.0,
-      "value": 3014975.0
+      "value": 2949516.0
     },
     {
       "date": "2013-02-13",
       "percentile_252d": 100.0,
-      "value": 3074225.0
+      "value": 3038137.0
     },
     {
       "date": "2013-02-20",
       "percentile_252d": 100.0,
-      "value": 3095150.0
+      "value": 3069093.0
     },
     {
       "date": "2013-02-27",
       "percentile_252d": 98.08,
-      "value": 3090600.0
+      "value": 3046408.0
     },
     {
       "date": "2013-03-06",
       "percentile_252d": 100.0,
-      "value": 3108805.0
+      "value": 3070832.0
     },
     {
       "date": "2013-03-13",
       "percentile_252d": 100.0,
-      "value": 3165396.0
+      "value": 3121216.0
     },
     {
       "date": "2013-03-20",
       "percentile_252d": 100.0,
-      "value": 3206888.0
+      "value": 3134342.0
     },
     {
       "date": "2013-03-27",
       "percentile_252d": 98.08,
-      "value": 3202256.0
+      "value": 3133057.0
     },
     {
       "date": "2013-04-03",
       "percentile_252d": 100.0,
-      "value": 3215432.0
+      "value": 3139168.0
     },
     {
       "date": "2013-04-10",
       "percentile_252d": 100.0,
-      "value": 3227762.0
+      "value": 3167805.0
     },
     {
       "date": "2013-04-17",
       "percentile_252d": 100.0,
-      "value": 3295109.0
+      "value": 3211347.0
     },
     {
       "date": "2013-04-24",
-      "percentile_252d": 100.0,
-      "value": 3318649.0
+      "percentile_252d": 98.08,
+      "value": 3188759.0
     },
     {
       "date": "2013-05-01",
-      "percentile_252d": 98.08,
-      "value": 3317194.0
+      "percentile_252d": 94.23,
+      "value": 3158950.0
     },
     {
       "date": "2013-05-08",
-      "percentile_252d": 100.0,
-      "value": 3324615.0
+      "percentile_252d": 96.15,
+      "value": 3179354.0
     },
     {
       "date": "2013-05-15",
       "percentile_252d": 100.0,
-      "value": 3354269.0
+      "value": 3263080.0
     },
     {
       "date": "2013-05-22",
       "percentile_252d": 100.0,
-      "value": 3398713.0
+      "value": 3364290.0
     },
     {
       "date": "2013-05-29",
-      "percentile_252d": 98.08,
-      "value": 3385128.0
+      "percentile_252d": 100.0,
+      "value": 3370436.0
     },
     {
       "date": "2013-06-05",
-      "percentile_252d": 100.0,
-      "value": 3400183.0
+      "percentile_252d": 98.08,
+      "value": 3368763.0
     },
     {
       "date": "2013-06-12",
-      "percentile_252d": 100.0,
-      "value": 3410842.0
+      "percentile_252d": 96.15,
+      "value": 3366596.0
     },
     {
       "date": "2013-06-19",
       "percentile_252d": 100.0,
-      "value": 3470530.0
+      "value": 3390211.0
     },
     {
       "date": "2013-06-26",
-      "percentile_252d": 100.0,
-      "value": 3478672.0
+      "percentile_252d": 98.08,
+      "value": 3380270.0
     },
     {
       "date": "2013-07-03",
-      "percentile_252d": 100.0,
-      "value": 3492742.0
+      "percentile_252d": 96.15,
+      "value": 3372807.0
     },
     {
       "date": "2013-07-10",
       "percentile_252d": 100.0,
-      "value": 3504095.0
+      "value": 3414215.0
     },
     {
       "date": "2013-07-17",
       "percentile_252d": 100.0,
-      "value": 3537861.0
+      "value": 3466513.0
     },
     {
       "date": "2013-07-24",
       "percentile_252d": 100.0,
-      "value": 3574574.0
+      "value": 3514981.0
     },
     {
       "date": "2013-07-31",
       "percentile_252d": 98.08,
-      "value": 3571797.0
+      "value": 3510544.0
     },
     {
       "date": "2013-08-07",
       "percentile_252d": 100.0,
-      "value": 3585359.0
+      "value": 3522254.0
     },
     {
       "date": "2013-08-14",
       "percentile_252d": 100.0,
-      "value": 3646323.0
+      "value": 3580992.0
     },
     {
       "date": "2013-08-21",
-      "percentile_252d": 98.08,
-      "value": 3645668.0
+      "percentile_252d": 100.0,
+      "value": 3589494.0
     },
     {
       "date": "2013-08-28",
-      "percentile_252d": 96.15,
-      "value": 3644456.0
+      "percentile_252d": 100.0,
+      "value": 3602158.0
     },
     {
       "date": "2013-09-04",
       "percentile_252d": 100.0,
-      "value": 3654182.0
+      "value": 3616750.0
     },
     {
       "date": "2013-09-11",
       "percentile_252d": 100.0,
-      "value": 3662035.0
+      "value": 3618484.0
     },
     {
       "date": "2013-09-18",
       "percentile_252d": 100.0,
-      "value": 3722192.0
+      "value": 3669093.0
     },
     {
       "date": "2013-09-25",
       "percentile_252d": 100.0,
-      "value": 3734018.0
+      "value": 3682783.0
     },
     {
       "date": "2013-10-02",
       "percentile_252d": 100.0,
-      "value": 3747387.0
+      "value": 3706724.0
     },
     {
       "date": "2013-10-09",
       "percentile_252d": 100.0,
-      "value": 3758663.0
+      "value": 3729510.0
     },
     {
       "date": "2013-10-16",
       "percentile_252d": 100.0,
-      "value": 3813599.0
+      "value": 3775328.0
     },
     {
       "date": "2013-10-23",
       "percentile_252d": 100.0,
-      "value": 3839033.0
+      "value": 3779100.0
     },
     {
       "date": "2013-10-30",
       "percentile_252d": 100.0,
-      "value": 3843396.0
+      "value": 3806134.0
     },
     {
       "date": "2013-11-06",
       "percentile_252d": 100.0,
-      "value": 3851623.0
+      "value": 3810550.0
     },
     {
       "date": "2013-11-13",
       "percentile_252d": 100.0,
-      "value": 3907424.0
+      "value": 3857815.0
     },
     {
       "date": "2013-11-20",
       "percentile_252d": 98.08,
-      "value": 3906620.0
+      "value": 3851053.0
     },
     {
       "date": "2013-11-27",
       "percentile_252d": 100.0,
-      "value": 3925876.0
+      "value": 3866411.0
     },
     {
       "date": "2013-12-04",
       "percentile_252d": 100.0,
-      "value": 3932626.0
+      "value": 3883584.0
     },
     {
       "date": "2013-12-11",
       "percentile_252d": 100.0,
-      "value": 3993955.0
+      "value": 3930502.0
     },
     {
       "date": "2013-12-18",
-      "percentile_252d": 100.0,
-      "value": 4008062.0
+      "percentile_252d": 98.08,
+      "value": 3926385.0
     },
     {
       "date": "2013-12-25",
-      "percentile_252d": 100.0,
-      "value": 4032575.0
+      "percentile_252d": 96.15,
+      "value": 3891208.0
     },
     {
       "date": "2014-01-01",
-      "percentile_252d": 98.08,
-      "value": 4023640.0
+      "percentile_252d": 76.92,
+      "value": 3720781.0
     },
     {
       "date": "2014-01-08",
-      "percentile_252d": 98.08,
-      "value": 4028185.0
+      "percentile_252d": 90.38,
+      "value": 3865382.0
     },
     {
       "date": "2014-01-15",
       "percentile_252d": 100.0,
-      "value": 4071528.0
+      "value": 3944754.0
     },
     {
       "date": "2014-01-22",
-      "percentile_252d": 100.0,
-      "value": 4097914.0
+      "percentile_252d": 96.15,
+      "value": 3926405.0
     },
     {
       "date": "2014-01-29",
-      "percentile_252d": 100.0,
-      "value": 4102138.0
+      "percentile_252d": 92.31,
+      "value": 3918525.0
     },
     {
       "date": "2014-02-05",
-      "percentile_252d": 100.0,
-      "value": 4109285.0
+      "percentile_252d": 96.15,
+      "value": 3928822.0
     },
     {
       "date": "2014-02-12",
       "percentile_252d": 100.0,
-      "value": 4119474.0
+      "value": 3989038.0
     },
     {
       "date": "2014-02-19",
       "percentile_252d": 100.0,
-      "value": 4149224.0
+      "value": 4024741.0
     },
     {
       "date": "2014-02-26",
-      "percentile_252d": 100.0,
-      "value": 4159972.0
+      "percentile_252d": 96.15,
+      "value": 3983157.0
     },
     {
       "date": "2014-03-05",
       "percentile_252d": 100.0,
-      "value": 4171762.0
+      "value": 4050185.0
     },
     {
       "date": "2014-03-12",
       "percentile_252d": 100.0,
-      "value": 4181361.0
+      "value": 4059020.0
     },
     {
       "date": "2014-03-19",
-      "percentile_252d": 100.0,
-      "value": 4222081.0
+      "percentile_252d": 98.08,
+      "value": 4057591.0
     },
     {
       "date": "2014-03-26",
-      "percentile_252d": 100.0,
-      "value": 4226971.0
+      "percentile_252d": 92.31,
+      "value": 4022987.0
     },
     {
       "date": "2014-04-02",
-      "percentile_252d": 100.0,
-      "value": 4236441.0
+      "percentile_252d": 94.23,
+      "value": 4034233.0
     },
     {
       "date": "2014-04-09",
       "percentile_252d": 100.0,
-      "value": 4244188.0
+      "value": 4092729.0
     },
     {
       "date": "2014-04-16",
       "percentile_252d": 100.0,
-      "value": 4283967.0
+      "value": 4146766.0
     },
     {
       "date": "2014-04-23",
-      "percentile_252d": 100.0,
-      "value": 4296339.0
+      "percentile_252d": 90.38,
+      "value": 4036994.0
     },
     {
       "date": "2014-04-30",
-      "percentile_252d": 98.08,
-      "value": 4296049.0
+      "percentile_252d": 82.69,
+      "value": 4003701.0
     },
     {
       "date": "2014-05-07",
-      "percentile_252d": 100.0,
-      "value": 4303143.0
+      "percentile_252d": 82.69,
+      "value": 4018040.0
     },
     {
       "date": "2014-05-14",
-      "percentile_252d": 100.0,
-      "value": 4336649.0
+      "percentile_252d": 96.15,
+      "value": 4082212.0
     },
     {
       "date": "2014-05-21",
-      "percentile_252d": 98.08,
-      "value": 4327560.0
+      "percentile_252d": 94.23,
+      "value": 4069093.0
     },
     {
       "date": "2014-05-28",
-      "percentile_252d": 96.15,
-      "value": 4322654.0
+      "percentile_252d": 98.08,
+      "value": 4117812.0
     },
     {
       "date": "2014-06-04",
-      "percentile_252d": 98.08,
-      "value": 4330917.0
+      "percentile_252d": 100.0,
+      "value": 4169621.0
     },
     {
       "date": "2014-06-11",
       "percentile_252d": 100.0,
-      "value": 4340904.0
+      "value": 4183108.0
     },
     {
       "date": "2014-06-18",
       "percentile_252d": 100.0,
-      "value": 4368168.0
+      "value": 4195305.0
     },
     {
       "date": "2014-06-25",
-      "percentile_252d": 100.0,
-      "value": 4368348.0
+      "percentile_252d": 92.31,
+      "value": 4141431.0
     },
     {
       "date": "2014-07-02",
-      "percentile_252d": 100.0,
-      "value": 4377031.0
+      "percentile_252d": 90.38,
+      "value": 4128454.0
     },
     {
       "date": "2014-07-09",
-      "percentile_252d": 100.0,
-      "value": 4383401.0
+      "percentile_252d": 96.15,
+      "value": 4174654.0
     },
     {
       "date": "2014-07-16",
       "percentile_252d": 100.0,
-      "value": 4398201.0
+      "value": 4232976.0
     },
     {
       "date": "2014-07-23",
-      "percentile_252d": 100.0,
-      "value": 4410746.0
+      "percentile_252d": 98.08,
+      "value": 4209868.0
     },
     {
       "date": "2014-07-30",
       "percentile_252d": 98.08,
-      "value": 4406637.0
+      "value": 4228545.0
     },
     {
       "date": "2014-08-06",
-      "percentile_252d": 98.08,
-      "value": 4410111.0
+      "percentile_252d": 96.15,
+      "value": 4214816.0
     },
     {
       "date": "2014-08-13",
-      "percentile_252d": 100.0,
-      "value": 4431923.0
+      "percentile_252d": 96.15,
+      "value": 4218235.0
     },
     {
       "date": "2014-08-20",
-      "percentile_252d": 98.08,
-      "value": 4412924.0
+      "percentile_252d": 96.15,
+      "value": 4219677.0
     },
     {
       "date": "2014-08-27",
-      "percentile_252d": 98.08,
-      "value": 4413736.0
+      "percentile_252d": 86.54,
+      "value": 4193674.0
     },
     {
       "date": "2014-09-03",
-      "percentile_252d": 98.08,
-      "value": 4415587.0
+      "percentile_252d": 96.15,
+      "value": 4221703.0
     },
     {
       "date": "2014-09-10",
-      "percentile_252d": 98.08,
-      "value": 4421408.0
+      "percentile_252d": 96.15,
+      "value": 4222028.0
     },
     {
       "date": "2014-09-17",
-      "percentile_252d": 100.0,
-      "value": 4449588.0
+      "percentile_252d": 96.15,
+      "value": 4226235.0
     },
     {
       "date": "2014-09-24",
-      "percentile_252d": 100.0,
-      "value": 4459050.0
+      "percentile_252d": 76.92,
+      "value": 4181905.0
     },
     {
       "date": "2014-10-01",
-      "percentile_252d": 98.08,
-      "value": 4450260.0
+      "percentile_252d": 65.38,
+      "value": 4118542.0
     },
     {
       "date": "2014-10-08",
-      "percentile_252d": 98.08,
-      "value": 4455403.0
+      "percentile_252d": 75.0,
+      "value": 4176411.0
     },
     {
       "date": "2014-10-15",
       "percentile_252d": 100.0,
-      "value": 4474360.0
+      "value": 4272655.0
     },
     {
       "date": "2014-10-22",
-      "percentile_252d": 100.0,
-      "value": 4481616.0
+      "percentile_252d": 92.31,
+      "value": 4222678.0
     },
     {
       "date": "2014-10-29",
-      "percentile_252d": 100.0,
-      "value": 4486754.0
+      "percentile_252d": 98.08,
+      "value": 4233640.0
     },
     {
       "date": "2014-11-05",
       "percentile_252d": 98.08,
-      "value": 4486585.0
+      "value": 4252303.0
     },
     {
       "date": "2014-11-12",
-      "percentile_252d": 100.0,
-      "value": 4488895.0
+      "percentile_252d": 98.08,
+      "value": 4270009.0
     },
     {
       "date": "2014-11-19",
-      "percentile_252d": 100.0,
-      "value": 4492759.0
+      "percentile_252d": 90.38,
+      "value": 4230101.0
     },
     {
       "date": "2014-11-26",
-      "percentile_252d": 92.31,
-      "value": 4485931.0
+      "percentile_252d": 96.15,
+      "value": 4257878.0
     },
     {
       "date": "2014-12-03",
-      "percentile_252d": 92.31,
-      "value": 4486190.0
+      "percentile_252d": 88.46,
+      "value": 4232436.0
     },
     {
       "date": "2014-12-10",
-      "percentile_252d": 96.15,
-      "value": 4488865.0
+      "percentile_252d": 100.0,
+      "value": 4323451.0
     },
     {
       "date": "2014-12-17",
       "percentile_252d": 100.0,
-      "value": 4502247.0
+      "value": 4355688.0
     },
     {
       "date": "2014-12-24",
-      "percentile_252d": 100.0,
-      "value": 4509462.0
+      "percentile_252d": 96.15,
+      "value": 4281132.0
     },
     {
       "date": "2014-12-31",
-      "percentile_252d": 96.15,
-      "value": 4497660.0
+      "percentile_252d": 44.23,
+      "value": 4134477.0
     },
     {
       "date": "2015-01-07",
-      "percentile_252d": 96.15,
-      "value": 4499524.0
+      "percentile_252d": 53.85,
+      "value": 4178958.0
     },
     {
       "date": "2015-01-14",
-      "percentile_252d": 100.0,
-      "value": 4516077.0
+      "percentile_252d": 90.38,
+      "value": 4262409.0
     },
     {
       "date": "2015-01-21",
-      "percentile_252d": 98.08,
-      "value": 4512936.0
+      "percentile_252d": 48.08,
+      "value": 4175015.0
     },
     {
       "date": "2015-01-28",
-      "percentile_252d": 92.31,
-      "value": 4500064.0
+      "percentile_252d": 38.46,
+      "value": 4135319.0
     },
     {
       "date": "2015-02-04",
-      "percentile_252d": 92.31,
-      "value": 4500348.0
+      "percentile_252d": 55.77,
+      "value": 4187426.0
     },
     {
       "date": "2015-02-11",
-      "percentile_252d": 92.31,
-      "value": 4501685.0
+      "percentile_252d": 63.46,
+      "value": 4216026.0
     },
     {
       "date": "2015-02-18",
-      "percentile_252d": 82.69,
-      "value": 4496851.0
+      "percentile_252d": 67.31,
+      "value": 4220742.0
     },
     {
       "date": "2015-02-25",
-      "percentile_252d": 73.08,
-      "value": 4486725.0
+      "percentile_252d": 90.38,
+      "value": 4268861.0
     },
     {
       "date": "2015-03-04",
-      "percentile_252d": 75.0,
-      "value": 4487583.0
+      "percentile_252d": 98.08,
+      "value": 4342680.0
     },
     {
       "date": "2015-03-11",
-      "percentile_252d": 78.85,
-      "value": 4489279.0
+      "percentile_252d": 100.0,
+      "value": 4365459.0
     },
     {
       "date": "2015-03-18",
-      "percentile_252d": 80.77,
-      "value": 4495888.0
+      "percentile_252d": 92.31,
+      "value": 4283778.0
     },
     {
       "date": "2015-03-25",
-      "percentile_252d": 57.69,
-      "value": 4480603.0
+      "percentile_252d": 94.23,
+      "value": 4329307.0
     },
     {
       "date": "2015-04-01",
-      "percentile_252d": 59.62,
-      "value": 4481799.0
+      "percentile_252d": 100.0,
+      "value": 4374709.0
     },
     {
       "date": "2015-04-08",
-      "percentile_252d": 59.62,
-      "value": 4483419.0
+      "percentile_252d": 92.31,
+      "value": 4331770.0
     },
     {
       "date": "2015-04-15",
-      "percentile_252d": 59.62,
-      "value": 4485366.0
+      "percentile_252d": 96.15,
+      "value": 4365090.0
     },
     {
       "date": "2015-04-22",
-      "percentile_252d": 76.92,
-      "value": 4489695.0
+      "percentile_252d": 57.69,
+      "value": 4225519.0
     },
     {
       "date": "2015-04-29",
-      "percentile_252d": 46.15,
-      "value": 4471499.0
+      "percentile_252d": 19.23,
+      "value": 4159573.0
     },
     {
       "date": "2015-05-06",
-      "percentile_252d": 46.15,
-      "value": 4472703.0
+      "percentile_252d": 19.23,
+      "value": 4160475.0
     },
     {
       "date": "2015-05-13",
-      "percentile_252d": 90.38,
-      "value": 4501188.0
+      "percentile_252d": 34.62,
+      "value": 4192848.0
     },
     {
       "date": "2015-05-20",
-      "percentile_252d": 46.15,
-      "value": 4480384.0
+      "percentile_252d": 13.46,
+      "value": 4144398.0
     },
     {
       "date": "2015-05-27",
-      "percentile_252d": 38.46,
-      "value": 4463981.0
+      "percentile_252d": 15.38,
+      "value": 4159576.0
     },
     {
       "date": "2015-06-03",
-      "percentile_252d": 38.46,
-      "value": 4465360.0
+      "percentile_252d": 30.77,
+      "value": 4184177.0
     },
     {
       "date": "2015-06-10",
       "percentile_252d": 38.46,
-      "value": 4468005.0
+      "value": 4209084.0
     },
     {
       "date": "2015-06-17",
-      "percentile_252d": 67.31,
-      "value": 4487817.0
+      "percentile_252d": 19.23,
+      "value": 4169461.0
     },
     {
       "date": "2015-06-24",
-      "percentile_252d": 76.92,
-      "value": 4495055.0
+      "percentile_252d": 3.85,
+      "value": 4118915.0
     },
     {
       "date": "2015-07-01",
-      "percentile_252d": 40.38,
-      "value": 4479130.0
+      "percentile_252d": 11.54,
+      "value": 4158262.0
     },
     {
       "date": "2015-07-08",
-      "percentile_252d": 44.23,
-      "value": 4481289.0
+      "percentile_252d": 11.54,
+      "value": 4153223.0
     },
     {
       "date": "2015-07-15",
-      "percentile_252d": 75.0,
-      "value": 4493605.0
+      "percentile_252d": 42.31,
+      "value": 4213977.0
     },
     {
       "date": "2015-07-22",
-      "percentile_252d": 88.46,
-      "value": 4500503.0
+      "percentile_252d": 36.54,
+      "value": 4193036.0
     },
     {
       "date": "2015-07-29",
-      "percentile_252d": 48.08,
-      "value": 4485480.0
+      "percentile_252d": 40.38,
+      "value": 4202226.0
     },
     {
       "date": "2015-08-05",
-      "percentile_252d": 51.92,
-      "value": 4486329.0
+      "percentile_252d": 40.38,
+      "value": 4195959.0
     },
     {
       "date": "2015-08-12",
-      "percentile_252d": 65.38,
-      "value": 4489250.0
+      "percentile_252d": 63.46,
+      "value": 4228516.0
     },
     {
       "date": "2015-08-19",
-      "percentile_252d": 55.77,
-      "value": 4487208.0
+      "percentile_252d": 57.69,
+      "value": 4224965.0
     },
     {
       "date": "2015-08-26",
-      "percentile_252d": 25.0,
-      "value": 4475105.0
+      "percentile_252d": 80.77,
+      "value": 4277805.0
     },
     {
       "date": "2015-09-02",
-      "percentile_252d": 25.0,
-      "value": 4475886.0
+      "percentile_252d": 84.62,
+      "value": 4285202.0
     },
     {
       "date": "2015-09-09",
-      "percentile_252d": 25.0,
-      "value": 4478213.0
+      "percentile_252d": 86.54,
+      "value": 4324292.0
     },
     {
       "date": "2015-09-16",
-      "percentile_252d": 57.69,
-      "value": 4487809.0
+      "percentile_252d": 82.69,
+      "value": 4288217.0
     },
     {
       "date": "2015-09-23",
-      "percentile_252d": 78.85,
-      "value": 4497484.0
+      "percentile_252d": 38.46,
+      "value": 4199675.0
     },
     {
       "date": "2015-09-30",
-      "percentile_252d": 34.62,
-      "value": 4484111.0
+      "percentile_252d": 7.69,
+      "value": 4139332.0
     },
     {
       "date": "2015-10-07",
-      "percentile_252d": 40.38,
-      "value": 4486185.0
+      "percentile_252d": 80.77,
+      "value": 4287370.0
     },
     {
       "date": "2015-10-14",
-      "percentile_252d": 94.23,
-      "value": 4504704.0
+      "percentile_252d": 92.31,
+      "value": 4348081.0
     },
     {
       "date": "2015-10-21",
-      "percentile_252d": 88.46,
-      "value": 4501372.0
+      "percentile_252d": 80.77,
+      "value": 4289887.0
     },
     {
       "date": "2015-10-28",
-      "percentile_252d": 61.54,
-      "value": 4489339.0
+      "percentile_252d": 75.0,
+      "value": 4286923.0
     },
     {
       "date": "2015-11-04",
-      "percentile_252d": 63.46,
-      "value": 4489702.0
+      "percentile_252d": 92.31,
+      "value": 4352501.0
     },
     {
       "date": "2015-11-11",
-      "percentile_252d": 63.46,
-      "value": 4492012.0
+      "percentile_252d": 78.85,
+      "value": 4301757.0
     },
     {
       "date": "2015-11-18",
-      "percentile_252d": 42.31,
-      "value": 4486721.0
+      "percentile_252d": 53.85,
+      "value": 4231739.0
     },
     {
       "date": "2015-11-25",
-      "percentile_252d": 15.38,
-      "value": 4477088.0
+      "percentile_252d": 42.31,
+      "value": 4213445.0
     },
     {
       "date": "2015-12-02",
-      "percentile_252d": 17.31,
-      "value": 4478069.0
+      "percentile_252d": 26.92,
+      "value": 4181129.0
     },
     {
       "date": "2015-12-09",
-      "percentile_252d": 25.0,
-      "value": 4480436.0
+      "percentile_252d": 42.31,
+      "value": 4205849.0
     },
     {
       "date": "2015-12-16",
-      "percentile_252d": 61.54,
-      "value": 4489593.0
+      "percentile_252d": 32.69,
+      "value": 4191246.0
     },
     {
       "date": "2015-12-23",
-      "percentile_252d": 75.0,
-      "value": 4496523.0
+      "percentile_252d": 1.92,
+      "value": 4050584.0
     },
     {
       "date": "2015-12-30",
-      "percentile_252d": 44.23,
-      "value": 4486587.0
+      "percentile_252d": 1.92,
+      "value": 3918674.0
     },
     {
       "date": "2016-01-06",
-      "percentile_252d": 46.15,
-      "value": 4486606.0
+      "percentile_252d": 3.85,
+      "value": 4026802.0
     },
     {
       "date": "2016-01-13",
-      "percentile_252d": 96.15,
-      "value": 4501695.0
+      "percentile_252d": 7.69,
+      "value": 4114296.0
     },
     {
       "date": "2016-01-20",
-      "percentile_252d": 59.62,
-      "value": 4488840.0
+      "percentile_252d": 7.69,
+      "value": 4096895.0
     },
     {
       "date": "2016-01-27",
-      "percentile_252d": 32.69,
-      "value": 4482349.0
+      "percentile_252d": 7.69,
+      "value": 4051049.0
     },
     {
       "date": "2016-02-03",
-      "percentile_252d": 36.54,
-      "value": 4483495.0
+      "percentile_252d": 9.62,
+      "value": 4070176.0
     },
     {
       "date": "2016-02-10",
-      "percentile_252d": 46.15,
-      "value": 4486278.0
+      "percentile_252d": 17.31,
+      "value": 4121001.0
     },
     {
       "date": "2016-02-17",
-      "percentile_252d": 38.46,
-      "value": 4483629.0
+      "percentile_252d": 32.69,
+      "value": 4164771.0
     },
     {
       "date": "2016-02-24",
-      "percentile_252d": 78.85,
-      "value": 4489796.0
+      "percentile_252d": 55.77,
+      "value": 4210781.0
     },
     {
       "date": "2016-03-02",
-      "percentile_252d": 21.15,
-      "value": 4478485.0
+      "percentile_252d": 48.08,
+      "value": 4196732.0
     },
     {
       "date": "2016-03-09",
-      "percentile_252d": 30.77,
-      "value": 4481083.0
+      "percentile_252d": 63.46,
+      "value": 4222294.0
     },
     {
       "date": "2016-03-16",
-      "percentile_252d": 55.77,
-      "value": 4486333.0
+      "percentile_252d": 53.85,
+      "value": 4202310.0
     },
     {
       "date": "2016-03-23",
-      "percentile_252d": 82.69,
-      "value": 4492857.0
+      "percentile_252d": 19.23,
+      "value": 4125826.0
     },
     {
       "date": "2016-03-30",
-      "percentile_252d": 34.62,
-      "value": 4482840.0
+      "percentile_252d": 11.54,
+      "value": 4071061.0
     },
     {
       "date": "2016-04-06",
-      "percentile_252d": 40.38,
-      "value": 4484069.0
+      "percentile_252d": 46.15,
+      "value": 4192291.0
     },
     {
       "date": "2016-04-13",
-      "percentile_252d": 90.38,
-      "value": 4499729.0
+      "percentile_252d": 80.77,
+      "value": 4243484.0
     },
     {
       "date": "2016-04-20",
-      "percentile_252d": 76.92,
-      "value": 4490131.0
+      "percentile_252d": 44.23,
+      "value": 4189375.0
     },
     {
       "date": "2016-04-27",
-      "percentile_252d": 9.62,
-      "value": 4474665.0
+      "percentile_252d": 15.38,
+      "value": 4097067.0
     },
     {
       "date": "2016-05-04",
-      "percentile_252d": 15.38,
-      "value": 4477270.0
+      "percentile_252d": 17.31,
+      "value": 4105321.0
     },
     {
       "date": "2016-05-11",
-      "percentile_252d": 21.15,
-      "value": 4478411.0
+      "percentile_252d": 26.92,
+      "value": 4131509.0
     },
     {
       "date": "2016-05-18",
-      "percentile_252d": 7.69,
-      "value": 4473741.0
+      "percentile_252d": 21.15,
+      "value": 4114482.0
     },
     {
       "date": "2016-05-25",
-      "percentile_252d": 1.92,
-      "value": 4461111.0
+      "percentile_252d": 28.85,
+      "value": 4126695.0
     },
     {
       "date": "2016-06-01",
-      "percentile_252d": 3.85,
-      "value": 4461393.0
+      "percentile_252d": 32.69,
+      "value": 4132259.0
     },
     {
       "date": "2016-06-08",
-      "percentile_252d": 5.77,
-      "value": 4463542.0
+      "percentile_252d": 46.15,
+      "value": 4185746.0
     },
     {
       "date": "2016-06-15",
-      "percentile_252d": 7.69,
-      "value": 4472817.0
+      "percentile_252d": 67.31,
+      "value": 4213247.0
     },
     {
       "date": "2016-06-22",
-      "percentile_252d": 36.54,
-      "value": 4482009.0
+      "percentile_252d": 13.46,
+      "value": 4074785.0
     },
     {
       "date": "2016-06-29",
-      "percentile_252d": 7.69,
-      "value": 4466482.0
+      "percentile_252d": 3.85,
+      "value": 3986183.0
     },
     {
       "date": "2016-07-06",
-      "percentile_252d": 9.62,
-      "value": 4470605.0
+      "percentile_252d": 17.31,
+      "value": 4083907.0
     },
     {
       "date": "2016-07-13",
-      "percentile_252d": 11.54,
-      "value": 4472202.0
+      "percentile_252d": 25.0,
+      "value": 4107781.0
     },
     {
       "date": "2016-07-20",
-      "percentile_252d": 36.54,
-      "value": 4480973.0
+      "percentile_252d": 15.38,
+      "value": 4072455.0
     },
     {
       "date": "2016-07-27",
-      "percentile_252d": 7.69,
-      "value": 4464498.0
+      "percentile_252d": 15.38,
+      "value": 4071312.0
     },
     {
       "date": "2016-08-03",
-      "percentile_252d": 11.54,
-      "value": 4466793.0
+      "percentile_252d": 26.92,
+      "value": 4099905.0
     },
     {
       "date": "2016-08-10",
-      "percentile_252d": 13.46,
-      "value": 4468929.0
+      "percentile_252d": 42.31,
+      "value": 4128923.0
     },
     {
       "date": "2016-08-17",
-      "percentile_252d": 9.62,
-      "value": 4466476.0
+      "percentile_252d": 38.46,
+      "value": 4124329.0
     },
     {
       "date": "2016-08-24",
-      "percentile_252d": 25.0,
-      "value": 4473840.0
+      "percentile_252d": 38.46,
+      "value": 4124114.0
     },
     {
       "date": "2016-08-31",
-      "percentile_252d": 1.92,
-      "value": 4457907.0
+      "percentile_252d": 5.77,
+      "value": 4012344.0
     },
     {
       "date": "2016-09-07",
-      "percentile_252d": 3.85,
-      "value": 4459394.0
+      "percentile_252d": 55.77,
+      "value": 4144160.0
     },
     {
       "date": "2016-09-14",
-      "percentile_252d": 48.08,
-      "value": 4481635.0
+      "percentile_252d": 59.62,
+      "value": 4174068.0
     },
     {
       "date": "2016-09-21",
-      "percentile_252d": 26.92,
-      "value": 4473032.0
+      "percentile_252d": 3.85,
+      "value": 3955749.0
     },
     {
       "date": "2016-09-28",
       "percentile_252d": 1.92,
-      "value": 4452002.0
+      "value": 3828025.0
     },
     {
       "date": "2016-10-05",
-      "percentile_252d": 7.69,
-      "value": 4459407.0
+      "percentile_252d": 1.92,
+      "value": 3813683.0
     },
     {
       "date": "2016-10-12",
-      "percentile_252d": 3.85,
-      "value": 4457698.0
+      "percentile_252d": 5.77,
+      "value": 3912842.0
     },
     {
       "date": "2016-10-19",
-      "percentile_252d": 25.0,
-      "value": 4467382.0
+      "percentile_252d": 5.77,
+      "value": 3883584.0
     },
     {
       "date": "2016-10-26",
-      "percentile_252d": 3.85,
-      "value": 4454326.0
+      "percentile_252d": 5.77,
+      "value": 3883234.0
     },
     {
       "date": "2016-11-02",
-      "percentile_252d": 3.85,
-      "value": 4453087.0
+      "percentile_252d": 5.77,
+      "value": 3859190.0
     },
     {
       "date": "2016-11-09",
-      "percentile_252d": 7.69,
-      "value": 4455087.0
+      "percentile_252d": 15.38,
+      "value": 3947877.0
     },
     {
       "date": "2016-11-16",
-      "percentile_252d": 5.77,
-      "value": 4453633.0
+      "percentile_252d": 15.38,
+      "value": 3936964.0
     },
     {
       "date": "2016-11-23",
-      "percentile_252d": 26.92,
-      "value": 4465782.0
+      "percentile_252d": 17.31,
+      "value": 3946746.0
     },
     {
       "date": "2016-11-30",
-      "percentile_252d": 1.92,
-      "value": 4446307.0
+      "percentile_252d": 5.77,
+      "value": 3828423.0
     },
     {
       "date": "2016-12-07",
-      "percentile_252d": 3.85,
-      "value": 4448618.0
+      "percentile_252d": 17.31,
+      "value": 3919451.0
     },
     {
       "date": "2016-12-14",
-      "percentile_252d": 44.23,
-      "value": 4470973.0
+      "percentile_252d": 26.92,
+      "value": 3976885.0
     },
     {
       "date": "2016-12-21",
-      "percentile_252d": 42.31,
-      "value": 4469089.0
+      "percentile_252d": 1.92,
+      "value": 3773115.0
     },
     {
       "date": "2016-12-28",
-      "percentile_252d": 5.77,
-      "value": 4451451.0
+      "percentile_252d": 1.92,
+      "value": 3746860.0
     },
     {
       "date": "2017-01-04",
-      "percentile_252d": 11.54,
-      "value": 4453101.0
+      "percentile_252d": 5.77,
+      "value": 3798644.0
     },
     {
       "date": "2017-01-11",
-      "percentile_252d": 9.62,
-      "value": 4452509.0
+      "percentile_252d": 23.08,
+      "value": 3921197.0
     },
     {
       "date": "2017-01-18",
-      "percentile_252d": 28.85,
-      "value": 4460758.0
+      "percentile_252d": 32.69,
+      "value": 3964550.0
     },
     {
       "date": "2017-01-25",
-      "percentile_252d": 11.54,
-      "value": 4452838.0
+      "percentile_252d": 30.77,
+      "value": 3953636.0
     },
     {
       "date": "2017-02-01",
-      "percentile_252d": 19.23,
-      "value": 4453881.0
+      "percentile_252d": 26.92,
+      "value": 3945310.0
     },
     {
       "date": "2017-02-08",
-      "percentile_252d": 25.0,
-      "value": 4456236.0
+      "percentile_252d": 44.23,
+      "value": 4027567.0
     },
     {
       "date": "2017-02-15",
-      "percentile_252d": 23.08,
-      "value": 4454676.0
+      "percentile_252d": 46.15,
+      "value": 4039634.0
     },
     {
       "date": "2017-02-22",
-      "percentile_252d": 55.77,
-      "value": 4468702.0
+      "percentile_252d": 46.15,
+      "value": 4032577.0
     },
     {
       "date": "2017-03-01",
-      "percentile_252d": 32.69,
-      "value": 4458018.0
+      "percentile_252d": 75.0,
+      "value": 4126512.0
     },
     {
       "date": "2017-03-08",
-      "percentile_252d": 38.46,
-      "value": 4459840.0
+      "percentile_252d": 86.54,
+      "value": 4159496.0
     },
     {
       "date": "2017-03-15",
-      "percentile_252d": 65.38,
-      "value": 4469577.0
+      "percentile_252d": 96.15,
+      "value": 4204488.0
     },
     {
       "date": "2017-03-22",
       "percentile_252d": 84.62,
-      "value": 4478236.0
+      "value": 4156396.0
     },
     {
       "date": "2017-03-29",
-      "percentile_252d": 67.31,
-      "value": 4469618.0
+      "percentile_252d": 80.77,
+      "value": 4144074.0
     },
     {
       "date": "2017-04-05",
-      "percentile_252d": 82.69,
-      "value": 4474634.0
+      "percentile_252d": 96.15,
+      "value": 4210780.0
     },
     {
       "date": "2017-04-12",
-      "percentile_252d": 98.08,
-      "value": 4484492.0
+      "percentile_252d": 100.0,
+      "value": 4256746.0
     },
     {
       "date": "2017-04-19",
       "percentile_252d": 92.31,
-      "value": 4479270.0
+      "value": 4198160.0
     },
     {
       "date": "2017-04-26",
-      "percentile_252d": 69.23,
-      "value": 4470142.0
+      "percentile_252d": 63.46,
+      "value": 4113600.0
     },
     {
       "date": "2017-05-03",
-      "percentile_252d": 75.0,
-      "value": 4471246.0
+      "percentile_252d": 50.0,
+      "value": 4039924.0
     },
     {
       "date": "2017-05-10",
-      "percentile_252d": 82.69,
-      "value": 4473459.0
+      "percentile_252d": 59.62,
+      "value": 4087177.0
     },
     {
       "date": "2017-05-17",
-      "percentile_252d": 57.69,
-      "value": 4467108.0
+      "percentile_252d": 67.31,
+      "value": 4113870.0
     },
     {
       "date": "2017-05-24",
-      "percentile_252d": 73.08,
-      "value": 4470852.0
+      "percentile_252d": 69.23,
+      "value": 4118741.0
     },
     {
       "date": "2017-05-31",
-      "percentile_252d": 40.38,
-      "value": 4459914.0
+      "percentile_252d": 48.08,
+      "value": 4032754.0
     },
     {
       "date": "2017-06-07",
-      "percentile_252d": 44.23,
-      "value": 4462443.0
+      "percentile_252d": 84.62,
+      "value": 4144861.0
     },
     {
       "date": "2017-06-14",
-      "percentile_252d": 88.46,
-      "value": 4476269.0
+      "percentile_252d": 90.38,
+      "value": 4159567.0
     },
     {
       "date": "2017-06-21",
-      "percentile_252d": 86.54,
-      "value": 4474257.0
+      "percentile_252d": 53.85,
+      "value": 4063213.0
     },
     {
       "date": "2017-06-28",
-      "percentile_252d": 46.15,
-      "value": 4463347.0
+      "percentile_252d": 40.38,
+      "value": 3991283.0
     },
     {
       "date": "2017-07-05",
-      "percentile_252d": 57.69,
-      "value": 4467272.0
+      "percentile_252d": 53.85,
+      "value": 4050237.0
     },
     {
       "date": "2017-07-12",
-      "percentile_252d": 53.85,
-      "value": 4466702.0
+      "percentile_252d": 69.23,
+      "value": 4116497.0
     },
     {
       "date": "2017-07-19",
-      "percentile_252d": 92.31,
-      "value": 4476903.0
+      "percentile_252d": 84.62,
+      "value": 4151772.0
     },
     {
       "date": "2017-07-26",
-      "percentile_252d": 48.08,
-      "value": 4465284.0
+      "percentile_252d": 90.38,
+      "value": 4170569.0
     },
     {
       "date": "2017-08-02",
-      "percentile_252d": 55.77,
-      "value": 4466846.0
+      "percentile_252d": 88.46,
+      "value": 4167164.0
     },
     {
       "date": "2017-08-09",
-      "percentile_252d": 65.38,
-      "value": 4469083.0
+      "percentile_252d": 98.08,
+      "value": 4215271.0
     },
     {
       "date": "2017-08-16",
-      "percentile_252d": 46.15,
-      "value": 4462871.0
+      "percentile_252d": 98.08,
+      "value": 4239077.0
     },
     {
       "date": "2017-08-23",
-      "percentile_252d": 50.0,
-      "value": 4463837.0
+      "percentile_252d": 94.23,
+      "value": 4211967.0
     },
     {
       "date": "2017-08-30",
-      "percentile_252d": 9.62,
-      "value": 4452360.0
+      "percentile_252d": 98.08,
+      "value": 4245217.0
     },
     {
       "date": "2017-09-06",
-      "percentile_252d": 19.23,
-      "value": 4453474.0
+      "percentile_252d": 100.0,
+      "value": 4270783.0
     },
     {
       "date": "2017-09-13",
-      "percentile_252d": 80.77,
-      "value": 4471174.0
+      "percentile_252d": 100.0,
+      "value": 4275274.0
     },
     {
       "date": "2017-09-20",
-      "percentile_252d": 36.54,
-      "value": 4458576.0
+      "percentile_252d": 76.92,
+      "value": 4162769.0
     },
     {
       "date": "2017-09-27",
-      "percentile_252d": 28.85,
-      "value": 4455661.0
+      "percentile_252d": 51.92,
+      "value": 4070926.0
     },
     {
       "date": "2017-10-04",
-      "percentile_252d": 42.31,
-      "value": 4460422.0
+      "percentile_252d": 61.54,
+      "value": 4121251.0
     },
     {
       "date": "2017-10-11",
-      "percentile_252d": 36.54,
-      "value": 4459415.0
+      "percentile_252d": 75.0,
+      "value": 4159844.0
     },
     {
       "date": "2017-10-18",
-      "percentile_252d": 75.0,
-      "value": 4469723.0
+      "percentile_252d": 78.85,
+      "value": 4169292.0
     },
     {
       "date": "2017-10-25",
-      "percentile_252d": 44.23,
-      "value": 4461117.0
+      "percentile_252d": 65.38,
+      "value": 4152728.0
     },
     {
       "date": "2017-11-01",
-      "percentile_252d": 26.92,
-      "value": 4455887.0
+      "percentile_252d": 80.77,
+      "value": 4175176.0
     },
     {
       "date": "2017-11-08",
-      "percentile_252d": 30.77,
-      "value": 4458552.0
+      "percentile_252d": 84.62,
+      "value": 4206226.0
     },
     {
       "date": "2017-11-15",
-      "percentile_252d": 3.85,
-      "value": 4448289.0
+      "percentile_252d": 90.38,
+      "value": 4238620.0
     },
     {
       "date": "2017-11-22",
-      "percentile_252d": 7.69,
-      "value": 4450615.0
+      "percentile_252d": 88.46,
+      "value": 4235402.0
     },
     {
       "date": "2017-11-29",
-      "percentile_252d": 1.92,
-      "value": 4438592.0
+      "percentile_252d": 76.92,
+      "value": 4199291.0
     },
     {
       "date": "2017-12-06",
-      "percentile_252d": 1.92,
-      "value": 4437148.0
+      "percentile_252d": 86.54,
+      "value": 4233194.0
     },
     {
       "date": "2017-12-13",
-      "percentile_252d": 15.38,
-      "value": 4452726.0
+      "percentile_252d": 84.62,
+      "value": 4233126.0
     },
     {
       "date": "2017-12-20",
-      "percentile_252d": 5.77,
-      "value": 4447470.0
+      "percentile_252d": 61.54,
+      "value": 4164276.0
     },
     {
       "date": "2017-12-27",
-      "percentile_252d": 9.62,
-      "value": 4448680.0
+      "percentile_252d": 30.77,
+      "value": 4110648.0
     },
     {
       "date": "2018-01-03",
-      "percentile_252d": 5.77,
-      "value": 4443718.0
+      "percentile_252d": 28.85,
+      "value": 4100530.0
     },
     {
       "date": "2018-01-10",
-      "percentile_252d": 7.69,
-      "value": 4446062.0
+      "percentile_252d": 69.23,
+      "value": 4181893.0
     },
     {
       "date": "2018-01-17",
-      "percentile_252d": 5.77,
-      "value": 4439145.0
+      "percentile_252d": 69.23,
+      "value": 4190932.0
     },
     {
       "date": "2018-01-24",
-      "percentile_252d": 7.69,
-      "value": 4441317.0
+      "percentile_252d": 38.46,
+      "value": 4135828.0
     },
     {
       "date": "2018-01-31",
-      "percentile_252d": 1.92,
-      "value": 4419225.0
+      "percentile_252d": 19.23,
+      "value": 4083184.0
     },
     {
       "date": "2018-02-07",
-      "percentile_252d": 3.85,
-      "value": 4420745.0
+      "percentile_252d": 59.62,
+      "value": 4168689.0
     },
     {
       "date": "2018-02-14",
-      "percentile_252d": 5.77,
-      "value": 4434863.0
+      "percentile_252d": 71.15,
+      "value": 4198664.0
     },
     {
       "date": "2018-02-21",
-      "percentile_252d": 1.92,
-      "value": 4411660.0
+      "percentile_252d": 40.38,
+      "value": 4151812.0
     },
     {
       "date": "2018-02-28",
-      "percentile_252d": 1.92,
-      "value": 4393401.0
+      "percentile_252d": 36.54,
+      "value": 4146271.0
     },
     {
       "date": "2018-03-07",
-      "percentile_252d": 3.85,
-      "value": 4396097.0
+      "percentile_252d": 65.38,
+      "value": 4186731.0
     },
     {
       "date": "2018-03-14",
-      "percentile_252d": 5.77,
-      "value": 4407258.0
+      "percentile_252d": 42.31,
+      "value": 4152359.0
     },
     {
       "date": "2018-03-21",
-      "percentile_252d": 5.77,
-      "value": 4401222.0
+      "percentile_252d": 11.54,
+      "value": 4064182.0
     },
     {
       "date": "2018-03-28",
-      "percentile_252d": 1.92,
-      "value": 4392198.0
+      "percentile_252d": 9.62,
+      "value": 4055442.0
     },
     {
       "date": "2018-04-04",
-      "percentile_252d": 1.92,
-      "value": 4386104.0
+      "percentile_252d": 17.31,
+      "value": 4077618.0
     },
     {
       "date": "2018-04-11",
-      "percentile_252d": 1.92,
-      "value": 4383684.0
+      "percentile_252d": 23.08,
+      "value": 4087240.0
     },
     {
       "date": "2018-04-18",
-      "percentile_252d": 3.85,
-      "value": 4385903.0
+      "percentile_252d": 25.0,
+      "value": 4096636.0
     },
     {
       "date": "2018-04-25",
-      "percentile_252d": 1.92,
-      "value": 4372886.0
+      "percentile_252d": 3.85,
+      "value": 4009717.0
     },
     {
       "date": "2018-05-02",
       "percentile_252d": 1.92,
-      "value": 4356129.0
+      "value": 3949625.0
     },
     {
       "date": "2018-05-09",
-      "percentile_252d": 3.85,
-      "value": 4358207.0
+      "percentile_252d": 5.77,
+      "value": 4001746.0
     },
     {
       "date": "2018-05-16",
-      "percentile_252d": 1.92,
-      "value": 4337609.0
+      "percentile_252d": 5.77,
+      "value": 3997806.0
     },
     {
       "date": "2018-05-23",
-      "percentile_252d": 1.92,
-      "value": 4337301.0
+      "percentile_252d": 9.62,
+      "value": 4007927.0
     },
     {
       "date": "2018-05-30",
-      "percentile_252d": 1.92,
-      "value": 4327519.0
+      "percentile_252d": 7.69,
+      "value": 3998248.0
     },
     {
       "date": "2018-06-06",
-      "percentile_252d": 1.92,
-      "value": 4319191.0
+      "percentile_252d": 13.46,
+      "value": 4008350.0
     },
     {
       "date": "2018-06-13",
-      "percentile_252d": 3.85,
-      "value": 4324906.0
+      "percentile_252d": 17.31,
+      "value": 4040693.0
     },
     {
       "date": "2018-06-20",
-      "percentile_252d": 1.92,
-      "value": 4315896.0
+      "percentile_252d": 3.85,
+      "value": 3962799.0
     },
     {
       "date": "2018-06-27",
       "percentile_252d": 1.92,
-      "value": 4305491.0
+      "value": 3910871.0
     },
     {
       "date": "2018-07-04",
-      "percentile_252d": 1.92,
-      "value": 4289764.0
+      "percentile_252d": 3.85,
+      "value": 3948886.0
     },
     {
       "date": "2018-07-11",
-      "percentile_252d": 3.85,
-      "value": 4291201.0
+      "percentile_252d": 9.62,
+      "value": 3963495.0
     },
     {
       "date": "2018-07-18",
-      "percentile_252d": 5.77,
-      "value": 4291615.0
+      "percentile_252d": 7.69,
+      "value": 3961137.0
     },
     {
       "date": "2018-07-25",
-      "percentile_252d": 1.92,
-      "value": 4277681.0
+      "percentile_252d": 3.85,
+      "value": 3928075.0
     },
     {
       "date": "2018-08-01",
       "percentile_252d": 1.92,
-      "value": 4255653.0
+      "value": 3903335.0
     },
     {
       "date": "2018-08-08",
-      "percentile_252d": 3.85,
-      "value": 4258030.0
+      "percentile_252d": 7.69,
+      "value": 3929900.0
     },
     {
       "date": "2018-08-15",
       "percentile_252d": 1.92,
-      "value": 4228924.0
+      "value": 3885810.0
     },
     {
       "date": "2018-08-22",
       "percentile_252d": 1.92,
-      "value": 4228818.0
+      "value": 3879299.0
     },
     {
       "date": "2018-08-29",
       "percentile_252d": 1.92,
-      "value": 4218914.0
+      "value": 3875531.0
     },
     {
       "date": "2018-09-05",
-      "percentile_252d": 1.92,
-      "value": 4208496.0
+      "percentile_252d": 5.77,
+      "value": 3884722.0
     },
     {
       "date": "2018-09-12",
-      "percentile_252d": 3.85,
-      "value": 4210812.0
+      "percentile_252d": 11.54,
+      "value": 3905843.0
     },
     {
       "date": "2018-09-19",
       "percentile_252d": 1.92,
-      "value": 4208059.0
+      "value": 3863266.0
     },
     {
       "date": "2018-09-26",
       "percentile_252d": 1.92,
-      "value": 4192909.0
+      "value": 3817253.0
     },
     {
       "date": "2018-10-03",
       "percentile_252d": 1.92,
-      "value": 4174704.0
+      "value": 3803743.0
     },
     {
       "date": "2018-10-10",
-      "percentile_252d": 3.85,
-      "value": 4176906.0
+      "percentile_252d": 5.77,
+      "value": 3849795.0
     },
     {
       "date": "2018-10-17",
-      "percentile_252d": 3.85,
-      "value": 4175446.0
+      "percentile_252d": 5.77,
+      "value": 3842349.0
     },
     {
       "date": "2018-10-24",
       "percentile_252d": 1.92,
-      "value": 4173070.0
+      "value": 3797050.0
     },
     {
       "date": "2018-10-31",
       "percentile_252d": 1.92,
-      "value": 4139731.0
+      "value": 3761548.0
     },
     {
       "date": "2018-11-07",
-      "percentile_252d": 3.85,
-      "value": 4141936.0
+      "percentile_252d": 9.62,
+      "value": 3820077.0
     },
     {
       "date": "2018-11-14",
-      "percentile_252d": 5.77,
-      "value": 4145892.0
+      "percentile_252d": 7.69,
+      "value": 3804138.0
     },
     {
       "date": "2018-11-21",
       "percentile_252d": 1.92,
-      "value": 4106198.0
+      "value": 3759791.0
     },
     {
       "date": "2018-11-28",
       "percentile_252d": 1.92,
-      "value": 4097170.0
+      "value": 3755110.0
     },
     {
       "date": "2018-12-05",
       "percentile_252d": 1.92,
-      "value": 4086044.0
+      "value": 3746270.0
     },
     {
       "date": "2018-12-12",
       "percentile_252d": 3.85,
-      "value": 4088314.0
+      "value": 3752886.0
     },
     {
       "date": "2018-12-19",
       "percentile_252d": 1.92,
-      "value": 4084274.0
+      "value": 3727578.0
     },
     {
       "date": "2018-12-26",
       "percentile_252d": 1.92,
-      "value": 4075636.0
+      "value": 3700546.0
     },
     {
       "date": "2019-01-02",
       "percentile_252d": 1.92,
-      "value": 4058378.0
+      "value": 3658995.0
     },
     {
       "date": "2019-01-09",
-      "percentile_252d": 1.92,
-      "value": 4056563.0
+      "percentile_252d": 3.85,
+      "value": 3697328.0
     },
     {
       "date": "2019-01-16",
-      "percentile_252d": 1.92,
-      "value": 4050044.0
+      "percentile_252d": 5.77,
+      "value": 3697548.0
     },
     {
       "date": "2019-01-23",
       "percentile_252d": 1.92,
-      "value": 4047052.0
+      "value": 3646011.0
     },
     {
       "date": "2019-01-30",
       "percentile_252d": 1.92,
-      "value": 4039678.0
+      "value": 3635412.0
     },
     {
       "date": "2019-02-06",
-      "percentile_252d": 1.92,
-      "value": 4026350.0
+      "percentile_252d": 7.69,
+      "value": 3672049.0
     },
     {
       "date": "2019-02-13",
-      "percentile_252d": 3.85,
-      "value": 4028431.0
+      "percentile_252d": 7.69,
+      "value": 3667625.0
     },
     {
       "date": "2019-02-20",
-      "percentile_252d": 1.92,
-      "value": 3981420.0
+      "percentile_252d": 3.85,
+      "value": 3645249.0
     },
     {
       "date": "2019-02-27",
-      "percentile_252d": 1.92,
-      "value": 3974590.0
+      "percentile_252d": 9.62,
+      "value": 3662101.0
     },
     {
       "date": "2019-03-06",
-      "percentile_252d": 1.92,
-      "value": 3969134.0
+      "percentile_252d": 25.0,
+      "value": 3746974.0
     },
     {
       "date": "2019-03-13",
-      "percentile_252d": 3.85,
-      "value": 3971559.0
+      "percentile_252d": 21.15,
+      "value": 3725571.0
     },
     {
       "date": "2019-03-20",
-      "percentile_252d": 1.92,
-      "value": 3962748.0
+      "percentile_252d": 7.69,
+      "value": 3658508.0
     },
     {
       "date": "2019-03-27",
-      "percentile_252d": 1.92,
-      "value": 3955617.0
+      "percentile_252d": 3.85,
+      "value": 3644583.0
     },
     {
       "date": "2019-04-03",
       "percentile_252d": 1.92,
-      "value": 3935509.0
+      "value": 3625305.0
     },
     {
       "date": "2019-04-10",
-      "percentile_252d": 3.85,
-      "value": 3936784.0
+      "percentile_252d": 19.23,
+      "value": 3671436.0
     },
     {
       "date": "2019-04-17",
-      "percentile_252d": 1.92,
-      "value": 3931827.0
+      "percentile_252d": 11.54,
+      "value": 3646548.0
     },
     {
       "date": "2019-04-24",
       "percentile_252d": 1.92,
-      "value": 3928273.0
+      "value": 3540156.0
     },
     {
       "date": "2019-05-01",
       "percentile_252d": 1.92,
-      "value": 3889691.0
+      "value": 3489166.0
     },
     {
       "date": "2019-05-08",
-      "percentile_252d": 3.85,
-      "value": 3892216.0
+      "percentile_252d": 5.77,
+      "value": 3543838.0
     },
     {
       "date": "2019-05-15",
-      "percentile_252d": 1.92,
-      "value": 3864749.0
+      "percentile_252d": 5.77,
+      "value": 3540503.0
     },
     {
       "date": "2019-05-22",
-      "percentile_252d": 1.92,
-      "value": 3860435.0
+      "percentile_252d": 9.62,
+      "value": 3573820.0
     },
     {
       "date": "2019-05-29",
-      "percentile_252d": 1.92,
-      "value": 3851444.0
+      "percentile_252d": 11.54,
+      "value": 3601441.0
     },
     {
       "date": "2019-06-05",
-      "percentile_252d": 1.92,
-      "value": 3847645.0
+      "percentile_252d": 13.46,
+      "value": 3621752.0
     },
     {
       "date": "2019-06-12",
-      "percentile_252d": 3.85,
-      "value": 3849955.0
+      "percentile_252d": 30.77,
+      "value": 3660690.0
     },
     {
       "date": "2019-06-19",
-      "percentile_252d": 1.92,
-      "value": 3844016.0
+      "percentile_252d": 15.38,
+      "value": 3623261.0
     },
     {
       "date": "2019-06-26",
-      "percentile_252d": 1.92,
-      "value": 3826817.0
+      "percentile_252d": 9.62,
+      "value": 3570731.0
     },
     {
       "date": "2019-07-03",
-      "percentile_252d": 1.92,
-      "value": 3813198.0
+      "percentile_252d": 9.62,
+      "value": 3561043.0
     },
     {
       "date": "2019-07-10",
-      "percentile_252d": 3.85,
-      "value": 3815038.0
+      "percentile_252d": 15.38,
+      "value": 3597671.0
     },
     {
       "date": "2019-07-17",
-      "percentile_252d": 1.92,
-      "value": 3808110.0
+      "percentile_252d": 19.23,
+      "value": 3609145.0
     },
     {
       "date": "2019-07-24",
-      "percentile_252d": 1.92,
-      "value": 3803436.0
+      "percentile_252d": 19.23,
+      "value": 3601819.0
     },
     {
       "date": "2019-07-31",
-      "percentile_252d": 1.92,
-      "value": 3779102.0
+      "percentile_252d": 21.15,
+      "value": 3607972.0
     },
     {
       "date": "2019-08-07",
-      "percentile_252d": 3.85,
-      "value": 3781543.0
+      "percentile_252d": 38.46,
+      "value": 3646217.0
     },
     {
       "date": "2019-08-14",
-      "percentile_252d": 5.77,
-      "value": 3786018.0
+      "percentile_252d": 42.31,
+      "value": 3653317.0
     },
     {
       "date": "2019-08-21",
-      "percentile_252d": 1.92,
-      "value": 3764866.0
+      "percentile_252d": 28.85,
+      "value": 3623988.0
     },
     {
       "date": "2019-08-28",
-      "percentile_252d": 1.92,
-      "value": 3759946.0
+      "percentile_252d": 25.0,
+      "value": 3609734.0
     },
     {
       "date": "2019-09-04",
-      "percentile_252d": 3.85,
-      "value": 3761508.0
+      "percentile_252d": 26.92,
+      "value": 3611343.0
     },
     {
       "date": "2019-09-11",
-      "percentile_252d": 7.69,
-      "value": 3769673.0
+      "percentile_252d": 15.38,
+      "value": 3580719.0
     },
     {
       "date": "2019-09-18",
-      "percentile_252d": 26.92,
-      "value": 3844695.0
+      "percentile_252d": 15.38,
+      "value": 3575559.0
     },
     {
       "date": "2019-09-25",
-      "percentile_252d": 34.62,
-      "value": 3857715.0
+      "percentile_252d": 7.69,
+      "value": 3543393.0
     },
     {
       "date": "2019-10-02",
-      "percentile_252d": 51.92,
-      "value": 3945831.0
+      "percentile_252d": 26.92,
+      "value": 3607606.0
     },
     {
       "date": "2019-10-09",
-      "percentile_252d": 53.85,
-      "value": 3949955.0
+      "percentile_252d": 44.23,
+      "value": 3630295.0
     },
     {
       "date": "2019-10-16",
-      "percentile_252d": 59.62,
-      "value": 3966471.0
+      "percentile_252d": 48.08,
+      "value": 3640064.0
     },
     {
       "date": "2019-10-23",
-      "percentile_252d": 61.54,
-      "value": 3968700.0
+      "percentile_252d": 15.38,
+      "value": 3572425.0
     },
     {
       "date": "2019-10-30",
-      "percentile_252d": 71.15,
-      "value": 4019823.0
+      "percentile_252d": 46.15,
+      "value": 3629755.0
     },
     {
       "date": "2019-11-06",
-      "percentile_252d": 76.92,
-      "value": 4039443.0
+      "percentile_252d": 71.15,
+      "value": 3660764.0
     },
     {
       "date": "2019-11-13",
-      "percentile_252d": 82.69,
-      "value": 4047882.0
+      "percentile_252d": 75.0,
+      "value": 3664165.0
     },
     {
       "date": "2019-11-20",
-      "percentile_252d": 76.92,
-      "value": 4030249.0
+      "percentile_252d": 50.0,
+      "value": 3635410.0
     },
     {
       "date": "2019-11-27",
-      "percentile_252d": 88.46,
-      "value": 4052875.0
+      "percentile_252d": 84.62,
+      "value": 3691428.0
     },
     {
       "date": "2019-12-04",
-      "percentile_252d": 94.23,
-      "value": 4065696.0
+      "percentile_252d": 92.31,
+      "value": 3718725.0
     },
     {
       "date": "2019-12-11",
       "percentile_252d": 100.0,
-      "value": 4095491.0
+      "value": 3768021.0
     },
     {
       "date": "2019-12-18",
       "percentile_252d": 100.0,
-      "value": 4137052.0
+      "value": 3791098.0
     },
     {
       "date": "2019-12-25",
       "percentile_252d": 100.0,
-      "value": 4165591.0
+      "value": 3793348.0
     },
     {
       "date": "2020-01-01",
-      "percentile_252d": 100.0,
-      "value": 4173626.0
+      "percentile_252d": 92.31,
+      "value": 3726986.0
     },
     {
       "date": "2020-01-08",
       "percentile_252d": 96.15,
-      "value": 4149544.0
+      "value": 3781666.0
     },
     {
       "date": "2020-01-15",
       "percentile_252d": 100.0,
-      "value": 4175850.0
+      "value": 3824188.0
     },
     {
       "date": "2020-01-22",
-      "percentile_252d": 92.31,
-      "value": 4145912.0
+      "percentile_252d": 86.54,
+      "value": 3726367.0
     },
     {
       "date": "2020-01-29",
-      "percentile_252d": 94.23,
-      "value": 4151630.0
+      "percentile_252d": 82.69,
+      "value": 3719269.0
     },
     {
       "date": "2020-02-05",
-      "percentile_252d": 96.15,
-      "value": 4166707.0
+      "percentile_252d": 90.38,
+      "value": 3749273.0
     },
     {
       "date": "2020-02-12",
-      "percentile_252d": 100.0,
-      "value": 4182689.0
+      "percentile_252d": 92.31,
+      "value": 3771143.0
     },
     {
       "date": "2020-02-19",
-      "percentile_252d": 94.23,
-      "value": 4171570.0
+      "percentile_252d": 84.62,
+      "value": 3742670.0
     },
     {
       "date": "2020-02-26",
-      "percentile_252d": 88.46,
-      "value": 4158637.0
+      "percentile_252d": 73.08,
+      "value": 3716972.0
     },
     {
       "date": "2020-03-04",
       "percentile_252d": 100.0,
-      "value": 4241507.0
+      "value": 3861967.0
     },
     {
       "date": "2020-03-11",
       "percentile_252d": 100.0,
-      "value": 4311911.0
+      "value": 3930030.0
     },
     {
       "date": "2020-03-18",
       "percentile_252d": 100.0,
-      "value": 4668212.0
+      "value": 4305159.0
     },
     {
       "date": "2020-03-25",
       "percentile_252d": 100.0,
-      "value": 5254278.0
+      "value": 4766615.0
     },
     {
       "date": "2020-04-01",
       "percentile_252d": 100.0,
-      "value": 5811607.0
+      "value": 5174512.0
     },
     {
       "date": "2020-04-08",
       "percentile_252d": 100.0,
-      "value": 6083141.0
+      "value": 5331080.0
     },
     {
       "date": "2020-04-15",
       "percentile_252d": 100.0,
-      "value": 6367887.0
+      "value": 5474922.0
     },
     {
       "date": "2020-04-22",
       "percentile_252d": 100.0,
-      "value": 6573136.0
+      "value": 5660980.0
     },
     {
       "date": "2020-04-29",
-      "percentile_252d": 100.0,
-      "value": 6655929.0
+      "percentile_252d": 98.08,
+      "value": 5656972.0
     },
     {
       "date": "2020-05-06",
-      "percentile_252d": 100.0,
-      "value": 6721420.0
+      "percentile_252d": 96.15,
+      "value": 5592755.0
     },
     {
       "date": "2020-05-13",
       "percentile_252d": 100.0,
-      "value": 6934227.0
+      "value": 5742908.0
     },
     {
       "date": "2020-05-20",
       "percentile_252d": 100.0,
-      "value": 7037258.0
+      "value": 5833122.0
     },
     {
       "date": "2020-05-27",
-      "percentile_252d": 100.0,
-      "value": 7097316.0
+      "percentile_252d": 98.08,
+      "value": 5782499.0
     },
     {
       "date": "2020-06-03",
-      "percentile_252d": 100.0,
-      "value": 7165217.0
+      "percentile_252d": 94.23,
+      "value": 5730381.0
     },
     {
       "date": "2020-06-10",
-      "percentile_252d": 100.0,
-      "value": 7168936.0
+      "percentile_252d": 92.31,
+      "value": 5662366.0
     },
     {
       "date": "2020-06-17",
-      "percentile_252d": 94.23,
-      "value": 7094690.0
+      "percentile_252d": 84.62,
+      "value": 5533839.0
     },
     {
       "date": "2020-06-24",
-      "percentile_252d": 92.31,
-      "value": 7082302.0
+      "percentile_252d": 80.77,
+      "value": 5458359.0
     },
     {
       "date": "2020-07-01",
-      "percentile_252d": 88.46,
-      "value": 7009040.0
+      "percentile_252d": 78.85,
+      "value": 5351418.0
     },
     {
       "date": "2020-07-08",
-      "percentile_252d": 84.62,
-      "value": 6920716.0
+      "percentile_252d": 75.0,
+      "value": 5267617.0
     },
     {
       "date": "2020-07-15",
-      "percentile_252d": 86.54,
-      "value": 6958604.0
+      "percentile_252d": 75.0,
+      "value": 5303283.0
     },
     {
       "date": "2020-07-22",
-      "percentile_252d": 86.54,
-      "value": 6964755.0
+      "percentile_252d": 69.23,
+      "value": 5159811.0
     },
     {
       "date": "2020-07-29",
-      "percentile_252d": 82.69,
-      "value": 6949032.0
+      "percentile_252d": 67.31,
+      "value": 5132344.0
     },
     {
       "date": "2020-08-05",
-      "percentile_252d": 80.77,
-      "value": 6945237.0
+      "percentile_252d": 71.15,
+      "value": 5200009.0
     },
     {
       "date": "2020-08-12",
-      "percentile_252d": 82.69,
-      "value": 6957277.0
+      "percentile_252d": 73.08,
+      "value": 5287441.0
     },
     {
       "date": "2020-08-19",
-      "percentile_252d": 88.46,
-      "value": 7010637.0
+      "percentile_252d": 78.85,
+      "value": 5367020.0
     },
     {
       "date": "2020-08-26",
-      "percentile_252d": 84.62,
-      "value": 6990418.0
+      "percentile_252d": 78.85,
+      "value": 5367719.0
     },
     {
       "date": "2020-09-02",
-      "percentile_252d": 88.46,
-      "value": 7017492.0
+      "percentile_252d": 78.85,
+      "value": 5378319.0
     },
     {
       "date": "2020-09-09",
-      "percentile_252d": 84.62,
-      "value": 7010614.0
+      "percentile_252d": 78.85,
+      "value": 5399530.0
     },
     {
       "date": "2020-09-16",
-      "percentile_252d": 90.38,
-      "value": 7064475.0
+      "percentile_252d": 78.85,
+      "value": 5449565.0
     },
     {
       "date": "2020-09-23",
-      "percentile_252d": 92.31,
-      "value": 7093161.0
+      "percentile_252d": 76.92,
+      "value": 5412472.0
     },
     {
       "date": "2020-09-30",
-      "percentile_252d": 86.54,
-      "value": 7056129.0
+      "percentile_252d": 71.15,
+      "value": 5376127.0
     },
     {
       "date": "2020-10-07",
-      "percentile_252d": 88.46,
-      "value": 7074649.0
+      "percentile_252d": 71.15,
+      "value": 5377564.0
     },
     {
       "date": "2020-10-14",
-      "percentile_252d": 96.15,
-      "value": 7151426.0
+      "percentile_252d": 80.77,
+      "value": 5470428.0
     },
     {
       "date": "2020-10-21",
-      "percentile_252d": 100.0,
-      "value": 7177265.0
+      "percentile_252d": 76.92,
+      "value": 5452473.0
     },
     {
       "date": "2020-10-28",
-      "percentile_252d": 92.31,
-      "value": 7146306.0
+      "percentile_252d": 78.85,
+      "value": 5465368.0
     },
     {
       "date": "2020-11-04",
-      "percentile_252d": 94.23,
-      "value": 7157479.0
+      "percentile_252d": 84.62,
+      "value": 5536133.0
     },
     {
       "date": "2020-11-11",
-      "percentile_252d": 98.08,
-      "value": 7175417.0
+      "percentile_252d": 84.62,
+      "value": 5574580.0
     },
     {
       "date": "2020-11-18",
-      "percentile_252d": 100.0,
-      "value": 7243080.0
+      "percentile_252d": 92.31,
+      "value": 5686085.0
     },
     {
       "date": "2020-11-25",
-      "percentile_252d": 98.08,
-      "value": 7216480.0
+      "percentile_252d": 92.31,
+      "value": 5699265.0
     },
     {
       "date": "2020-12-02",
-      "percentile_252d": 98.08,
-      "value": 7222414.0
+      "percentile_252d": 90.38,
+      "value": 5691360.0
     },
     {
       "date": "2020-12-09",
-      "percentile_252d": 98.08,
-      "value": 7242658.0
+      "percentile_252d": 92.31,
+      "value": 5708412.0
     },
     {
       "date": "2020-12-16",
-      "percentile_252d": 100.0,
-      "value": 7362592.0
+      "percentile_252d": 98.08,
+      "value": 5832868.0
     },
     {
       "date": "2020-12-23",
-      "percentile_252d": 100.0,
-      "value": 7404039.0
+      "percentile_252d": 96.15,
+      "value": 5800775.0
     },
     {
       "date": "2020-12-30",
-      "percentile_252d": 98.08,
-      "value": 7363351.0
+      "percentile_252d": 92.31,
+      "value": 5771644.0
     },
     {
       "date": "2021-01-06",
-      "percentile_252d": 94.23,
-      "value": 7334809.0
+      "percentile_252d": 78.85,
+      "value": 5665478.0
     },
     {
       "date": "2021-01-13",
-      "percentile_252d": 92.31,
-      "value": 7333968.0
+      "percentile_252d": 90.38,
+      "value": 5744547.0
     },
     {
       "date": "2021-01-20",
-      "percentile_252d": 100.0,
-      "value": 7414942.0
+      "percentile_252d": 94.23,
+      "value": 5786230.0
     },
     {
       "date": "2021-01-27",
-      "percentile_252d": 98.08,
-      "value": 7404926.0
+      "percentile_252d": 88.46,
+      "value": 5770234.0
     },
     {
       "date": "2021-02-03",
-      "percentile_252d": 98.08,
-      "value": 7410598.0
+      "percentile_252d": 92.31,
+      "value": 5785095.0
     },
     {
       "date": "2021-02-10",
       "percentile_252d": 100.0,
-      "value": 7442225.0
+      "value": 5833319.0
     },
     {
       "date": "2021-02-17",
       "percentile_252d": 100.0,
-      "value": 7557402.0
+      "value": 5990311.0
     },
     {
       "date": "2021-02-24",
       "percentile_252d": 100.0,
-      "value": 7590111.0
+      "value": 6060133.0
     },
     {
       "date": "2021-03-03",
-      "percentile_252d": 98.08,
-      "value": 7557524.0
+      "percentile_252d": 100.0,
+      "value": 6127468.0
     },
     {
       "date": "2021-03-10",
-      "percentile_252d": 98.08,
-      "value": 7579901.0
+      "percentile_252d": 100.0,
+      "value": 6219737.0
     },
     {
       "date": "2021-03-17",
       "percentile_252d": 100.0,
-      "value": 7693506.0
+      "value": 6420923.0
     },
     {
       "date": "2021-03-24",
       "percentile_252d": 100.0,
-      "value": 7719622.0
+      "value": 6636582.0
     },
     {
       "date": "2021-03-31",
-      "percentile_252d": 96.15,
-      "value": 7688988.0
+      "percentile_252d": 98.08,
+      "value": 6528954.0
     },
     {
       "date": "2021-04-07",
-      "percentile_252d": 98.08,
-      "value": 7708882.0
+      "percentile_252d": 100.0,
+      "value": 6663744.0
     },
     {
       "date": "2021-04-14",
       "percentile_252d": 100.0,
-      "value": 7793104.0
+      "value": 6817154.0
     },
     {
       "date": "2021-04-21",
-      "percentile_252d": 100.0,
-      "value": 7820948.0
+      "percentile_252d": 98.08,
+      "value": 6723717.0
     },
     {
       "date": "2021-04-28",
-      "percentile_252d": 96.15,
-      "value": 7780962.0
+      "percentile_252d": 94.23,
+      "value": 6646541.0
     },
     {
       "date": "2021-05-05",
-      "percentile_252d": 98.08,
-      "value": 7810486.0
+      "percentile_252d": 96.15,
+      "value": 6693997.0
     },
     {
       "date": "2021-05-12",
-      "percentile_252d": 100.0,
-      "value": 7830663.0
+      "percentile_252d": 96.15,
+      "value": 6722627.0
     },
     {
       "date": "2021-05-19",
-      "percentile_252d": 100.0,
-      "value": 7922883.0
+      "percentile_252d": 98.08,
+      "value": 6762766.0
     },
     {
       "date": "2021-05-26",
-      "percentile_252d": 98.08,
-      "value": 7903541.0
+      "percentile_252d": 86.54,
+      "value": 6640785.0
     },
     {
       "date": "2021-06-02",
-      "percentile_252d": 100.0,
-      "value": 7935703.0
+      "percentile_252d": 92.31,
+      "value": 6713690.0
     },
     {
       "date": "2021-06-09",
-      "percentile_252d": 100.0,
-      "value": 7952327.0
+      "percentile_252d": 92.31,
+      "value": 6719188.0
     },
     {
       "date": "2021-06-16",
       "percentile_252d": 100.0,
-      "value": 8064257.0
+      "value": 6889426.0
     },
     {
       "date": "2021-06-23",
-      "percentile_252d": 100.0,
-      "value": 8101945.0
+      "percentile_252d": 76.92,
+      "value": 6553606.0
     },
     {
       "date": "2021-06-30",
-      "percentile_252d": 98.08,
-      "value": 8078544.0
+      "percentile_252d": 71.15,
+      "value": 6340643.0
     },
     {
       "date": "2021-07-07",
-      "percentile_252d": 98.08,
-      "value": 8097773.0
+      "percentile_252d": 76.92,
+      "value": 6558689.0
     },
     {
       "date": "2021-07-14",
-      "percentile_252d": 100.0,
-      "value": 8201651.0
+      "percentile_252d": 78.85,
+      "value": 6636758.0
     },
     {
       "date": "2021-07-21",
-      "percentile_252d": 100.0,
-      "value": 8240530.0
+      "percentile_252d": 84.62,
+      "value": 6676221.0
     },
     {
       "date": "2021-07-28",
-      "percentile_252d": 98.08,
-      "value": 8221473.0
+      "percentile_252d": 84.62,
+      "value": 6678080.0
     },
     {
       "date": "2021-08-04",
-      "percentile_252d": 98.08,
-      "value": 8235073.0
+      "percentile_252d": 96.15,
+      "value": 6810650.0
     },
     {
       "date": "2021-08-11",
-      "percentile_252d": 100.0,
-      "value": 8257159.0
+      "percentile_252d": 98.08,
+      "value": 6821780.0
     },
     {
       "date": "2021-08-18",
-      "percentile_252d": 100.0,
-      "value": 8342598.0
+      "percentile_252d": 98.08,
+      "value": 6888134.0
     },
     {
       "date": "2021-08-25",
-      "percentile_252d": 98.08,
-      "value": 8332743.0
+      "percentile_252d": 96.15,
+      "value": 6884224.0
     },
     {
       "date": "2021-09-01",
       "percentile_252d": 100.0,
-      "value": 8349173.0
+      "value": 6987408.0
     },
     {
       "date": "2021-09-08",
       "percentile_252d": 100.0,
-      "value": 8357314.0
+      "value": 6988589.0
     },
     {
       "date": "2021-09-15",
       "percentile_252d": 100.0,
-      "value": 8448770.0
+      "value": 7137100.0
     },
     {
       "date": "2021-09-22",
-      "percentile_252d": 100.0,
-      "value": 8489824.0
+      "percentile_252d": 94.23,
+      "value": 6898521.0
     },
     {
       "date": "2021-09-29",
-      "percentile_252d": 96.15,
-      "value": 8447981.0
+      "percentile_252d": 86.54,
+      "value": 6834397.0
     },
     {
       "date": "2021-10-06",
-      "percentile_252d": 98.08,
-      "value": 8464032.0
+      "percentile_252d": 86.54,
+      "value": 6877275.0
     },
     {
       "date": "2021-10-13",
       "percentile_252d": 98.08,
-      "value": 8480942.0
+      "value": 7038383.0
     },
     {
       "date": "2021-10-20",
-      "percentile_252d": 100.0,
-      "value": 8564943.0
+      "percentile_252d": 94.23,
+      "value": 6987596.0
     },
     {
       "date": "2021-10-27",
-      "percentile_252d": 98.08,
-      "value": 8556181.0
+      "percentile_252d": 90.38,
+      "value": 6909520.0
     },
     {
       "date": "2021-11-03",
-      "percentile_252d": 100.0,
-      "value": 8574871.0
+      "percentile_252d": 90.38,
+      "value": 6950681.0
     },
     {
       "date": "2021-11-10",
-      "percentile_252d": 100.0,
-      "value": 8663117.0
+      "percentile_252d": 90.38,
+      "value": 6955201.0
     },
     {
       "date": "2021-11-17",
-      "percentile_252d": 100.0,
-      "value": 8674970.0
+      "percentile_252d": 86.54,
+      "value": 6943517.0
     },
     {
       "date": "2021-11-24",
-      "percentile_252d": 100.0,
-      "value": 8681771.0
+      "percentile_252d": 98.08,
+      "value": 7064787.0
     },
     {
       "date": "2021-12-01",
-      "percentile_252d": 94.23,
-      "value": 8650402.0
+      "percentile_252d": 98.08,
+      "value": 7070404.0
     },
     {
       "date": "2021-12-08",
       "percentile_252d": 96.15,
-      "value": 8664524.0
+      "value": 7065215.0
     },
     {
       "date": "2021-12-15",
-      "percentile_252d": 100.0,
-      "value": 8756666.0
+      "percentile_252d": 90.38,
+      "value": 7030771.0
     },
     {
       "date": "2021-12-22",
-      "percentile_252d": 100.0,
-      "value": 8790495.0
+      "percentile_252d": 88.46,
+      "value": 7006264.0
     },
     {
       "date": "2021-12-29",
-      "percentile_252d": 98.08,
-      "value": 8757460.0
+      "percentile_252d": 73.08,
+      "value": 6903105.0
     },
     {
       "date": "2022-01-05",
-      "percentile_252d": 98.08,
-      "value": 8765721.0
+      "percentile_252d": 63.46,
+      "value": 6883183.0
     },
     {
       "date": "2022-01-12",
-      "percentile_252d": 98.08,
-      "value": 8788278.0
+      "percentile_252d": 51.92,
+      "value": 6794896.0
     },
     {
       "date": "2022-01-19",
-      "percentile_252d": 100.0,
-      "value": 8867834.0
+      "percentile_252d": 44.23,
+      "value": 6722561.0
     },
     {
       "date": "2022-01-26",
-      "percentile_252d": 98.08,
-      "value": 8860485.0
+      "percentile_252d": 23.08,
+      "value": 6632562.0
     },
     {
       "date": "2022-02-02",
-      "percentile_252d": 100.0,
-      "value": 8873211.0
+      "percentile_252d": 21.15,
+      "value": 6570543.0
     },
     {
       "date": "2022-02-09",
-      "percentile_252d": 100.0,
-      "value": 8878009.0
+      "percentile_252d": 15.38,
+      "value": 6538472.0
     },
     {
       "date": "2022-02-16",
-      "percentile_252d": 100.0,
-      "value": 8911033.0
+      "percentile_252d": 21.15,
+      "value": 6574358.0
     },
     {
       "date": "2022-02-23",
-      "percentile_252d": 100.0,
-      "value": 8928129.0
+      "percentile_252d": 9.62,
+      "value": 6491969.0
     },
     {
       "date": "2022-03-02",
-      "percentile_252d": 96.15,
-      "value": 8904455.0
+      "percentile_252d": 38.46,
+      "value": 6695341.0
     },
     {
       "date": "2022-03-09",
-      "percentile_252d": 96.15,
-      "value": 8910748.0
+      "percentile_252d": 40.38,
+      "value": 6716205.0
     },
     {
       "date": "2022-03-16",
-      "percentile_252d": 100.0,
-      "value": 8954306.0
+      "percentile_252d": 50.0,
+      "value": 6770063.0
     },
     {
       "date": "2022-03-23",
-      "percentile_252d": 100.0,
-      "value": 8962474.0
+      "percentile_252d": 9.62,
+      "value": 6544672.0
     },
     {
       "date": "2022-03-30",
-      "percentile_252d": 96.15,
-      "value": 8937142.0
+      "percentile_252d": 17.31,
+      "value": 6576138.0
     },
     {
       "date": "2022-04-06",
-      "percentile_252d": 96.15,
-      "value": 8937592.0
+      "percentile_252d": 19.23,
+      "value": 6631669.0
     },
     {
       "date": "2022-04-13",
-      "percentile_252d": 100.0,
-      "value": 8965487.0
+      "percentile_252d": 19.23,
+      "value": 6602624.0
     },
     {
       "date": "2022-04-20",
-      "percentile_252d": 96.15,
-      "value": 8955851.0
+      "percentile_252d": 3.85,
+      "value": 6377885.0
     },
     {
       "date": "2022-04-27",
-      "percentile_252d": 92.31,
-      "value": 8939199.0
+      "percentile_252d": 1.92,
+      "value": 6191709.0
     },
     {
       "date": "2022-05-04",
-      "percentile_252d": 92.31,
-      "value": 8939972.0
+      "percentile_252d": 1.92,
+      "value": 6178838.0
     },
     {
       "date": "2022-05-11",
-      "percentile_252d": 92.31,
-      "value": 8942008.0
+      "percentile_252d": 1.92,
+      "value": 6120231.0
     },
     {
       "date": "2022-05-18",
-      "percentile_252d": 92.31,
-      "value": 8945898.0
+      "percentile_252d": 1.92,
+      "value": 6085561.0
     },
     {
       "date": "2022-05-25",
-      "percentile_252d": 78.85,
-      "value": 8914281.0
+      "percentile_252d": 3.85,
+      "value": 6096996.0
     },
     {
       "date": "2022-06-01",
-      "percentile_252d": 78.85,
-      "value": 8915050.0
+      "percentile_252d": 7.69,
+      "value": 6160503.0
     },
     {
       "date": "2022-06-08",
-      "percentile_252d": 78.85,
-      "value": 8918254.0
+      "percentile_252d": 1.92,
+      "value": 6054593.0
     },
     {
       "date": "2022-06-15",
-      "percentile_252d": 80.77,
-      "value": 8932420.0
+      "percentile_252d": 7.69,
+      "value": 6112626.0
     },
     {
       "date": "2022-06-22",
-      "percentile_252d": 80.77,
-      "value": 8934346.0
+      "percentile_252d": 1.92,
+      "value": 5916605.0
     },
     {
       "date": "2022-06-29",
-      "percentile_252d": 69.23,
-      "value": 8913553.0
+      "percentile_252d": 3.85,
+      "value": 5929950.0
     },
     {
       "date": "2022-07-06",
-      "percentile_252d": 61.54,
-      "value": 8891851.0
+      "percentile_252d": 5.77,
+      "value": 6023368.0
     },
     {
       "date": "2022-07-13",
-      "percentile_252d": 61.54,
-      "value": 8895867.0
+      "percentile_252d": 11.54,
+      "value": 6088005.0
     },
     {
       "date": "2022-07-20",
-      "percentile_252d": 61.54,
-      "value": 8899213.0
+      "percentile_252d": 7.69,
+      "value": 6045131.0
     },
     {
       "date": "2022-07-27",
-      "percentile_252d": 55.77,
-      "value": 8890004.0
+      "percentile_252d": 17.31,
+      "value": 6098065.0
     },
     {
       "date": "2022-08-03",
-      "percentile_252d": 51.92,
-      "value": 8874620.0
+      "percentile_252d": 19.23,
+      "value": 6098267.0
     },
     {
       "date": "2022-08-10",
-      "percentile_252d": 53.85,
-      "value": 8879138.0
+      "percentile_252d": 25.0,
+      "value": 6144227.0
     },
     {
       "date": "2022-08-17",
-      "percentile_252d": 42.31,
-      "value": 8849762.0
+      "percentile_252d": 21.15,
+      "value": 6104810.0
     },
     {
       "date": "2022-08-24",
-      "percentile_252d": 42.31,
-      "value": 8851436.0
+      "percentile_252d": 11.54,
+      "value": 6079097.0
     },
     {
       "date": "2022-08-31",
-      "percentile_252d": 38.46,
-      "value": 8826093.0
+      "percentile_252d": 5.77,
+      "value": 5962532.0
     },
     {
       "date": "2022-09-07",
-      "percentile_252d": 36.54,
-      "value": 8822401.0
+      "percentile_252d": 9.62,
+      "value": 6034119.0
     },
     {
       "date": "2022-09-14",
-      "percentile_252d": 38.46,
-      "value": 8832759.0
+      "percentile_252d": 7.69,
+      "value": 6013372.0
     },
     {
       "date": "2022-09-21",
-      "percentile_252d": 32.69,
-      "value": 8816802.0
+      "percentile_252d": 1.92,
+      "value": 5808406.0
     },
     {
       "date": "2022-09-28",
-      "percentile_252d": 30.77,
-      "value": 8795567.0
+      "percentile_252d": 1.92,
+      "value": 5739200.0
     },
     {
       "date": "2022-10-05",
-      "percentile_252d": 23.08,
-      "value": 8759053.0
+      "percentile_252d": 5.77,
+      "value": 5894315.0
     },
     {
       "date": "2022-10-12",
-      "percentile_252d": 21.15,
-      "value": 8758969.0
+      "percentile_252d": 7.69,
+      "value": 5903461.0
     },
     {
       "date": "2022-10-19",
-      "percentile_252d": 15.38,
-      "value": 8743922.0
+      "percentile_252d": 7.69,
+      "value": 5894888.0
     },
     {
       "date": "2022-10-26",
-      "percentile_252d": 13.46,
-      "value": 8723090.0
+      "percentile_252d": 9.62,
+      "value": 5901686.0
     },
     {
       "date": "2022-11-02",
-      "percentile_252d": 9.62,
-      "value": 8676870.0
+      "percentile_252d": 5.77,
+      "value": 5848465.0
     },
     {
       "date": "2022-11-09",
-      "percentile_252d": 9.62,
-      "value": 8678886.0
+      "percentile_252d": 15.38,
+      "value": 5913595.0
     },
     {
       "date": "2022-11-16",
-      "percentile_252d": 1.92,
-      "value": 8625620.0
+      "percentile_252d": 26.92,
+      "value": 6023568.0
     },
     {
       "date": "2022-11-23",
-      "percentile_252d": 1.92,
-      "value": 8621390.0
+      "percentile_252d": 34.62,
+      "value": 6072742.0
     },
     {
       "date": "2022-11-30",
-      "percentile_252d": 1.92,
-      "value": 8584576.0
+      "percentile_252d": 21.15,
+      "value": 5957189.0
     },
     {
       "date": "2022-12-07",
-      "percentile_252d": 1.92,
-      "value": 8582735.0
+      "percentile_252d": 25.0,
+      "value": 5998851.0
     },
     {
       "date": "2022-12-14",
-      "percentile_252d": 3.85,
-      "value": 8583413.0
+      "percentile_252d": 34.62,
+      "value": 6035032.0
     },
     {
       "date": "2022-12-21",
-      "percentile_252d": 1.92,
-      "value": 8564411.0
+      "percentile_252d": 11.54,
+      "value": 5897666.0
     },
     {
       "date": "2022-12-28",
-      "percentile_252d": 1.92,
-      "value": 8551169.0
+      "percentile_252d": 5.77,
+      "value": 5830240.0
     },
     {
       "date": "2023-01-04",
-      "percentile_252d": 1.92,
-      "value": 8507429.0
+      "percentile_252d": 9.62,
+      "value": 5854262.0
     },
     {
       "date": "2023-01-11",
-      "percentile_252d": 3.85,
-      "value": 8508587.0
+      "percentile_252d": 26.92,
+      "value": 5937077.0
     },
     {
       "date": "2023-01-18",
-      "percentile_252d": 1.92,
-      "value": 8489039.0
+      "percentile_252d": 36.54,
+      "value": 6018343.0
     },
     {
       "date": "2023-01-25",
-      "percentile_252d": 1.92,
-      "value": 8470557.0
+      "percentile_252d": 28.85,
+      "value": 5947148.0
     },
     {
       "date": "2023-02-01",
-      "percentile_252d": 1.92,
-      "value": 8433610.0
+      "percentile_252d": 7.69,
+      "value": 5835259.0
     },
     {
       "date": "2023-02-08",
-      "percentile_252d": 3.85,
-      "value": 8435369.0
+      "percentile_252d": 13.46,
+      "value": 5882488.0
     },
     {
       "date": "2023-02-15",
-      "percentile_252d": 1.92,
-      "value": 8384767.0
+      "percentile_252d": 13.46,
+      "value": 5882390.0
     },
     {
       "date": "2023-02-22",
-      "percentile_252d": 1.92,
-      "value": 8382190.0
+      "percentile_252d": 3.85,
+      "value": 5791008.0
     },
     {
       "date": "2023-03-01",
-      "percentile_252d": 1.92,
-      "value": 8339684.0
+      "percentile_252d": 7.69,
+      "value": 5824489.0
     },
     {
       "date": "2023-03-08",
-      "percentile_252d": 3.85,
-      "value": 8342283.0
+      "percentile_252d": 7.69,
+      "value": 5815696.0
     },
     {
       "date": "2023-03-15",
-      "percentile_252d": 34.62,
-      "value": 8639300.0
+      "percentile_252d": 90.38,
+      "value": 6350611.0
     },
     {
       "date": "2023-03-22",
-      "percentile_252d": 42.31,
-      "value": 8733787.0
+      "percentile_252d": 90.38,
+      "value": 6194592.0
     },
     {
       "date": "2023-03-29",
-      "percentile_252d": 40.38,
-      "value": 8705942.0
+      "percentile_252d": 92.31,
+      "value": 6257503.0
     },
     {
       "date": "2023-04-05",
-      "percentile_252d": 34.62,
-      "value": 8632384.0
+      "percentile_252d": 92.31,
+      "value": 6220580.0
     },
     {
       "date": "2023-04-12",
-      "percentile_252d": 30.77,
-      "value": 8614797.0
+      "percentile_252d": 92.31,
+      "value": 6201727.0
     },
     {
       "date": "2023-04-19",
-      "percentile_252d": 30.77,
-      "value": 8593263.0
+      "percentile_252d": 82.69,
+      "value": 6132031.0
     },
     {
       "date": "2023-04-26",
-      "percentile_252d": 23.08,
-      "value": 8562768.0
+      "percentile_252d": 46.15,
+      "value": 5991505.0
     },
     {
       "date": "2023-05-03",
-      "percentile_252d": 17.31,
-      "value": 8503994.0
+      "percentile_252d": 46.15,
+      "value": 5976556.0
     },
     {
       "date": "2023-05-10",
-      "percentile_252d": 17.31,
-      "value": 8503017.0
+      "percentile_252d": 67.31,
+      "value": 6072202.0
     },
     {
       "date": "2023-05-17",
-      "percentile_252d": 13.46,
-      "value": 8456760.0
+      "percentile_252d": 84.62,
+      "value": 6126864.0
     },
     {
       "date": "2023-05-24",
-      "percentile_252d": 13.46,
-      "value": 8436255.0
+      "percentile_252d": 82.69,
+      "value": 6123594.0
     },
     {
       "date": "2023-05-31",
-      "percentile_252d": 9.62,
-      "value": 8385854.0
+      "percentile_252d": 73.08,
+      "value": 6082041.0
     },
     {
       "date": "2023-06-07",
-      "percentile_252d": 11.54,
-      "value": 8389325.0
+      "percentile_252d": 90.38,
+      "value": 6183013.0
     },
     {
       "date": "2023-06-14",
-      "percentile_252d": 11.54,
-      "value": 8388323.0
+      "percentile_252d": 88.46,
+      "value": 6177100.0
     },
     {
       "date": "2023-06-21",
-      "percentile_252d": 5.77,
-      "value": 8362060.0
+      "percentile_252d": 63.46,
+      "value": 6048108.0
     },
     {
       "date": "2023-06-28",
-      "percentile_252d": 3.85,
-      "value": 8340914.0
+      "percentile_252d": 48.08,
+      "value": 6005132.0
     },
     {
       "date": "2023-07-05",
-      "percentile_252d": 1.92,
-      "value": 8298312.0
+      "percentile_252d": 51.92,
+      "value": 6015810.0
     },
     {
       "date": "2023-07-12",
-      "percentile_252d": 1.92,
-      "value": 8296923.0
+      "percentile_252d": 40.38,
+      "value": 5962440.0
     },
     {
       "date": "2023-07-19",
-      "percentile_252d": 1.92,
-      "value": 8274552.0
+      "percentile_252d": 51.92,
+      "value": 6010613.0
     },
     {
       "date": "2023-07-26",
-      "percentile_252d": 1.92,
-      "value": 8243344.0
+      "percentile_252d": 38.46,
+      "value": 5950014.0
     },
     {
       "date": "2023-08-02",
-      "percentile_252d": 1.92,
-      "value": 8206764.0
+      "percentile_252d": 34.62,
+      "value": 5919119.0
     },
     {
       "date": "2023-08-09",
-      "percentile_252d": 3.85,
-      "value": 8208241.0
+      "percentile_252d": 48.08,
+      "value": 5967128.0
     },
     {
       "date": "2023-08-16",
-      "percentile_252d": 1.92,
-      "value": 8145727.0
+      "percentile_252d": 32.69,
+      "value": 5913207.0
     },
     {
       "date": "2023-08-23",
-      "percentile_252d": 1.92,
-      "value": 8139066.0
+      "percentile_252d": 32.69,
+      "value": 5908746.0
     },
     {
       "date": "2023-08-30",
-      "percentile_252d": 1.92,
-      "value": 8121316.0
+      "percentile_252d": 46.15,
+      "value": 5953697.0
     },
     {
       "date": "2023-09-06",
-      "percentile_252d": 1.92,
-      "value": 8101318.0
+      "percentile_252d": 71.15,
+      "value": 6024193.0
     },
     {
       "date": "2023-09-13",
-      "percentile_252d": 1.92,
-      "value": 8098779.0
+      "percentile_252d": 71.15,
+      "value": 6031047.0
     },
     {
       "date": "2023-09-20",
-      "percentile_252d": 1.92,
-      "value": 8024090.0
+      "percentile_252d": 25.0,
+      "value": 5896810.0
     },
     {
       "date": "2023-09-27",
-      "percentile_252d": 1.92,
-      "value": 8002064.0
+      "percentile_252d": 15.38,
+      "value": 5878116.0
     },
     {
       "date": "2023-10-04",
-      "percentile_252d": 1.92,
-      "value": 7955782.0
+      "percentile_252d": 40.38,
+      "value": 5945742.0
     },
     {
       "date": "2023-10-11",
-      "percentile_252d": 1.92,
-      "value": 7952054.0
+      "percentile_252d": 57.69,
+      "value": 6003512.0
     },
     {
       "date": "2023-10-18",
-      "percentile_252d": 1.92,
-      "value": 7933162.0
+      "percentile_252d": 65.38,
+      "value": 6022503.0
     },
     {
       "date": "2023-10-25",
-      "percentile_252d": 1.92,
-      "value": 7907830.0
+      "percentile_252d": 48.08,
+      "value": 5972795.0
     },
     {
       "date": "2023-11-01",
-      "percentile_252d": 1.92,
-      "value": 7866664.0
+      "percentile_252d": 44.23,
+      "value": 5966715.0
     },
     {
       "date": "2023-11-08",
-      "percentile_252d": 1.92,
-      "value": 7860691.0
+      "percentile_252d": 75.0,
+      "value": 6063554.0
     },
     {
       "date": "2023-11-15",
-      "percentile_252d": 1.92,
-      "value": 7814991.0
+      "percentile_252d": 86.54,
+      "value": 6132188.0
     },
     {
       "date": "2023-11-22",
-      "percentile_252d": 1.92,
-      "value": 7810814.0
+      "percentile_252d": 86.54,
+      "value": 6173193.0
     },
     {
       "date": "2023-11-29",
-      "percentile_252d": 1.92,
-      "value": 7796145.0
+      "percentile_252d": 84.62,
+      "value": 6142749.0
     },
     {
       "date": "2023-12-06",
-      "percentile_252d": 1.92,
-      "value": 7737385.0
+      "percentile_252d": 94.23,
+      "value": 6208378.0
     },
     {
       "date": "2023-12-13",
-      "percentile_252d": 3.85,
-      "value": 7739566.0
+      "percentile_252d": 98.08,
+      "value": 6257797.0
     },
     {
       "date": "2023-12-20",
-      "percentile_252d": 1.92,
-      "value": 7724063.0
+      "percentile_252d": 92.31,
+      "value": 6212724.0
     },
     {
       "date": "2023-12-27",
-      "percentile_252d": 1.92,
-      "value": 7712781.0
+      "percentile_252d": 78.85,
+      "value": 6162507.0
     },
     {
       "date": "2024-01-03",
-      "percentile_252d": 1.92,
-      "value": 7681024.0
+      "percentile_252d": 88.46,
+      "value": 6202679.0
     },
     {
       "date": "2024-01-10",
-      "percentile_252d": 3.85,
-      "value": 7686710.0
+      "percentile_252d": 98.08,
+      "value": 6259184.0
     },
     {
       "date": "2024-01-17",
-      "percentile_252d": 1.92,
-      "value": 7673741.0
+      "percentile_252d": 98.08,
+      "value": 6334667.0
     },
     {
       "date": "2024-01-24",
-      "percentile_252d": 3.85,
-      "value": 7677230.0
+      "percentile_252d": 90.38,
+      "value": 6238312.0
     },
     {
       "date": "2024-01-31",
-      "percentile_252d": 1.92,
-      "value": 7630124.0
+      "percentile_252d": 73.08,
+      "value": 6173195.0
     },
     {
       "date": "2024-02-07",
-      "percentile_252d": 3.85,
-      "value": 7631300.0
+      "percentile_252d": 96.15,
+      "value": 6276110.0
     },
     {
       "date": "2024-02-14",
-      "percentile_252d": 5.77,
-      "value": 7633874.0
+      "percentile_252d": 84.62,
+      "value": 6220537.0
     },
     {
       "date": "2024-02-21",
-      "percentile_252d": 1.92,
-      "value": 7581683.0
+      "percentile_252d": 86.54,
+      "value": 6221336.0
     },
     {
       "date": "2024-02-28",
-      "percentile_252d": 1.92,
-      "value": 7567807.0
+      "percentile_252d": 78.85,
+      "value": 6212131.0
     },
     {
       "date": "2024-03-06",
-      "percentile_252d": 1.92,
-      "value": 7538857.0
+      "percentile_252d": 96.15,
+      "value": 6314277.0
     },
     {
       "date": "2024-03-13",
-      "percentile_252d": 3.85,
-      "value": 7541969.0
+      "percentile_252d": 88.46,
+      "value": 6251862.0
     },
     {
       "date": "2024-03-20",
-      "percentile_252d": 1.92,
-      "value": 7514348.0
+      "percentile_252d": 75.0,
+      "value": 6208805.0
     },
     {
       "date": "2024-03-27",
-      "percentile_252d": 1.92,
-      "value": 7484739.0
+      "percentile_252d": 61.54,
+      "value": 6164149.0
     },
     {
       "date": "2024-04-03",
-      "percentile_252d": 1.92,
-      "value": 7439558.0
+      "percentile_252d": 86.54,
+      "value": 6234276.0
     },
     {
       "date": "2024-04-10",
-      "percentile_252d": 1.92,
-      "value": 7438176.0
+      "percentile_252d": 96.15,
+      "value": 6287389.0
     },
     {
       "date": "2024-04-17",
-      "percentile_252d": 1.92,
-      "value": 7405506.0
+      "percentile_252d": 61.54,
+      "value": 6168463.0
     },
     {
       "date": "2024-04-24",
-      "percentile_252d": 1.92,
-      "value": 7402434.0
+      "percentile_252d": 34.62,
+      "value": 6019789.0
     },
     {
       "date": "2024-05-01",
-      "percentile_252d": 1.92,
-      "value": 7362474.0
+      "percentile_252d": 28.85,
+      "value": 6007149.0
     },
     {
       "date": "2024-05-08",
-      "percentile_252d": 1.92,
-      "value": 7353408.0
+      "percentile_252d": 30.77,
+      "value": 6008390.0
     },
     {
       "date": "2024-05-15",
-      "percentile_252d": 1.92,
-      "value": 7304272.0
+      "percentile_252d": 48.08,
+      "value": 6073360.0
     },
     {
       "date": "2024-05-22",
-      "percentile_252d": 1.92,
-      "value": 7299566.0
+      "percentile_252d": 50.0,
+      "value": 6077808.0
     },
     {
       "date": "2024-05-29",
-      "percentile_252d": 1.92,
-      "value": 7284319.0
+      "percentile_252d": 51.92,
+      "value": 6120670.0
     },
     {
       "date": "2024-06-05",
-      "percentile_252d": 1.92,
-      "value": 7255687.0
+      "percentile_252d": 67.31,
+      "value": 6173537.0
     },
     {
       "date": "2024-06-12",
-      "percentile_252d": 3.85,
-      "value": 7258974.0
+      "percentile_252d": 55.77,
+      "value": 6137827.0
     },
     {
       "date": "2024-06-19",
-      "percentile_252d": 1.92,
-      "value": 7252542.0
+      "percentile_252d": 57.69,
+      "value": 6153590.0
     },
     {
       "date": "2024-06-26",
-      "percentile_252d": 1.92,
-      "value": 7231163.0
+      "percentile_252d": 25.0,
+      "value": 5975590.0
     },
     {
       "date": "2024-07-03",
-      "percentile_252d": 1.92,
-      "value": 7221520.0
+      "percentile_252d": 42.31,
+      "value": 6034249.0
     },
     {
       "date": "2024-07-10",
-      "percentile_252d": 3.85,
-      "value": 7224079.0
+      "percentile_252d": 44.23,
+      "value": 6065530.0
     },
     {
       "date": "2024-07-17",
-      "percentile_252d": 1.92,
-      "value": 7208247.0
+      "percentile_252d": 40.38,
+      "value": 6057253.0
     },
     {
       "date": "2024-07-24",
-      "percentile_252d": 1.92,
-      "value": 7205455.0
+      "percentile_252d": 36.54,
+      "value": 6032019.0
     },
     {
       "date": "2024-07-31",
-      "percentile_252d": 1.92,
-      "value": 7178391.0
+      "percentile_252d": 21.15,
+      "value": 5978705.0
     },
     {
       "date": "2024-08-07",
-      "percentile_252d": 1.92,
-      "value": 7175256.0
+      "percentile_252d": 48.08,
+      "value": 6117665.0
     },
     {
       "date": "2024-08-14",
-      "percentile_252d": 3.85,
-      "value": 7177688.0
+      "percentile_252d": 36.54,
+      "value": 6055096.0
     },
     {
       "date": "2024-08-21",
-      "percentile_252d": 1.92,
-      "value": 7139952.0
+      "percentile_252d": 46.15,
+      "value": 6082129.0
     },
     {
       "date": "2024-08-28",
-      "percentile_252d": 1.92,
-      "value": 7123238.0
+      "percentile_252d": 15.38,
+      "value": 5988497.0
     },
     {
       "date": "2024-09-04",
-      "percentile_252d": 1.92,
-      "value": 7112567.0
+      "percentile_252d": 32.69,
+      "value": 6041296.0
     },
     {
       "date": "2024-09-11",
-      "percentile_252d": 3.85,
-      "value": 7115001.0
+      "percentile_252d": 44.23,
+      "value": 6079828.0
     },
     {
       "date": "2024-09-18",
-      "percentile_252d": 1.92,
-      "value": 7109137.0
+      "percentile_252d": 26.92,
+      "value": 6032112.0
     },
     {
       "date": "2024-09-25",
       "percentile_252d": 1.92,
-      "value": 7080059.0
+      "value": 5857095.0
     },
     {
       "date": "2024-10-02",
-      "percentile_252d": 1.92,
-      "value": 7046925.0
+      "percentile_252d": 3.85,
+      "value": 5865250.0
     },
     {
       "date": "2024-10-09",
-      "percentile_252d": 1.92,
-      "value": 7046840.0
+      "percentile_252d": 5.77,
+      "value": 5901277.0
     },
     {
       "date": "2024-10-16",
-      "percentile_252d": 1.92,
-      "value": 7039284.0
+      "percentile_252d": 11.54,
+      "value": 5975464.0
     },
     {
       "date": "2024-10-23",
-      "percentile_252d": 1.92,
-      "value": 7029408.0
+      "percentile_252d": 7.69,
+      "value": 5928578.0
     },
     {
       "date": "2024-10-30",
-      "percentile_252d": 1.92,
-      "value": 7013490.0
+      "percentile_252d": 9.62,
+      "value": 5949307.0
     },
     {
       "date": "2024-11-06",
-      "percentile_252d": 1.92,
-      "value": 6994299.0
+      "percentile_252d": 11.54,
+      "value": 5974377.0
     },
     {
       "date": "2024-11-13",
-      "percentile_252d": 1.92,
-      "value": 6967108.0
+      "percentile_252d": 5.77,
+      "value": 5896816.0
     },
     {
       "date": "2024-11-20",
-      "percentile_252d": 1.92,
-      "value": 6923731.0
+      "percentile_252d": 13.46,
+      "value": 5954065.0
     },
     {
       "date": "2024-11-27",
-      "percentile_252d": 1.92,
-      "value": 6905140.0
+      "percentile_252d": 15.38,
+      "value": 5960075.0
     },
     {
       "date": "2024-12-04",
-      "percentile_252d": 1.92,
-      "value": 6895827.0
+      "percentile_252d": 11.54,
+      "value": 5943445.0
     },
     {
       "date": "2024-12-11",
-      "percentile_252d": 3.85,
-      "value": 6897485.0
+      "percentile_252d": 11.54,
+      "value": 5942298.0
     },
     {
       "date": "2024-12-18",
-      "percentile_252d": 1.92,
-      "value": 6889332.0
+      "percentile_252d": 30.77,
+      "value": 5989749.0
     },
     {
       "date": "2024-12-25",
-      "percentile_252d": 1.92,
-      "value": 6885963.0
+      "percentile_252d": 11.54,
+      "value": 5940204.0
     },
     {
       "date": "2025-01-01",
       "percentile_252d": 1.92,
-      "value": 6852491.0
+      "value": 5659158.0
     },
     {
       "date": "2025-01-08",
-      "percentile_252d": 3.85,
-      "value": 6853554.0
+      "percentile_252d": 40.38,
+      "value": 6015774.0
     },
     {
       "date": "2025-01-15",
-      "percentile_252d": 1.92,
-      "value": 6834070.0
+      "percentile_252d": 57.69,
+      "value": 6072868.0
     },
     {
       "date": "2025-01-22",
-      "percentile_252d": 1.92,
-      "value": 6831760.0
+      "percentile_252d": 44.23,
+      "value": 6030497.0
     },
     {
       "date": "2025-01-29",
-      "percentile_252d": 1.92,
-      "value": 6818186.0
+      "percentile_252d": 11.54,
+      "value": 5912138.0
     },
     {
       "date": "2025-02-05",
-      "percentile_252d": 1.92,
-      "value": 6810935.0
+      "percentile_252d": 13.46,
+      "value": 5926554.0
     },
     {
       "date": "2025-02-12",
-      "percentile_252d": 3.85,
-      "value": 6813513.0
+      "percentile_252d": 13.46,
+      "value": 5917741.0
     },
     {
       "date": "2025-02-19",
-      "percentile_252d": 1.92,
-      "value": 6782332.0
+      "percentile_252d": 15.38,
+      "value": 5919074.0
     },
     {
       "date": "2025-02-26",
-      "percentile_252d": 1.92,
-      "value": 6766101.0
+      "percentile_252d": 30.77,
+      "value": 5958882.0
     },
     {
       "date": "2025-03-05",
-      "percentile_252d": 1.92,
-      "value": 6756764.0
+      "percentile_252d": 69.23,
+      "value": 6068940.0
     },
     {
       "date": "2025-03-12",
-      "percentile_252d": 3.85,
-      "value": 6759571.0
+      "percentile_252d": 80.77,
+      "value": 6115935.0
     },
     {
       "date": "2025-03-19",
-      "percentile_252d": 1.92,
-      "value": 6755982.0
+      "percentile_252d": 86.54,
+      "value": 6126668.0
     },
     {
       "date": "2025-03-26",
-      "percentile_252d": 1.92,
-      "value": 6740253.0
+      "percentile_252d": 90.38,
+      "value": 6138705.0
     },
     {
       "date": "2025-04-02",
-      "percentile_252d": 1.92,
-      "value": 6723452.0
+      "percentile_252d": 98.08,
+      "value": 6176638.0
     },
     {
       "date": "2025-04-09",
-      "percentile_252d": 3.85,
-      "value": 6727416.0
+      "percentile_252d": 100.0,
+      "value": 6253252.0
     },
     {
       "date": "2025-04-16",
-      "percentile_252d": 3.85,
-      "value": 6727113.0
+      "percentile_252d": 98.08,
+      "value": 6249358.0
     },
     {
       "date": "2025-04-23",
-      "percentile_252d": 3.85,
-      "value": 6726930.0
+      "percentile_252d": 26.92,
+      "value": 5948518.0
     },
     {
       "date": "2025-04-30",
-      "percentile_252d": 1.92,
-      "value": 6709277.0
+      "percentile_252d": 5.77,
+      "value": 5862935.0
     },
     {
       "date": "2025-05-07",
-      "percentile_252d": 3.85,
-      "value": 6710889.0
+      "percentile_252d": 38.46,
+      "value": 5972303.0
     },
     {
       "date": "2025-05-14",
-      "percentile_252d": 5.77,
-      "value": 6713270.0
+      "percentile_252d": 40.38,
+      "value": 5972400.0
     },
     {
       "date": "2025-05-21",
-      "percentile_252d": 1.92,
-      "value": 6688726.0
+      "percentile_252d": 55.77,
+      "value": 6022869.0
     },
     {
       "date": "2025-05-28",
-      "percentile_252d": 1.92,
-      "value": 6673244.0
+      "percentile_252d": 63.46,
+      "value": 6032399.0
     },
     {
       "date": "2025-06-04",
-      "percentile_252d": 1.92,
-      "value": 6672885.0
+      "percentile_252d": 86.54,
+      "value": 6125056.0
     },
     {
       "date": "2025-06-11",
-      "percentile_252d": 5.77,
-      "value": 6677155.0
+      "percentile_252d": 92.31,
+      "value": 6139623.0
     },
     {
       "date": "2025-06-18",
-      "percentile_252d": 7.69,
-      "value": 6681056.0
+      "percentile_252d": 90.38,
+      "value": 6138244.0
     },
     {
       "date": "2025-06-25",
-      "percentile_252d": 1.92,
-      "value": 6662200.0
+      "percentile_252d": 80.77,
+      "value": 6086946.0
     },
     {
       "date": "2025-07-02",
-      "percentile_252d": 1.92,
-      "value": 6659598.0
+      "percentile_252d": 69.23,
+      "value": 6062775.0
     },
     {
       "date": "2025-07-09",
-      "percentile_252d": 3.85,
-      "value": 6661912.0
+      "percentile_252d": 80.77,
+      "value": 6114750.0
     },
     {
       "date": "2025-07-16",
-      "percentile_252d": 1.92,
-      "value": 6659273.0
+      "percentile_252d": 94.23,
+      "value": 6165940.0
     },
     {
       "date": "2025-07-23",
-      "percentile_252d": 1.92,
-      "value": 6657715.0
+      "percentile_252d": 92.31,
+      "value": 6144907.0
     },
     {
       "date": "2025-07-30",
-      "percentile_252d": 1.92,
-      "value": 6642578.0
+      "percentile_252d": 78.85,
+      "value": 6116590.0
     },
     {
       "date": "2025-08-06",
-      "percentile_252d": 1.92,
-      "value": 6640843.0
+      "percentile_252d": 84.62,
+      "value": 6127834.0
     },
     {
       "date": "2025-08-13",
-      "percentile_252d": 5.77,
-      "value": 6643615.0
+      "percentile_252d": 69.23,
+      "value": 6082109.0
     },
     {
       "date": "2025-08-20",
-      "percentile_252d": 1.92,
-      "value": 6618415.0
+      "percentile_252d": 63.46,
+      "value": 6063882.0
     },
     {
       "date": "2025-08-27",
-      "percentile_252d": 1.92,
-      "value": 6603384.0
+      "percentile_252d": 46.15,
+      "value": 5978642.0
     },
     {
       "date": "2025-09-03",
-      "percentile_252d": 1.92,
-      "value": 6602071.0
+      "percentile_252d": 48.08,
+      "value": 5986635.0
     },
     {
       "date": "2025-09-10",
-      "percentile_252d": 5.77,
-      "value": 6605962.0
+      "percentile_252d": 13.46,
+      "value": 5904288.0
     },
     {
       "date": "2025-09-17",
-      "percentile_252d": 7.69,
-      "value": 6608597.0
+      "percentile_252d": 3.85,
+      "value": 5838258.0
     },
     {
       "date": "2025-09-24",
-      "percentile_252d": 7.69,
-      "value": 6608395.0
+      "percentile_252d": 3.85,
+      "value": 5774367.0
     },
     {
       "date": "2025-10-01",
-      "percentile_252d": 1.92,
-      "value": 6587119.0
+      "percentile_252d": 3.85,
+      "value": 5771801.0
     },
     {
       "date": "2025-10-08",
-      "percentile_252d": 3.85,
-      "value": 6590815.0
+      "percentile_252d": 7.69,
+      "value": 5778156.0
     },
     {
       "date": "2025-10-15",
-      "percentile_252d": 5.77,
-      "value": 6596454.0
+      "percentile_252d": 9.62,
+      "value": 5781377.0
     },
     {
       "date": "2025-10-22",
       "percentile_252d": 3.85,
-      "value": 6589533.0
+      "value": 5677527.0
     },
     {
       "date": "2025-10-29",
       "percentile_252d": 1.92,
-      "value": 6587034.0
+      "value": 5609540.0
     },
     {
       "date": "2025-11-05",
-      "percentile_252d": 1.92,
-      "value": 6572732.0
+      "percentile_252d": 3.85,
+      "value": 5618939.0
     },
     {
       "date": "2025-11-12",
-      "percentile_252d": 3.85,
-      "value": 6580462.0
+      "percentile_252d": 5.77,
+      "value": 5620760.0
     },
     {
       "date": "2025-11-19",
-      "percentile_252d": 1.92,
-      "value": 6555283.0
+      "percentile_252d": 3.85,
+      "value": 5612228.0
     },
     {
       "date": "2025-11-26",
-      "percentile_252d": 1.92,
-      "value": 6552419.0
+      "percentile_252d": 9.62,
+      "value": 5646808.0
     },
     {
       "date": "2025-12-03",
       "percentile_252d": 1.92,
-      "value": 6535781.0
+      "value": 5596100.0
     },
     {
       "date": "2025-12-10",
-      "percentile_252d": 3.85,
-      "value": 6539303.0
+      "percentile_252d": 15.38,
+      "value": 5675312.0
     },
     {
       "date": "2025-12-17",
-      "percentile_252d": 9.62,
-      "value": 6556861.0
+      "percentile_252d": 19.23,
+      "value": 5713407.0
     },
     {
       "date": "2025-12-24",
-      "percentile_252d": 15.38,
-      "value": 6581231.0
+      "percentile_252d": 21.15,
+      "value": 5739308.0
     },
     {
       "date": "2025-12-31",
-      "percentile_252d": 38.46,
-      "value": 6640618.0
+      "percentile_252d": 17.31,
+      "value": 5697319.0
     },
     {
       "date": "2026-01-07",
-      "percentile_252d": 13.46,
-      "value": 6573602.0
+      "percentile_252d": 25.0,
+      "value": 5772872.0
     },
     {
       "date": "2026-01-14",
-      "percentile_252d": 19.23,
-      "value": 6581700.0
+      "percentile_252d": 32.69,
+      "value": 5799302.0
     },
     {
       "date": "2026-01-21",
-      "percentile_252d": 21.15,
-      "value": 6584580.0
+      "percentile_252d": 19.23,
+      "value": 5711975.0
     },
     {
       "date": "2026-01-28",
-      "percentile_252d": 26.92,
-      "value": 6587568.0
+      "percentile_252d": 13.46,
+      "value": 5663423.0
     },
     {
       "date": "2026-02-04",
-      "percentile_252d": 38.46,
-      "value": 6605909.0
+      "percentile_252d": 19.23,
+      "value": 5694722.0
     },
     {
       "date": "2026-02-11",
-      "percentile_252d": 48.08,
-      "value": 6622382.0
+      "percentile_252d": 23.08,
+      "value": 5706028.0
     },
     {
       "date": "2026-02-18",
-      "percentile_252d": 46.15,
-      "value": 6613395.0
+      "percentile_252d": 23.08,
+      "value": 5699812.0
     },
     {
       "date": "2026-02-25",
-      "percentile_252d": 48.08,
-      "value": 6613797.0
+      "percentile_252d": 30.77,
+      "value": 5725026.0
     },
     {
       "date": "2026-03-04",
-      "percentile_252d": 53.85,
-      "value": 6628894.0
+      "percentile_252d": 44.23,
+      "value": 5795964.0
     },
     {
       "date": "2026-03-11",
-      "percentile_252d": 63.46,
-      "value": 6646344.0
+      "percentile_252d": 48.08,
+      "value": 5807606.0
     },
     {
       "date": "2026-03-18",
-      "percentile_252d": 65.38,
-      "value": 6655939.0
+      "percentile_252d": 48.08,
+      "value": 5802189.0
     },
     {
       "date": "2026-03-25",
-      "percentile_252d": 67.31,
-      "value": 6657161.0
+      "percentile_252d": 44.23,
+      "value": 5782307.0
     },
     {
       "date": "2026-04-01",
-      "percentile_252d": 82.69,
-      "value": 6675344.0
+      "percentile_252d": 53.85,
+      "value": 5825519.0
     },
     {
       "date": "2026-04-08",
-      "percentile_252d": 90.38,
-      "value": 6693871.0
+      "percentile_252d": 61.54,
+      "value": 5945318.0
     },
     {
       "date": "2026-04-15",
-      "percentile_252d": 92.31,
-      "value": 6705696.0
+      "percentile_252d": 65.38,
+      "value": 5954119.0
     },
     {
       "date": "2026-04-22",
-      "percentile_252d": 94.23,
-      "value": 6707419.0
+      "percentile_252d": 25.0,
+      "value": 5700913.0
     },
     {
       "date": "2026-04-29",
-      "percentile_252d": 92.31,
-      "value": 6699950.0
+      "percentile_252d": 32.69,
+      "value": 5717274.0
     }
   ],
-  "series_id": "fed_assets",
-  "source": "FRED",
-  "source_url": "https://fred.stlouisfed.org/series/WALCL",
+  "series_id": "net_liquidity",
+  "source": "Derived",
+  "source_url": "/data/series/fed_assets.json",
   "summary": {
-    "change_1d": -7469.0,
-    "change_1m": 24606.0,
-    "change_1w": -7469.0,
+    "change_1d": 16361.0,
+    "change_1m": -108245.0,
+    "change_1w": 16361.0,
     "latest_date": "2026-04-29",
-    "latest_value": 6699950.0,
-    "percentile_252d": 92.31
+    "latest_value": 5717274.0,
+    "percentile_252d": 32.69
   },
-  "units": "millions_usd"
+  "units": "usd_millions"
 }

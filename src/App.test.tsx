@@ -44,6 +44,13 @@ describe("App routing", () => {
     expect(container.querySelector('a[href="/credit"]')?.className).toContain("active");
   });
 
+  it("primary navigation exposes commodities and sentiment", () => {
+    const container = renderAt("/methodology");
+
+    expect(container.querySelector('a[href="/commodities"]')?.textContent).toBe("Commodities");
+    expect(container.querySelector('a[href="/sentiment"]')?.textContent).toBe("Sentiment");
+  });
+
   it("redirects unknown routes to the overview", async () => {
     const container = document.createElement("div");
     document.body.appendChild(container);

@@ -2,17 +2,30 @@ import { useEffect, useState } from "react";
 import DataStatusTable from "../components/DataStatusTable";
 import MetricCard from "../components/MetricCard";
 import RegimeBadge from "../components/RegimeBadge";
-import { loadCatalog, loadDataStatus, loadRegimeScore, loadSeries } from "../lib/data";
+import { loadCatalog, loadDataStatus, loadDerivedSeries, loadRegimeScore, loadSeries } from "../lib/data";
 import { formatSigned } from "../lib/formatters";
-import type { DataStatusFile, RegimeScoreFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import type {
+  DataStatusFile,
+  DerivedSeriesFile,
+  RegimeScoreFile,
+  SeriesCatalogEntry,
+  TimeSeriesFile
+} from "../lib/types";
 
-const overviewSeriesIds = ["vix", "us10y", "fed_assets", "financial_stress"];
+const overviewSeriesIds = [
+  "vix",
+  "us10y",
+  "net_liquidity",
+  "financial_stress",
+  "wti_crude",
+  "cftc_sp500_lev_money_net"
+];
 
 interface OverviewState {
   catalog: SeriesCatalogEntry[];
   regime: RegimeScoreFile;
   status: DataStatusFile;
-  series: TimeSeriesFile[];
+  series: Array<TimeSeriesFile | DerivedSeriesFile>;
 }
 
 function titleCaseBucket(bucket: string) {
@@ -20,6 +33,32 @@ function titleCaseBucket(bucket: string) {
     .split("_")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+function netLiquidityCatalogEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
+  return {
+    category: "liquidity",
+    frequency: series.frequency,
+    higher_is: "supportive",
+    id: series.series_id,
+    max_stale_days: 14,
+    name: "Net liquidity proxy",
+    notes: series.method,
+    public: true,
+    source: series.source,
+    source_url: series.source_url,
+    units: series.units
+  };
+}
+
+function catalogEntryForSeries(
+  catalog: SeriesCatalogEntry[],
+  series: TimeSeriesFile | DerivedSeriesFile
+): SeriesCatalogEntry | undefined {
+  const catalogEntry = catalog.find((entry) => entry.id === series.series_id);
+  if (catalogEntry) return catalogEntry;
+  if (series.series_id === "net_liquidity" && "method" in series) return netLiquidityCatalogEntry(series);
+  return undefined;
 }
 
 export default function Overview() {
@@ -35,7 +74,11 @@ export default function Overview() {
           loadCatalog(),
           loadRegimeScore(),
           loadDataStatus(),
-          Promise.all(overviewSeriesIds.map((seriesId) => loadSeries(seriesId)))
+          Promise.all(
+            overviewSeriesIds.map((seriesId) =>
+              seriesId === "net_liquidity" ? loadDerivedSeries(seriesId) : loadSeries(seriesId)
+            )
+          )
         ]);
 
         if (active) setData({ catalog, regime, status, series });
@@ -105,7 +148,7 @@ export default function Overview() {
           <section className="metric-grid" aria-label="Overview metrics">
             {data.series.map((series) => (
               <MetricCard
-                catalogEntry={data.catalog.find((entry) => entry.id === series.series_id)}
+                catalogEntry={catalogEntryForSeries(data.catalog, series)}
                 key={series.series_id}
                 series={series}
               />

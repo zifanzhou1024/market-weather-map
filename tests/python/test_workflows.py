@@ -25,3 +25,20 @@ def test_update_data_workflow_deploys_pages_after_data_update() -> None:
     assert "actions/upload-pages-artifact@v3" in text
     assert "path: dist" in text
     assert "actions/deploy-pages@v4" in text
+
+
+def test_update_workflow_uses_safe_update_runner() -> None:
+    text = workflow_text()
+
+    assert "python -m scripts.update_data" in text
+    assert "python -m scripts.ingest.fetch_cboe" not in text
+
+
+def test_update_workflow_publishes_failed_status_before_failing() -> None:
+    text = workflow_text()
+
+    assert "id: data-update" in text
+    assert "continue-on-error: true" in text
+    assert text.count("if: always()") >= 7
+    assert "steps.data-update.outcome == 'failure'" in text
+    assert "exit 1" in text
