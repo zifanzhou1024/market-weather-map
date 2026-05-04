@@ -130,15 +130,68 @@ def _pct_change(summary: dict[str, Any]) -> float | None:
 
 
 def score_liquidity(series: dict[str, dict[str, Any]]) -> float:
-    fed_change = _pct_change(latest_summary(series["fed_assets"]))
+    net_change = _pct_change(latest_summary(series["net_liquidity"])) if "net_liquidity" in series else None
     reverse_repo_change = _pct_change(latest_summary(series["reverse_repo"]))
+    sofr_score = score_inverse_percentile(latest_summary(series["sofr"])) if "sofr" in series else 0.0
 
-    fed_score = clamp((fed_change or 0.0) * 20)
+    net_score = clamp((net_change or 0.0) * 20)
     reverse_repo_score = clamp(-(reverse_repo_change or 0.0) * 10)
     return weighted_score(
-        {"fed_assets": fed_score, "reverse_repo": reverse_repo_score},
-        {"fed_assets": 0.60, "reverse_repo": 0.40},
+        {"net_liquidity": net_score, "reverse_repo": reverse_repo_score, "sofr": sofr_score},
+        {"net_liquidity": 0.70, "reverse_repo": 0.15, "sofr": 0.15},
     )
+
+
+def _latest_on_or_before(observations: list[dict[str, Any]], date: str) -> float | None:
+    latest_value = None
+    for observation in observations:
+        observed_date = observation.get("date")
+        value = observation.get("value")
+        if not isinstance(observed_date, str) or observed_date > date:
+            continue
+        if isinstance(value, int | float) and not isinstance(value, bool):
+            latest_value = float(value)
+    return latest_value
+
+
+def build_net_liquidity(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> dict[str, Any]:
+    fed_assets = series_by_id["fed_assets"]
+    tga_observations = series_by_id["treasury_general_account"].get("observations", [])
+    reverse_repo_observations = series_by_id["reverse_repo"].get("observations", [])
+
+    observations = []
+    for observation in fed_assets.get("observations", []):
+        date = observation.get("date")
+        fed_value = observation.get("value")
+        if not isinstance(date, str) or not isinstance(fed_value, int | float):
+            continue
+
+        tga_value = _latest_on_or_before(tga_observations, date)
+        reverse_repo_value = _latest_on_or_before(reverse_repo_observations, date)
+        if tga_value is None or reverse_repo_value is None:
+            continue
+
+        observations.append(
+            {
+                "date": date,
+                "value": round(float(fed_value) - tga_value - (reverse_repo_value * 1000), 4),
+            }
+        )
+
+    frequency = str(fed_assets.get("frequency", "weekly"))
+    observations = enrich_observations(observations, frequency)
+    return {
+        "series_id": "net_liquidity",
+        "generated_at_utc": generated_at,
+        "source": "Derived",
+        "source_url": "/data/series/fed_assets.json",
+        "frequency": frequency,
+        "units": "usd_millions",
+        "depends_on": ["fed_assets", "treasury_general_account", "reverse_repo"],
+        "method": "Fed assets minus Treasury General Account and reverse repo balances aligned to Fed asset observation dates. Reverse repo values are converted from billions to millions before subtraction.",
+        "summary": series_summary(observations, frequency),
+        "observations": observations,
+    }
 
 
 def build_matched_spread(
@@ -262,6 +315,10 @@ def main() -> None:
 
     curve = build_curve(generated_at)
     write_json(data_dir() / "derived" / "us10y_minus_us2y.json", curve)
+
+    net_liquidity = build_net_liquidity(series_by_id, generated_at)
+    write_json(data_dir() / "derived" / "net_liquidity.json", net_liquidity)
+    series_by_id["net_liquidity"] = net_liquidity
 
     if "brent_crude" in series_by_id and "wti_crude" in series_by_id:
         write_json(

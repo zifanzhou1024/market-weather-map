@@ -8,10 +8,12 @@ from scripts.transform.compute_percentiles import (
 )
 from scripts.transform.compute_regime_score import (
     _status_for_series,
+    build_net_liquidity,
     build_matched_spread,
     clamp,
     score_commodities,
     score_credit,
+    score_liquidity,
     score_sentiment,
     weighted_score,
 )
@@ -175,6 +177,37 @@ def test_build_matched_spread_uses_source_frequency_for_summary(monkeypatch):
     )
 
     assert spread["summary"]["change_1m"] == 1.0
+
+
+def test_build_net_liquidity_uses_latest_risk_drains_on_or_before_fed_date():
+    series = {
+        "fed_assets": {
+            "frequency": "weekly",
+            "observations": [{"date": "2026-04-30", "value": 7000000.0}],
+        },
+        "treasury_general_account": {
+            "observations": [{"date": "2026-04-29", "value": 800000.0}],
+        },
+        "reverse_repo": {
+            "observations": [{"date": "2026-04-28", "value": 450.0}],
+        },
+    }
+
+    payload = build_net_liquidity(series, "2026-05-03T00:00:00Z")
+
+    assert payload["series_id"] == "net_liquidity"
+    assert payload["observations"] == [{"date": "2026-04-30", "value": 5750000.0, "percentile_252d": 100.0}]
+
+
+def test_score_liquidity_uses_net_liquidity_when_available():
+    supportive = {
+        "fed_assets": {"summary": {"latest_value": 7000000, "change_1m": 0}},
+        "reverse_repo": {"summary": {"latest_value": 450, "change_1m": 0}},
+        "sofr": {"summary": {"percentile_252d": 20}},
+        "net_liquidity": {"summary": {"latest_value": 5750000, "change_1m": 100000}},
+    }
+
+    assert score_liquidity(supportive) > 0
 
 
 def test_status_for_series_marks_future_observations_failed():

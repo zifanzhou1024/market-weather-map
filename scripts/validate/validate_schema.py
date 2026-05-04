@@ -22,6 +22,7 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "catalog" / "series_catalog.json",
     data_dir() / "derived" / "us10y_minus_us2y.json",
     data_dir() / "derived" / "brent_wti_spread.json",
+    data_dir() / "derived" / "net_liquidity.json",
     data_dir() / "derived" / "bucket_scores.json",
     data_dir() / "derived" / "regime_score.json",
     data_dir() / "status" / "data_status.json",

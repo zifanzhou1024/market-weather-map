@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadSeries } from "../lib/data";
-import type { SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadCatalog, loadDerivedSeries, loadSeries } from "../lib/data";
+import type { DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 
 const liquiditySeriesIds = ["fed_assets", "reverse_repo", "treasury_general_account", "sofr"];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
+  netLiquidity: DerivedSeriesFile;
   series: TimeSeriesFile[];
 }
 
@@ -20,11 +21,12 @@ export default function Liquidity() {
 
     async function loadLiquidity() {
       try {
-        const [catalog, series] = await Promise.all([
+        const [catalog, series, netLiquidity] = await Promise.all([
           loadCatalog(),
-          Promise.all(liquiditySeriesIds.map((seriesId) => loadSeries(seriesId)))
+          Promise.all(liquiditySeriesIds.map((seriesId) => loadSeries(seriesId))),
+          loadDerivedSeries("net_liquidity")
         ]);
-        if (active) setData({ catalog, series });
+        if (active) setData({ catalog, netLiquidity, series });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load liquidity data.");
       }
@@ -37,14 +39,28 @@ export default function Liquidity() {
     };
   }, []);
 
-  const fedAssets = data?.series.find((series) => series.series_id === "fed_assets");
+  const netLiquidityCatalogEntry: SeriesCatalogEntry | undefined = data
+    ? {
+        category: "liquidity",
+        frequency: data.netLiquidity.frequency,
+        higher_is: "supportive",
+        id: data.netLiquidity.series_id,
+        max_stale_days: 14,
+        name: "Net liquidity proxy",
+        notes: data.netLiquidity.method,
+        public: true,
+        source: data.netLiquidity.source,
+        source_url: data.netLiquidity.source_url,
+        units: data.netLiquidity.units
+      }
+    : undefined;
 
   return (
     <main className="page-shell">
       <section className="page-heading">
         <p className="eyebrow">Liquidity</p>
         <h2>Funding and balance sheet</h2>
-        <p>Fed assets, reverse repo, Treasury General Account, and SOFR.</p>
+        <p>Net liquidity, Fed assets, reverse repo, Treasury General Account, and SOFR.</p>
       </section>
       {error ? <p className="data-error">Data error: {error}</p> : null}
       {data ? (
@@ -57,13 +73,9 @@ export default function Liquidity() {
                 series={series}
               />
             ))}
+            <MetricCard catalogEntry={netLiquidityCatalogEntry} series={data.netLiquidity} />
           </section>
-          {fedAssets ? (
-            <TimeSeriesChart
-              catalogEntry={data.catalog.find((entry) => entry.id === "fed_assets")}
-              series={fedAssets}
-            />
-          ) : null}
+          <TimeSeriesChart catalogEntry={netLiquidityCatalogEntry} series={data.netLiquidity} />
         </div>
       ) : null}
     </main>
