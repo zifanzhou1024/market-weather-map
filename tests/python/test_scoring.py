@@ -984,6 +984,53 @@ def test_validate_freshness_accepts_governance_series_statuses(tmp_path, monkeyp
     validate_freshness.main()
 
 
+def test_validate_freshness_accepts_partial_stale_series_status(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "overall_status": "partial",
+          "series": {
+            "macro_series": {
+              "status": "stale",
+              "freshness_days": 64,
+              "max_stale_days": 45,
+              "message": "Latest observation is 64 days old."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    validate_freshness.main()
+
+
+def test_validate_freshness_rejects_failed_series_status(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "overall_status": "failed",
+          "series": {
+            "bad_series": {
+              "status": "failed",
+              "message": "No observations available."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="bad_series failed: No observations available."):
+        validate_freshness.main()
+
+
 def test_generated_file_validation_requires_commodity_inflation_impulse():
     assert (
         validate_schema.data_dir() / "derived" / "commodity_inflation_impulse.json"

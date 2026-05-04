@@ -7,6 +7,7 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 
@@ -39,23 +40,6 @@ def write_json(path: Path | str, payload: Any) -> None:
         raise
 
 
-def download_text(url: str) -> str:
-    requests = [
-        Request(url, headers={"User-Agent": "market-weather-map/0.1"}),
-        Request(url),
-    ]
-    last_error: TimeoutError | None = None
-    for request in requests:
-        try:
-            with urlopen(request, timeout=30) as response:
-                return response.read().decode("utf-8-sig")
-        except TimeoutError as error:
-            last_error = error
-    if last_error is not None:
-        raise last_error
-    raise RuntimeError("download failed without an exception")
-
-
 def parse_float(value: str | None) -> float | None:
     if value is None:
         return None
@@ -71,3 +55,31 @@ def parse_csv_rows(text: str) -> list[dict[str, str]]:
 
 def series_path(series_id: str) -> Path:
     return data_dir() / "series" / f"{series_id}.json"
+
+
+_HOSTS_REQUIRING_DEFAULT_REQUEST: set[str] = set()
+
+
+def _download_requests(url: str) -> list[Request]:
+    custom = Request(url, headers={"User-Agent": "market-weather-map/0.1"})
+    provider_default = Request(url)
+    host = urlparse(url).netloc
+    if host in _HOSTS_REQUIRING_DEFAULT_REQUEST:
+        return [provider_default, custom]
+    return [custom, provider_default]
+
+
+def download_text(url: str) -> str:
+    host = urlparse(url).netloc
+    last_error: TimeoutError | None = None
+    for request in _download_requests(url):
+        try:
+            with urlopen(request, timeout=30) as response:
+                return response.read().decode("utf-8-sig")
+        except TimeoutError as error:
+            last_error = error
+            if request.get_header("User-agent") is not None and host:
+                _HOSTS_REQUIRING_DEFAULT_REQUEST.add(host)
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError("download failed without an exception")

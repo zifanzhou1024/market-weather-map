@@ -31,6 +31,14 @@ def main() -> int:
         for module in MODULES:
             run_module(module)
         return 0
+    except SystemExit as error:
+        if error.code in {0, None}:
+            return 0
+        restore_snapshot(snapshot, root)
+        message = f"{type(error).__name__}: {error}"
+        write_failed_update_status(root, message)
+        traceback.print_exc()
+        return 1
     except Exception as error:
         restore_snapshot(snapshot, root)
         message = f"{type(error).__name__}: {error}"
