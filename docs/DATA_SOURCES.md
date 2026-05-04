@@ -29,6 +29,37 @@ Phase 2 extends the same no-secret ingestion model with additional public FRED g
 | Commodities | PSOYBUSDM | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSOYBUSDM` | Monthly | Global soybean price. |
 | Sentiment | E-mini S&P 500 positioning | CFTC | `https://www.cftc.gov/files/dea/history/fut_fin_txt_<year>.zip` | Weekly | Historical compressed text report for futures positioning. The ingest script selects the current UTC year dynamically. |
 
+## Active Phase 3 No-Secret Inputs
+
+Phase 3 keeps the GitHub-only data model. Inputs listed here are active `free_public` targets when they can be fetched without secrets, normalized into static JSON, and redistributed as source-referenced observations.
+
+| Theme | Series or group | Provider | Public endpoint pattern | Frequency | Score use |
+| --- | --- | --- | --- | --- | --- |
+| Volatility | VIX | Cboe | `https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv` | Daily | Market Weather and Fragility stress pressure. |
+| Rates | DGS2, DGS10, DGS20, DGS30 | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily | Market Weather rate pressure and curve context. |
+| Real yields/breakevens | DFII5, DFII10, T5YIE, T10YIE, T5YIFR | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily | Real yields and breakevens for Macro Climate and rate fragility context. |
+| Credit OAS | BAMLH0A0HYM2, BAMLC0A0CM, BAMLC0A4CBBB | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily | High yield, investment grade, and BBB spread stress for Market Weather and Fragility. |
+| Growth/Labor | CFNAI, CFNAIMA3, RRSFS, INDPRO, DGORDER, UNRATE, PAYEMS, ICSA, SAHMREALTIME | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Weekly or monthly | Macro Climate growth breadth, labor trend, and recession-risk context. |
+| Inflation | CPIAUCSL, CPILFESL, PCEPILFE, PPIFIS | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Monthly | Macro Climate inflation trend and policy pressure. |
+| Dollar/Banking | DTWEXBGS, DEXJPUS, DEXUSEU, WRESBAL, TOTBKCR, TOTLL, BUSLOANS, DPSACBW027SBOG | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily or weekly | Dollar pressure, reserve balances, bank credit, loans, business lending, and deposits for Fragility. |
+| Liquidity | WALCL, RRPONTSYD, WTREGEN, SOFR | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily or weekly | Net liquidity proxy and funding context. |
+| Commodities | DCOILWTICO, DCOILBRENTEU, PMAIZMTUSDM, PWHEAMTUSDM, PSOYBUSDM | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily or monthly | Commodity impulse and inflation-pressure context. |
+| Positioning | E-mini S&P 500 commitments | CFTC | `https://www.cftc.gov/files/dea/history/fut_fin_txt_<year>.zip` | Weekly | Crowding and underexposure context for Market Weather. |
+
+## Candidate Sources
+
+Candidate sources are not active scoring inputs until legal, terms, cadence, and redistribution review is complete. They should be marked `terms_review_needed` in source planning unless a later review moves them to `free_public` or `restricted_unavailable`.
+
+| Candidate | Provider | Access status | Potential use | Review notes |
+| --- | --- | --- | --- | --- |
+| ISM manufacturing and services | Institute for Supply Management | `terms_review_needed` | Growth breadth and business-cycle momentum. | Confirm redistribution and automation terms before static publication. |
+| AAII investor sentiment | AAII | `terms_review_needed` | Retail sentiment and contrarian crowding context. | Confirm historical access, redistribution rights, and automated download terms. |
+| NAAIM Exposure Index | NAAIM | `terms_review_needed` | Active manager exposure and risk appetite. | Confirm whether automated ingestion and public JSON redistribution are permitted. |
+| SLOOS | Federal Reserve | `terms_review_needed` | Bank lending standards and credit availability. | Public release is available, but transformation and redistribution format need review. |
+| MOVE Index | ICE Data Indices or licensed redistributors | `restricted_unavailable` | Rates volatility and fragility. | Treat as unavailable unless a no-secret redistributable source is confirmed. |
+| Equity put-call ratios | OCC, Cboe, or other exchanges | `terms_review_needed` | Options positioning and sentiment. | Confirm source-specific terms and whether historical files can be redistributed. |
+| NY Fed ACM term premium | Federal Reserve Bank of New York | `terms_review_needed` | Term premium and real-rate decomposition. | Review download format, attribution, and static redistribution expectations. |
+
 ## Source Handling
 
 - Cboe and FRED data are fetched by Python scripts, then normalized into static JSON.

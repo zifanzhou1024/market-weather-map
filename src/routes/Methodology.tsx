@@ -8,25 +8,35 @@ export default function Methodology() {
       </section>
       <div className="methodology-grid">
         <section className="panel">
-          <h3>GitHub-only architecture</h3>
+          <h3>Market Weather Score</h3>
           <p>
-            Public market datasets are fetched by scheduled GitHub Actions, normalized into static JSON under
-            <code> public/data</code>, and served by the site without runtime provider credentials.
+            The market weather score summarizes observable market conditions: volatility, rates, liquidity,
+            credit, commodities, and positioning. Positive readings describe more supportive current conditions;
+            negative readings describe more stressed or fragile current conditions.
           </p>
         </section>
         <section className="panel">
-          <h3>Score interpretation</h3>
+          <h3>Macro Climate Score</h3>
           <p>
-            The weather score combines volatility, rates, liquidity, and Fed-published financial stress and
-            conditions indexes. Positive readings indicate more supportive conditions; deeply negative readings
-            indicate fragile or stressed conditions.
+            The macro climate score separates slower economic inputs from the market tape. Growth, labor,
+            inflation, real yields, and breakevens are read as descriptive context for whether the backdrop is
+            improving, mixed, overheating, or slowing.
           </p>
         </section>
         <section className="panel">
-          <h3>Limitations</h3>
+          <h3>Fragility Score</h3>
           <p>
-            Inputs are delayed public data and may be stale, revised, or unavailable. The score is a descriptive
-            dashboard signal only, not a forecast, recommendation, or financial advice.
+            The fragility score focuses on stress channels that can amplify market moves, including credit
+            spreads, financial conditions, dollar pressure, banking data, liquidity, volatility, and candidate
+            flow or survey inputs when access has been reviewed.
+          </p>
+        </section>
+        <section className="panel">
+          <h3>Source access status</h3>
+          <p>
+            Active inputs are public, no-secret feeds that can be fetched by GitHub Actions. Candidate sources
+            remain inactive until terms review confirms access, while restricted or unavailable sources are
+            documented but excluded from the production score.
           </p>
         </section>
       </div>

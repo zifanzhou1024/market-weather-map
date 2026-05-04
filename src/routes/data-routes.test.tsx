@@ -1036,4 +1036,17 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("cftc_sp500_asset_mgr_net");
     expect(container.textContent).toContain("cftc_sp500_lev_money_net");
   });
+
+  it("renders phase 3 methodology panels", async () => {
+    const container = render(
+      <MemoryRouter initialEntries={["/methodology"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    expect(h3Texts(container)).toContain("Market Weather Score");
+    expect(h3Texts(container)).toContain("Macro Climate Score");
+    expect(h3Texts(container)).toContain("Fragility Score");
+    expect(h3Texts(container)).toContain("Source access status");
+  });
 });
