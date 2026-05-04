@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 from scripts.shared import catalog as catalog_module
 from scripts.shared.catalog import catalog_entries
 
@@ -40,3 +43,11 @@ def test_available_catalog_entries_excludes_pending_series_files(tmp_path, monke
     assert "cftc_sp500_asset_mgr_net" in full_entries
     assert "cftc_sp500_asset_mgr_net" not in available_entries
     assert available_entries == {"vix"}
+
+
+def test_checked_in_catalog_artifact_includes_phase2_metadata():
+    catalog_path = Path("public/data/catalog/series_catalog.json")
+    entries = {str(entry["id"]): entry for entry in json.loads(catalog_path.read_text())}
+
+    assert "wti_crude" in entries
+    assert "cftc_sp500_asset_mgr_net" in entries
