@@ -75,3 +75,16 @@ def test_catalog_can_include_candidate_sources_without_making_them_available(tmp
     assert "ism_manufacturing_pmi" not in {
         str(entry["id"]) for entry in catalog_module.available_catalog_entries()
     }
+
+
+def test_available_catalog_entries_excludes_candidate_even_if_series_file_exists(tmp_path, monkeypatch):
+    series_dir = tmp_path / "series"
+    series_dir.mkdir()
+    (series_dir / "ism_manufacturing_pmi.json").write_text("{}", encoding="utf-8")
+    (series_dir / "vix.json").write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(catalog_module, "data_dir", lambda: tmp_path, raising=False)
+
+    available_entries = {str(entry["id"]) for entry in catalog_module.available_catalog_entries()}
+
+    assert "vix" in available_entries
+    assert "ism_manufacturing_pmi" not in available_entries

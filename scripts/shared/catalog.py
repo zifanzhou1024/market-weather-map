@@ -331,4 +331,6 @@ def available_catalog_entries() -> list[dict[str, object]]:
         entry
         for entry in catalog_entries()
         if (series_dir / f"{entry['id']}.json").exists()
+        and entry.get("score_status") == "active"
+        and entry.get("public") is True
     ]
