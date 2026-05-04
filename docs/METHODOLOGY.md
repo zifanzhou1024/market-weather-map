@@ -6,16 +6,16 @@ The score is explanatory, not predictive. It is not a forecast, trading signal, 
 
 ## Bucket Weights
 
-| Bucket | Weight | Phase 1 scoring status |
+| Bucket | Weight | Scoring status |
 | --- | ---: | --- |
 | Volatility | 20% | Active |
 | Rates | 15% | Active |
 | Liquidity | 20% | Active |
 | Credit | 20% | Active |
-| Commodities | 10% | Neutral |
-| Sentiment | 15% | Neutral |
+| Commodities | 10% | Active |
+| Sentiment | 15% | Active |
 
-Phase 1 actively scores volatility, rates, liquidity, and credit. Commodities and sentiment are included in the target bucket model but are held neutral at `0` until public, no-secret Phase 1-compatible inputs are added.
+All six buckets are actively scored from public, no-secret inputs. The `percentile_252d` field name is retained for compatibility, but the percentile window is frequency-aware: daily series use 252 observations, weekly series use 52 observations, and monthly series use 12 observations.
 
 ## Bucket Logic
 
@@ -23,7 +23,8 @@ Phase 1 actively scores volatility, rates, liquidity, and credit. Commodities an
 - Rates use the recent change in the 10-year Treasury yield. Larger upward moves are treated as less supportive.
 - Liquidity uses recent changes in Federal Reserve assets and overnight reverse repo balances. Rising Fed assets are treated as more supportive, while rising reverse repo balances are treated as less supportive.
 - Credit uses Fed-published financial stress and financial conditions series: STLFSI4 and NFCI. Higher percentile readings are treated as less supportive.
-- Commodities and sentiment are neutral in Phase 1.
+- Commodities use oil and crop price percentiles. Higher oil and crop price percentiles are treated as less supportive because they can reflect input-cost and inflation pressure.
+- Sentiment uses CFTC E-mini S&P 500 asset manager and leveraged money net positioning as a percent of open interest. Very high positioning percentiles are treated as crowding risk; low positioning readings are descriptive underexposure context.
 
 The overall score is the weighted average of available bucket scores, clamped to the `-100` to `+100` range. The displayed label maps the result into broad regimes:
 

@@ -17,7 +17,7 @@ WEIGHTS = {
     "commodities": 0.10,
     "sentiment": 0.15,
 }
-METHOD_VERSION = "phase1-github-native-v1"
+METHOD_VERSION = "phase2-public-data-v1"
 DERIVED_STATUS_METADATA = {
     "us10y_minus_us2y": {"max_stale_days": 7},
     "brent_wti_spread": {"max_stale_days": 10},

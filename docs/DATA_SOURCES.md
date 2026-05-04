@@ -1,6 +1,6 @@
 # Data Sources
 
-Phase 1 uses active, no-secret public endpoints. The ingestion scripts run in GitHub Actions or locally and write static JSON files under `public/data`. The frontend reads those JSON files and does not call provider endpoints.
+The project uses active, no-secret public endpoints. The ingestion scripts run in GitHub Actions or locally and write static JSON files under `public/data`. The frontend reads those JSON files and does not call provider endpoints.
 
 | Bucket | Series | Provider | Public endpoint | Frequency | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -27,12 +27,12 @@ Phase 2 extends the same no-secret ingestion model with additional public FRED g
 | Commodities | PMAIZMTUSDM | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=PMAIZMTUSDM` | Monthly | Global corn price. |
 | Commodities | PWHEAMTUSDM | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=PWHEAMTUSDM` | Monthly | Global wheat price. |
 | Commodities | PSOYBUSDM | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSOYBUSDM` | Monthly | Global soybean price. |
-| Sentiment | E-mini S&P 500 positioning | CFTC | `https://www.cftc.gov/files/dea/history/fut_fin_txt_2026.zip` | Weekly | Historical compressed text report for futures positioning. |
+| Sentiment | E-mini S&P 500 positioning | CFTC | `https://www.cftc.gov/files/dea/history/fut_fin_txt_<year>.zip` | Weekly | Historical compressed text report for futures positioning. The ingest script selects the current UTC year dynamically. |
 
 ## Source Handling
 
 - Cboe and FRED data are fetched by Python scripts, then normalized into static JSON.
 - FRED graph CSV endpoints do not require API keys or secrets.
-- CFTC positioning data is fetched from public historical compressed text files and transformed into static JSON.
+- CFTC positioning data is fetched from public historical compressed text files and transformed into static JSON. The CFTC source index is `https://www.cftc.gov/MarketReports/CommitmentsofTraders/HistoricalCompressed/index.htm`.
 - Data freshness is validated against each series' expected cadence and maximum stale-day threshold.
 - The generated catalog and status files expose source URLs, expected frequencies, and freshness notes for the frontend.

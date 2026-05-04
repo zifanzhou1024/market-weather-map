@@ -2,18 +2,19 @@
 
 market-weather-map is a GitHub Pages dashboard for reading broad market conditions as descriptive "weather." It combines delayed public market and macro series, static JSON artifacts, and transparent scoring so the app can be hosted without a backend or browser-side provider credentials.
 
-## Phase 1
+## Current Scope
 
-Phase 1 includes:
+The current project includes:
 
 - A Vite, React, and TypeScript frontend.
-- GitHub Actions ingestion for public Cboe and FRED CSV data.
-- No-secret data collection from Cboe and FRED graph CSV endpoints.
+- GitHub Actions ingestion for public Cboe, FRED CSV, and CFTC historical compressed data.
+- No-secret data collection from Cboe, FRED graph CSV endpoints, and CFTC public reports.
 - Static JSON under `public/data` for the browser to read.
 - A GitHub Pages deployment workflow.
 - Source notes, freshness status, and descriptive scoring metadata in the generated data and UI.
+- Phase 2 commodity, liquidity, and sentiment extensions.
 
-Phase 1 does not include:
+The current project does not include:
 
 - A backend service, database, or live market feed.
 - Frontend API keys or browser-side calls to Cboe, FRED, or other data providers.
@@ -42,16 +43,25 @@ python -m pip install -r requirements.txt
 Fetch public source data, transform it, compute scores, and validate the output:
 
 ```bash
+python -m scripts.update_data
+```
+
+`scripts.update_data` runs the full local data workflow: Cboe, FRED graph CSV, and CFTC public report ingestion; normalization; percentile enrichment; regime scoring; schema validation; and freshness validation. If a step fails, it restores the previous data snapshot and records the failed attempt in `public/data/status/data_status.json`.
+
+`download_text` first requests data with the project user agent and retries provider-compatible behavior without that custom user agent if the project user-agent request times out.
+
+For advanced debugging, lower-level modules can still be run directly:
+
+```bash
 python -m scripts.ingest.fetch_cboe
 python -m scripts.ingest.fetch_fred_csv
+python -m scripts.ingest.fetch_cftc
 python -m scripts.transform.normalize_series
 python -m scripts.transform.compute_percentiles
 python -m scripts.transform.compute_regime_score
 python -m scripts.validate.validate_schema
 python -m scripts.validate.validate_freshness
 ```
-
-`download_text` first requests data with the project user agent and retries provider-compatible behavior without that custom user agent if the project user-agent request times out.
 
 ## Run The App
 
