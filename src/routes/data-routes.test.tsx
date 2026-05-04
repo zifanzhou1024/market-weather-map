@@ -9,6 +9,7 @@ import type {
   DataStatusFile,
   DerivedSeriesFile,
   RegimeScoreFile,
+  ScoreSummaryFile,
   SeriesCatalogEntry,
   TimeSeriesFile
 } from "../lib/types";
@@ -365,6 +366,55 @@ const status: DataStatusFile = {
   }
 };
 
+const scoreSummary: ScoreSummaryFile = {
+  date: "2026-05-01",
+  generated_at_utc: "2026-05-04T00:00:00Z",
+  method_version: "phase3-three-score-v1",
+  scores: {
+    market_weather: {
+      bucket_scores: { volatility: -12.34, rates: 4.5 },
+      bucket_weights: { volatility: 0.5, rates: 0.5 },
+      confidence: 0.82,
+      confidence_reasons: ["Core market inputs are fresh."],
+      label: "Mixed",
+      missing_or_stale_notes: [],
+      recent_changes: ["Volatility eased while rates pressure increased."],
+      score: 19.17,
+      top_risks: ["Volatility"],
+      top_supports: ["Rates"]
+    },
+    macro_climate: {
+      bucket_scores: { growth: 6, inflation: -3 },
+      bucket_weights: { growth: 0.5, inflation: 0.5 },
+      confidence: 0.74,
+      confidence_reasons: ["Macro inputs are mostly current."],
+      label: "Goldilocks",
+      missing_or_stale_notes: [],
+      recent_changes: ["Growth breadth improved."],
+      score: 8.2,
+      top_risks: ["Inflation momentum remains sticky."],
+      top_supports: ["Growth breadth improved."]
+    },
+    fragility: {
+      bucket_scores: { dollar: -7, liquidity: 3 },
+      bucket_weights: { dollar: 0.5, liquidity: 0.5 },
+      confidence: 0.69,
+      confidence_reasons: ["Some fragility inputs are candidate-only."],
+      label: "Moderate",
+      missing_or_stale_notes: ["MOVE remains a candidate input."],
+      recent_changes: ["Dollar pressure increased."],
+      score: -4.1,
+      top_risks: ["Dollar pressure increased."],
+      top_supports: ["Liquidity remains stable."]
+    }
+  },
+  conflicting_signals: ["Growth is firm while inflation momentum remains sticky."],
+  data_quality: {
+    overall_confidence: 0.73,
+    reasons: ["Sentiment coverage is limited to public CFTC positioning."]
+  }
+};
+
 afterEach(() => {
   if (root) {
     act(() => root?.unmount());
@@ -375,7 +425,7 @@ afterEach(() => {
 });
 
 describe("data-backed routes", () => {
-  it("renders bucket scores from the regime payload on overview", async () => {
+  it("renders three score summary sections and market weather buckets on overview", async () => {
     const regime: RegimeScoreFile = {
       buckets: { volatility: -12.34, rates: 4.5 },
       date: "2026-05-01",
@@ -409,6 +459,7 @@ describe("data-backed routes", () => {
         units: "USD billions"
       } satisfies DerivedSeriesFile,
       "/data/derived/regime_score.json": regime,
+      "/data/derived/score_summary.json": scoreSummary,
       "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
       "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
       "/data/series/us10y.json": seriesFile("us10y", 4.2),
@@ -418,8 +469,15 @@ describe("data-backed routes", () => {
     });
 
     const container = render(<Overview />);
-    await waitForContent(container, "Bucket scores");
+    await waitForContent(container, "Market Weather buckets");
 
+    expect(container.textContent).toContain("Macro Climate");
+    expect(container.textContent).toContain("Fragility");
+    expect(container.textContent).toContain("What changed this week");
+    expect(container.textContent).toContain("Conflicting signals");
+    expect(container.textContent).toContain("Data confidence");
+    expect(container.textContent).toContain("73%");
+    expect(container.textContent).toContain("Sentiment coverage is limited to public CFTC positioning.");
     expect(container.textContent).toContain("Volatility");
     expect(container.textContent).toContain("-12.34");
   });
@@ -459,6 +517,7 @@ describe("data-backed routes", () => {
       "/data/catalog/series_catalog.json": catalog,
       "/data/derived/net_liquidity.json": netLiquidity,
       "/data/derived/regime_score.json": regime,
+      "/data/derived/score_summary.json": scoreSummary,
       "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
       "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
       "/data/series/us10y.json": seriesFile("us10y", 4.2),

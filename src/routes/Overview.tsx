@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
 import DataStatusTable from "../components/DataStatusTable";
+import HowToReadPanel from "../components/HowToReadPanel";
 import MetricCard from "../components/MetricCard";
 import RegimeBadge from "../components/RegimeBadge";
-import { loadCatalog, loadDataStatus, loadDerivedSeries, loadRegimeScore, loadSeries } from "../lib/data";
+import ScoreCard from "../components/ScoreCard";
+import {
+  loadCatalog,
+  loadDataStatus,
+  loadDerivedSeries,
+  loadRegimeScore,
+  loadScoreSummary,
+  loadSeries
+} from "../lib/data";
 import { formatSigned } from "../lib/formatters";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
   RegimeScoreFile,
+  ScoreSummaryFile,
   SeriesCatalogEntry,
   TimeSeriesFile
 } from "../lib/types";
@@ -24,6 +34,7 @@ const overviewSeriesIds = [
 interface OverviewState {
   catalog: SeriesCatalogEntry[];
   regime: RegimeScoreFile;
+  scoreSummary: ScoreSummaryFile;
   status: DataStatusFile;
   series: Array<TimeSeriesFile | DerivedSeriesFile>;
 }
@@ -61,6 +72,27 @@ function catalogEntryForSeries(
   return undefined;
 }
 
+function ScoreListPanel({ items, title }: { items: string[]; title: string }) {
+  return (
+    <section className="panel">
+      <div className="section-header">
+        <div>
+          <h3>{title}</h3>
+        </div>
+      </div>
+      {items.length ? (
+        <ul className="score-list">
+          {items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="score-note">No notable items in the current score summary.</p>
+      )}
+    </section>
+  );
+}
+
 export default function Overview() {
   const [data, setData] = useState<OverviewState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -70,9 +102,10 @@ export default function Overview() {
 
     async function loadOverview() {
       try {
-        const [catalog, regime, status, series] = await Promise.all([
+        const [catalog, regime, scoreSummary, status, series] = await Promise.all([
           loadCatalog(),
           loadRegimeScore(),
+          loadScoreSummary(),
           loadDataStatus(),
           Promise.all(
             overviewSeriesIds.map((seriesId) =>
@@ -81,7 +114,7 @@ export default function Overview() {
           )
         ]);
 
-        if (active) setData({ catalog, regime, status, series });
+        if (active) setData({ catalog, regime, scoreSummary, status, series });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load market data.");
       }
@@ -104,6 +137,43 @@ export default function Overview() {
       {error ? <p className="data-error">Data error: {error}</p> : null}
       {data ? (
         <>
+          {(() => {
+            const { scoreSummary } = data;
+            const weeklyChanges = [
+              ...scoreSummary.scores.market_weather.recent_changes,
+              ...scoreSummary.scores.macro_climate.recent_changes,
+              ...scoreSummary.scores.fragility.recent_changes
+            ];
+            const dataConfidence = Math.round(scoreSummary.data_quality.overall_confidence * 100);
+
+            return (
+              <>
+                <HowToReadPanel description="Market Weather, Macro Climate, and Fragility are separate descriptive scores for observed conditions. They summarize public-data context for comparing current market and macro inputs." />
+                <section className="score-grid" aria-label="Overview scores">
+                  <ScoreCard score={scoreSummary.scores.market_weather} title="Market Weather" />
+                  <ScoreCard score={scoreSummary.scores.macro_climate} title="Macro Climate" />
+                  <ScoreCard score={scoreSummary.scores.fragility} title="Fragility" />
+                </section>
+                <section className="detail-grid">
+                  <ScoreListPanel items={weeklyChanges} title="What changed this week" />
+                  <ScoreListPanel items={scoreSummary.conflicting_signals} title="Conflicting signals" />
+                </section>
+                <section className="panel bucket-panel">
+                  <div className="section-header">
+                    <div>
+                      <h3>Data confidence</h3>
+                    </div>
+                    <p>{dataConfidence}% overall confidence</p>
+                  </div>
+                  <ul className="score-list">
+                    {scoreSummary.data_quality.reasons.map((reason) => (
+                      <li key={reason}>{reason}</li>
+                    ))}
+                  </ul>
+                </section>
+              </>
+            );
+          })()}
           <section className="hero-panel">
             <div>
               <p className="eyebrow">Weather score</p>
@@ -133,7 +203,7 @@ export default function Overview() {
             <div className="section-header">
               <div>
                 <p className="eyebrow">Regime inputs</p>
-                <h3>Bucket scores</h3>
+                <h3>Market Weather buckets</h3>
               </div>
             </div>
             <dl className="bucket-grid">
