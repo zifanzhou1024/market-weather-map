@@ -381,7 +381,7 @@ describe("data-backed routes", () => {
       date: "2026-05-01",
       generated_at_utc: "2026-05-03T18:32:54Z",
       label: "Neutral",
-      method_version: "phase1-github-native-v1",
+      method_version: "phase2-public-data-v1",
       overall_score: 19.17,
       top_risks: ["Volatility"],
       top_supports: ["Rates"]
@@ -430,7 +430,7 @@ describe("data-backed routes", () => {
       date: "2026-05-01",
       generated_at_utc: "2026-05-03T18:32:54Z",
       label: "Neutral",
-      method_version: "phase1-github-native-v1",
+      method_version: "phase2-public-data-v1",
       overall_score: 19.17,
       top_risks: ["Volatility"],
       top_supports: ["Rates"]
