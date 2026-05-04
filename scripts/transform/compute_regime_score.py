@@ -63,6 +63,29 @@ def score_credit(series: dict[str, dict[str, Any]]) -> float:
     )
 
 
+def _average(values: list[float]) -> float:
+    if not values:
+        return 0.0
+    return clamp(sum(values) / len(values))
+
+
+def score_commodities(series: dict[str, dict[str, Any]]) -> float:
+    oil_scores = [
+        score_inverse_percentile(latest_summary(series[series_id]))
+        for series_id in ["wti_crude", "brent_crude"]
+        if series_id in series
+    ]
+    crop_scores = [
+        score_inverse_percentile(latest_summary(series[series_id]))
+        for series_id in ["corn_price", "wheat_price", "soybean_price"]
+        if series_id in series
+    ]
+    return weighted_score(
+        {"oil": _average(oil_scores), "crops": _average(crop_scores)},
+        {"oil": 0.55, "crops": 0.45},
+    )
+
+
 def score_volatility(series: dict[str, dict[str, Any]]) -> float:
     return score_inverse_percentile(latest_summary(series["vix"]))
 
@@ -97,33 +120,51 @@ def score_liquidity(series: dict[str, dict[str, Any]]) -> float:
     )
 
 
-def build_curve(generated_at: str) -> dict[str, Any]:
-    us10y = load_series("us10y")
-    us2y = load_series("us2y")
-    us2y_by_date = {
-        observation["date"]: observation["value"] for observation in us2y.get("observations", [])
+def build_matched_spread(
+    left_series_id: str,
+    right_series_id: str,
+    spread_series_id: str,
+    generated_at: str,
+    units: str,
+    method: str,
+) -> dict[str, Any]:
+    left = load_series(left_series_id)
+    right = load_series(right_series_id)
+    right_by_date = {
+        observation["date"]: observation["value"] for observation in right.get("observations", [])
     }
     observations = []
-    for observation in us10y.get("observations", []):
+    for observation in left.get("observations", []):
         date = observation.get("date")
-        value_10y = observation.get("value")
-        value_2y = us2y_by_date.get(date)
-        if isinstance(value_10y, int | float) and isinstance(value_2y, int | float):
-            observations.append({"date": date, "value": round(float(value_10y) - float(value_2y), 4)})
+        left_value = observation.get("value")
+        right_value = right_by_date.get(date)
+        if isinstance(left_value, int | float) and isinstance(right_value, int | float):
+            observations.append({"date": date, "value": round(float(left_value) - float(right_value), 4)})
 
     observations = enrich_observations(observations)
     return {
-        "series_id": "us10y_minus_us2y",
+        "series_id": spread_series_id,
         "generated_at_utc": generated_at,
         "source": "Derived",
-        "source_url": "/data/series/us10y.json",
-        "frequency": "daily",
-        "units": "percentage_points",
-        "depends_on": ["us10y", "us2y"],
-        "method": "10-year Treasury yield minus 2-year Treasury yield by matched observation date.",
+        "source_url": f"/data/series/{left_series_id}.json",
+        "frequency": str(left.get("frequency", "daily")),
+        "units": units,
+        "depends_on": [left_series_id, right_series_id],
+        "method": method,
         "summary": series_summary(observations),
         "observations": observations,
     }
+
+
+def build_curve(generated_at: str) -> dict[str, Any]:
+    return build_matched_spread(
+        "us10y",
+        "us2y",
+        "us10y_minus_us2y",
+        generated_at,
+        "percentage_points",
+        "10-year Treasury yield minus 2-year Treasury yield by matched observation date.",
+    )
 
 
 def label_for_score(score: float) -> str:
@@ -200,12 +241,25 @@ def main() -> None:
     curve = build_curve(generated_at)
     write_json(data_dir() / "derived" / "us10y_minus_us2y.json", curve)
 
+    if "brent_crude" in series_by_id and "wti_crude" in series_by_id:
+        write_json(
+            data_dir() / "derived" / "brent_wti_spread.json",
+            build_matched_spread(
+                "brent_crude",
+                "wti_crude",
+                "brent_wti_spread",
+                generated_at,
+                "usd_per_barrel",
+                "Brent crude spot price minus WTI crude spot price by matched observation date.",
+            ),
+        )
+
     buckets = {
         "volatility": score_volatility(series_by_id),
         "rates": score_rates(series_by_id),
         "liquidity": score_liquidity(series_by_id),
         "credit": score_credit(series_by_id),
-        "commodities": 0.0,
+        "commodities": score_commodities(series_by_id),
         "sentiment": 0.0,
     }
     overall_score = weighted_score(buckets, WEIGHTS)

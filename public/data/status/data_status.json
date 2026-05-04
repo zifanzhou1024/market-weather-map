@@ -1,11 +1,29 @@
 {
-  "generated_at_utc": "2026-05-03T18:32:54Z",
-  "last_successful_update_utc": "2026-05-03T18:32:54Z",
+  "generated_at_utc": "2026-05-04T04:50:14Z",
+  "last_successful_update_utc": "2026-05-04T04:50:14Z",
   "overall_status": "ok",
   "series": {
+    "brent_crude": {
+      "expected_frequency": "daily",
+      "freshness_days": 7,
+      "last_observation": "2026-04-27",
+      "max_stale_days": 10,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "corn_price": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 75,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
     "fed_assets": {
       "expected_frequency": "weekly",
-      "freshness_days": 4,
+      "freshness_days": 5,
       "last_observation": "2026-04-29",
       "max_stale_days": 14,
       "message": "Fresh.",
@@ -14,7 +32,7 @@
     },
     "financial_conditions": {
       "expected_frequency": "weekly",
-      "freshness_days": 9,
+      "freshness_days": 10,
       "last_observation": "2026-04-24",
       "max_stale_days": 14,
       "message": "Fresh.",
@@ -23,7 +41,7 @@
     },
     "financial_stress": {
       "expected_frequency": "weekly",
-      "freshness_days": 9,
+      "freshness_days": 10,
       "last_observation": "2026-04-24",
       "max_stale_days": 14,
       "message": "Fresh.",
@@ -32,7 +50,7 @@
     },
     "reverse_repo": {
       "expected_frequency": "daily",
-      "freshness_days": 2,
+      "freshness_days": 3,
       "last_observation": "2026-05-01",
       "max_stale_days": 7,
       "message": "Fresh.",
@@ -41,16 +59,25 @@
     },
     "sofr": {
       "expected_frequency": "daily",
-      "freshness_days": 3,
+      "freshness_days": 4,
       "last_observation": "2026-04-30",
       "max_stale_days": 7,
       "message": "Fresh.",
       "source": "FRED",
       "status": "ok"
     },
+    "soybean_price": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 75,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
     "treasury_general_account": {
       "expected_frequency": "weekly",
-      "freshness_days": 4,
+      "freshness_days": 5,
       "last_observation": "2026-04-29",
       "max_stale_days": 14,
       "message": "Fresh.",
@@ -59,7 +86,7 @@
     },
     "us10y": {
       "expected_frequency": "daily",
-      "freshness_days": 3,
+      "freshness_days": 4,
       "last_observation": "2026-04-30",
       "max_stale_days": 7,
       "message": "Fresh.",
@@ -68,7 +95,7 @@
     },
     "us20y": {
       "expected_frequency": "daily",
-      "freshness_days": 3,
+      "freshness_days": 4,
       "last_observation": "2026-04-30",
       "max_stale_days": 7,
       "message": "Fresh.",
@@ -77,7 +104,7 @@
     },
     "us2y": {
       "expected_frequency": "daily",
-      "freshness_days": 3,
+      "freshness_days": 4,
       "last_observation": "2026-04-30",
       "max_stale_days": 7,
       "message": "Fresh.",
@@ -86,7 +113,7 @@
     },
     "us30y": {
       "expected_frequency": "daily",
-      "freshness_days": 3,
+      "freshness_days": 4,
       "last_observation": "2026-04-30",
       "max_stale_days": 7,
       "message": "Fresh.",
@@ -95,11 +122,29 @@
     },
     "vix": {
       "expected_frequency": "daily",
-      "freshness_days": 2,
+      "freshness_days": 3,
       "last_observation": "2026-05-01",
       "max_stale_days": 7,
       "message": "Fresh.",
       "source": "Cboe",
+      "status": "ok"
+    },
+    "wheat_price": {
+      "expected_frequency": "monthly",
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
+      "max_stale_days": 75,
+      "message": "Fresh.",
+      "source": "FRED",
+      "status": "ok"
+    },
+    "wti_crude": {
+      "expected_frequency": "daily",
+      "freshness_days": 7,
+      "last_observation": "2026-04-27",
+      "max_stale_days": 10,
+      "message": "Fresh.",
+      "source": "FRED",
       "status": "ok"
     }
   }

@@ -1,7 +1,8 @@
-from scripts.transform.compute_percentiles import percentile_rank, series_summary
+from scripts.transform.compute_percentiles import change_offsets, percentile_rank, series_summary
 from scripts.transform.compute_regime_score import (
     _status_for_series,
     clamp,
+    score_commodities,
     score_credit,
     weighted_score,
 )
@@ -58,6 +59,10 @@ def test_series_summary_daily_preserves_daily_offsets():
     assert summary["change_1m"] == 21.0
 
 
+def test_monthly_change_offsets_use_observation_steps():
+    assert change_offsets("monthly") == {"change_1d": 1, "change_1w": 1, "change_1m": 1}
+
+
 def test_clamp_bounds_scores_to_minus_100_and_100():
     assert clamp(125) == 100.0
     assert clamp(-125) == -100.0
@@ -80,6 +85,18 @@ def test_score_credit_uses_financial_stress_and_conditions_series():
     }
 
     assert score_credit(series) == -42.0
+
+
+def test_score_commodities_penalizes_high_oil_and_crop_percentiles():
+    series = {
+        "wti_crude": {"summary": {"percentile_252d": 90}},
+        "brent_crude": {"summary": {"percentile_252d": 80}},
+        "corn_price": {"summary": {"percentile_252d": 75}},
+        "wheat_price": {"summary": {"percentile_252d": 60}},
+        "soybean_price": {"summary": {"percentile_252d": 50}},
+    }
+
+    assert score_commodities(series) < 0
 
 
 def test_status_for_series_marks_future_observations_failed():

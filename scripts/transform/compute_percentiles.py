@@ -27,6 +27,8 @@ def change_from_index(observations: list[dict[str, Any]], offset: int) -> float 
 def change_offsets(frequency: str = "daily") -> dict[str, int]:
     if frequency == "weekly":
         return {"change_1d": 1, "change_1w": 1, "change_1m": 4}
+    if frequency == "monthly":
+        return {"change_1d": 1, "change_1w": 1, "change_1m": 1}
     return {"change_1d": 1, "change_1w": 5, "change_1m": 21}
 
 
