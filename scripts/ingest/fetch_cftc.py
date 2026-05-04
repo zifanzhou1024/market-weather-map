@@ -42,11 +42,15 @@ def rows_from_zip(payload: bytes) -> list[dict[str, str]]:
 
 
 def is_target_market(row: dict[str, str]) -> bool:
+    return target_market_priority(row) > 0
+
+
+def target_market_priority(row: dict[str, str]) -> int:
     code = row.get("CFTC_Contract_Market_Code")
     if code:
-        return code.strip() == TARGET_CONTRACT_MARKET_CODE
+        return 2 if code.strip() == TARGET_CONTRACT_MARKET_CODE else 0
     name = row.get("Market_and_Exchange_Names")
-    return bool(name and name.strip() in TARGET_MARKET_NAMES)
+    return 1 if name and name.strip() in TARGET_MARKET_NAMES else 0
 
 
 def net_percent_open_interest(row: dict[str, str], prefix: str) -> float:
@@ -63,23 +67,25 @@ def normalize_cftc_rows(rows: list[dict[str, str]]) -> dict[str, list[dict[str, 
         "cftc_sp500_asset_mgr_net": [],
         "cftc_sp500_lev_money_net": [],
     }
-    seen_dates: set[str] = set()
+    best_rows_by_date: dict[str, tuple[int, dict[str, str]]] = {}
     for row in rows:
-        if not is_target_market(row):
+        priority = target_market_priority(row)
+        if priority == 0:
             continue
         date = row.get("Report_Date_as_YYYY-MM-DD")
-        if not date or date in seen_dates:
+        if not date:
             continue
-        seen_dates.add(date)
+        current = best_rows_by_date.get(date)
+        if current is None or priority > current[0]:
+            best_rows_by_date[date] = (priority, row)
+
+    for date, (_, row) in sorted(best_rows_by_date.items()):
         observations["cftc_sp500_asset_mgr_net"].append(
             {"date": date, "value": net_percent_open_interest(row, "Asset_Mgr")}
         )
         observations["cftc_sp500_lev_money_net"].append(
             {"date": date, "value": net_percent_open_interest(row, "Lev_Money")}
         )
-
-    for values in observations.values():
-        values.sort(key=lambda item: str(item["date"]))
     return observations
 
 
