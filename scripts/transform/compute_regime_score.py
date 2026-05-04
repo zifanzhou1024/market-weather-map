@@ -82,7 +82,7 @@ def score_commodities(series: dict[str, dict[str, Any]]) -> float:
     ]
     return weighted_score(
         {"oil": _average(oil_scores), "crops": _average(crop_scores)},
-        {"oil": 0.55, "crops": 0.45},
+        {"oil": 0.65, "crops": 0.35},
     )
 
 
@@ -141,17 +141,18 @@ def build_matched_spread(
         if isinstance(left_value, int | float) and isinstance(right_value, int | float):
             observations.append({"date": date, "value": round(float(left_value) - float(right_value), 4)})
 
-    observations = enrich_observations(observations)
+    frequency = str(left.get("frequency", "daily"))
+    observations = enrich_observations(observations, frequency)
     return {
         "series_id": spread_series_id,
         "generated_at_utc": generated_at,
         "source": "Derived",
         "source_url": f"/data/series/{left_series_id}.json",
-        "frequency": str(left.get("frequency", "daily")),
+        "frequency": frequency,
         "units": units,
         "depends_on": [left_series_id, right_series_id],
         "method": method,
-        "summary": series_summary(observations),
+        "summary": series_summary(observations, frequency),
         "observations": observations,
     }
 

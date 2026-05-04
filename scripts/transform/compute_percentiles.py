@@ -32,6 +32,14 @@ def change_offsets(frequency: str = "daily") -> dict[str, int]:
     return {"change_1d": 1, "change_1w": 5, "change_1m": 21}
 
 
+def percentile_window_for_frequency(frequency: str = "daily") -> int:
+    if frequency == "weekly":
+        return 52
+    if frequency == "monthly":
+        return 12
+    return 252
+
+
 def series_summary(observations: list[dict[str, Any]], frequency: str = "daily") -> dict[str, Any]:
     if not observations:
         return {
@@ -45,9 +53,12 @@ def series_summary(observations: list[dict[str, Any]], frequency: str = "daily")
 
     latest = observations[-1]
     latest_value = latest.get("value")
+    # Keep the public field name for compatibility while using an annual-ish
+    # observation window appropriate to the series frequency.
+    percentile_window = percentile_window_for_frequency(frequency)
     values = [
         float(observation["value"])
-        for observation in observations[-252:]
+        for observation in observations[-percentile_window:]
         if isinstance(observation.get("value"), int | float)
     ]
     percentile = (
@@ -67,8 +78,11 @@ def series_summary(observations: list[dict[str, Any]], frequency: str = "daily")
     }
 
 
-def enrich_observations(observations: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def enrich_observations(
+    observations: list[dict[str, Any]], frequency: str = "daily"
+) -> list[dict[str, Any]]:
     enriched = []
+    percentile_window = percentile_window_for_frequency(frequency)
     for index, observation in enumerate(observations):
         value = observation.get("value")
         if not isinstance(value, int | float):
@@ -76,7 +90,7 @@ def enrich_observations(observations: list[dict[str, Any]]) -> list[dict[str, An
             continue
         window = [
             float(item["value"])
-            for item in observations[max(0, index - 251) : index + 1]
+            for item in observations[max(0, index - percentile_window + 1) : index + 1]
             if isinstance(item.get("value"), int | float)
         ]
         enriched.append(
@@ -91,9 +105,10 @@ def enrich_observations(observations: list[dict[str, Any]]) -> list[dict[str, An
 def enrich_file(path: Path | str) -> dict[str, Any]:
     target = Path(path)
     payload = json.loads(target.read_text(encoding="utf-8"))
-    observations = enrich_observations(payload.get("observations", []))
+    frequency = str(payload.get("frequency", "daily"))
+    observations = enrich_observations(payload.get("observations", []), frequency)
     payload["observations"] = observations
-    payload["summary"] = series_summary(observations, str(payload.get("frequency", "daily")))
+    payload["summary"] = series_summary(observations, frequency)
     write_json(target, payload)
     return payload
 
