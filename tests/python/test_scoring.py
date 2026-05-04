@@ -733,6 +733,48 @@ def test_commodity_impulse_reweights_without_breakeven_and_notes_missing_confirm
     assert any("breakeven_10y" in note for note in market["missing_or_stale_notes"])
 
 
+def test_breakeven_confirmation_present_but_invalid_still_lowers_market_confidence():
+    series = {
+        "high_yield_oas": _summary(percentile_252d=20.0),
+        "investment_grade_oas": _summary(percentile_252d=20.0),
+        "bbb_oas": _summary(percentile_252d=20.0),
+        "net_liquidity": _summary(percentile_252d=55.0),
+        "reverse_repo": _summary(percentile_252d=50.0),
+        "sofr": _summary(percentile_252d=50.0),
+        "real_yield_10y": _summary(percentile_252d=50.0),
+        "vix": _summary(percentile_252d=50.0),
+        "vvix": _summary(percentile_252d=50.0),
+        "vix9d": _summary(percentile_252d=50.0),
+        "vix3m": _summary(percentile_252d=50.0),
+        "broad_dollar": _summary(percentile_252d=50.0),
+        "cftc_sp500_asset_mgr_net": _summary(percentile_252d=50.0),
+        "cftc_sp500_lev_money_net": _summary(percentile_252d=50.0),
+        "wti_crude": _summary(latest_value=100.0, change_1m=5.0, percentile_252d=80.0),
+        "brent_crude": _summary(latest_value=110.0, change_1m=5.0, percentile_252d=80.0),
+        "corn_price": _summary(latest_value=300.0, change_1m=10.0, percentile_252d=80.0),
+        "wheat_price": _summary(latest_value=400.0, change_1m=10.0, percentile_252d=80.0),
+        "soybean_price": _summary(latest_value=500.0, change_1m=10.0, percentile_252d=80.0),
+        "breakeven_10y": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 2.4,
+                "change_3m": None,
+                "percentile_252d": 50.0,
+            }
+        },
+    }
+    series["commodity_inflation_impulse"] = compute_regime_score.build_commodity_inflation_impulse(
+        series, "2026-05-04T00:00:00Z"
+    )
+
+    market = compute_regime_score.build_score_summary(
+        series, "2026-05-04T00:00:00Z"
+    )["scores"]["market_weather"]
+
+    assert market["confidence"] < 1.0
+    assert any("breakeven_10y" in note for note in market["missing_or_stale_notes"])
+
+
 def test_build_status_marks_missing_active_public_catalog_entries_unavailable(monkeypatch):
     monkeypatch.setattr(
         compute_regime_score,
@@ -754,6 +796,12 @@ def test_build_status_marks_missing_active_public_catalog_entries_unavailable(mo
     assert status["overall_status"] == "partial"
     assert status["series"]["cfnai"]["status"] == "unavailable"
     assert status["series"]["cfnai"]["message"] == "Active public catalog series has no generated payload."
+
+
+def test_generated_file_validation_requires_commodity_inflation_impulse():
+    assert (
+        validate_schema.data_dir() / "derived" / "commodity_inflation_impulse.json"
+    ) in validate_schema.REQUIRED_GENERATED_FILES
 
 
 def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monkeypatch):

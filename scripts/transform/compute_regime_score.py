@@ -543,6 +543,15 @@ def _score_average(values: list[float | None]) -> float | None:
     return clamp(sum(valid) / len(valid))
 
 
+def _coverage_component_available(series_by_id: dict[str, dict[str, Any]], series_id: str) -> bool:
+    if series_id not in series_by_id:
+        return False
+    if series_id == "breakeven_10y":
+        summary = _impulse_summary(series_by_id[series_id])
+        return _change_pct(summary, "change_3m") is not None and isinstance(summary.get("latest_date"), str)
+    return True
+
+
 def _source_coverage(
     series_by_id: dict[str, dict[str, Any]],
     groups: dict[str, list[str]],
@@ -554,8 +563,8 @@ def _source_coverage(
     all_missing = []
     notes = []
     for group, expected in groups.items():
-        available = [series_id for series_id in expected if series_id in series_by_id]
-        missing = [series_id for series_id in expected if series_id not in series_by_id]
+        available = [series_id for series_id in expected if _coverage_component_available(series_by_id, series_id)]
+        missing = [series_id for series_id in expected if not _coverage_component_available(series_by_id, series_id)]
         all_expected.extend(expected)
         all_available.extend(available)
         all_missing.extend(missing)
