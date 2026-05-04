@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-05-04T06:34:50Z",
+  "generated_at_utc": "2026-05-04T14:35:03Z",
   "observations": [
     {
       "date": "1990-01-02",
@@ -45885,11 +45885,13 @@
   ],
   "series_id": "vix",
   "source": "Cboe",
-  "source_url": "https://www.cboe.com/tradable_products/vix/vix_historical_data/",
+  "source_url": "https://www.cboe.com/us/indices/dashboard/",
   "summary": {
+    "change_12m": -4.91,
     "change_1d": 0.1,
     "change_1m": -7.55,
     "change_1w": -1.72,
+    "change_3m": 0.65,
     "latest_date": "2026-05-01",
     "latest_value": 16.99,
     "percentile_252d": 46.03

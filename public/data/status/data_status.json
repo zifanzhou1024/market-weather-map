@@ -1,52 +1,52 @@
 {
-  "generated_at_utc": "2026-05-04T10:22:00Z",
-  "last_successful_update_utc": "2026-05-04T10:22:00Z",
+  "generated_at_utc": "2026-05-04T14:35:52Z",
+  "last_successful_update_utc": "2026-05-04T14:35:52Z",
   "overall_status": "partial",
   "series": {
     "bank_credit": {
       "expected_frequency": "weekly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 12,
+      "last_observation": "2026-04-22",
       "max_stale_days": 14,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "bank_deposits": {
       "expected_frequency": "weekly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 12,
+      "last_observation": "2026-04-22",
       "max_stale_days": 14,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "bbb_oas": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "breakeven_10y": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "breakeven_5y": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "brent_crude": {
       "expected_frequency": "daily",
@@ -68,39 +68,39 @@
     },
     "broad_dollar": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 10,
+      "last_observation": "2026-04-24",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 10 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "business_loans": {
       "expected_frequency": "weekly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 14,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "cfnai": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "cfnai_3m_avg": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "cftc_sp500_asset_mgr_net": {
       "expected_frequency": "weekly",
@@ -122,8 +122,8 @@
     },
     "commodity_inflation_impulse": {
       "expected_frequency": "daily",
-      "freshness_days": 7,
-      "last_observation": "2026-04-27",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
       "max_stale_days": 75,
       "message": "Fresh.",
       "source": "Derived",
@@ -131,21 +131,21 @@
     },
     "core_cpi": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "core_pce": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "corn_price": {
       "expected_frequency": "monthly",
@@ -158,21 +158,21 @@
     },
     "durable_goods_orders": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "eurusd": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 10,
+      "last_observation": "2026-04-24",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 10 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "fed_assets": {
       "expected_frequency": "weekly",
@@ -203,57 +203,66 @@
     },
     "forward_inflation_5y5y": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "headline_cpi": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "high_yield_oas": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
+    },
+    "hy_minus_ig_oas": {
+      "expected_frequency": "daily",
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 10,
+      "message": "Fresh.",
+      "source": "Derived",
+      "status": "ok"
     },
     "industrial_production": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "initial_claims": {
       "expected_frequency": "weekly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 9,
+      "last_observation": "2026-04-25",
       "max_stale_days": 14,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "investment_grade_oas": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "ism_manufacturing_pmi": {
       "expected_frequency": "monthly",
@@ -266,12 +275,12 @@
     },
     "loans_and_leases": {
       "expected_frequency": "weekly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 12,
+      "last_observation": "2026-04-22",
       "max_stale_days": 14,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "move_index": {
       "expected_frequency": "daily",
@@ -293,57 +302,57 @@
     },
     "nonfarm_payrolls": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "ppi_final_demand": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "real_retail_sales": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "real_yield_10y": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "real_yield_5y": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "reserve_balances": {
       "expected_frequency": "weekly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 5,
+      "last_observation": "2026-04-29",
       "max_stale_days": 14,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "ok"
     },
     "reverse_repo": {
       "expected_frequency": "daily",
@@ -356,17 +365,17 @@
     },
     "sahm_rule": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "sofr": {
       "expected_frequency": "daily",
-      "freshness_days": 4,
-      "last_observation": "2026-04-30",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
       "max_stale_days": 7,
       "message": "Fresh.",
       "source": "FRED",
@@ -392,12 +401,12 @@
     },
     "unemployment_rate": {
       "expected_frequency": "monthly",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 64,
+      "last_observation": "2026-03-01",
       "max_stale_days": 45,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 64 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "us10y": {
       "expected_frequency": "daily",
@@ -446,12 +455,12 @@
     },
     "usdjpy": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 10,
+      "last_observation": "2026-04-24",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Latest observation is 10 days old.",
       "source": "FRED",
-      "status": "unavailable"
+      "status": "stale"
     },
     "vix": {
       "expected_frequency": "daily",
@@ -464,30 +473,48 @@
     },
     "vix3m": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "Cboe",
-      "status": "unavailable"
+      "status": "ok"
     },
     "vix9d": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "Cboe",
-      "status": "unavailable"
+      "status": "ok"
+    },
+    "vix9d_vix_ratio": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "Derived",
+      "status": "ok"
+    },
+    "vix_vix3m_ratio": {
+      "expected_frequency": "daily",
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "Derived",
+      "status": "ok"
     },
     "vvix": {
       "expected_frequency": "daily",
-      "freshness_days": null,
-      "last_observation": null,
+      "freshness_days": 3,
+      "last_observation": "2026-05-01",
       "max_stale_days": 7,
-      "message": "Active public catalog series has no generated payload.",
+      "message": "Fresh.",
       "source": "Cboe",
-      "status": "unavailable"
+      "status": "ok"
     },
     "wheat_price": {
       "expected_frequency": "monthly",
