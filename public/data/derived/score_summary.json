@@ -1,0 +1,107 @@
+{
+  "data_quality": {
+    "overall_confidence": 0.93,
+    "reasons": [
+      "Housing is not active in Phase 3.",
+      "Treasury/bond volatility source is not active."
+    ]
+  },
+  "date": "2026-05-01",
+  "generated_at_utc": "2026-05-04T09:49:29Z",
+  "method_version": "phase3-three-score-v1",
+  "scores": {
+    "fragility": {
+      "bucket_scores": {
+        "credit_spread_widening": 0.0,
+        "dollar_spike": 0.0,
+        "liquidity_drain": -34.62,
+        "positioning_crowding": -30.15,
+        "treasury_bond_volatility": 0.0,
+        "volatility_term_structure": 0.0
+      },
+      "bucket_weights": {
+        "credit_spread_widening": 0.25,
+        "dollar_spike": 0.15,
+        "liquidity_drain": 0.15,
+        "positioning_crowding": 0.15,
+        "treasury_bond_volatility": 0.1,
+        "volatility_term_structure": 0.2
+      },
+      "confidence": 0.9,
+      "confidence_reasons": [],
+      "label": "Moderate",
+      "missing_or_stale_notes": [
+        "Treasury/bond volatility source is not active."
+      ],
+      "recent_changes": [
+        "Liquidity drains are visible."
+      ],
+      "score": -9.72,
+      "top_risks": [
+        "Liquidity drains are visible."
+      ],
+      "top_supports": []
+    },
+    "macro_climate": {
+      "bucket_scores": {
+        "consumer": 0.0,
+        "growth": 0.0,
+        "inflation": 0.0,
+        "labor": 0.0,
+        "production": 0.0
+      },
+      "bucket_weights": {
+        "consumer": 0.15,
+        "growth": 0.25,
+        "inflation": 0.2,
+        "labor": 0.25,
+        "production": 0.15
+      },
+      "confidence": 0.9,
+      "confidence_reasons": [],
+      "label": "Mixed",
+      "missing_or_stale_notes": [
+        "Housing is not active in Phase 3."
+      ],
+      "recent_changes": [],
+      "score": 0.0,
+      "top_risks": [],
+      "top_supports": []
+    },
+    "market_weather": {
+      "bucket_scores": {
+        "commodities": -90.18,
+        "credit": 23.66,
+        "liquidity": -4.11,
+        "rates": -2.45,
+        "sentiment": -30.15,
+        "volatility": 7.94
+      },
+      "bucket_weights": {
+        "commodities": 0.1,
+        "credit": 0.2,
+        "liquidity": 0.2,
+        "rates": 0.15,
+        "sentiment": 0.15,
+        "volatility": 0.2
+      },
+      "confidence": 1.0,
+      "confidence_reasons": [],
+      "label": "Mixed",
+      "missing_or_stale_notes": [],
+      "recent_changes": [
+        "Real yields are elevated.",
+        "Net liquidity is draining.",
+        "Equity volatility is contained."
+      ],
+      "score": -8.41,
+      "top_risks": [
+        "Real yields are elevated.",
+        "Net liquidity is draining."
+      ],
+      "top_supports": [
+        "Equity volatility is contained."
+      ]
+    }
+  }
+}

@@ -4,7 +4,7 @@
     "wti_crude"
   ],
   "frequency": "daily",
-  "generated_at_utc": "2026-05-04T06:47:09Z",
+  "generated_at_utc": "2026-05-04T09:49:29Z",
   "method": "Brent crude spot price minus WTI crude spot price by matched observation date.",
   "observations": [
     {
@@ -48532,9 +48532,11 @@
   "source": "Derived",
   "source_url": "/data/series/brent_crude.json",
   "summary": {
+    "change_12m": 8.81,
     "change_1d": 0.56,
     "change_1m": -3.63,
     "change_1w": 1.66,
+    "change_3m": 6.54,
     "latest_date": "2026-04-27",
     "latest_value": 14.0,
     "percentile_252d": 91.67
