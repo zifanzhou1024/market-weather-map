@@ -220,6 +220,121 @@ def test_build_matched_spread_uses_source_frequency_for_summary(monkeypatch):
     assert spread["summary"]["change_1m"] == 1.0
 
 
+def test_build_ratio_series_matches_observations_by_date_and_summarizes_latest(monkeypatch):
+    source_series = {
+        "numerator": {
+            "frequency": "daily",
+            "observations": [
+                {"date": "2026-05-01", "value": 12.0},
+                {"date": "2026-05-02", "value": "missing"},
+                {"date": "2026-05-03", "value": 15.0},
+                {"date": "2026-05-04", "value": 20.0},
+            ],
+        },
+        "denominator": {
+            "frequency": "daily",
+            "observations": [
+                {"date": "2026-05-01", "value": 6.0},
+                {"date": "2026-05-02", "value": 4.0},
+                {"date": "2026-05-03", "value": 0.0},
+                {"date": "2026-05-04", "value": 8.0},
+            ],
+        },
+    }
+
+    monkeypatch.setattr(compute_regime_score, "load_series", source_series.__getitem__)
+
+    ratio = compute_regime_score.build_ratio_series(
+        "numerator",
+        "denominator",
+        "numerator_denominator_ratio",
+        "2026-05-04T12:00:00Z",
+        "ratio",
+        "Numerator divided by denominator.",
+    )
+
+    assert ratio["series_id"] == "numerator_denominator_ratio"
+    assert ratio["source"] == "Derived"
+    assert ratio["depends_on"] == ["numerator", "denominator"]
+    assert ratio["method"] == "Numerator divided by denominator."
+    assert [(item["date"], item["value"]) for item in ratio["observations"]] == [
+        ("2026-05-01", 2.0),
+        ("2026-05-04", 2.5),
+    ]
+    assert ratio["summary"]["latest_date"] == "2026-05-04"
+    assert ratio["summary"]["latest_value"] == 2.5
+
+
+def test_build_commodity_inflation_impulse_uses_momentum_for_negative_risk_score():
+    series = {
+        "wti_crude": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 100.0,
+                "change_3m": 50.0,
+                "change_12m": 80.0,
+                "percentile_252d": 1.0,
+            }
+        },
+        "brent_crude": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 110.0,
+                "change_3m": 44.0,
+                "change_12m": 55.0,
+                "percentile_252d": 1.0,
+            }
+        },
+        "corn_price": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 300.0,
+                "change_3m": 90.0,
+                "percentile_252d": 1.0,
+            }
+        },
+        "wheat_price": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 400.0,
+                "change_3m": 160.0,
+                "percentile_252d": 1.0,
+            }
+        },
+        "soybean_price": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 500.0,
+                "change_3m": 125.0,
+                "percentile_252d": 1.0,
+            }
+        },
+        "breakeven_10y": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 2.8,
+                "change_3m": 0.7,
+                "percentile_252d": 1.0,
+            }
+        },
+    }
+
+    impulse = compute_regime_score.build_commodity_inflation_impulse(series, "2026-05-04T12:00:00Z")
+
+    assert impulse["series_id"] == "commodity_inflation_impulse"
+    assert impulse["value"] < 0
+    assert impulse["summary"]["latest_value"] == impulse["value"]
+    assert impulse["depends_on"] == [
+        "wti_crude",
+        "brent_crude",
+        "corn_price",
+        "wheat_price",
+        "soybean_price",
+        "breakeven_10y",
+    ]
+    assert "oil 3-month" in impulse["method"]
+
+
 def test_build_net_liquidity_uses_latest_risk_drains_on_or_before_fed_date():
     series = {
         "fed_assets": {

@@ -22,6 +22,10 @@ DERIVED_STATUS_METADATA = {
     "us10y_minus_us2y": {"max_stale_days": 7},
     "brent_wti_spread": {"max_stale_days": 10},
     "net_liquidity": {"max_stale_days": 14},
+    "hy_minus_ig_oas": {"max_stale_days": 10},
+    "vix9d_vix_ratio": {"max_stale_days": 7},
+    "vix_vix3m_ratio": {"max_stale_days": 7},
+    "commodity_inflation_impulse": {"max_stale_days": 75},
 }
 
 
@@ -236,6 +240,54 @@ def build_matched_spread(
     }
 
 
+def build_ratio_series(
+    numerator_series_id: str,
+    denominator_series_id: str,
+    ratio_series_id: str,
+    generated_at: str,
+    units: str,
+    method: str,
+) -> dict[str, Any]:
+    numerator = load_series(numerator_series_id)
+    denominator = load_series(denominator_series_id)
+    denominator_by_date = {}
+    for observation in denominator.get("observations", []):
+        date = observation.get("date")
+        if isinstance(date, str):
+            denominator_by_date[date] = observation.get("value")
+    observations = []
+    for observation in numerator.get("observations", []):
+        date = observation.get("date")
+        numerator_value = observation.get("value")
+        denominator_value = denominator_by_date.get(date)
+        if (
+            isinstance(date, str)
+            and isinstance(numerator_value, int | float)
+            and not isinstance(numerator_value, bool)
+            and isinstance(denominator_value, int | float)
+            and not isinstance(denominator_value, bool)
+            and float(denominator_value) != 0
+        ):
+            observations.append(
+                {"date": date, "value": round(float(numerator_value) / float(denominator_value), 4)}
+            )
+
+    frequency = str(numerator.get("frequency", "daily"))
+    observations = enrich_observations(observations, frequency)
+    return {
+        "series_id": ratio_series_id,
+        "generated_at_utc": generated_at,
+        "source": "Derived",
+        "source_url": f"/data/series/{numerator_series_id}.json",
+        "frequency": frequency,
+        "units": units,
+        "depends_on": [numerator_series_id, denominator_series_id],
+        "method": method,
+        "summary": series_summary(observations, frequency),
+        "observations": observations,
+    }
+
+
 def build_curve(generated_at: str) -> dict[str, Any]:
     return build_matched_spread(
         "us10y",
@@ -245,6 +297,92 @@ def build_curve(generated_at: str) -> dict[str, Any]:
         "percentage_points",
         "10-year Treasury yield minus 2-year Treasury yield by matched observation date.",
     )
+
+
+def _summary_pct_change(summary: dict[str, Any], change_key: str) -> float | None:
+    latest_value = summary.get("latest_value")
+    change = summary.get(change_key)
+    if not isinstance(latest_value, int | float) or not isinstance(change, int | float):
+        return None
+    previous = float(latest_value) - float(change)
+    if previous == 0:
+        return None
+    return round(float(change) / abs(previous) * 100, 4)
+
+
+def _average_optional(values: list[float | None]) -> float:
+    numeric_values = [value for value in values if value is not None]
+    if not numeric_values:
+        return 0.0
+    return sum(numeric_values) / len(numeric_values)
+
+
+def build_commodity_inflation_impulse(
+    series_by_id: dict[str, dict[str, Any]], generated_at: str
+) -> dict[str, Any]:
+    oil_ids = [series_id for series_id in ["wti_crude", "brent_crude"] if series_id in series_by_id]
+    crop_ids = [
+        series_id
+        for series_id in ["corn_price", "wheat_price", "soybean_price"]
+        if series_id in series_by_id
+    ]
+
+    oil_3m = _average_optional(
+        [_summary_pct_change(latest_summary(series_by_id[series_id]), "change_3m") for series_id in oil_ids]
+    )
+    oil_12m = _average_optional(
+        [_summary_pct_change(latest_summary(series_by_id[series_id]), "change_12m") for series_id in oil_ids]
+    )
+    crop_3m = _average_optional(
+        [_summary_pct_change(latest_summary(series_by_id[series_id]), "change_3m") for series_id in crop_ids]
+    )
+    breakeven_3m = (
+        _summary_pct_change(latest_summary(series_by_id["breakeven_10y"]), "change_3m")
+        if "breakeven_10y" in series_by_id
+        else None
+    )
+    impulse = weighted_score(
+        {
+            "oil_3m": oil_3m,
+            "oil_12m": oil_12m,
+            "crop_3m": crop_3m,
+            "breakeven_3m": breakeven_3m or 0.0,
+        },
+        {"oil_3m": 0.40, "oil_12m": 0.20, "crop_3m": 0.20, "breakeven_3m": 0.20},
+    )
+    score = clamp(-impulse)
+    latest_dates = [
+        latest_summary(series_by_id[series_id]).get("latest_date")
+        for series_id in [*oil_ids, *crop_ids, "breakeven_10y"]
+        if series_id in series_by_id
+        and isinstance(latest_summary(series_by_id[series_id]).get("latest_date"), str)
+    ]
+    latest_date = max(latest_dates) if latest_dates else None
+    observations = enrich_observations(
+        [{"date": latest_date, "value": score}] if isinstance(latest_date, str) else [],
+        "daily",
+    )
+    depends_on = [*oil_ids, *crop_ids]
+    if "breakeven_10y" in series_by_id:
+        depends_on.append("breakeven_10y")
+    return {
+        "series_id": "commodity_inflation_impulse",
+        "generated_at_utc": generated_at,
+        "source": "Derived",
+        "source_url": "/data/series/wti_crude.json",
+        "frequency": "daily",
+        "units": "score",
+        "value": score,
+        "depends_on": depends_on,
+        "method": (
+            "Momentum impulse from oil 3-month change (40%), oil 12-month change (20%), "
+            "crop basket 3-month momentum (20%), and 10-year breakeven confirmation (20%). "
+            "Absolute summary changes are converted to percent change versus the prior value "
+            "where applicable; positive inflation impulse is mapped to negative support-risk score."
+        ),
+        "summary": series_summary(observations, "daily"),
+        "observations": observations,
+    }
 
 
 def label_for_score(score: float) -> str:
@@ -355,6 +493,58 @@ def main() -> None:
             brent_wti_spread,
         )
         series_by_id["brent_wti_spread"] = brent_wti_spread
+
+    if "high_yield_oas" in series_by_id and "investment_grade_oas" in series_by_id:
+        hy_minus_ig_oas = build_matched_spread(
+            "high_yield_oas",
+            "investment_grade_oas",
+            "hy_minus_ig_oas",
+            generated_at,
+            "percentage_points",
+            "High yield option-adjusted spread minus investment grade option-adjusted spread by matched observation date.",
+        )
+        write_json(data_dir() / "derived" / "hy_minus_ig_oas.json", hy_minus_ig_oas)
+        series_by_id["hy_minus_ig_oas"] = hy_minus_ig_oas
+
+    if "vix9d" in series_by_id and "vix" in series_by_id:
+        vix9d_vix_ratio = build_ratio_series(
+            "vix9d",
+            "vix",
+            "vix9d_vix_ratio",
+            generated_at,
+            "ratio",
+            "VIX9D divided by VIX by matched observation date.",
+        )
+        write_json(data_dir() / "derived" / "vix9d_vix_ratio.json", vix9d_vix_ratio)
+        series_by_id["vix9d_vix_ratio"] = vix9d_vix_ratio
+
+    if "vix" in series_by_id and "vix3m" in series_by_id:
+        vix_vix3m_ratio = build_ratio_series(
+            "vix",
+            "vix3m",
+            "vix_vix3m_ratio",
+            generated_at,
+            "ratio",
+            "VIX divided by VIX3M by matched observation date.",
+        )
+        write_json(data_dir() / "derived" / "vix_vix3m_ratio.json", vix_vix3m_ratio)
+        series_by_id["vix_vix3m_ratio"] = vix_vix3m_ratio
+
+    commodity_inflation_dependencies = {
+        "wti_crude",
+        "brent_crude",
+        "corn_price",
+        "wheat_price",
+        "soybean_price",
+        "breakeven_10y",
+    }
+    if commodity_inflation_dependencies <= set(series_by_id):
+        commodity_inflation_impulse = build_commodity_inflation_impulse(series_by_id, generated_at)
+        write_json(
+            data_dir() / "derived" / "commodity_inflation_impulse.json",
+            commodity_inflation_impulse,
+        )
+        series_by_id["commodity_inflation_impulse"] = commodity_inflation_impulse
 
     buckets = {
         "volatility": score_volatility(series_by_id),
