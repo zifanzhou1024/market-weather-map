@@ -33,7 +33,8 @@ Phase 3 direction:
 
 - Expand from one descriptive weather score into three related score families: Market Weather, Macro Climate, and Fragility.
 - Market Weather keeps the cross-asset market read across volatility, rates, liquidity, credit, commodities, and positioning.
-- Macro Climate separates slower growth, labor, inflation, real-yield, and breakeven inputs from the market tape.
+- Macro Climate separates slower growth, labor, inflation, consumer and production, and real-yield inputs from the market tape.
+- Breakeven inputs are used as Market Weather commodity impulse and rate context when available.
 - Fragility focuses on stress channels that can amplify drawdowns, including credit spreads, financial conditions, dollar pressure, banking data, liquidity, and volatility.
 - Preserve the no-backend GitHub Pages model by favoring active no-secret public inputs and documenting access status before sources enter the score.
 

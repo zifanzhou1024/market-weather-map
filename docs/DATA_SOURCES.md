@@ -37,7 +37,7 @@ Phase 3 keeps the GitHub-only data model. Inputs listed here are active `free_pu
 | --- | --- | --- | --- | --- | --- |
 | Volatility | VIX | Cboe | `https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv` | Daily | Market Weather and Fragility stress pressure. |
 | Rates | DGS2, DGS10, DGS20, DGS30 | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily | Market Weather rate pressure and curve context. |
-| Real yields/breakevens | DFII5, DFII10, T5YIE, T10YIE, T5YIFR | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily | Real yields and breakevens for Macro Climate and rate fragility context. |
+| Real yields/inflation compensation | DFII5, DFII10, T5YIE, T10YIE, T5YIFR | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily | Real yields feed Macro Climate and rate pressure; inflation-compensation series provide commodity impulse and rate context. |
 | Credit OAS | BAMLH0A0HYM2, BAMLC0A0CM, BAMLC0A4CBBB | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily | High yield, investment grade, and BBB spread stress for Market Weather and Fragility. |
 | Growth/Labor | CFNAI, CFNAIMA3, RRSFS, INDPRO, DGORDER, UNRATE, PAYEMS, ICSA, SAHMREALTIME | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Weekly or monthly | Macro Climate growth breadth, labor trend, and recession-risk context. |
 | Inflation | CPIAUCSL, CPILFESL, PCEPILFE, PPIFIS | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Monthly | Macro Climate inflation trend and policy pressure. |
