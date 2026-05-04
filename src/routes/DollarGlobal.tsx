@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
+import DataStatusTable from "../components/DataStatusTable";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadSeries } from "../lib/data";
-import type { SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadCatalog, loadDataStatus } from "../lib/data";
+import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadRouteSeries } from "./routeSeries";
 
 const dollarSeriesIds = ["broad_dollar", "usdjpy", "eurusd"];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
   series: TimeSeriesFile[];
+  status: DataStatusFile;
 }
 
 export default function DollarGlobal() {
@@ -20,11 +23,12 @@ export default function DollarGlobal() {
 
     async function loadDollarGlobal() {
       try {
-        const [catalog, series] = await Promise.all([
-          loadCatalog(),
-          Promise.all(dollarSeriesIds.map((seriesId) => loadSeries(seriesId)))
+        const catalog = await loadCatalog();
+        const [status, series] = await Promise.all([
+          loadDataStatus(),
+          loadRouteSeries(dollarSeriesIds, catalog)
         ]);
-        if (active) setData({ catalog, series });
+        if (active) setData({ catalog, series, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load dollar data.");
       }
@@ -64,6 +68,7 @@ export default function DollarGlobal() {
               series={broadDollar}
             />
           ) : null}
+          <DataStatusTable seriesIds={dollarSeriesIds} status={data.status} />
         </div>
       ) : null}
     </main>

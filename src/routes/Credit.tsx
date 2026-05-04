@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import DataStatusTable from "../components/DataStatusTable";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadSeries } from "../lib/data";
-import type { SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadCatalog, loadDataStatus } from "../lib/data";
+import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadRouteSeries } from "./routeSeries";
 
 const creditSeriesIds = [
   "high_yield_oas",
@@ -20,6 +22,7 @@ const creditSeriesIds = [
 interface RouteState {
   catalog: SeriesCatalogEntry[];
   series: TimeSeriesFile[];
+  status: DataStatusFile;
 }
 
 export default function Credit() {
@@ -31,11 +34,12 @@ export default function Credit() {
 
     async function loadCredit() {
       try {
-        const [catalog, series] = await Promise.all([
-          loadCatalog(),
-          Promise.all(creditSeriesIds.map((seriesId) => loadSeries(seriesId)))
+        const catalog = await loadCatalog();
+        const [status, series] = await Promise.all([
+          loadDataStatus(),
+          loadRouteSeries(creditSeriesIds, catalog)
         ]);
-        if (active) setData({ catalog, series });
+        if (active) setData({ catalog, series, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load credit data.");
       }
@@ -75,6 +79,7 @@ export default function Credit() {
               series={financialStress}
             />
           ) : null}
+          <DataStatusTable seriesIds={creditSeriesIds} status={data.status} />
         </div>
       ) : null}
     </main>

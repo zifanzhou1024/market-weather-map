@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import DataStatusTable from "../components/DataStatusTable";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadSeries } from "../lib/data";
-import type { SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadCatalog, loadDataStatus } from "../lib/data";
+import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadRouteSeries } from "./routeSeries";
 
 const growthSeriesIds = [
   "cfnai",
@@ -17,6 +19,7 @@ interface RouteState {
   catalog: SeriesCatalogEntry[];
   growthSeries: TimeSeriesFile[];
   laborSeries: TimeSeriesFile[];
+  status: DataStatusFile;
 }
 
 export default function Growth() {
@@ -28,12 +31,13 @@ export default function Growth() {
 
     async function loadGrowth() {
       try {
-        const [catalog, growthSeries, laborSeries] = await Promise.all([
-          loadCatalog(),
-          Promise.all(growthSeriesIds.map((seriesId) => loadSeries(seriesId))),
-          Promise.all(laborSeriesIds.map((seriesId) => loadSeries(seriesId)))
+        const catalog = await loadCatalog();
+        const [status, growthSeries, laborSeries] = await Promise.all([
+          loadDataStatus(),
+          loadRouteSeries(growthSeriesIds, catalog),
+          loadRouteSeries(laborSeriesIds, catalog)
         ]);
-        if (active) setData({ catalog, growthSeries, laborSeries });
+        if (active) setData({ catalog, growthSeries, laborSeries, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load growth data.");
       }
@@ -84,6 +88,7 @@ export default function Growth() {
           {cfnai ? (
             <TimeSeriesChart catalogEntry={data.catalog.find((entry) => entry.id === "cfnai")} series={cfnai} />
           ) : null}
+          <DataStatusTable seriesIds={[...growthSeriesIds, ...laborSeriesIds]} status={data.status} />
         </div>
       ) : null}
     </main>

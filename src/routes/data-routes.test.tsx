@@ -48,6 +48,10 @@ async function waitForContent(container: HTMLElement, text: string) {
   expect(container.textContent).toContain(text);
 }
 
+function h3Texts(container: HTMLElement) {
+  return Array.from(container.querySelectorAll("h3"), (heading) => heading.textContent);
+}
+
 function mockStaticFetch(files: Record<string, unknown>) {
   vi.stubGlobal(
     "fetch",
@@ -327,7 +331,7 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("loans_and_leases", "credit", "Loans and leases", "USD billions", "weekly"),
   catalogEntry("business_loans", "credit", "Commercial and industrial loans", "USD billions", "weekly"),
   catalogEntry("bank_deposits", "credit", "Bank deposits", "USD billions", "weekly"),
-  catalogEntry("broad_dollar", "dollar", "Broad dollar index", "index"),
+  catalogEntry("broad_dollar", "dollar", "Nominal Broad U.S. Dollar Index", "index"),
   catalogEntry("usdjpy", "dollar", "USD/JPY", "exchange rate"),
   catalogEntry("eurusd", "dollar", "EUR/USD", "exchange rate")
 ];
@@ -672,7 +676,8 @@ describe("data-backed routes", () => {
       "/data/series/us10y.json": seriesFile("us10y", 4.2),
       "/data/series/us20y.json": seriesFile("us20y", 4.7),
       "/data/series/us2y.json": seriesFile("us2y", 3.78),
-      "/data/series/us30y.json": seriesFile("us30y", 4.9)
+      "/data/series/us30y.json": seriesFile("us30y", 4.9),
+      "/data/status/data_status.json": status
     });
 
     const container = render(<Rates />);
@@ -694,7 +699,8 @@ describe("data-backed routes", () => {
         "nonfarm_payrolls",
         "initial_claims",
         "sahm_rule"
-      ])
+      ]),
+      "/data/status/data_status.json": status
     });
 
     const container = render(
@@ -712,6 +718,34 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Credit & Banking");
     expect(container.textContent).toContain("Dollar & Global");
     expect(container.textContent).toContain("Sentiment & Positioning");
+    expect(container.textContent).toContain("Static feed freshness");
+  });
+
+  it("renders growth placeholders when a phase 3 series file is missing", async () => {
+    mockStaticFetch({
+      "/data/catalog/series_catalog.json": catalog,
+      ...seriesFiles([
+        "cfnai_3m_avg",
+        "real_retail_sales",
+        "industrial_production",
+        "durable_goods_orders",
+        "unemployment_rate",
+        "nonfarm_payrolls",
+        "initial_claims",
+        "sahm_rule"
+      ]),
+      "/data/status/data_status.json": status
+    });
+
+    const container = render(
+      <MemoryRouter initialEntries={["/growth"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Labor and recession risk");
+
+    expect(container.textContent).toContain("Chicago Fed National Activity Index");
+    expect(container.querySelector(".data-error")).toBeNull();
   });
 
   it("renders the inflation route with price and expectations series", async () => {
@@ -725,7 +759,8 @@ describe("data-backed routes", () => {
         "breakeven_10y",
         "breakeven_5y",
         "forward_inflation_5y5y"
-      ])
+      ]),
+      "/data/status/data_status.json": status
     });
 
     const container = render(
@@ -737,14 +772,17 @@ describe("data-backed routes", () => {
 
     expect(container.querySelector("h2")?.textContent).toBe("Inflation");
     expect(container.textContent).toContain("Headline CPI");
+    expect(h3Texts(container)).toContain("Core CPI");
     expect(container.textContent).toContain("Core PCE");
     expect(container.textContent).toContain("5Y5Y forward inflation expectation rate");
+    expect(container.textContent).toContain("Static feed freshness");
   });
 
   it("renders the dollar global route with dollar and currency series", async () => {
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
-      ...seriesFiles(["broad_dollar", "usdjpy", "eurusd"])
+      ...seriesFiles(["broad_dollar", "usdjpy", "eurusd"]),
+      "/data/status/data_status.json": status
     });
 
     const container = render(
@@ -752,12 +790,13 @@ describe("data-backed routes", () => {
         <App />
       </MemoryRouter>
     );
-    await waitForContent(container, "Broad dollar index");
+    await waitForContent(container, "Nominal Broad U.S. Dollar Index");
 
     expect(container.querySelector("h2")?.textContent).toBe("Dollar & Global");
-    expect(container.textContent).toContain("Broad dollar index");
+    expect(h3Texts(container)).toContain("Nominal Broad U.S. Dollar Index");
     expect(container.textContent).toContain("USD/JPY");
     expect(container.textContent).toContain("EUR/USD");
+    expect(container.textContent).toContain("Static feed freshness");
   });
 
   it("renders the commodities route with series and the Brent-WTI spread from static files", async () => {

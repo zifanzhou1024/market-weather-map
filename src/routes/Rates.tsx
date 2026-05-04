@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import DataStatusTable from "../components/DataStatusTable";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDerivedSeries, loadSeries } from "../lib/data";
-import type { DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadCatalog, loadDataStatus, loadDerivedSeries } from "../lib/data";
+import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadRouteSeries } from "./routeSeries";
 
 const ratesSeriesIds = [
   "us2y",
@@ -20,6 +22,7 @@ interface RouteState {
   catalog: SeriesCatalogEntry[];
   curve: DerivedSeriesFile;
   series: TimeSeriesFile[];
+  status: DataStatusFile;
 }
 
 export default function Rates() {
@@ -31,12 +34,13 @@ export default function Rates() {
 
     async function loadRates() {
       try {
-        const [catalog, series, curve] = await Promise.all([
-          loadCatalog(),
-          Promise.all(ratesSeriesIds.map((seriesId) => loadSeries(seriesId))),
+        const catalog = await loadCatalog();
+        const [status, series, curve] = await Promise.all([
+          loadDataStatus(),
+          loadRouteSeries(ratesSeriesIds, catalog),
           loadDerivedSeries("us10y_minus_us2y")
         ]);
-        if (active) setData({ catalog, curve, series });
+        if (active) setData({ catalog, curve, series, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load rates data.");
       }
@@ -92,6 +96,7 @@ export default function Rates() {
               series={us10y}
             />
           ) : null}
+          <DataStatusTable seriesIds={ratesSeriesIds} status={data.status} />
         </div>
       ) : null}
     </main>

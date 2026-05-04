@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import DataStatusTable from "../components/DataStatusTable";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadSeries } from "../lib/data";
-import type { SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadCatalog, loadDataStatus } from "../lib/data";
+import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadRouteSeries } from "./routeSeries";
 
 const inflationSeriesIds = [
   "headline_cpi",
@@ -17,6 +19,7 @@ const inflationSeriesIds = [
 interface RouteState {
   catalog: SeriesCatalogEntry[];
   series: TimeSeriesFile[];
+  status: DataStatusFile;
 }
 
 export default function Inflation() {
@@ -28,11 +31,12 @@ export default function Inflation() {
 
     async function loadInflation() {
       try {
-        const [catalog, series] = await Promise.all([
-          loadCatalog(),
-          Promise.all(inflationSeriesIds.map((seriesId) => loadSeries(seriesId)))
+        const catalog = await loadCatalog();
+        const [status, series] = await Promise.all([
+          loadDataStatus(),
+          loadRouteSeries(inflationSeriesIds, catalog)
         ]);
-        if (active) setData({ catalog, series });
+        if (active) setData({ catalog, series, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load inflation data.");
       }
@@ -72,6 +76,7 @@ export default function Inflation() {
               series={headlineCpi}
             />
           ) : null}
+          <DataStatusTable seriesIds={inflationSeriesIds} status={data.status} />
         </div>
       ) : null}
     </main>
