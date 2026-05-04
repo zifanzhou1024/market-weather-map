@@ -1013,6 +1013,31 @@ def build_score_summary(series_by_id: dict[str, dict[str, Any]], generated_at: s
 
 
 def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_at: str) -> dict[str, Any]:
+    if entry.get("access_status") == "unavailable" or entry.get("terms_status") == "restricted":
+        return {
+            "status": "unavailable",
+            "last_observation": None,
+            "source": entry["source"],
+            "expected_frequency": entry["frequency"],
+            "freshness_days": None,
+            "max_stale_days": entry["max_stale_days"],
+            "message": "Source is unavailable for automated static ingestion.",
+        }
+    if (
+        entry.get("score_status") == "candidate"
+        or entry.get("access_status") == "terms_review_needed"
+        or entry.get("terms_status") == "review_needed"
+    ):
+        return {
+            "status": "terms_review_needed",
+            "last_observation": None,
+            "source": entry["source"],
+            "expected_frequency": entry["frequency"],
+            "freshness_days": None,
+            "max_stale_days": entry["max_stale_days"],
+            "message": "Candidate source requires access or terms review before scoring.",
+        }
+
     summary = latest_summary(series)
     latest_date = summary.get("latest_date")
     freshness_days = None
@@ -1065,8 +1090,19 @@ def _active_public_catalog_entries() -> list[dict[str, Any]]:
     return [dict(entry) for entry in by_id.values()]
 
 
+def _source_governance_catalog_entries() -> list[dict[str, Any]]:
+    return [
+        dict(entry)
+        for entry in catalog_entries()
+        if entry.get("score_status") == "candidate"
+        or entry.get("access_status") in {"terms_review_needed", "unavailable"}
+        or entry.get("terms_status") in {"review_needed", "restricted"}
+    ]
+
+
 def build_status(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> dict[str, Any]:
     statuses = {}
+    overall_statuses = []
     for entry in _active_public_catalog_entries():
         series_id = str(entry["id"])
         series = series_by_id.get(series_id)
@@ -1074,6 +1110,16 @@ def build_status(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> 
             _status_for_series(entry, series, generated_at)
             if series is not None
             else _unavailable_status_for_series(entry)
+        )
+        overall_statuses.append(statuses[series_id]["status"])
+    for entry in _source_governance_catalog_entries():
+        series_id = str(entry["id"])
+        if series_id in statuses:
+            continue
+        statuses[series_id] = _status_for_series(
+            entry,
+            series_by_id.get(series_id, {}),
+            generated_at,
         )
     for series_id, metadata in DERIVED_STATUS_METADATA.items():
         series = series_by_id.get(series_id)
@@ -1089,11 +1135,11 @@ def build_status(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> 
             series,
             generated_at,
         )
+        overall_statuses.append(statuses[series_id]["status"])
 
-    values = [status["status"] for status in statuses.values()]
-    if any(status == "failed" for status in values):
+    if any(status == "failed" for status in overall_statuses):
         overall = "failed"
-    elif any(status in {"stale", "unavailable"} for status in values):
+    elif any(status in {"stale", "unavailable"} for status in overall_statuses):
         overall = "partial"
     else:
         overall = "ok"

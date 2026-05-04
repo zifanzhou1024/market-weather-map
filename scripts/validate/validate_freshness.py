@@ -11,6 +11,8 @@ def main() -> None:
     failures = []
 
     for series_id, status in payload.get("series", {}).items():
+        if status.get("status") in {"terms_review_needed", "unavailable"}:
+            continue
         if status.get("status") == "failed":
             failures.append(f"{series_id} failed: {status.get('message', 'no message')}")
             continue

@@ -255,6 +255,15 @@
       "source": "FRED",
       "status": "unavailable"
     },
+    "ism_manufacturing_pmi": {
+      "expected_frequency": "monthly",
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "source": "ISM",
+      "status": "terms_review_needed"
+    },
     "loans_and_leases": {
       "expected_frequency": "weekly",
       "freshness_days": null,
@@ -263,6 +272,15 @@
       "message": "Active public catalog series has no generated payload.",
       "source": "FRED",
       "status": "unavailable"
+    },
+    "move_index": {
+      "expected_frequency": "daily",
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "source": "ICE",
+      "status": "terms_review_needed"
     },
     "net_liquidity": {
       "expected_frequency": "weekly",

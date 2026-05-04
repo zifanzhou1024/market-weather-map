@@ -1,5 +1,8 @@
+import pytest
+
 from scripts.transform import compute_regime_score
 from scripts.transform import compute_percentiles
+from scripts.validate import validate_freshness
 from scripts.validate import validate_schema
 from scripts.transform.compute_percentiles import (
     change_offsets,
@@ -502,6 +505,99 @@ def test_status_for_series_marks_future_observations_failed():
     assert "future-dated" in status["message"]
 
 
+def test_status_for_candidate_series_requires_terms_review_before_observations():
+    entry = {
+        "id": "candidate_series",
+        "source": "Candidate Source",
+        "frequency": "monthly",
+        "max_stale_days": 45,
+        "score_status": "candidate",
+        "access_status": "terms_review_needed",
+        "terms_status": "review_needed",
+    }
+    series = {"summary": {"latest_date": None}, "observations": []}
+
+    status = _status_for_series(entry, series, "2026-05-04T00:00:00Z")
+
+    assert status == {
+        "status": "terms_review_needed",
+        "last_observation": None,
+        "source": "Candidate Source",
+        "expected_frequency": "monthly",
+        "freshness_days": None,
+        "max_stale_days": 45,
+        "message": "Candidate source requires access or terms review before scoring.",
+    }
+
+
+def test_status_for_unavailable_or_restricted_series_reports_unavailable_before_observations():
+    entry = {
+        "id": "restricted_series",
+        "source": "Restricted Source",
+        "frequency": "daily",
+        "max_stale_days": 7,
+        "access_status": "unavailable",
+        "terms_status": "restricted",
+    }
+    series = {"summary": {"latest_date": None}, "observations": []}
+
+    status = _status_for_series(entry, series, "2026-05-04T00:00:00Z")
+
+    assert status["status"] == "unavailable"
+    assert status["last_observation"] is None
+    assert status["freshness_days"] is None
+    assert status["message"] == "Source is unavailable for automated static ingestion."
+
+
+def test_build_status_reports_source_governance_without_lowering_overall(monkeypatch):
+    monkeypatch.setattr(compute_regime_score, "available_catalog_entries", lambda: [])
+    monkeypatch.setattr(
+        compute_regime_score,
+        "catalog_entries",
+        lambda: [
+            {
+                "id": "active_public",
+                "source": "FRED",
+                "frequency": "daily",
+                "max_stale_days": 7,
+                "score_status": "active",
+                "public": True,
+                "access_status": "free_public",
+                "terms_status": "ok",
+            },
+            {
+                "id": "candidate_series",
+                "source": "Candidate Source",
+                "frequency": "monthly",
+                "max_stale_days": 45,
+                "score_status": "candidate",
+                "public": False,
+                "access_status": "terms_review_needed",
+                "terms_status": "review_needed",
+            },
+            {
+                "id": "restricted_series",
+                "source": "Restricted Source",
+                "frequency": "daily",
+                "max_stale_days": 7,
+                "score_status": "candidate",
+                "public": False,
+                "access_status": "unavailable",
+                "terms_status": "restricted",
+            },
+        ],
+    )
+
+    status = build_status(
+        {"active_public": {"frequency": "daily", "summary": {"latest_date": "2026-05-03"}}},
+        "2026-05-04T00:00:00Z",
+    )
+
+    assert status["overall_status"] == "ok"
+    assert status["series"]["candidate_series"]["status"] == "terms_review_needed"
+    assert status["series"]["restricted_series"]["status"] == "unavailable"
+
+
 def test_build_status_includes_derived_series_rows(monkeypatch):
     generated_at = "2026-05-03T12:00:00Z"
     monkeypatch.setattr(compute_regime_score, "available_catalog_entries", lambda: [])
@@ -796,6 +892,74 @@ def test_build_status_marks_missing_active_public_catalog_entries_unavailable(mo
     assert status["overall_status"] == "partial"
     assert status["series"]["cfnai"]["status"] == "unavailable"
     assert status["series"]["cfnai"]["message"] == "Active public catalog series has no generated payload."
+
+
+def test_validate_status_file_accepts_governance_series_statuses(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "overall_status": "ok",
+          "series": {
+            "candidate_series": {"status": "terms_review_needed"},
+            "restricted_series": {"status": "unavailable"}
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    validate_schema.validate_status_file()
+
+
+def test_validate_status_file_rejects_unknown_series_status(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "overall_status": "ok",
+          "series": {
+            "unknown_series": {"status": "paused"}
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(ValueError, match="invalid series status"):
+        validate_schema.validate_status_file()
+
+
+def test_validate_freshness_accepts_governance_series_statuses(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "overall_status": "ok",
+          "series": {
+            "candidate_series": {
+              "status": "terms_review_needed",
+              "freshness_days": null,
+              "max_stale_days": 45
+            },
+            "restricted_series": {
+              "status": "unavailable",
+              "freshness_days": null,
+              "max_stale_days": 7
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    validate_freshness.main()
 
 
 def test_generated_file_validation_requires_commodity_inflation_impulse():

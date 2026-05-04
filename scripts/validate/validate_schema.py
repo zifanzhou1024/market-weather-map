@@ -30,6 +30,8 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "derived" / "regime_score.json",
     data_dir() / "status" / "data_status.json",
 ]
+ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
+SERIES_STATUSES = ROOT_STATUSES | {"terms_review_needed", "unavailable"}
 
 
 def _load_json(path: Path) -> Any:
@@ -114,7 +116,7 @@ def validate_score_summary_file() -> None:
 def validate_status_file() -> None:
     path = data_dir() / "status" / "data_status.json"
     payload = _load_json(path)
-    if payload.get("overall_status") not in {"ok", "stale", "partial", "failed"}:
+    if payload.get("overall_status") not in ROOT_STATUSES:
         raise ValueError(f"{path} has invalid overall_status")
     if "update_status" in payload and payload["update_status"] not in {"ok", "failed"}:
         raise ValueError(f"{path} has invalid update_status")
@@ -122,6 +124,12 @@ def validate_status_file() -> None:
         raise ValueError(f"{path} last_attempt_utc must be a string when present")
     if "update_message" in payload and not isinstance(payload["update_message"], str):
         raise ValueError(f"{path} update_message must be a string when present")
+    series_statuses = payload.get("series", {})
+    if not isinstance(series_statuses, dict):
+        raise ValueError(f"{path} series must be an object when present")
+    for series_id, status in series_statuses.items():
+        if not isinstance(status, dict) or status.get("status") not in SERIES_STATUSES:
+            raise ValueError(f"{path} has invalid series status for {series_id}")
 
 
 def main() -> None:
