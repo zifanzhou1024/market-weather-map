@@ -62,6 +62,50 @@ function mockStaticFetch(files: Record<string, unknown>) {
   );
 }
 
+function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
+  const regime: RegimeScoreFile = {
+    buckets: { volatility: -12.34, rates: 4.5 },
+    date: "2026-05-01",
+    generated_at_utc: "2026-05-03T18:32:54Z",
+    label: "Neutral",
+    method_version: "phase2-public-data-v1",
+    overall_score: 19.17,
+    top_risks: ["Volatility"],
+    top_supports: ["Rates"]
+  };
+
+  return {
+    "/data/catalog/series_catalog.json": catalog,
+    "/data/derived/net_liquidity.json": {
+      depends_on: ["fed_assets", "reverse_repo", "treasury_general_account"],
+      frequency: "weekly",
+      generated_at_utc: "2026-05-03T18:32:54Z",
+      method: "Fed assets less reverse repo and Treasury General Account.",
+      observations: [{ date: "2026-04-29", percentile_252d: 72, value: 6123 }],
+      series_id: "net_liquidity",
+      source: "FRED",
+      source_url: "https://example.com/net-liquidity",
+      summary: {
+        change_1d: null,
+        change_1m: 100,
+        change_1w: 25,
+        latest_date: "2026-04-29",
+        latest_value: 6123,
+        percentile_252d: 72
+      },
+      units: "USD billions"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/regime_score.json": regime,
+    "/data/derived/score_summary.json": scoreSummaryFile,
+    "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
+    "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
+    "/data/series/us10y.json": seriesFile("us10y", 4.2),
+    "/data/series/vix.json": seriesFile("vix", 17.1),
+    "/data/series/wti_crude.json": seriesFile("wti_crude", 78.4),
+    "/data/status/data_status.json": status
+  };
+}
+
 const catalog: SeriesCatalogEntry[] = [
   {
     category: "volatility",
@@ -426,60 +470,67 @@ afterEach(() => {
 
 describe("data-backed routes", () => {
   it("renders three score summary sections and market weather buckets on overview", async () => {
-    const regime: RegimeScoreFile = {
-      buckets: { volatility: -12.34, rates: 4.5 },
-      date: "2026-05-01",
-      generated_at_utc: "2026-05-03T18:32:54Z",
-      label: "Neutral",
-      method_version: "phase2-public-data-v1",
-      overall_score: 19.17,
-      top_risks: ["Volatility"],
-      top_supports: ["Rates"]
-    };
-
-    mockStaticFetch({
-      "/data/catalog/series_catalog.json": catalog,
-      "/data/derived/net_liquidity.json": {
-        depends_on: ["fed_assets", "reverse_repo", "treasury_general_account"],
-        frequency: "weekly",
-        generated_at_utc: "2026-05-03T18:32:54Z",
-        method: "Fed assets less reverse repo and Treasury General Account.",
-        observations: [{ date: "2026-04-29", percentile_252d: 72, value: 6123 }],
-        series_id: "net_liquidity",
-        source: "FRED",
-        source_url: "https://example.com/net-liquidity",
-        summary: {
-          change_1d: null,
-          change_1m: 100,
-          change_1w: 25,
-          latest_date: "2026-04-29",
-          latest_value: 6123,
-          percentile_252d: 72
-        },
-        units: "USD billions"
-      } satisfies DerivedSeriesFile,
-      "/data/derived/regime_score.json": regime,
-      "/data/derived/score_summary.json": scoreSummary,
-      "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
-      "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
-      "/data/series/us10y.json": seriesFile("us10y", 4.2),
-      "/data/series/vix.json": seriesFile("vix", 17.1),
-      "/data/series/wti_crude.json": seriesFile("wti_crude", 78.4),
-      "/data/status/data_status.json": status
-    });
+    mockStaticFetch(overviewFetchFiles());
 
     const container = render(<Overview />);
     await waitForContent(container, "Market Weather buckets");
 
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Fragility");
-    expect(container.textContent).toContain("What changed this week");
+    expect(container.textContent).toContain("Recent changes");
+    expect(container.textContent).not.toContain("What changed this week");
     expect(container.textContent).toContain("Conflicting signals");
     expect(container.textContent).toContain("Data confidence");
     expect(container.textContent).toContain("73%");
     expect(container.textContent).toContain("Sentiment coverage is limited to public CFTC positioning.");
     expect(container.textContent).toContain("Volatility");
     expect(container.textContent).toContain("-12.34");
+  });
+
+  it("renders overview empty states for malformed score summary top-level fields", async () => {
+    const malformedScoreSummary = {
+      ...scoreSummary,
+      scores: {
+        ...scoreSummary.scores,
+        market_weather: {
+          ...scoreSummary.scores.market_weather,
+          recent_changes: "not an array"
+        },
+        macro_climate: {
+          ...scoreSummary.scores.macro_climate,
+          recent_changes: undefined
+        },
+        fragility: {
+          ...scoreSummary.scores.fragility,
+          recent_changes: []
+        }
+      },
+      conflicting_signals: "not an array",
+      data_quality: {
+        overall_confidence: Number.NaN
+      }
+    } as unknown as ScoreSummaryFile;
+
+    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Recent changes");
+
+    expect(container.textContent).toContain("No recent changes in the current score summary.");
+    expect(container.textContent).toContain("No conflicting signals in the current score summary.");
+    expect(container.textContent).toContain("0% overall confidence");
+    expect(container.textContent).toContain("No data confidence notes in the current score summary.");
+  });
+
+  it("announces overview data load errors", async () => {
+    const files = overviewFetchFiles();
+    delete files["/data/derived/score_summary.json"];
+    mockStaticFetch(files);
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Data error:");
+
+    expect(container.querySelector(".data-error")?.getAttribute("role")).toBe("alert");
   });
 
   it("renders net liquidity from the derived static file on overview", async () => {
