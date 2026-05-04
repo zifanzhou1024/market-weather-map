@@ -265,6 +265,54 @@ def test_build_ratio_series_matches_observations_by_date_and_summarizes_latest(m
     assert ratio["summary"]["latest_value"] == 2.5
 
 
+def test_build_ratio_series_skips_non_finite_values_and_sorts_by_date(monkeypatch):
+    source_series = {
+        "numerator": {
+            "frequency": "daily",
+            "observations": [
+                {"date": "2026-05-03", "value": 30.0},
+                {"date": "2026-05-01", "value": 10.0},
+                {"date": "2026-05-02", "value": float("nan")},
+                {"date": "2026-05-04", "value": float("inf")},
+                {"date": "2026-05-05", "value": True},
+                {"date": "2026-05-06", "value": 12.0},
+                {"date": "2026-05-07", "value": 14.0},
+            ],
+        },
+        "denominator": {
+            "frequency": "daily",
+            "observations": [
+                {"date": "2026-05-01", "value": 5.0},
+                {"date": "2026-05-02", "value": 5.0},
+                {"date": "2026-05-03", "value": 10.0},
+                {"date": "2026-05-04", "value": 2.0},
+                {"date": "2026-05-05", "value": 5.0},
+                {"date": "2026-05-06", "value": float("-inf")},
+                {"date": "2026-05-07", "value": "missing"},
+                {"date": "2026-05-08", "value": 4.0},
+            ],
+        },
+    }
+
+    monkeypatch.setattr(compute_regime_score, "load_series", source_series.__getitem__)
+
+    ratio = compute_regime_score.build_ratio_series(
+        "numerator",
+        "denominator",
+        "finite_ratio",
+        "2026-05-08T12:00:00Z",
+        "ratio",
+        "Finite ratio.",
+    )
+
+    assert [(item["date"], item["value"]) for item in ratio["observations"]] == [
+        ("2026-05-01", 2.0),
+        ("2026-05-03", 3.0),
+    ]
+    assert ratio["summary"]["latest_date"] == "2026-05-03"
+    assert ratio["summary"]["latest_value"] == 3.0
+
+
 def test_build_commodity_inflation_impulse_uses_momentum_for_negative_risk_score():
     series = {
         "wti_crude": {
@@ -333,6 +381,77 @@ def test_build_commodity_inflation_impulse_uses_momentum_for_negative_risk_score
         "breakeven_10y",
     ]
     assert "oil 3-month" in impulse["method"]
+
+
+def test_build_commodity_inflation_impulse_reweights_only_valid_components():
+    series = {
+        "wti_crude": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 100.0,
+                "change_3m": 50.0,
+                "change_12m": None,
+            }
+        }
+    }
+
+    impulse = compute_regime_score.build_commodity_inflation_impulse(series, "2026-05-04T12:00:00Z")
+
+    assert impulse["value"] == -100.0
+    assert impulse["summary"]["latest_value"] == -100.0
+    assert impulse["observations"] == [
+        {"date": "2026-05-01", "value": -100.0, "percentile_252d": 100.0}
+    ]
+
+
+def test_build_commodity_inflation_impulse_has_no_fake_point_without_valid_components():
+    series = {
+        "wti_crude": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 100.0,
+                "change_3m": None,
+                "change_12m": None,
+            }
+        },
+        "breakeven_10y": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": None,
+                "change_3m": 0.25,
+            }
+        },
+    }
+
+    impulse = compute_regime_score.build_commodity_inflation_impulse(series, "2026-05-04T12:00:00Z")
+
+    assert impulse["observations"] == []
+    assert impulse["summary"] == series_summary([], "daily")
+    assert impulse["summary"]["latest_value"] is None
+
+
+def test_build_commodity_inflation_impulse_rejects_nonpositive_previous_values():
+    series = {
+        "wti_crude": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 50.0,
+                "change_3m": 60.0,
+            }
+        },
+        "brent_crude": {
+            "summary": {
+                "latest_date": "2026-05-01",
+                "latest_value": 40.0,
+                "change_3m": 40.0,
+            }
+        },
+    }
+
+    impulse = compute_regime_score.build_commodity_inflation_impulse(series, "2026-05-04T12:00:00Z")
+
+    assert impulse["observations"] == []
+    assert impulse["summary"]["latest_value"] is None
 
 
 def test_build_net_liquidity_uses_latest_risk_drains_on_or_before_fed_date():

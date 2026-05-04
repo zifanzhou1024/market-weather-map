@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 from datetime import datetime, timezone
 from typing import Any
 
@@ -47,6 +48,10 @@ def weighted_score(scores: dict[str, float], weights: dict[str, float]) -> float
 
 def load_series(series_id: str) -> dict[str, Any]:
     return json.loads(series_path(series_id).read_text(encoding="utf-8"))
+
+
+def _finite_number(value: Any) -> bool:
+    return isinstance(value, int | float) and not isinstance(value, bool) and math.isfinite(float(value))
 
 
 def latest_summary(series: dict[str, Any]) -> dict[str, Any]:
@@ -262,17 +267,19 @@ def build_ratio_series(
         denominator_value = denominator_by_date.get(date)
         if (
             isinstance(date, str)
-            and isinstance(numerator_value, int | float)
-            and not isinstance(numerator_value, bool)
-            and isinstance(denominator_value, int | float)
-            and not isinstance(denominator_value, bool)
+            and _finite_number(numerator_value)
+            and _finite_number(denominator_value)
             and float(denominator_value) != 0
         ):
+            ratio = float(numerator_value) / float(denominator_value)
+            if not math.isfinite(ratio):
+                continue
             observations.append(
-                {"date": date, "value": round(float(numerator_value) / float(denominator_value), 4)}
+                {"date": date, "value": round(ratio, 4)}
             )
 
     frequency = str(numerator.get("frequency", "daily"))
+    observations.sort(key=lambda item: item["date"])
     observations = enrich_observations(observations, frequency)
     return {
         "series_id": ratio_series_id,
@@ -299,22 +306,33 @@ def build_curve(generated_at: str) -> dict[str, Any]:
     )
 
 
-def _summary_pct_change(summary: dict[str, Any], change_key: str) -> float | None:
+def _change_pct(summary: dict[str, Any], change_key: str) -> float | None:
     latest_value = summary.get("latest_value")
     change = summary.get(change_key)
-    if not isinstance(latest_value, int | float) or not isinstance(change, int | float):
+    if not _finite_number(latest_value) or not _finite_number(change):
         return None
     previous = float(latest_value) - float(change)
-    if previous == 0:
+    if previous <= 0 or not math.isfinite(previous):
         return None
     return round(float(change) / abs(previous) * 100, 4)
 
 
-def _average_optional(values: list[float | None]) -> float:
-    numeric_values = [value for value in values if value is not None]
-    if not numeric_values:
-        return 0.0
-    return sum(numeric_values) / len(numeric_values)
+def _valid_component_average(
+    series_by_id: dict[str, dict[str, Any]], series_ids: list[str], change_key: str
+) -> tuple[float | None, list[str]]:
+    values = []
+    dates = []
+    for series_id in series_ids:
+        summary = latest_summary(series_by_id[series_id])
+        value = _change_pct(summary, change_key)
+        date = summary.get("latest_date")
+        if value is None or not isinstance(date, str):
+            continue
+        values.append(value)
+        dates.append(date)
+    if not values:
+        return None, []
+    return sum(values) / len(values), dates
 
 
 def build_commodity_inflation_impulse(
@@ -327,41 +345,42 @@ def build_commodity_inflation_impulse(
         if series_id in series_by_id
     ]
 
-    oil_3m = _average_optional(
-        [_summary_pct_change(latest_summary(series_by_id[series_id]), "change_3m") for series_id in oil_ids]
-    )
-    oil_12m = _average_optional(
-        [_summary_pct_change(latest_summary(series_by_id[series_id]), "change_12m") for series_id in oil_ids]
-    )
-    crop_3m = _average_optional(
-        [_summary_pct_change(latest_summary(series_by_id[series_id]), "change_3m") for series_id in crop_ids]
-    )
-    breakeven_3m = (
-        _summary_pct_change(latest_summary(series_by_id["breakeven_10y"]), "change_3m")
-        if "breakeven_10y" in series_by_id
-        else None
-    )
-    impulse = weighted_score(
-        {
-            "oil_3m": oil_3m,
-            "oil_12m": oil_12m,
-            "crop_3m": crop_3m,
-            "breakeven_3m": breakeven_3m or 0.0,
-        },
-        {"oil_3m": 0.40, "oil_12m": 0.20, "crop_3m": 0.20, "breakeven_3m": 0.20},
-    )
-    score = clamp(-impulse)
-    latest_dates = [
-        latest_summary(series_by_id[series_id]).get("latest_date")
-        for series_id in [*oil_ids, *crop_ids, "breakeven_10y"]
-        if series_id in series_by_id
-        and isinstance(latest_summary(series_by_id[series_id]).get("latest_date"), str)
-    ]
+    component_scores = {}
+    latest_dates = []
+
+    oil_3m, oil_3m_dates = _valid_component_average(series_by_id, oil_ids, "change_3m")
+    if oil_3m is not None:
+        component_scores["oil_3m"] = oil_3m
+        latest_dates.extend(oil_3m_dates)
+
+    oil_12m, oil_12m_dates = _valid_component_average(series_by_id, oil_ids, "change_12m")
+    if oil_12m is not None:
+        component_scores["oil_12m"] = oil_12m
+        latest_dates.extend(oil_12m_dates)
+
+    crop_3m, crop_3m_dates = _valid_component_average(series_by_id, crop_ids, "change_3m")
+    if crop_3m is not None:
+        component_scores["crop_3m"] = crop_3m
+        latest_dates.extend(crop_3m_dates)
+
+    if "breakeven_10y" in series_by_id:
+        breakeven_summary = latest_summary(series_by_id["breakeven_10y"])
+        breakeven_3m = _change_pct(breakeven_summary, "change_3m")
+        breakeven_date = breakeven_summary.get("latest_date")
+        if breakeven_3m is not None and isinstance(breakeven_date, str):
+            component_scores["breakeven_3m"] = breakeven_3m
+            latest_dates.append(breakeven_date)
+
     latest_date = max(latest_dates) if latest_dates else None
-    observations = enrich_observations(
-        [{"date": latest_date, "value": score}] if isinstance(latest_date, str) else [],
-        "daily",
-    )
+    score = None
+    observations = []
+    if component_scores and isinstance(latest_date, str):
+        impulse = weighted_score(
+            component_scores,
+            {"oil_3m": 0.40, "oil_12m": 0.20, "crop_3m": 0.20, "breakeven_3m": 0.20},
+        )
+        score = clamp(-impulse)
+        observations = enrich_observations([{"date": latest_date, "value": score}], "daily")
     depends_on = [*oil_ids, *crop_ids]
     if "breakeven_10y" in series_by_id:
         depends_on.append("breakeven_10y")
