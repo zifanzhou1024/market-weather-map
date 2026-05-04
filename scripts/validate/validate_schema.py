@@ -31,7 +31,7 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "status" / "data_status.json",
 ]
 ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
-SERIES_STATUSES = ROOT_STATUSES | {"terms_review_needed", "unavailable"}
+SERIES_STATUSES = {"ok", "stale", "failed", "terms_review_needed", "unavailable"}
 
 
 def _load_json(path: Path) -> Any:

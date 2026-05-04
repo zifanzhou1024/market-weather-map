@@ -934,6 +934,26 @@ def test_validate_status_file_rejects_unknown_series_status(tmp_path, monkeypatc
         validate_schema.validate_status_file()
 
 
+def test_validate_status_file_rejects_partial_series_status(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "overall_status": "partial",
+          "series": {
+            "some_series": {"status": "partial"}
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(ValueError, match="invalid series status"):
+        validate_schema.validate_status_file()
+
+
 def test_validate_freshness_accepts_governance_series_statuses(tmp_path, monkeypatch):
     status_dir = tmp_path / "status"
     status_dir.mkdir()
