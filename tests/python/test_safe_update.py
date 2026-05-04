@@ -1,3 +1,4 @@
+import importlib
 import json
 from pathlib import Path
 
@@ -6,6 +7,11 @@ import pytest
 import scripts.update_data as update_data
 import scripts.shared.safe_update as safe_update
 from scripts.shared.safe_update import restore_snapshot, snapshot_tree, write_failed_update_status
+
+
+def test_update_runner_modules_are_importable():
+    for module in update_data.MODULES:
+        importlib.import_module(module)
 
 
 def test_restore_snapshot_preserves_prior_good_json(tmp_path):
