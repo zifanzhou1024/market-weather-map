@@ -86,6 +86,27 @@ def score_commodities(series: dict[str, dict[str, Any]]) -> float:
     )
 
 
+def score_positioning_percentile(summary: dict[str, Any]) -> float:
+    percentile = summary.get("percentile_252d")
+    if not isinstance(percentile, int | float):
+        return 0.0
+    value = float(percentile)
+    if value >= 85:
+        return clamp(-40 - ((value - 85) * 4))
+    if value <= 15:
+        return clamp(20 + ((15 - value) * 2))
+    return clamp(10 - abs(value - 50) * 0.4)
+
+
+def score_sentiment(series: dict[str, dict[str, Any]]) -> float:
+    asset_mgr = score_positioning_percentile(latest_summary(series["cftc_sp500_asset_mgr_net"]))
+    lev_money = score_positioning_percentile(latest_summary(series["cftc_sp500_lev_money_net"]))
+    return weighted_score(
+        {"asset_mgr": asset_mgr, "lev_money": lev_money},
+        {"asset_mgr": 0.40, "lev_money": 0.60},
+    )
+
+
 def score_volatility(series: dict[str, dict[str, Any]]) -> float:
     return score_inverse_percentile(latest_summary(series["vix"]))
 
@@ -261,7 +282,7 @@ def main() -> None:
         "liquidity": score_liquidity(series_by_id),
         "credit": score_credit(series_by_id),
         "commodities": score_commodities(series_by_id),
-        "sentiment": 0.0,
+        "sentiment": score_sentiment(series_by_id),
     }
     overall_score = weighted_score(buckets, WEIGHTS)
     latest_dates = [

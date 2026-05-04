@@ -11,7 +11,7 @@ from scripts.shared.safe_update import restore_snapshot, snapshot_tree, write_fa
 MODULES = [
     "scripts.ingest.fetch_cboe",
     "scripts.ingest.fetch_fred_csv",
-    # CFTC joins the runner with the Task 4 fetcher.
+    "scripts.ingest.fetch_cftc",
     "scripts.transform.normalize_series",
     "scripts.transform.compute_percentiles",
     "scripts.transform.compute_regime_score",

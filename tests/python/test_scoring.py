@@ -12,6 +12,7 @@ from scripts.transform.compute_regime_score import (
     clamp,
     score_commodities,
     score_credit,
+    score_sentiment,
     weighted_score,
 )
 
@@ -127,6 +128,21 @@ def test_score_commodities_uses_planned_oil_and_crop_weights():
     }
 
     assert score_commodities(series) == -53.67
+
+
+def test_score_sentiment_penalizes_leveraged_money_crowding():
+    crowded = {
+        "cftc_sp500_asset_mgr_net": {"summary": {"percentile_252d": 60}},
+        "cftc_sp500_lev_money_net": {"summary": {"percentile_252d": 95}},
+    }
+
+    underexposed = {
+        "cftc_sp500_asset_mgr_net": {"summary": {"percentile_252d": 20}},
+        "cftc_sp500_lev_money_net": {"summary": {"percentile_252d": 10}},
+    }
+
+    assert score_sentiment(crowded) < 0
+    assert score_sentiment(underexposed) > score_sentiment(crowded)
 
 
 def test_build_matched_spread_uses_source_frequency_for_summary(monkeypatch):

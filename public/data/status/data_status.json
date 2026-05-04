@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-04T04:58:42Z",
-  "last_successful_update_utc": "2026-05-04T04:58:42Z",
+  "generated_at_utc": "2026-05-04T05:08:52Z",
+  "last_successful_update_utc": "2026-05-04T05:08:52Z",
   "overall_status": "ok",
   "series": {
     "brent_crude": {
@@ -10,6 +10,24 @@
       "max_stale_days": 10,
       "message": "Fresh.",
       "source": "FRED",
+      "status": "ok"
+    },
+    "cftc_sp500_asset_mgr_net": {
+      "expected_frequency": "weekly",
+      "freshness_days": 6,
+      "last_observation": "2026-04-28",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "CFTC",
+      "status": "ok"
+    },
+    "cftc_sp500_lev_money_net": {
+      "expected_frequency": "weekly",
+      "freshness_days": 6,
+      "last_observation": "2026-04-28",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "CFTC",
       "status": "ok"
     },
     "corn_price": {
