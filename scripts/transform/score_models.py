@@ -36,6 +36,9 @@ def driver_texts(
     direction: Literal["support", "risk"],
     limit: int = 3,
 ) -> list[str]:
+    if limit <= 0:
+        return []
+
     ordered = sorted(
         [driver for driver in drivers if driver.direction == direction],
         key=lambda driver: abs(driver.impact),

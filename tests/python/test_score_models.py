@@ -1,3 +1,5 @@
+import json
+
 from scripts.transform.score_models import (
     ScoreDriver,
     clamp,
@@ -84,6 +86,39 @@ def test_driver_texts_returns_ordered_unique_strings():
     assert driver_texts(drivers, "support") == ["Liquidity improved."]
 
 
+def test_driver_texts_returns_empty_for_zero_or_negative_limits():
+    drivers = [
+        ScoreDriver("credit", "risk", -20, "Credit spreads widened.", "high_yield_oas", 4.0, 0.2),
+        ScoreDriver("rates", "risk", -15, "10Y real yield is elevated.", "real_yield_10y", 2.1, 0.3),
+    ]
+
+    assert driver_texts(drivers, "risk", limit=0) == []
+    assert driver_texts(drivers, "risk", limit=-1) == []
+
+
+def test_driver_texts_honors_limit_one_after_sorting_by_impact():
+    drivers = [
+        ScoreDriver("rates", "risk", -15, "10Y real yield is elevated.", "real_yield_10y", 2.1, 0.3),
+        ScoreDriver("credit", "risk", -20, "Credit spreads widened.", "high_yield_oas", 4.0, 0.2),
+        ScoreDriver("liquidity", "support", 30, "Liquidity improved.", "reserve_balances", 3.3, 0.4),
+    ]
+
+    assert driver_texts(drivers, "risk", limit=1) == ["Credit spreads widened."]
+
+
+def test_driver_texts_skips_duplicates_before_applying_limit():
+    drivers = [
+        ScoreDriver("credit", "risk", -30, "Credit spreads widened.", "high_yield_oas", 4.0, 0.2),
+        ScoreDriver("credit", "risk", -20, "Credit spreads widened.", "bbb_oas", 2.0, 0.1),
+        ScoreDriver("rates", "risk", -10, "10Y real yield is elevated.", "real_yield_10y", 2.1, 0.3),
+    ]
+
+    assert driver_texts(drivers, "risk", limit=2) == [
+        "Credit spreads widened.",
+        "10Y real yield is elevated.",
+    ]
+
+
 def test_clamp_bounds_and_rounds_scores():
     assert clamp(120.432) == 100.0
     assert clamp(-120.432) == -100.0
@@ -97,3 +132,27 @@ def test_weighted_score_reweights_available_scores():
     assert weighted_score(scores, weights) == -16.67
     assert weighted_score({}, weights) == 0.0
     assert weighted_score(scores, {}) == 0.0
+
+
+def test_score_block_output_is_json_serializable():
+    block = score_block(
+        score=-12.0,
+        label="Mixed",
+        bucket_scores={"credit_spreads": -35.0},
+        bucket_weights={"credit_spreads": 0.2},
+        drivers=[
+            ScoreDriver(
+                bucket="credit_spreads",
+                direction="risk",
+                impact=-35.0,
+                text="High-yield spreads widened over the past month.",
+                series_id="high_yield_oas",
+                latest_value=4.2,
+                recent_change=0.4,
+            )
+        ],
+        confidence_reasons=[],
+        missing_or_stale_notes=[],
+    )
+
+    assert json.dumps(block)
