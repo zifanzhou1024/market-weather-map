@@ -32,6 +32,13 @@ REQUIRED_GENERATED_FILES = [
 ]
 ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
 SERIES_STATUSES = {"ok", "stale", "failed", "terms_review_needed", "unavailable"}
+REQUIRED_SCORE_ARRAY_FIELDS = (
+    "top_risks",
+    "top_supports",
+    "confidence_reasons",
+    "recent_changes",
+    "missing_or_stale_notes",
+)
 
 
 def _load_json(path: Path) -> Any:
@@ -109,8 +116,9 @@ def validate_score_summary_file() -> None:
             raise ValueError(f"{path} {score_key}.score must be numeric")
         if not isinstance(block.get("confidence"), int | float) or isinstance(block.get("confidence"), bool):
             raise ValueError(f"{path} {score_key}.confidence must be numeric")
-        if not isinstance(block.get("top_risks"), list):
-            raise ValueError(f"{path} {score_key}.top_risks must be a list")
+        for field in REQUIRED_SCORE_ARRAY_FIELDS:
+            if not isinstance(block.get(field), list):
+                raise ValueError(f"{path} {score_key}.{field} must be a list")
 
 
 def validate_status_file() -> None:

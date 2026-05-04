@@ -1,8 +1,8 @@
 import type { SourceAccessStatus, SourceTermsStatus } from "../lib/types";
 
 interface SourceAccessBadgeProps {
-  accessStatus?: SourceAccessStatus | undefined;
-  termsStatus?: SourceTermsStatus | undefined;
+  accessStatus?: SourceAccessStatus | string | undefined;
+  termsStatus?: SourceTermsStatus | string | undefined;
 }
 
 const accessLabels: Record<SourceAccessStatus, string> = {
@@ -20,13 +20,24 @@ const termsLabels: Record<SourceTermsStatus, string> = {
   unknown: "Terms unknown"
 };
 
+function formatFallback(value: string | undefined) {
+  if (!value) return "Unknown";
+  const normalized = value.trim().replace(/[_-]+/g, " ");
+  if (!normalized) return "Unknown";
+  return normalized.charAt(0).toUpperCase() + normalized.slice(1).toLowerCase();
+}
+
 export default function SourceAccessBadge({ accessStatus, termsStatus }: SourceAccessBadgeProps) {
   if (!accessStatus && !termsStatus) return null;
 
   return (
     <p className="source-access">
-      {accessStatus ? <span>{accessLabels[accessStatus]}</span> : null}
-      {termsStatus ? <span>{termsLabels[termsStatus]}</span> : null}
+      {accessStatus ? (
+        <span>{accessLabels[accessStatus as SourceAccessStatus] ?? formatFallback(accessStatus)}</span>
+      ) : null}
+      {termsStatus ? (
+        <span>{termsLabels[termsStatus as SourceTermsStatus] ?? formatFallback(termsStatus)}</span>
+      ) : null}
     </p>
   );
 }

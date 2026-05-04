@@ -7,8 +7,17 @@ interface ScoreCardProps {
   score: ScoreBlock;
 }
 
-function formatConfidence(value: number) {
-  return `${Math.round(value * 100)}%`;
+function finiteNumber(value: unknown, fallback = 0) {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+function safeList(value: unknown) {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+function formatConfidence(value: unknown) {
+  const confidence = Math.min(1, Math.max(0, finiteNumber(value)));
+  return `${Math.round(confidence * 100)}%`;
 }
 
 function ScoreList({ items, title }: { items: string[]; title: string }) {
@@ -29,28 +38,58 @@ function ScoreList({ items, title }: { items: string[]; title: string }) {
 }
 
 export default function ScoreCard({ title, score }: ScoreCardProps) {
+  const numericScore = finiteNumber(score.score);
+  const label = typeof score.label === "string" ? score.label : "Unknown";
+  const topSupports = safeList(score.top_supports);
+  const topRisks = safeList(score.top_risks);
+  const confidenceReasons = safeList(score.confidence_reasons);
+  const recentChanges = safeList(score.recent_changes);
+  const missingOrStaleNotes = safeList(score.missing_or_stale_notes);
+
   return (
     <article className="score-card">
       <div className="score-card__header">
         <div>
-          <p className="eyebrow">{title}</p>
-          <strong className="score-card__value">{formatNumber(score.score)}</strong>
+          <h3 className="eyebrow score-card__title">{title}</h3>
+          <strong className="score-card__value">{formatNumber(numericScore)}</strong>
         </div>
-        <RegimeBadge label={score.label} score={score.score} />
+        <RegimeBadge label={label} score={numericScore} />
       </div>
 
       <p className="score-confidence">Confidence {formatConfidence(score.confidence)}</p>
 
       <div className="score-card__lists">
-        <ScoreList items={score.top_supports} title="Supports" />
-        <ScoreList items={score.top_risks} title="Risks" />
+        <ScoreList items={topSupports} title="Supports" />
+        <ScoreList items={topRisks} title="Risks" />
       </div>
 
-      {score.confidence_reasons.length ? (
+      {recentChanges.length ? (
+        <section className="score-notes">
+          <h4>Recent changes</h4>
+          <ul className="score-list">
+            {recentChanges.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {confidenceReasons.length ? (
         <section className="score-notes">
           <h4>Confidence notes</h4>
           <ul className="score-list">
-            {score.confidence_reasons.map((item) => (
+            {confidenceReasons.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {missingOrStaleNotes.length ? (
+        <section className="score-notes">
+          <h4>Data notes</h4>
+          <ul className="score-list">
+            {missingOrStaleNotes.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>

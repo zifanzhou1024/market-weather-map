@@ -995,9 +995,33 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
         """
         {
           "scores": {
-            "market_weather": {"score": -1, "confidence": 0.9, "top_risks": []},
-            "macro_climate": {"score": 2, "confidence": 0.8, "top_risks": ["Housing is not active in Phase 3."]},
-            "fragility": {"score": -3, "confidence": 0.7, "top_risks": []}
+            "market_weather": {
+              "score": -1,
+              "confidence": 0.9,
+              "top_risks": [],
+              "top_supports": [],
+              "confidence_reasons": [],
+              "recent_changes": [],
+              "missing_or_stale_notes": []
+            },
+            "macro_climate": {
+              "score": 2,
+              "confidence": 0.8,
+              "top_risks": ["Housing is not active in Phase 3."],
+              "top_supports": [],
+              "confidence_reasons": [],
+              "recent_changes": [],
+              "missing_or_stale_notes": []
+            },
+            "fragility": {
+              "score": -3,
+              "confidence": 0.7,
+              "top_risks": [],
+              "top_supports": [],
+              "confidence_reasons": [],
+              "recent_changes": [],
+              "missing_or_stale_notes": []
+            }
           }
         }
         """,
@@ -1006,3 +1030,47 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
     monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
 
     validate_schema.validate_score_summary_file()
+
+
+def test_validate_score_summary_requires_ui_score_block_arrays(tmp_path, monkeypatch):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    (derived / "score_summary.json").write_text(
+        """
+        {
+          "scores": {
+            "market_weather": {
+              "score": -1,
+              "confidence": 0.9,
+              "top_risks": [],
+              "confidence_reasons": [],
+              "recent_changes": [],
+              "missing_or_stale_notes": []
+            },
+            "macro_climate": {
+              "score": 2,
+              "confidence": 0.8,
+              "top_risks": [],
+              "top_supports": [],
+              "confidence_reasons": [],
+              "recent_changes": [],
+              "missing_or_stale_notes": []
+            },
+            "fragility": {
+              "score": -3,
+              "confidence": 0.7,
+              "top_risks": [],
+              "top_supports": [],
+              "confidence_reasons": [],
+              "recent_changes": [],
+              "missing_or_stale_notes": []
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(ValueError, match="market_weather.top_supports must be a list"):
+        validate_schema.validate_score_summary_file()

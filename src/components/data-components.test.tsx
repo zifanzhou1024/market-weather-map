@@ -155,6 +155,7 @@ describe("data-driven components", () => {
     const container = render(<ScoreCard title="Market Weather" score={scoreBlock} />);
 
     expect(container.textContent).toContain("Market Weather");
+    expect(container.querySelector("h3")?.textContent).toBe("Market Weather");
     expect(container.textContent).toContain("-12.34");
     expect(container.textContent).toContain("Mixed");
     expect(container.textContent).toContain("82%");
@@ -162,6 +163,21 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Sentiment is limited to CFTC positioning.");
     expect(container.textContent).toContain("High-yield spreads widened over the past month.");
     expect(container.textContent).toContain("Reserve balances improved over the past month.");
+  });
+
+  it("renders score card fallbacks for stale partial score payloads", () => {
+    const partialScore = {
+      confidence: 1.5,
+      label: "Mixed",
+      score: Number.NaN
+    } as unknown as ScoreBlock;
+
+    const container = render(<ScoreCard title="Partial Score" score={partialScore} />);
+
+    expect(container.textContent).toContain("Partial Score");
+    expect(container.textContent).toContain("0.00");
+    expect(container.textContent).toContain("100%");
+    expect(container.textContent).toContain("N/A");
   });
 
   it("renders how-to-read panel without exposing advice language", () => {
@@ -181,6 +197,18 @@ describe("data-driven components", () => {
 
     expect(container.textContent).toContain("Terms review needed");
     expect(container.textContent).toContain("Review needed");
+  });
+
+  it("renders safe fallbacks for unknown source access runtime strings", () => {
+    const container = render(
+      <SourceAccessBadge
+        accessStatus={"pending_license" as never}
+        termsStatus={"needs_counsel" as never}
+      />
+    );
+
+    expect(container.textContent).toContain("Pending license");
+    expect(container.textContent).toContain("Needs counsel");
   });
 
   it("filters data status rows by selected series ids", () => {
