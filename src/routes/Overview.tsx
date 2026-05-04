@@ -2,17 +2,30 @@ import { useEffect, useState } from "react";
 import DataStatusTable from "../components/DataStatusTable";
 import MetricCard from "../components/MetricCard";
 import RegimeBadge from "../components/RegimeBadge";
-import { loadCatalog, loadDataStatus, loadRegimeScore, loadSeries } from "../lib/data";
+import { loadCatalog, loadDataStatus, loadDerivedSeries, loadRegimeScore, loadSeries } from "../lib/data";
 import { formatSigned } from "../lib/formatters";
-import type { DataStatusFile, RegimeScoreFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import type {
+  DataStatusFile,
+  DerivedSeriesFile,
+  RegimeScoreFile,
+  SeriesCatalogEntry,
+  TimeSeriesFile
+} from "../lib/types";
 
-const overviewSeriesIds = ["vix", "us10y", "fed_assets", "financial_stress"];
+const overviewSeriesIds = [
+  "vix",
+  "us10y",
+  "net_liquidity",
+  "financial_stress",
+  "wti_crude",
+  "cftc_sp500_lev_money_net"
+];
 
 interface OverviewState {
   catalog: SeriesCatalogEntry[];
   regime: RegimeScoreFile;
   status: DataStatusFile;
-  series: TimeSeriesFile[];
+  series: Array<TimeSeriesFile | DerivedSeriesFile>;
 }
 
 function titleCaseBucket(bucket: string) {
@@ -35,7 +48,11 @@ export default function Overview() {
           loadCatalog(),
           loadRegimeScore(),
           loadDataStatus(),
-          Promise.all(overviewSeriesIds.map((seriesId) => loadSeries(seriesId)))
+          Promise.all(
+            overviewSeriesIds.map((seriesId) =>
+              seriesId === "net_liquidity" ? loadDerivedSeries(seriesId) : loadSeries(seriesId)
+            )
+          )
         ]);
 
         if (active) setData({ catalog, regime, status, series });

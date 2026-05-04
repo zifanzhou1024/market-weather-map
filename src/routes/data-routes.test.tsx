@@ -61,6 +61,19 @@ function mockStaticFetch(files: Record<string, unknown>) {
 
 const catalog: SeriesCatalogEntry[] = [
   {
+    category: "volatility",
+    frequency: "daily",
+    higher_is: "riskier",
+    id: "vix",
+    max_stale_days: 7,
+    name: "Cboe Volatility Index",
+    notes: "Daily VIX close from Cboe.",
+    public: true,
+    source: "Cboe",
+    source_url: "https://example.com/vix",
+    units: "index"
+  },
+  {
     category: "rates",
     frequency: "daily",
     higher_is: "riskier",
@@ -111,6 +124,58 @@ const catalog: SeriesCatalogEntry[] = [
     source: "FRED",
     source_url: "https://example.com/us30y",
     units: "percent"
+  },
+  {
+    category: "liquidity",
+    frequency: "weekly",
+    higher_is: "supportive",
+    id: "net_liquidity",
+    max_stale_days: 14,
+    name: "Net liquidity proxy",
+    notes: "Fed assets less RRP and Treasury General Account.",
+    public: true,
+    source: "FRED",
+    source_url: "https://example.com/net-liquidity",
+    units: "USD billions"
+  },
+  {
+    category: "credit",
+    frequency: "weekly",
+    higher_is: "riskier",
+    id: "financial_stress",
+    max_stale_days: 14,
+    name: "Financial Stress Index",
+    notes: "Weekly financial stress index from FRED.",
+    public: true,
+    source: "FRED",
+    source_url: "https://example.com/financial-stress",
+    units: "index"
+  },
+  {
+    category: "commodities",
+    frequency: "daily",
+    higher_is: "contextual",
+    id: "wti_crude",
+    max_stale_days: 7,
+    name: "WTI crude oil",
+    notes: "Daily WTI crude price.",
+    public: true,
+    source: "FRED",
+    source_url: "https://example.com/wti",
+    units: "USD/barrel"
+  },
+  {
+    category: "sentiment",
+    frequency: "weekly",
+    higher_is: "contextual",
+    id: "cftc_sp500_lev_money_net",
+    max_stale_days: 14,
+    name: "CFTC S&P 500 leveraged money net",
+    notes: "Leveraged money net positioning.",
+    public: true,
+    source: "CFTC",
+    source_url: "https://example.com/cftc-lev-money",
+    units: "contracts"
   }
 ];
 
@@ -170,6 +235,30 @@ const status: DataStatusFile = {
       max_stale_days: 7,
       source: "Cboe",
       status: "ok"
+    },
+    net_liquidity: {
+      expected_frequency: "weekly",
+      freshness_days: 4,
+      last_observation: "2026-04-29",
+      max_stale_days: 14,
+      source: "FRED",
+      status: "ok"
+    },
+    wti_crude: {
+      expected_frequency: "daily",
+      freshness_days: 2,
+      last_observation: "2026-05-01",
+      max_stale_days: 7,
+      source: "FRED",
+      status: "ok"
+    },
+    cftc_sp500_lev_money_net: {
+      expected_frequency: "weekly",
+      freshness_days: 3,
+      last_observation: "2026-04-29",
+      max_stale_days: 14,
+      source: "CFTC",
+      status: "ok"
     }
   }
 };
@@ -198,11 +287,31 @@ describe("data-backed routes", () => {
 
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
+      "/data/derived/net_liquidity.json": {
+        depends_on: ["fed_assets", "reverse_repo", "treasury_general_account"],
+        frequency: "weekly",
+        generated_at_utc: "2026-05-03T18:32:54Z",
+        method: "Fed assets less reverse repo and Treasury General Account.",
+        observations: [{ date: "2026-04-29", percentile_252d: 72, value: 6123 }],
+        series_id: "net_liquidity",
+        source: "FRED",
+        source_url: "https://example.com/net-liquidity",
+        summary: {
+          change_1d: null,
+          change_1m: 100,
+          change_1w: 25,
+          latest_date: "2026-04-29",
+          latest_value: 6123,
+          percentile_252d: 72
+        },
+        units: "USD billions"
+      } satisfies DerivedSeriesFile,
       "/data/derived/regime_score.json": regime,
-      "/data/series/fed_assets.json": seriesFile("fed_assets", 6800),
+      "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
       "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
       "/data/series/us10y.json": seriesFile("us10y", 4.2),
       "/data/series/vix.json": seriesFile("vix", 17.1),
+      "/data/series/wti_crude.json": seriesFile("wti_crude", 78.4),
       "/data/status/data_status.json": status
     });
 
@@ -211,6 +320,55 @@ describe("data-backed routes", () => {
 
     expect(container.textContent).toContain("Volatility");
     expect(container.textContent).toContain("-12.34");
+  });
+
+  it("renders net liquidity from the derived static file on overview", async () => {
+    const regime: RegimeScoreFile = {
+      buckets: { volatility: -12.34, rates: 4.5 },
+      date: "2026-05-01",
+      generated_at_utc: "2026-05-03T18:32:54Z",
+      label: "Neutral",
+      method_version: "phase1-github-native-v1",
+      overall_score: 19.17,
+      top_risks: ["Volatility"],
+      top_supports: ["Rates"]
+    };
+    const netLiquidity: DerivedSeriesFile = {
+      depends_on: ["fed_assets", "reverse_repo", "treasury_general_account"],
+      frequency: "weekly",
+      generated_at_utc: "2026-05-03T18:32:54Z",
+      method: "Fed assets less reverse repo and Treasury General Account.",
+      observations: [{ date: "2026-04-29", percentile_252d: 72, value: 6123 }],
+      series_id: "net_liquidity",
+      source: "FRED",
+      source_url: "https://example.com/net-liquidity",
+      summary: {
+        change_1d: null,
+        change_1m: 100,
+        change_1w: 25,
+        latest_date: "2026-04-29",
+        latest_value: 6123,
+        percentile_252d: 72
+      },
+      units: "USD billions"
+    };
+
+    mockStaticFetch({
+      "/data/catalog/series_catalog.json": catalog,
+      "/data/derived/net_liquidity.json": netLiquidity,
+      "/data/derived/regime_score.json": regime,
+      "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
+      "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
+      "/data/series/us10y.json": seriesFile("us10y", 4.2),
+      "/data/series/vix.json": seriesFile("vix", 17.1),
+      "/data/series/wti_crude.json": seriesFile("wti_crude", 78.4),
+      "/data/status/data_status.json": status
+    });
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Net liquidity proxy");
+
+    expect(container.textContent).toContain("6,123.00 USD billions");
   });
 
   it("renders the 10Y-2Y spread from the derived static file on rates", async () => {
