@@ -47,23 +47,25 @@ Fragility focuses on channels that can amplify market moves or expose stress ben
 | Positioning crowding (`positioning_crowding`) | 15% | Active |
 | Treasury bond volatility (`treasury_bond_volatility`) | 10% | Candidate-only until terms review is complete |
 
-If a bucket is unavailable or stale, its missing input lowers confidence and the remaining available buckets are normalized within the score family. Candidate-only inputs do not enter the production score until source access is reviewed.
+If a bucket's coverage is missing or stale, the score builders keep the emitted weighted bucket keys and lower confidence. Missing inputs may contribute `0.0` neutral fallback values rather than being reweighted out. Candidate-only inputs do not enter active scoring until source access is reviewed.
 
 The `percentile_252d` field name is retained for compatibility, but the percentile window is frequency-aware: daily series use 252 observations, weekly series use 52 observations, and monthly series use 12 observations.
 
 ## Bucket Logic
 
 - Volatility uses the latest VIX percentile. Higher VIX percentile readings are treated as less supportive and more fragile.
-- Rates use Treasury yield levels, curve context, recent changes, real yields, and breakevens. Larger upward rate pressure is treated as less supportive when it tightens conditions.
+- Rates use Treasury yield levels, curve context, recent changes, and real yields. Larger upward rate pressure is treated as less supportive when it tightens conditions.
 - Liquidity uses recent changes in Federal Reserve assets, overnight reverse repo balances, Treasury General Account balances, and funding context. Rising Fed assets are treated as more supportive, while rising reverse repo or funding pressure is treated as less supportive.
 - Credit uses Fed-published financial stress and financial conditions series plus public OAS inputs. Higher stress, tighter conditions, and wider spreads are treated as less supportive.
 - Growth and labor inputs describe activity breadth, jobs momentum, claims pressure, and recession-risk indicators. Stronger breadth is supportive unless it conflicts with inflation pressure.
-- Inflation inputs describe price momentum across CPI, core measures, PCE, PPI, and expectations. Higher or reaccelerating inflation pressure is treated as less supportive for Macro Climate.
+- Inflation inputs describe price momentum across CPI, core measures, PCE, and PPI. Higher or reaccelerating inflation pressure is treated as less supportive for Macro Climate.
 - Dollar and banking inputs describe global dollar pressure, reserve balances, bank credit, loans, business lending, and deposits. Dollar strength and weaker banking trends can raise Fragility.
 - Commodities use oil and crop price percentiles as a commodity impulse. Higher energy and crop price pressure can be less supportive because it can reflect input-cost and inflation pressure; lower or easing commodity pressure can be more supportive when it does not signal demand weakness.
 - Sentiment uses CFTC E-mini S&P 500 asset manager and leveraged money net positioning as a percent of open interest. Very high positioning percentiles are treated as crowding risk; low positioning readings are descriptive underexposure context.
 
-Each score is the weighted average of available bucket scores, clamped to the `-100` to `+100` range. The displayed label maps the result into broad regimes:
+Each score is a weighted average of emitted bucket scores, including neutral fallbacks when coverage is missing, clamped to the `-100` to `+100` range.
+
+Market Weather and Macro Climate use these broad displayed labels:
 
 | Score range | Interpretation |
 | --- | --- |
@@ -71,6 +73,15 @@ Each score is the weighted average of available bucket scores, clamped to the `-
 | `-50` to `-20` | Fragile |
 | `-20` to `20` | Neutral |
 | `>= 20` | Supportive |
+
+Fragility uses separate labels so the direction remains clear:
+
+| Score range | Fragility interpretation |
+| --- | --- |
+| `<= -50` | High Fragility |
+| `-50` to `-20` | Elevated Fragility |
+| `-20` to `20` | Moderate |
+| `>= 20` | Low Fragility |
 
 ## Phase 2 Derived Metrics
 
