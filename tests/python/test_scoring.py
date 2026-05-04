@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from scripts.transform import compute_regime_score
@@ -1073,4 +1075,45 @@ def test_validate_score_summary_requires_ui_score_block_arrays(tmp_path, monkeyp
     monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
 
     with pytest.raises(ValueError, match="market_weather.top_supports must be a list"):
+        validate_schema.validate_score_summary_file()
+
+
+def test_validate_score_summary_rejects_non_finite_score_values(tmp_path, monkeypatch):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    payload = {
+        "scores": {
+            "market_weather": {
+                "score": float("nan"),
+                "confidence": 0.9,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+            "macro_climate": {
+                "score": 2,
+                "confidence": float("inf"),
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+            "fragility": {
+                "score": -3,
+                "confidence": 0.7,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+        }
+    }
+    (derived / "score_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(ValueError, match="market_weather.score must be finite"):
         validate_schema.validate_score_summary_file()

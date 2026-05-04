@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -102,6 +103,13 @@ def validate_generated_files() -> None:
         _load_json(path)
 
 
+def _validate_finite_number(value: Any, path: Path, field_name: str) -> None:
+    if not isinstance(value, int | float) or isinstance(value, bool):
+        raise ValueError(f"{path} {field_name} must be numeric")
+    if not math.isfinite(float(value)):
+        raise ValueError(f"{path} {field_name} must be finite")
+
+
 def validate_score_summary_file() -> None:
     path = data_dir() / "derived" / "score_summary.json"
     payload = _load_json(path)
@@ -112,10 +120,8 @@ def validate_score_summary_file() -> None:
     for score_key, block in scores.items():
         if not isinstance(block, dict):
             raise ValueError(f"{path} {score_key} score block must be an object")
-        if not isinstance(block.get("score"), int | float) or isinstance(block.get("score"), bool):
-            raise ValueError(f"{path} {score_key}.score must be numeric")
-        if not isinstance(block.get("confidence"), int | float) or isinstance(block.get("confidence"), bool):
-            raise ValueError(f"{path} {score_key}.confidence must be numeric")
+        _validate_finite_number(block.get("score"), path, f"{score_key}.score")
+        _validate_finite_number(block.get("confidence"), path, f"{score_key}.confidence")
         for field in REQUIRED_SCORE_ARRAY_FIELDS:
             if not isinstance(block.get(field), list):
                 raise ValueError(f"{path} {score_key}.{field} must be a list")
