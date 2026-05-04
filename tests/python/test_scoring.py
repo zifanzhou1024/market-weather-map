@@ -8,6 +8,7 @@ from scripts.transform.compute_percentiles import (
 )
 from scripts.transform.compute_regime_score import (
     _status_for_series,
+    build_status,
     build_net_liquidity,
     build_matched_spread,
     clamp,
@@ -224,3 +225,39 @@ def test_status_for_series_marks_future_observations_failed():
     assert status["status"] == "failed"
     assert status["freshness_days"] == -1
     assert "future-dated" in status["message"]
+
+
+def test_build_status_includes_derived_series_rows(monkeypatch):
+    generated_at = "2026-05-03T12:00:00Z"
+    monkeypatch.setattr(compute_regime_score, "available_catalog_entries", lambda: [])
+    series_by_id = {
+        "us10y_minus_us2y": {
+            "frequency": "daily",
+            "summary": {"latest_date": "2026-05-01"},
+        },
+        "brent_wti_spread": {
+            "frequency": "daily",
+            "summary": {"latest_date": "2026-04-30"},
+        },
+        "net_liquidity": {
+            "frequency": "weekly",
+            "summary": {"latest_date": "2026-04-29"},
+        },
+    }
+
+    status = build_status(series_by_id, generated_at)
+
+    assert status["series"]["us10y_minus_us2y"] == {
+        "status": "ok",
+        "last_observation": "2026-05-01",
+        "source": "Derived",
+        "expected_frequency": "daily",
+        "freshness_days": 2,
+        "max_stale_days": 7,
+        "message": "Fresh.",
+    }
+    assert status["series"]["brent_wti_spread"]["source"] == "Derived"
+    assert status["series"]["brent_wti_spread"]["max_stale_days"] == 10
+    assert status["series"]["net_liquidity"]["source"] == "Derived"
+    assert status["series"]["net_liquidity"]["expected_frequency"] == "weekly"
+    assert status["series"]["net_liquidity"]["max_stale_days"] == 14

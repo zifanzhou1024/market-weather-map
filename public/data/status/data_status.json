@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-04T05:27:53Z",
-  "last_successful_update_utc": "2026-05-04T05:27:53Z",
+  "generated_at_utc": "2026-05-04T05:47:10Z",
+  "last_successful_update_utc": "2026-05-04T05:47:10Z",
   "overall_status": "ok",
   "series": {
     "brent_crude": {
@@ -10,6 +10,15 @@
       "max_stale_days": 10,
       "message": "Fresh.",
       "source": "FRED",
+      "status": "ok"
+    },
+    "brent_wti_spread": {
+      "expected_frequency": "daily",
+      "freshness_days": 7,
+      "last_observation": "2026-04-27",
+      "max_stale_days": 10,
+      "message": "Fresh.",
+      "source": "Derived",
       "status": "ok"
     },
     "cftc_sp500_asset_mgr_net": {
@@ -66,6 +75,15 @@
       "source": "FRED",
       "status": "ok"
     },
+    "net_liquidity": {
+      "expected_frequency": "weekly",
+      "freshness_days": 5,
+      "last_observation": "2026-04-29",
+      "max_stale_days": 14,
+      "message": "Fresh.",
+      "source": "Derived",
+      "status": "ok"
+    },
     "reverse_repo": {
       "expected_frequency": "daily",
       "freshness_days": 3,
@@ -109,6 +127,15 @@
       "max_stale_days": 7,
       "message": "Fresh.",
       "source": "FRED",
+      "status": "ok"
+    },
+    "us10y_minus_us2y": {
+      "expected_frequency": "daily",
+      "freshness_days": 4,
+      "last_observation": "2026-04-30",
+      "max_stale_days": 7,
+      "message": "Fresh.",
+      "source": "Derived",
       "status": "ok"
     },
     "us20y": {

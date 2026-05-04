@@ -308,7 +308,7 @@ const status: DataStatusFile = {
       freshness_days: 4,
       last_observation: "2026-04-29",
       max_stale_days: 14,
-      source: "FRED",
+      source: "Derived",
       status: "ok"
     },
     wti_crude: {
@@ -355,8 +355,8 @@ const status: DataStatusFile = {
       expected_frequency: "daily",
       freshness_days: 2,
       last_observation: "2026-05-01",
-      max_stale_days: 7,
-      source: "FRED",
+      max_stale_days: 10,
+      source: "Derived",
       status: "ok"
     },
     cftc_sp500_asset_mgr_net: {

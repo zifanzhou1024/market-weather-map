@@ -18,6 +18,11 @@ WEIGHTS = {
     "sentiment": 0.15,
 }
 METHOD_VERSION = "phase1-github-native-v1"
+DERIVED_STATUS_METADATA = {
+    "us10y_minus_us2y": {"max_stale_days": 7},
+    "brent_wti_spread": {"max_stale_days": 10},
+    "net_liquidity": {"max_stale_days": 14},
+}
 
 
 def now_iso() -> str:
@@ -291,6 +296,21 @@ def build_status(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> 
         str(entry["id"]): _status_for_series(entry, series_by_id[str(entry["id"])], generated_at)
         for entry in available_catalog_entries()
     }
+    for series_id, metadata in DERIVED_STATUS_METADATA.items():
+        series = series_by_id.get(series_id)
+        if series is None:
+            continue
+        statuses[series_id] = _status_for_series(
+            {
+                "id": series_id,
+                "source": "Derived",
+                "frequency": str(series.get("frequency", "daily")),
+                "max_stale_days": metadata["max_stale_days"],
+            },
+            series,
+            generated_at,
+        )
+
     values = [status["status"] for status in statuses.values()]
     if any(status == "failed" for status in values):
         overall = "failed"
@@ -315,23 +335,26 @@ def main() -> None:
 
     curve = build_curve(generated_at)
     write_json(data_dir() / "derived" / "us10y_minus_us2y.json", curve)
+    series_by_id["us10y_minus_us2y"] = curve
 
     net_liquidity = build_net_liquidity(series_by_id, generated_at)
     write_json(data_dir() / "derived" / "net_liquidity.json", net_liquidity)
     series_by_id["net_liquidity"] = net_liquidity
 
     if "brent_crude" in series_by_id and "wti_crude" in series_by_id:
+        brent_wti_spread = build_matched_spread(
+            "brent_crude",
+            "wti_crude",
+            "brent_wti_spread",
+            generated_at,
+            "usd_per_barrel",
+            "Brent crude spot price minus WTI crude spot price by matched observation date.",
+        )
         write_json(
             data_dir() / "derived" / "brent_wti_spread.json",
-            build_matched_spread(
-                "brent_crude",
-                "wti_crude",
-                "brent_wti_spread",
-                generated_at,
-                "usd_per_barrel",
-                "Brent crude spot price minus WTI crude spot price by matched observation date.",
-            ),
+            brent_wti_spread,
         )
+        series_by_id["brent_wti_spread"] = brent_wti_spread
 
     buckets = {
         "volatility": score_volatility(series_by_id),
