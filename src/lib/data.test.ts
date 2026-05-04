@@ -62,6 +62,20 @@ describe("data loaders", () => {
 
     expect(fetchMock).toHaveBeenCalledWith("/data/series/us10y.json");
   });
+
+  it("loads phase 3 static JSON contracts from safe data paths", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ generated_at_utc: "2026-05-04T00:00:00Z" })
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await loadScoreSummary();
+    await loadSourceRegistry();
+
+    expect(fetchMock).toHaveBeenCalledWith("/data/derived/score_summary.json");
+    expect(fetchMock).toHaveBeenCalledWith("/data/catalog/source_registry.json");
+  });
 });
 
 test("type contracts support monthly public data and update metadata", () => {
@@ -179,18 +193,4 @@ test("type contracts support phase 3 source governance and score summary", () =>
   expect(catalogEntry.score_status).toBe("active");
   expect(registry.fred.terms_status).toBe("review_each_series");
   expect(scoreSummary.scores.market_weather.confidence).toBe(0.82);
-});
-
-test("loads phase 3 static JSON contracts from safe data paths", async () => {
-  fetchMock.mockResolvedValue({
-    ok: true,
-    json: vi.fn().mockResolvedValue({ generated_at_utc: "2026-05-04T00:00:00Z" })
-  });
-  vi.stubGlobal("fetch", fetchMock);
-
-  await loadScoreSummary();
-  await loadSourceRegistry();
-
-  expect(fetchMock).toHaveBeenCalledWith("/data/derived/score_summary.json");
-  expect(fetchMock).toHaveBeenCalledWith("/data/catalog/source_registry.json");
 });

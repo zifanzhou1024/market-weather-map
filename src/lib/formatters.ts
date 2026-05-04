@@ -29,7 +29,9 @@ export function statusLabel(status: DataStatus): string {
     ok: "OK",
     stale: "Stale",
     partial: "Partial",
-    failed: "Failed"
+    failed: "Failed",
+    terms_review_needed: "Terms Review Needed",
+    unavailable: "Unavailable"
   };
   return labels[status];
 }
