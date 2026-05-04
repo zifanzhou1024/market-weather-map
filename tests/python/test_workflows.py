@@ -32,3 +32,13 @@ def test_update_workflow_uses_safe_update_runner() -> None:
 
     assert "python -m scripts.update_data" in text
     assert "python -m scripts.ingest.fetch_cboe" not in text
+
+
+def test_update_workflow_publishes_failed_status_before_failing() -> None:
+    text = workflow_text()
+
+    assert "id: data-update" in text
+    assert "continue-on-error: true" in text
+    assert text.count("if: always()") >= 7
+    assert "steps.data-update.outcome == 'failure'" in text
+    assert "exit 1" in text
