@@ -20,9 +20,11 @@ REQUIRED_SERIES_FIELDS = {
 }
 REQUIRED_GENERATED_FILES = [
     data_dir() / "catalog" / "series_catalog.json",
+    data_dir() / "catalog" / "source_registry.json",
     data_dir() / "derived" / "us10y_minus_us2y.json",
     data_dir() / "derived" / "brent_wti_spread.json",
     data_dir() / "derived" / "net_liquidity.json",
+    data_dir() / "derived" / "score_summary.json",
     data_dir() / "derived" / "bucket_scores.json",
     data_dir() / "derived" / "regime_score.json",
     data_dir() / "status" / "data_status.json",
@@ -90,6 +92,24 @@ def validate_generated_files() -> None:
         _load_json(path)
 
 
+def validate_score_summary_file() -> None:
+    path = data_dir() / "derived" / "score_summary.json"
+    payload = _load_json(path)
+    scores = payload.get("scores")
+    if not isinstance(scores, dict) or set(scores) != {"market_weather", "macro_climate", "fragility"}:
+        raise ValueError(f"{path} must contain exactly market_weather, macro_climate, and fragility scores")
+
+    for score_key, block in scores.items():
+        if not isinstance(block, dict):
+            raise ValueError(f"{path} {score_key} score block must be an object")
+        if not isinstance(block.get("score"), int | float) or isinstance(block.get("score"), bool):
+            raise ValueError(f"{path} {score_key}.score must be numeric")
+        if not isinstance(block.get("confidence"), int | float) or isinstance(block.get("confidence"), bool):
+            raise ValueError(f"{path} {score_key}.confidence must be numeric")
+        if not isinstance(block.get("top_risks"), list):
+            raise ValueError(f"{path} {score_key}.top_risks must be a list")
+
+
 def validate_status_file() -> None:
     path = data_dir() / "status" / "data_status.json"
     payload = _load_json(path)
@@ -107,6 +127,7 @@ def main() -> None:
     for entry in available_catalog_entries():
         validate_series_file(str(entry["id"]))
     validate_generated_files()
+    validate_score_summary_file()
     validate_status_file()
 
 

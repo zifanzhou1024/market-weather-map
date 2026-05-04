@@ -1,5 +1,6 @@
 from scripts.transform import compute_regime_score
 from scripts.transform import compute_percentiles
+from scripts.validate import validate_schema
 from scripts.transform.compute_percentiles import (
     change_offsets,
     enrich_observations,
@@ -535,3 +536,87 @@ def test_build_status_includes_derived_series_rows(monkeypatch):
     assert status["series"]["net_liquidity"]["source"] == "Derived"
     assert status["series"]["net_liquidity"]["expected_frequency"] == "weekly"
     assert status["series"]["net_liquidity"]["max_stale_days"] == 14
+
+
+def _summary(
+    latest_value=100.0,
+    change_1m=0.0,
+    percentile_252d=50.0,
+    latest_date="2026-05-01",
+):
+    return {
+        "summary": {
+            "latest_date": latest_date,
+            "latest_value": latest_value,
+            "change_1m": change_1m,
+            "change_3m": change_1m * 2,
+            "change_12m": change_1m * 4,
+            "percentile_252d": percentile_252d,
+        }
+    }
+
+
+def test_build_score_summary_returns_three_scores_with_specific_drivers():
+    series = {
+        "vix": _summary(latest_value=24.0, change_1m=4.0, percentile_252d=80.0),
+        "vix_vix3m_ratio": _summary(latest_value=1.1, change_1m=0.08, percentile_252d=75.0),
+        "us10y": _summary(latest_value=4.7, change_1m=0.25, percentile_252d=70.0),
+        "real_yield_10y": _summary(latest_value=2.2, change_1m=0.3, percentile_252d=85.0),
+        "fed_assets": _summary(latest_value=7400000.0, change_1m=-50000.0, percentile_252d=45.0),
+        "reverse_repo": _summary(latest_value=450.0, change_1m=30.0, percentile_252d=55.0),
+        "sofr": _summary(latest_value=5.3, change_1m=0.05, percentile_252d=70.0),
+        "net_liquidity": _summary(latest_value=5700000.0, change_1m=-120000.0, percentile_252d=35.0),
+        "high_yield_oas": _summary(latest_value=4.4, change_1m=0.45, percentile_252d=76.0),
+        "investment_grade_oas": _summary(latest_value=1.4, change_1m=0.05, percentile_252d=60.0),
+        "hy_minus_ig_oas": _summary(latest_value=3.0, change_1m=0.4, percentile_252d=78.0),
+        "financial_stress": _summary(latest_value=0.2, change_1m=0.1, percentile_252d=65.0),
+        "financial_conditions": _summary(latest_value=0.1, change_1m=0.05, percentile_252d=55.0),
+        "wti_crude": _summary(latest_value=84.0, change_1m=6.0, percentile_252d=70.0),
+        "brent_crude": _summary(latest_value=88.0, change_1m=5.0, percentile_252d=68.0),
+        "corn_price": _summary(latest_value=480.0, change_1m=15.0, percentile_252d=65.0),
+        "wheat_price": _summary(latest_value=620.0, change_1m=20.0, percentile_252d=66.0),
+        "soybean_price": _summary(latest_value=1280.0, change_1m=30.0, percentile_252d=60.0),
+        "commodity_inflation_impulse": _summary(latest_value=-35.0, change_1m=-10.0, percentile_252d=70.0),
+        "broad_dollar": _summary(latest_value=106.0, change_1m=2.0, percentile_252d=80.0),
+        "cftc_sp500_asset_mgr_net": _summary(latest_value=120000.0, change_1m=10000.0, percentile_252d=88.0),
+        "cftc_sp500_lev_money_net": _summary(latest_value=80000.0, change_1m=15000.0, percentile_252d=92.0),
+        "real_gdp": _summary(latest_value=2.0, change_1m=-0.2, percentile_252d=55.0),
+        "payrolls": _summary(latest_value=175000.0, change_1m=-50000.0, percentile_252d=45.0),
+        "unemployment_rate": _summary(latest_value=4.1, change_1m=0.2, percentile_252d=65.0),
+        "cpi": _summary(latest_value=3.4, change_1m=0.1, percentile_252d=70.0),
+        "pce": _summary(latest_value=3.1, change_1m=0.1, percentile_252d=68.0),
+        "consumer_sentiment": _summary(latest_value=72.0, change_1m=-3.0, percentile_252d=40.0),
+        "retail_sales": _summary(latest_value=705000.0, change_1m=-2000.0, percentile_252d=45.0),
+        "industrial_production": _summary(latest_value=103.0, change_1m=-0.3, percentile_252d=42.0),
+        "pmi": _summary(latest_value=49.0, change_1m=-1.0, percentile_252d=38.0),
+    }
+
+    summary = compute_regime_score.build_score_summary(series, "2026-05-04T00:00:00Z")
+
+    assert summary["method_version"] == "phase3-three-score-v1"
+    assert set(summary["scores"]) == {"market_weather", "macro_climate", "fragility"}
+    assert "High-yield spreads widened over the past month." in summary["scores"]["market_weather"]["top_risks"]
+    assert summary["scores"]["macro_climate"]["confidence"] < 1.0
+    assert "Housing is not active in Phase 3." in summary["scores"]["macro_climate"]["missing_or_stale_notes"]
+    assert summary["data_quality"]["overall_confidence"] <= 1.0
+    assert "Housing is not active in Phase 3." in summary["data_quality"]["reasons"]
+
+
+def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monkeypatch):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    (derived / "score_summary.json").write_text(
+        """
+        {
+          "scores": {
+            "market_weather": {"score": -1, "confidence": 0.9, "top_risks": []},
+            "macro_climate": {"score": 2, "confidence": 0.8, "top_risks": ["Housing is not active in Phase 3."]},
+            "fragility": {"score": -3, "confidence": 0.7, "top_risks": []}
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    validate_schema.validate_score_summary_file()

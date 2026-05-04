@@ -8,6 +8,12 @@ from typing import Any
 from scripts.shared.catalog import available_catalog_entries
 from scripts.shared.io import data_dir, series_path, write_json
 from scripts.transform.compute_percentiles import enrich_observations, series_summary
+from scripts.transform.score_models import (
+    ScoreDriver,
+    label_for_three_score,
+    score_block,
+    weighted_score as weighted_three_score,
+)
 
 
 WEIGHTS = {
@@ -18,7 +24,7 @@ WEIGHTS = {
     "commodities": 0.10,
     "sentiment": 0.15,
 }
-METHOD_VERSION = "phase2-public-data-v1"
+METHOD_VERSION = "phase3-three-score-v1"
 DERIVED_STATUS_METADATA = {
     "us10y_minus_us2y": {"max_stale_days": 7},
     "brent_wti_spread": {"max_stale_days": 10},
@@ -414,8 +420,418 @@ def label_for_score(score: float) -> str:
     return "Supportive"
 
 
+def _latest_dates(series_by_id: dict[str, dict[str, Any]]) -> list[str]:
+    return [
+        latest_summary(series).get("latest_date")
+        for series in series_by_id.values()
+        if isinstance(latest_summary(series).get("latest_date"), str)
+    ]
+
+
 def _title(name: str) -> str:
     return name.replace("_", " ").title()
+
+
+def _summary_for_first(
+    series_by_id: dict[str, dict[str, Any]], series_ids: list[str]
+) -> tuple[str | None, dict[str, Any]]:
+    for series_id in series_ids:
+        if series_id in series_by_id:
+            return series_id, latest_summary(series_by_id[series_id])
+    return None, {}
+
+
+def _number_from_summary(summary: dict[str, Any], key: str) -> float | None:
+    value = summary.get(key)
+    if _finite_number(value):
+        return float(value)
+    return None
+
+
+def _score_inverse_percentile_for_first(
+    series_by_id: dict[str, dict[str, Any]], series_ids: list[str]
+) -> float | None:
+    _, summary = _summary_for_first(series_by_id, series_ids)
+    percentile = _number_from_summary(summary, "percentile_252d")
+    if percentile is None:
+        return None
+    return clamp(100 - (percentile * 2))
+
+
+def _score_supportive_percentile_for_first(
+    series_by_id: dict[str, dict[str, Any]], series_ids: list[str]
+) -> float | None:
+    _, summary = _summary_for_first(series_by_id, series_ids)
+    percentile = _number_from_summary(summary, "percentile_252d")
+    if percentile is None:
+        return None
+    return clamp((percentile * 2) - 100)
+
+
+def _score_average(values: list[float | None]) -> float | None:
+    valid = [value for value in values if value is not None]
+    if not valid:
+        return None
+    return clamp(sum(valid) / len(valid))
+
+
+def _series_driver(
+    bucket: str,
+    direction: str,
+    impact: float,
+    text: str,
+    series_id: str | None,
+    summary: dict[str, Any],
+) -> ScoreDriver:
+    return ScoreDriver(
+        bucket=bucket,
+        direction="support" if direction == "support" else "risk",
+        impact=impact,
+        text=text,
+        series_id=series_id or bucket,
+        latest_value=_number_from_summary(summary, "latest_value"),
+        recent_change=_number_from_summary(summary, "change_1m"),
+    )
+
+
+def _append_driver_for_score(
+    drivers: list[ScoreDriver],
+    bucket: str,
+    score: float | None,
+    series_id: str | None,
+    summary: dict[str, Any],
+    support_text: str,
+    risk_text: str,
+    threshold: float = 5.0,
+) -> None:
+    if score is None:
+        return
+    if score <= -threshold:
+        drivers.append(_series_driver(bucket, "risk", score, risk_text, series_id, summary))
+    elif score >= threshold:
+        drivers.append(_series_driver(bucket, "support", score, support_text, series_id, summary))
+
+
+def _safe_score_credit(series_by_id: dict[str, dict[str, Any]]) -> float:
+    if {"financial_stress", "financial_conditions"} <= set(series_by_id):
+        return score_credit(series_by_id)
+    credit_score = _score_average(
+        [
+            _score_inverse_percentile_for_first(series_by_id, ["high_yield_oas"]),
+            _score_inverse_percentile_for_first(series_by_id, ["investment_grade_oas"]),
+            _score_inverse_percentile_for_first(series_by_id, ["hy_minus_ig_oas"]),
+        ]
+    )
+    return credit_score if credit_score is not None else 0.0
+
+
+def _safe_score_commodities(series_by_id: dict[str, dict[str, Any]]) -> float:
+    commodity_ids = {"wti_crude", "brent_crude", "corn_price", "wheat_price", "soybean_price"}
+    if commodity_ids & set(series_by_id):
+        return score_commodities(series_by_id)
+    return 0.0
+
+
+def _safe_score_sentiment(series_by_id: dict[str, dict[str, Any]]) -> float:
+    if {"cftc_sp500_asset_mgr_net", "cftc_sp500_lev_money_net"} <= set(series_by_id):
+        return score_sentiment(series_by_id)
+    return 0.0
+
+
+def _market_weather_scores(series_by_id: dict[str, dict[str, Any]]) -> dict[str, float]:
+    return {
+        "volatility": score_volatility(series_by_id) if "vix" in series_by_id else 0.0,
+        "rates": score_rates(series_by_id) if "us10y" in series_by_id else 0.0,
+        "liquidity": score_liquidity(series_by_id)
+        if {"reverse_repo"} <= set(series_by_id)
+        else 0.0,
+        "credit": _safe_score_credit(series_by_id),
+        "commodities": _safe_score_commodities(series_by_id),
+        "sentiment": _safe_score_sentiment(series_by_id),
+    }
+
+
+def _market_weather_drivers(series_by_id: dict[str, dict[str, Any]]) -> list[ScoreDriver]:
+    drivers: list[ScoreDriver] = []
+
+    series_id, summary = _summary_for_first(series_by_id, ["high_yield_oas", "hy_minus_ig_oas"])
+    credit_score = _score_inverse_percentile_for_first(series_by_id, ["high_yield_oas", "hy_minus_ig_oas"])
+    change_1m = _number_from_summary(summary, "change_1m")
+    if series_id is not None and change_1m is not None and change_1m > 0:
+        drivers.append(
+            _series_driver(
+                "credit",
+                "risk",
+                credit_score if credit_score is not None and credit_score < 0 else -20.0,
+                "High-yield spreads widened over the past month.",
+                series_id,
+                summary,
+            )
+        )
+    else:
+        _append_driver_for_score(
+            drivers,
+            "credit",
+            credit_score,
+            series_id,
+            summary,
+            "High-yield spreads tightened over the past month.",
+            "High-yield spreads are elevated.",
+        )
+
+    series_id, summary = _summary_for_first(series_by_id, ["net_liquidity"])
+    liquidity_score = _score_supportive_percentile_for_first(series_by_id, ["net_liquidity"])
+    _append_driver_for_score(
+        drivers,
+        "liquidity",
+        liquidity_score,
+        series_id,
+        summary,
+        "Net liquidity is improving.",
+        "Net liquidity is draining.",
+    )
+
+    series_id, summary = _summary_for_first(series_by_id, ["vix"])
+    _append_driver_for_score(
+        drivers,
+        "volatility",
+        _score_inverse_percentile_for_first(series_by_id, ["vix"]),
+        series_id,
+        summary,
+        "Equity volatility is contained.",
+        "Equity volatility is elevated.",
+    )
+
+    series_id, summary = _summary_for_first(series_by_id, ["real_yield_10y", "us10y"])
+    _append_driver_for_score(
+        drivers,
+        "rates",
+        _score_inverse_percentile_for_first(series_by_id, ["real_yield_10y", "us10y"]),
+        series_id,
+        summary,
+        "Real yields are easing.",
+        "Real yields are elevated.",
+    )
+
+    return drivers
+
+
+def _macro_climate_scores(series_by_id: dict[str, dict[str, Any]]) -> dict[str, float]:
+    return {
+        "growth": _score_average(
+            [
+                _score_supportive_percentile_for_first(series_by_id, ["real_gdp"]),
+            ]
+        )
+        or 0.0,
+        "labor": _score_average(
+            [
+                _score_supportive_percentile_for_first(series_by_id, ["nonfarm_payrolls", "payrolls"]),
+                _score_inverse_percentile_for_first(series_by_id, ["unemployment_rate"]),
+            ]
+        )
+        or 0.0,
+        "inflation": _score_average(
+            [
+                _score_inverse_percentile_for_first(series_by_id, ["headline_cpi", "cpi"]),
+                _score_inverse_percentile_for_first(series_by_id, ["core_cpi"]),
+                _score_inverse_percentile_for_first(series_by_id, ["core_pce", "pce"]),
+            ]
+        )
+        or 0.0,
+        "consumer": _score_average(
+            [
+                _score_supportive_percentile_for_first(series_by_id, ["consumer_sentiment"]),
+                _score_supportive_percentile_for_first(series_by_id, ["retail_sales"]),
+            ]
+        )
+        or 0.0,
+        "production": _score_average(
+            [
+                _score_supportive_percentile_for_first(series_by_id, ["industrial_production"]),
+                _score_supportive_percentile_for_first(series_by_id, ["ism_manufacturing_pmi", "pmi"]),
+            ]
+        )
+        or 0.0,
+    }
+
+
+def _macro_climate_drivers(series_by_id: dict[str, dict[str, Any]]) -> list[ScoreDriver]:
+    drivers: list[ScoreDriver] = []
+    for bucket, series_ids, support_text, risk_text, inverse in [
+        ("growth", ["real_gdp"], "Growth inputs are supportive.", "Growth inputs are softening.", False),
+        (
+            "labor",
+            ["nonfarm_payrolls", "payrolls"],
+            "Labor inputs remain supportive.",
+            "Labor inputs are cooling.",
+            False,
+        ),
+        (
+            "inflation",
+            ["core_pce", "pce", "headline_cpi", "cpi"],
+            "Inflation pressure is easing.",
+            "Inflation pressure remains elevated.",
+            True,
+        ),
+        (
+            "consumer",
+            ["consumer_sentiment", "retail_sales"],
+            "Consumer inputs are firm.",
+            "Consumer inputs are weakening.",
+            False,
+        ),
+        (
+            "production",
+            ["industrial_production", "ism_manufacturing_pmi", "pmi"],
+            "Production inputs are firm.",
+            "Production inputs are weakening.",
+            False,
+        ),
+    ]:
+        series_id, summary = _summary_for_first(series_by_id, series_ids)
+        score = (
+            _score_inverse_percentile_for_first(series_by_id, series_ids)
+            if inverse
+            else _score_supportive_percentile_for_first(series_by_id, series_ids)
+        )
+        _append_driver_for_score(drivers, bucket, score, series_id, summary, support_text, risk_text)
+    return drivers
+
+
+def _fragility_scores(series_by_id: dict[str, dict[str, Any]]) -> dict[str, float]:
+    liquidity_score = _score_supportive_percentile_for_first(series_by_id, ["net_liquidity"])
+    return {
+        "credit_spread_widening": _score_inverse_percentile_for_first(
+            series_by_id, ["hy_minus_ig_oas", "high_yield_oas"]
+        )
+        or 0.0,
+        "volatility_term_structure": _score_inverse_percentile_for_first(
+            series_by_id, ["vix_vix3m_ratio", "vix9d_vix_ratio"]
+        )
+        or 0.0,
+        "dollar_spike": _score_inverse_percentile_for_first(series_by_id, ["broad_dollar"]) or 0.0,
+        "liquidity_drain": liquidity_score if liquidity_score is not None else 0.0,
+        "positioning_crowding": _safe_score_sentiment(series_by_id),
+        "treasury_bond_volatility": 0.0,
+    }
+
+
+def _fragility_drivers(series_by_id: dict[str, dict[str, Any]]) -> list[ScoreDriver]:
+    drivers: list[ScoreDriver] = []
+    for bucket, series_ids, support_text, risk_text in [
+        (
+            "credit_spread_widening",
+            ["hy_minus_ig_oas", "high_yield_oas"],
+            "Credit spread pressure is contained.",
+            "Credit spread pressure is widening.",
+        ),
+        (
+            "volatility_term_structure",
+            ["vix_vix3m_ratio", "vix9d_vix_ratio"],
+            "Volatility term structure is calm.",
+            "Volatility term structure is inverted.",
+        ),
+        ("dollar_spike", ["broad_dollar"], "The dollar backdrop is easing.", "The broad dollar is spiking."),
+        (
+            "liquidity_drain",
+            ["net_liquidity"],
+            "Liquidity drains are limited.",
+            "Liquidity drains are visible.",
+        ),
+    ]:
+        series_id, summary = _summary_for_first(series_by_id, series_ids)
+        score = _score_inverse_percentile_for_first(series_by_id, series_ids)
+        if bucket == "liquidity_drain":
+            score = _score_supportive_percentile_for_first(series_by_id, series_ids)
+        _append_driver_for_score(drivers, bucket, score, series_id, summary, support_text, risk_text)
+    return drivers
+
+
+def build_score_summary(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> dict[str, Any]:
+    market_buckets = _market_weather_scores(series_by_id)
+    macro_buckets = _macro_climate_scores(series_by_id)
+    fragility_buckets = _fragility_scores(series_by_id)
+
+    market_weights = WEIGHTS
+    macro_weights = {
+        "growth": 0.25,
+        "labor": 0.25,
+        "inflation": 0.20,
+        "consumer": 0.15,
+        "production": 0.15,
+    }
+    fragility_weights = {
+        "credit_spread_widening": 0.25,
+        "volatility_term_structure": 0.20,
+        "dollar_spike": 0.15,
+        "liquidity_drain": 0.15,
+        "positioning_crowding": 0.15,
+        "treasury_bond_volatility": 0.10,
+    }
+
+    market_score = weighted_three_score(market_buckets, market_weights)
+    macro_score = weighted_three_score(macro_buckets, macro_weights)
+    fragility_score = weighted_three_score(fragility_buckets, fragility_weights)
+
+    macro_notes = ["Housing is not active in Phase 3."]
+    fragility_notes = ["Treasury/bond volatility source is not active."]
+
+    market_block = score_block(
+        market_score,
+        label_for_three_score(market_score, "market_weather"),
+        market_buckets,
+        market_weights,
+        _market_weather_drivers(series_by_id),
+        [],
+        [],
+    )
+    macro_block = score_block(
+        macro_score,
+        label_for_three_score(macro_score, "macro_climate"),
+        macro_buckets,
+        macro_weights,
+        _macro_climate_drivers(series_by_id),
+        [],
+        macro_notes,
+    )
+    fragility_block = score_block(
+        fragility_score,
+        label_for_three_score(fragility_score, "fragility"),
+        fragility_buckets,
+        fragility_weights,
+        _fragility_drivers(series_by_id),
+        [],
+        fragility_notes,
+    )
+
+    latest_dates = _latest_dates(series_by_id)
+    latest_date = max(latest_dates) if latest_dates else generated_at[:10]
+    quality_reasons = sorted(set(macro_notes + fragility_notes))
+    overall_confidence = round(
+        (
+            float(market_block["confidence"])
+            + float(macro_block["confidence"])
+            + float(fragility_block["confidence"])
+        )
+        / 3,
+        2,
+    )
+
+    return {
+        "generated_at_utc": generated_at,
+        "date": latest_date,
+        "method_version": METHOD_VERSION,
+        "scores": {
+            "market_weather": market_block,
+            "macro_climate": macro_block,
+            "fragility": fragility_block,
+        },
+        "data_quality": {
+            "overall_confidence": overall_confidence,
+            "reasons": quality_reasons,
+        },
+    }
 
 
 def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_at: str) -> dict[str, Any]:
@@ -565,21 +981,14 @@ def main() -> None:
         )
         series_by_id["commodity_inflation_impulse"] = commodity_inflation_impulse
 
-    buckets = {
-        "volatility": score_volatility(series_by_id),
-        "rates": score_rates(series_by_id),
-        "liquidity": score_liquidity(series_by_id),
-        "credit": score_credit(series_by_id),
-        "commodities": score_commodities(series_by_id),
-        "sentiment": score_sentiment(series_by_id),
-    }
-    overall_score = weighted_score(buckets, WEIGHTS)
-    latest_dates = [
-        latest_summary(series).get("latest_date")
-        for series in series_by_id.values()
-        if isinstance(latest_summary(series).get("latest_date"), str)
-    ]
-    latest_date = max(latest_dates)
+    score_summary = build_score_summary(series_by_id, generated_at)
+    write_json(data_dir() / "derived" / "score_summary.json", score_summary)
+
+    market_weather = score_summary["scores"]["market_weather"]
+    buckets = dict(market_weather["bucket_scores"])
+    weights = dict(market_weather["bucket_weights"])
+    overall_score = float(market_weather["score"])
+    latest_date = str(score_summary["date"])
 
     write_json(
         data_dir() / "derived" / "bucket_scores.json",
@@ -588,21 +997,20 @@ def main() -> None:
             "date": latest_date,
             "method_version": METHOD_VERSION,
             "buckets": buckets,
-            "weights": WEIGHTS,
+            "weights": weights,
         },
     )
 
-    ordered = sorted(buckets.items(), key=lambda item: item[1])
     write_json(
         data_dir() / "derived" / "regime_score.json",
         {
             "date": latest_date,
             "generated_at_utc": generated_at,
             "overall_score": overall_score,
-            "label": label_for_score(overall_score),
+            "label": str(market_weather["label"]),
             "buckets": buckets,
-            "top_supports": [_title(name) for name, score in reversed(ordered) if score > 0][:3],
-            "top_risks": [_title(name) for name, score in ordered if score < 0][:3],
+            "top_supports": list(market_weather["top_supports"]),
+            "top_risks": list(market_weather["top_risks"]),
             "method_version": METHOD_VERSION,
         },
     )
