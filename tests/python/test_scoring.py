@@ -42,6 +42,28 @@ def test_series_summary_calculates_latest_value_and_changes():
     assert summary["change_1w"] == 9.0
 
 
+def test_series_summary_empty_includes_longer_horizon_changes():
+    summary = series_summary([])
+
+    assert summary["change_3m"] is None
+    assert summary["change_12m"] is None
+
+
+def test_series_summary_daily_longer_horizon_changes_use_trading_day_offsets():
+    observations = [
+        {
+            "date": f"2025-{((index - 1) // 21) + 1:02d}-{((index - 1) % 21) + 1:02d}",
+            "value": float(index),
+        }
+        for index in range(1, 211)
+    ]
+
+    summary = series_summary(observations, frequency="daily")
+
+    assert summary["change_3m"] == 63.0
+    assert summary["change_12m"] is None
+
+
 def test_series_summary_weekly_uses_weekly_offsets():
     observations = [
         {"date": "2026-04-03", "value": 100.0},
@@ -72,7 +94,25 @@ def test_series_summary_daily_preserves_daily_offsets():
 
 
 def test_monthly_change_offsets_use_observation_steps():
-    assert change_offsets("monthly") == {"change_1d": 1, "change_1w": 1, "change_1m": 1}
+    assert change_offsets("monthly") == {
+        "change_1d": 1,
+        "change_1w": 1,
+        "change_1m": 1,
+        "change_3m": 3,
+        "change_12m": 12,
+    }
+
+
+def test_series_summary_monthly_longer_horizon_changes_use_month_offsets():
+    observations = [
+        {"date": f"2025-{month:02d}-01", "value": float(month)}
+        for month in range(1, 13)
+    ] + [{"date": "2026-01-01", "value": 20.0}]
+
+    summary = series_summary(observations, frequency="monthly")
+
+    assert summary["change_3m"] == 10.0
+    assert summary["change_12m"] == 19.0
 
 
 def test_percentile_window_for_frequency_uses_annual_observation_counts():

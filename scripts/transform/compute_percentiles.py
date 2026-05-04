@@ -26,10 +26,28 @@ def change_from_index(observations: list[dict[str, Any]], offset: int) -> float 
 
 def change_offsets(frequency: str = "daily") -> dict[str, int]:
     if frequency == "weekly":
-        return {"change_1d": 1, "change_1w": 1, "change_1m": 4}
+        return {
+            "change_1d": 1,
+            "change_1w": 1,
+            "change_1m": 4,
+            "change_3m": 13,
+            "change_12m": 52,
+        }
     if frequency == "monthly":
-        return {"change_1d": 1, "change_1w": 1, "change_1m": 1}
-    return {"change_1d": 1, "change_1w": 5, "change_1m": 21}
+        return {
+            "change_1d": 1,
+            "change_1w": 1,
+            "change_1m": 1,
+            "change_3m": 3,
+            "change_12m": 12,
+        }
+    return {
+        "change_1d": 1,
+        "change_1w": 5,
+        "change_1m": 21,
+        "change_3m": 63,
+        "change_12m": 252,
+    }
 
 
 def percentile_window_for_frequency(frequency: str = "daily") -> int:
@@ -48,6 +66,8 @@ def series_summary(observations: list[dict[str, Any]], frequency: str = "daily")
             "change_1d": None,
             "change_1w": None,
             "change_1m": None,
+            "change_3m": None,
+            "change_12m": None,
             "percentile_252d": None,
         }
 
@@ -74,6 +94,8 @@ def series_summary(observations: list[dict[str, Any]], frequency: str = "daily")
         "change_1d": change_from_index(observations, offsets["change_1d"]),
         "change_1w": change_from_index(observations, offsets["change_1w"]),
         "change_1m": change_from_index(observations, offsets["change_1m"]),
+        "change_3m": change_from_index(observations, offsets["change_3m"]),
+        "change_12m": change_from_index(observations, offsets["change_12m"]),
         "percentile_252d": percentile,
     }
 
