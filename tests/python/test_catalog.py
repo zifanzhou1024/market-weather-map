@@ -51,3 +51,27 @@ def test_checked_in_catalog_artifact_includes_phase2_metadata():
 
     assert "wti_crude" in entries
     assert "cftc_sp500_asset_mgr_net" in entries
+
+
+def test_catalog_entries_include_phase3_governance_fields():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    vix = entries["vix"]
+    assert vix["provider_id"] == "cboe"
+    assert vix["access_status"] == "free_public"
+    assert vix["terms_status"] == "ok"
+    assert vix["score_status"] == "active"
+    assert isinstance(vix["citation_notes"], str)
+
+
+def test_catalog_can_include_candidate_sources_without_making_them_available(tmp_path, monkeypatch):
+    series_dir = tmp_path / "series"
+    series_dir.mkdir()
+    monkeypatch.setattr(catalog_module, "data_dir", lambda: tmp_path, raising=False)
+
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+    assert entries["ism_manufacturing_pmi"]["score_status"] == "candidate"
+    assert entries["ism_manufacturing_pmi"]["access_status"] == "terms_review_needed"
+    assert "ism_manufacturing_pmi" not in {
+        str(entry["id"]) for entry in catalog_module.available_catalog_entries()
+    }

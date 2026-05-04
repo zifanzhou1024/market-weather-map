@@ -3,6 +3,24 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from scripts.shared.io import data_dir
+from scripts.shared.source_registry import source_registry_entries
+
+
+def governance(
+    provider_id: str,
+    score_status: str = "active",
+    access_status: str | None = None,
+    terms_status: str | None = None,
+    citation_notes: str | None = None,
+) -> dict[str, object]:
+    registry = source_registry_entries()[provider_id]
+    return {
+        "provider_id": provider_id,
+        "access_status": access_status or str(registry["access_status"]),
+        "terms_status": terms_status or str(registry["terms_status"]),
+        "score_status": score_status,
+        "citation_notes": citation_notes or str(registry["notes"]),
+    }
 
 
 CBOE_VIX = {
@@ -18,6 +36,7 @@ CBOE_VIX = {
     "public": True,
     "max_stale_days": 7,
     "notes": "Daily VIX close from Cboe public historical data.",
+    **governance("cboe", citation_notes="Cboe public historical index data; displayed with source caveats."),
 }
 
 
@@ -216,6 +235,40 @@ CFTC_POSITIONING_SERIES = [
 ]
 
 
+CANDIDATE_SERIES = [
+    {
+        "id": "ism_manufacturing_pmi",
+        "name": "ISM Manufacturing PMI",
+        "category": "growth",
+        "source": "ISM",
+        "source_url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/",
+        "endpoint_url": None,
+        "frequency": "monthly",
+        "units": "index",
+        "higher_is": "contextual",
+        "public": False,
+        "max_stale_days": 45,
+        "notes": "Candidate fast growth input; requires terms and redistribution review before automated ingestion.",
+        **governance("terms_review", score_status="candidate"),
+    },
+    {
+        "id": "move_index",
+        "name": "MOVE Index",
+        "category": "volatility",
+        "source": "ICE",
+        "source_url": "https://developer.ice.com/fixed-income-data-services/catalog/ice-data-indices-move-index",
+        "endpoint_url": None,
+        "frequency": "daily",
+        "units": "index",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Treasury volatility input; not active because automated access and redistribution need review.",
+        **governance("terms_review", score_status="candidate"),
+    },
+]
+
+
 def fred_endpoint(fred_id: str) -> str:
     return f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
 
@@ -241,6 +294,13 @@ def catalog_entries() -> list[dict[str, object]]:
                 "public": True,
                 "max_stale_days": series["max_stale_days"],
                 "notes": series["notes"],
+                **governance(
+                    "fred",
+                    score_status=str(series.get("score_status", "active")),
+                    access_status=str(series.get("access_status", "free_public")),
+                    terms_status=str(series.get("terms_status", "review_each_series")),
+                    citation_notes=str(series.get("citation_notes", "FRED graph CSV endpoint; review source-specific citation and copyright fields.")),
+                ),
             }
         )
     for series in CFTC_POSITIONING_SERIES:
@@ -258,8 +318,10 @@ def catalog_entries() -> list[dict[str, object]]:
                 "public": True,
                 "max_stale_days": series["max_stale_days"],
                 "notes": series["notes"],
+                **governance("cftc", citation_notes="Public CFTC historical compressed report transformed into derived positioning context."),
             }
         )
+    entries.extend([series.copy() for series in CANDIDATE_SERIES])
     return entries
 
 

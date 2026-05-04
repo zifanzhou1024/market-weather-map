@@ -4,6 +4,7 @@ import json
 
 from scripts.shared.catalog import catalog_entries
 from scripts.shared.io import data_dir, parse_float, series_path, write_json
+from scripts.shared.source_registry import source_registry_entries
 
 
 def normalize_observations(observations: list[dict[str, object]]) -> list[dict[str, object]]:
@@ -19,6 +20,7 @@ def normalize_observations(observations: list[dict[str, object]]) -> list[dict[s
 
 def main() -> None:
     entries = catalog_entries()
+    write_json(data_dir() / "catalog" / "source_registry.json", source_registry_entries())
     write_json(data_dir() / "catalog" / "series_catalog.json", entries)
 
     for entry in entries:
