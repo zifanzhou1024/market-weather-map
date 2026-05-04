@@ -128,19 +128,6 @@ const catalog: SeriesCatalogEntry[] = [
     units: "percent"
   },
   {
-    category: "liquidity",
-    frequency: "weekly",
-    higher_is: "supportive",
-    id: "net_liquidity",
-    max_stale_days: 14,
-    name: "Net liquidity proxy",
-    notes: "Fed assets less RRP and Treasury General Account.",
-    public: true,
-    source: "FRED",
-    source_url: "https://example.com/net-liquidity",
-    units: "USD billions"
-  },
-  {
     category: "credit",
     frequency: "weekly",
     higher_is: "riskier",
@@ -483,6 +470,7 @@ describe("data-backed routes", () => {
     const container = render(<Overview />);
     await waitForContent(container, "Net liquidity proxy");
 
+    expect(container.textContent).toContain("Net liquidity proxy");
     expect(container.textContent).toContain("6,123.00 USD billions");
   });
 

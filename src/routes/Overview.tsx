@@ -35,6 +35,32 @@ function titleCaseBucket(bucket: string) {
     .join(" ");
 }
 
+function netLiquidityCatalogEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
+  return {
+    category: "liquidity",
+    frequency: series.frequency,
+    higher_is: "supportive",
+    id: series.series_id,
+    max_stale_days: 14,
+    name: "Net liquidity proxy",
+    notes: series.method,
+    public: true,
+    source: series.source,
+    source_url: series.source_url,
+    units: series.units
+  };
+}
+
+function catalogEntryForSeries(
+  catalog: SeriesCatalogEntry[],
+  series: TimeSeriesFile | DerivedSeriesFile
+): SeriesCatalogEntry | undefined {
+  const catalogEntry = catalog.find((entry) => entry.id === series.series_id);
+  if (catalogEntry) return catalogEntry;
+  if (series.series_id === "net_liquidity" && "method" in series) return netLiquidityCatalogEntry(series);
+  return undefined;
+}
+
 export default function Overview() {
   const [data, setData] = useState<OverviewState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -122,7 +148,7 @@ export default function Overview() {
           <section className="metric-grid" aria-label="Overview metrics">
             {data.series.map((series) => (
               <MetricCard
-                catalogEntry={data.catalog.find((entry) => entry.id === series.series_id)}
+                catalogEntry={catalogEntryForSeries(data.catalog, series)}
                 key={series.series_id}
                 series={series}
               />
