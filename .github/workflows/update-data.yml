@@ -29,21 +29,8 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install -r requirements.txt
 
-      - name: Fetch public data
-        run: |
-          python -m scripts.ingest.fetch_cboe
-          python -m scripts.ingest.fetch_fred_csv
-
-      - name: Transform and score data
-        run: |
-          python -m scripts.transform.normalize_series
-          python -m scripts.transform.compute_percentiles
-          python -m scripts.transform.compute_regime_score
-
-      - name: Validate data
-        run: |
-          python -m scripts.validate.validate_schema
-          python -m scripts.validate.validate_freshness
+      - name: Fetch, transform, score, and validate data
+        run: python -m scripts.update_data
 
       - name: Commit data updates
         run: |

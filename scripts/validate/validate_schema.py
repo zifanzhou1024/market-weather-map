@@ -88,10 +88,24 @@ def validate_generated_files() -> None:
         _load_json(path)
 
 
+def validate_status_file() -> None:
+    path = data_dir() / "status" / "data_status.json"
+    payload = _load_json(path)
+    if payload.get("overall_status") not in {"ok", "stale", "partial", "failed"}:
+        raise ValueError(f"{path} has invalid overall_status")
+    if "update_status" in payload and payload["update_status"] not in {"ok", "failed"}:
+        raise ValueError(f"{path} has invalid update_status")
+    if "last_attempt_utc" in payload and not isinstance(payload["last_attempt_utc"], str):
+        raise ValueError(f"{path} last_attempt_utc must be a string when present")
+    if "update_message" in payload and not isinstance(payload["update_message"], str):
+        raise ValueError(f"{path} update_message must be a string when present")
+
+
 def main() -> None:
     for entry in available_catalog_entries():
         validate_series_file(str(entry["id"]))
     validate_generated_files()
+    validate_status_file()
 
 
 if __name__ == "__main__":
