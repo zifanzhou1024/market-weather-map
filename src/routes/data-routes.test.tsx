@@ -10,7 +10,9 @@ import type {
   DerivedSeriesFile,
   RegimeScoreFile,
   ScoreSummaryFile,
+  SeriesCategory,
   SeriesCatalogEntry,
+  SeriesFrequency,
   TimeSeriesFile
 } from "../lib/types";
 
@@ -103,6 +105,28 @@ function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
     "/data/series/vix.json": seriesFile("vix", 17.1),
     "/data/series/wti_crude.json": seriesFile("wti_crude", 78.4),
     "/data/status/data_status.json": status
+  };
+}
+
+function catalogEntry(
+  id: string,
+  category: SeriesCategory,
+  name: string,
+  units = "percent",
+  frequency: SeriesFrequency = "daily"
+): SeriesCatalogEntry {
+  return {
+    category,
+    frequency,
+    higher_is: "contextual",
+    id,
+    max_stale_days: frequency === "weekly" ? 14 : 7,
+    name,
+    notes: `${name} test fixture.`,
+    public: true,
+    source: "FRED",
+    source_url: `https://example.com/${id}`,
+    units
   };
 }
 
@@ -275,7 +299,37 @@ const catalog: SeriesCatalogEntry[] = [
     source: "CFTC",
     source_url: "https://example.com/cftc-lev-money",
     units: "contracts"
-  }
+  },
+  catalogEntry("cfnai", "growth", "Chicago Fed National Activity Index", "index", "monthly"),
+  catalogEntry("cfnai_3m_avg", "growth", "CFNAI 3-month average", "index", "monthly"),
+  catalogEntry("real_retail_sales", "growth", "Real retail sales", "index", "monthly"),
+  catalogEntry("industrial_production", "growth", "Industrial production", "index", "monthly"),
+  catalogEntry("durable_goods_orders", "growth", "Durable goods orders", "USD millions", "monthly"),
+  catalogEntry("unemployment_rate", "growth", "Unemployment rate"),
+  catalogEntry("nonfarm_payrolls", "growth", "Nonfarm payrolls", "thousands", "monthly"),
+  catalogEntry("initial_claims", "growth", "Initial jobless claims", "thousands", "weekly"),
+  catalogEntry("sahm_rule", "growth", "Sahm Rule recession indicator", "percentage points", "monthly"),
+  catalogEntry("headline_cpi", "inflation", "Headline CPI", "percent", "monthly"),
+  catalogEntry("core_cpi", "inflation", "Core CPI", "percent", "monthly"),
+  catalogEntry("core_pce", "inflation", "Core PCE", "percent", "monthly"),
+  catalogEntry("ppi_final_demand", "inflation", "PPI final demand", "percent", "monthly"),
+  catalogEntry("breakeven_10y", "inflation", "10-year breakeven inflation rate"),
+  catalogEntry("breakeven_5y", "inflation", "5-year breakeven inflation rate"),
+  catalogEntry("forward_inflation_5y5y", "inflation", "5Y5Y forward inflation expectation rate"),
+  catalogEntry("real_yield_5y", "rates", "5-year real yield"),
+  catalogEntry("real_yield_10y", "rates", "10-year real yield"),
+  catalogEntry("high_yield_oas", "credit", "High yield OAS", "basis points"),
+  catalogEntry("investment_grade_oas", "credit", "Investment grade OAS", "basis points"),
+  catalogEntry("bbb_oas", "credit", "BBB OAS", "basis points"),
+  catalogEntry("financial_conditions", "credit", "Financial conditions index", "index", "weekly"),
+  catalogEntry("reserve_balances", "credit", "Reserve balances", "USD billions", "weekly"),
+  catalogEntry("bank_credit", "credit", "Bank credit", "USD billions", "weekly"),
+  catalogEntry("loans_and_leases", "credit", "Loans and leases", "USD billions", "weekly"),
+  catalogEntry("business_loans", "credit", "Commercial and industrial loans", "USD billions", "weekly"),
+  catalogEntry("bank_deposits", "credit", "Bank deposits", "USD billions", "weekly"),
+  catalogEntry("broad_dollar", "dollar", "Broad dollar index", "index"),
+  catalogEntry("usdjpy", "dollar", "USD/JPY", "exchange rate"),
+  catalogEntry("eurusd", "dollar", "EUR/USD", "exchange rate")
 ];
 
 function seriesFile(seriesId: string, latestValue: number): TimeSeriesFile {
@@ -296,6 +350,12 @@ function seriesFile(seriesId: string, latestValue: number): TimeSeriesFile {
     },
     units: "percent"
   };
+}
+
+function seriesFiles(seriesIds: string[]): Record<string, TimeSeriesFile> {
+  return Object.fromEntries(
+    seriesIds.map((seriesId, index) => [`/data/series/${seriesId}.json`, seriesFile(seriesId, index + 1)])
+  );
 }
 
 const status: DataStatusFile = {
@@ -608,6 +668,7 @@ describe("data-backed routes", () => {
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
       "/data/derived/us10y_minus_us2y.json": curve,
+      ...seriesFiles(["breakeven_10y", "breakeven_5y", "forward_inflation_5y5y", "real_yield_10y", "real_yield_5y"]),
       "/data/series/us10y.json": seriesFile("us10y", 4.2),
       "/data/series/us20y.json": seriesFile("us20y", 4.7),
       "/data/series/us2y.json": seriesFile("us2y", 3.78),
@@ -618,6 +679,85 @@ describe("data-backed routes", () => {
     await waitForContent(container, "10Y-2Y spread");
 
     expect(container.textContent).toContain("0.42 percentage points");
+  });
+
+  it("renders the growth route with growth and labor risk sections", async () => {
+    mockStaticFetch({
+      "/data/catalog/series_catalog.json": catalog,
+      ...seriesFiles([
+        "cfnai",
+        "cfnai_3m_avg",
+        "real_retail_sales",
+        "industrial_production",
+        "durable_goods_orders",
+        "unemployment_rate",
+        "nonfarm_payrolls",
+        "initial_claims",
+        "sahm_rule"
+      ])
+    });
+
+    const container = render(
+      <MemoryRouter initialEntries={["/growth"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Labor and recession risk");
+
+    expect(container.querySelector("h2")?.textContent).toBe("Growth");
+    expect(container.textContent).toContain("Chicago Fed National Activity Index");
+    expect(container.textContent).toContain("Durable goods orders");
+    expect(container.textContent).toContain("Sahm Rule recession indicator");
+    expect(container.textContent).toContain("Rates & Policy");
+    expect(container.textContent).toContain("Credit & Banking");
+    expect(container.textContent).toContain("Dollar & Global");
+    expect(container.textContent).toContain("Sentiment & Positioning");
+  });
+
+  it("renders the inflation route with price and expectations series", async () => {
+    mockStaticFetch({
+      "/data/catalog/series_catalog.json": catalog,
+      ...seriesFiles([
+        "headline_cpi",
+        "core_cpi",
+        "core_pce",
+        "ppi_final_demand",
+        "breakeven_10y",
+        "breakeven_5y",
+        "forward_inflation_5y5y"
+      ])
+    });
+
+    const container = render(
+      <MemoryRouter initialEntries={["/inflation"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Headline CPI");
+
+    expect(container.querySelector("h2")?.textContent).toBe("Inflation");
+    expect(container.textContent).toContain("Headline CPI");
+    expect(container.textContent).toContain("Core PCE");
+    expect(container.textContent).toContain("5Y5Y forward inflation expectation rate");
+  });
+
+  it("renders the dollar global route with dollar and currency series", async () => {
+    mockStaticFetch({
+      "/data/catalog/series_catalog.json": catalog,
+      ...seriesFiles(["broad_dollar", "usdjpy", "eurusd"])
+    });
+
+    const container = render(
+      <MemoryRouter initialEntries={["/dollar-global"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Broad dollar index");
+
+    expect(container.querySelector("h2")?.textContent).toBe("Dollar & Global");
+    expect(container.textContent).toContain("Broad dollar index");
+    expect(container.textContent).toContain("USD/JPY");
+    expect(container.textContent).toContain("EUR/USD");
   });
 
   it("renders the commodities route with series and the Brent-WTI spread from static files", async () => {
@@ -680,7 +820,7 @@ describe("data-backed routes", () => {
     );
     await waitForContent(container, "CFTC S&P 500 asset manager net");
 
-    expect(container.querySelector("h2")?.textContent).toBe("CFTC positioning");
+    expect(container.querySelector("h2")?.textContent).toBe("Sentiment & Positioning");
     expect(container.textContent).toContain("CFTC S&P 500 asset manager net");
     expect(container.textContent).toContain("CFTC S&P 500 leveraged money net");
     expect(container.textContent).toContain("cftc_sp500_asset_mgr_net");

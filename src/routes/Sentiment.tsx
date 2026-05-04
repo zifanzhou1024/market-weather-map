@@ -45,8 +45,8 @@ export default function Sentiment() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow">Sentiment</p>
-        <h2>CFTC positioning</h2>
+        <p className="eyebrow">Sentiment & Positioning</p>
+        <h2>Sentiment & Positioning</h2>
         <p>S&P 500 asset manager and leveraged money net positioning from CFTC public data.</p>
       </section>
       {error ? <p className="data-error">Data error: {error}</p> : null}

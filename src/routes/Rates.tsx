@@ -4,7 +4,17 @@ import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDerivedSeries, loadSeries } from "../lib/data";
 import type { DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 
-const ratesSeriesIds = ["us2y", "us10y", "us20y", "us30y"];
+const ratesSeriesIds = [
+  "us2y",
+  "us10y",
+  "us20y",
+  "us30y",
+  "real_yield_5y",
+  "real_yield_10y",
+  "breakeven_5y",
+  "breakeven_10y",
+  "forward_inflation_5y5y"
+];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
@@ -59,9 +69,9 @@ export default function Rates() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow">Rates</p>
-        <h2>Treasury curve</h2>
-        <p>U.S. Treasury yields across the 2Y, 10Y, 20Y, and 30Y maturities.</p>
+        <p className="eyebrow">Rates & Policy</p>
+        <h2>Rates & Policy</h2>
+        <p>Nominal yields, real yields, and breakevens.</p>
       </section>
       {error ? <p className="data-error">Data error: {error}</p> : null}
       {data ? (
