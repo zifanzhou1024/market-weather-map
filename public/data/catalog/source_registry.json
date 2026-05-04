@@ -1,0 +1,56 @@
+{
+  "cboe": {
+    "access_status": "free_public",
+    "base_url": "https://www.cboe.com",
+    "name": "Cboe Global Markets",
+    "notes": "Cboe historical index CSV files are public and delayed; source caveats should be shown with the data.",
+    "requires_secret": false,
+    "terms_status": "ok",
+    "update_cadence": "daily_market_data"
+  },
+  "cftc": {
+    "access_status": "free_public",
+    "base_url": "https://www.cftc.gov",
+    "name": "U.S. Commodity Futures Trading Commission",
+    "notes": "Public historical compressed Commitments of Traders reports.",
+    "requires_secret": false,
+    "terms_status": "ok",
+    "update_cadence": "weekly"
+  },
+  "derived": {
+    "access_status": "free_public",
+    "base_url": "/data",
+    "name": "Derived",
+    "notes": "Computed from active public inputs in this repository.",
+    "requires_secret": false,
+    "terms_status": "ok",
+    "update_cadence": "after_source_updates"
+  },
+  "fred": {
+    "access_status": "free_public",
+    "base_url": "https://fred.stlouisfed.org",
+    "name": "Federal Reserve Economic Data",
+    "notes": "FRED graph CSV endpoints do not require secrets; hosted series can carry source-specific citation or redistribution requirements.",
+    "requires_secret": false,
+    "terms_status": "review_each_series",
+    "update_cadence": "varies_by_series"
+  },
+  "terms_review": {
+    "access_status": "terms_review_needed",
+    "base_url": "",
+    "name": "Terms-reviewed candidate sources",
+    "notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
+    "requires_secret": false,
+    "terms_status": "review_needed",
+    "update_cadence": "not_active"
+  },
+  "unavailable": {
+    "access_status": "unavailable",
+    "base_url": "",
+    "name": "Unavailable or restricted sources",
+    "notes": "Sources that are not freely automatable for this static no-secret project.",
+    "requires_secret": true,
+    "terms_status": "restricted",
+    "update_cadence": "not_active"
+  }
+}

@@ -53,6 +53,22 @@ def test_checked_in_catalog_artifact_includes_phase2_metadata():
     assert "cftc_sp500_asset_mgr_net" in entries
 
 
+def test_checked_in_source_registry_artifact_includes_access_metadata():
+    registry_path = Path("public/data/catalog/source_registry.json")
+    registry = json.loads(registry_path.read_text())
+
+    assert registry["fred"]["access_status"] == "free_public"
+
+
+def test_checked_in_catalog_artifact_includes_phase3_governance_metadata():
+    catalog_path = Path("public/data/catalog/series_catalog.json")
+    entries = {str(entry["id"]): entry for entry in json.loads(catalog_path.read_text())}
+
+    assert entries["vix"]["provider_id"] == "cboe"
+    assert entries["vix"]["score_status"] == "active"
+    assert entries["ism_manufacturing_pmi"]["score_status"] == "candidate"
+
+
 def test_catalog_entries_include_phase3_governance_fields():
     entries = {str(entry["id"]): entry for entry in catalog_entries()}
 

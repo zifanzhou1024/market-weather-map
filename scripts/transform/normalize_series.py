@@ -8,14 +8,21 @@ from scripts.shared.source_registry import source_registry_entries
 
 
 def normalize_observations(observations: list[dict[str, object]]) -> list[dict[str, object]]:
-    by_date: dict[str, float] = {}
+    by_date: dict[str, dict[str, object]] = {}
     for observation in observations:
         raw_date = observation.get("date")
-        value = parse_float(str(observation.get("value", "")))
+        try:
+            value = parse_float(str(observation.get("value", "")))
+        except ValueError:
+            value = None
         if not raw_date or value is None:
             continue
-        by_date[str(raw_date)] = value
-    return [{"date": date, "value": by_date[date]} for date in sorted(by_date)]
+        date = str(raw_date)
+        normalized = observation.copy()
+        normalized["date"] = date
+        normalized["value"] = value
+        by_date[date] = normalized
+    return [by_date[date] for date in sorted(by_date)]
 
 
 def main() -> None:
