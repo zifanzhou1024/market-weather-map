@@ -5,6 +5,39 @@ from scripts.shared import catalog as catalog_module
 from scripts.shared.catalog import catalog_entries
 
 
+PHASE3_FRED_SERIES = {
+    "high_yield_oas": "BAMLH0A0HYM2",
+    "investment_grade_oas": "BAMLC0A0CM",
+    "bbb_oas": "BAMLC0A4CBBB",
+    "real_yield_10y": "DFII10",
+    "real_yield_5y": "DFII5",
+    "breakeven_10y": "T10YIE",
+    "breakeven_5y": "T5YIE",
+    "forward_inflation_5y5y": "T5YIFR",
+    "cfnai": "CFNAI",
+    "cfnai_3m_avg": "CFNAIMA3",
+    "real_retail_sales": "RRSFS",
+    "industrial_production": "INDPRO",
+    "durable_goods_orders": "DGORDER",
+    "unemployment_rate": "UNRATE",
+    "nonfarm_payrolls": "PAYEMS",
+    "initial_claims": "ICSA",
+    "sahm_rule": "SAHMREALTIME",
+    "headline_cpi": "CPIAUCSL",
+    "core_cpi": "CPILFESL",
+    "core_pce": "PCEPILFE",
+    "ppi_final_demand": "PPIFIS",
+    "broad_dollar": "DTWEXBGS",
+    "usdjpy": "DEXJPUS",
+    "eurusd": "DEXUSEU",
+    "reserve_balances": "WRESBAL",
+    "bank_credit": "TOTBKCR",
+    "loans_and_leases": "TOTLL",
+    "business_loans": "BUSLOANS",
+    "bank_deposits": "DPSACBW027SBOG",
+}
+
+
 def test_phase2_catalog_contains_no_secret_commodity_sources():
     entries = {str(entry["id"]): entry for entry in catalog_entries()}
 
@@ -78,6 +111,42 @@ def test_catalog_entries_include_phase3_governance_fields():
     assert vix["terms_status"] == "ok"
     assert vix["score_status"] == "active"
     assert isinstance(vix["citation_notes"], str)
+
+
+def test_catalog_entries_include_phase3_active_fred_macro_series():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    for series_id, fred_id in PHASE3_FRED_SERIES.items():
+        entry = entries[series_id]
+        assert entry["provider_id"] == "fred"
+        assert entry["access_status"] == "free_public"
+        assert entry["score_status"] == "active"
+        assert entry["endpoint_url"].endswith(fred_id)
+
+
+def test_catalog_entries_include_expanded_cboe_volatility_series():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    expected_files = {
+        "vix": "VIX_History.csv",
+        "vvix": "VVIX_History.csv",
+        "vix9d": "VIX9D_History.csv",
+        "vix3m": "VIX3M_History.csv",
+    }
+    expected_value_columns = {
+        "vix": ("CLOSE", "VIX"),
+        "vvix": ("CLOSE", "VVIX"),
+        "vix9d": ("CLOSE", "VIX9D"),
+        "vix3m": ("CLOSE", "VIX3M"),
+    }
+
+    for series_id, filename in expected_files.items():
+        entry = entries[series_id]
+        assert entry["provider_id"] == "cboe"
+        assert entry["access_status"] == "free_public"
+        assert entry["score_status"] == "active"
+        assert str(entry["endpoint_url"]).endswith(filename)
+        assert tuple(entry["value_columns"]) == expected_value_columns[series_id]
 
 
 def test_catalog_can_include_candidate_sources_without_making_them_available(tmp_path, monkeypatch):
