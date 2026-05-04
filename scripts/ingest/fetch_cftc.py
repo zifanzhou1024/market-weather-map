@@ -10,7 +10,12 @@ from scripts.shared.catalog import CFTC_POSITIONING_SERIES, CFTC_SOURCE_URL, cft
 from scripts.shared.io import parse_float, series_path, utc_now_iso, write_json
 
 
+TARGET_CONTRACT_MARKET_CODE = "13874A"
 TARGET_MARKET = "E-MINI S&P 500 - CHICAGO MERCANTILE EXCHANGE"
+TARGET_MARKET_NAMES = {
+    TARGET_MARKET,
+    "E-MINI S&P 500 STOCK INDEX - CHICAGO MERCANTILE EXCHANGE",
+}
 
 
 def fetch_zip_bytes(url: str) -> bytes:
@@ -36,6 +41,14 @@ def rows_from_zip(payload: bytes) -> list[dict[str, str]]:
             return list(csv.DictReader(text))
 
 
+def is_target_market(row: dict[str, str]) -> bool:
+    code = row.get("CFTC_Contract_Market_Code")
+    if code:
+        return code.strip() == TARGET_CONTRACT_MARKET_CODE
+    name = row.get("Market_and_Exchange_Names")
+    return bool(name and name.strip() in TARGET_MARKET_NAMES)
+
+
 def net_percent_open_interest(row: dict[str, str], prefix: str) -> float:
     open_interest = parse_float(row.get("Open_Interest_All"))
     long_value = parse_float(row.get(f"{prefix}_Positions_Long_All"))
@@ -52,7 +65,7 @@ def normalize_cftc_rows(rows: list[dict[str, str]]) -> dict[str, list[dict[str, 
     }
     seen_dates: set[str] = set()
     for row in rows:
-        if row.get("Market_and_Exchange_Names") != TARGET_MARKET:
+        if not is_target_market(row):
             continue
         date = row.get("Report_Date_as_YYYY-MM-DD")
         if not date or date in seen_dates:
@@ -75,12 +88,24 @@ def current_years(window: int = 5) -> list[int]:
     return list(range(year - window + 1, year + 1))
 
 
-def main() -> None:
+def collect_cftc_rows(years: list[int], fetcher=fetch_zip_bytes) -> list[dict[str, str]]:
     all_rows: list[dict[str, str]] = []
-    for year in current_years():
-        all_rows.extend(rows_from_zip(fetch_zip_bytes(cftc_tff_year_url(year))))
+    latest_year = max(years)
+    for year in years:
+        try:
+            payload = fetcher(cftc_tff_year_url(year))
+        except Exception:
+            if year == latest_year and all_rows:
+                continue
+            raise
+        all_rows.extend(rows_from_zip(payload))
+    if not all_rows:
+        raise ValueError("no CFTC rows collected")
+    return all_rows
 
-    observations = normalize_cftc_rows(all_rows)
+
+def main() -> None:
+    observations = normalize_cftc_rows(collect_cftc_rows(current_years()))
     generated_at = utc_now_iso()
     series_meta = {str(series["id"]): series for series in CFTC_POSITIONING_SERIES}
 
