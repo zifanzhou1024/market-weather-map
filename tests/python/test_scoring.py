@@ -602,6 +602,116 @@ def test_build_score_summary_returns_three_scores_with_specific_drivers():
     assert "Housing is not active in Phase 3." in summary["data_quality"]["reasons"]
 
 
+def test_missing_phase_3_macro_coverage_lowers_confidence_and_adds_notes():
+    series = {
+        "vix": _summary(latest_value=18.0, change_1m=1.0, percentile_252d=55.0),
+        "us10y": _summary(latest_value=4.2, change_1m=0.1, percentile_252d=55.0),
+        "fed_assets": _summary(latest_value=7400000.0, change_1m=0.0, percentile_252d=50.0),
+        "reverse_repo": _summary(latest_value=450.0, change_1m=0.0, percentile_252d=50.0),
+        "sofr": _summary(latest_value=5.3, change_1m=0.0, percentile_252d=50.0),
+        "net_liquidity": _summary(latest_value=5700000.0, change_1m=0.0, percentile_252d=50.0),
+        "financial_stress": _summary(latest_value=0.0, change_1m=0.0, percentile_252d=50.0),
+        "financial_conditions": _summary(latest_value=0.0, change_1m=0.0, percentile_252d=50.0),
+    }
+
+    summary = compute_regime_score.build_score_summary(series, "2026-05-04T00:00:00Z")
+    macro = summary["scores"]["macro_climate"]
+
+    assert macro["confidence"] < 0.8
+    assert "Housing is not active in Phase 3." in macro["missing_or_stale_notes"]
+    assert any("growth" in note and "cfnai" in note for note in macro["missing_or_stale_notes"])
+    assert any("labor" in note and "nonfarm_payrolls" in note for note in macro["missing_or_stale_notes"])
+    assert any("inflation" in note and "headline_cpi" in note for note in macro["missing_or_stale_notes"])
+    assert any("consumer/production" in note and "real_retail_sales" in note for note in macro["missing_or_stale_notes"])
+
+
+def test_macro_climate_uses_phase_3_catalog_ids_not_legacy_aliases():
+    series = {
+        "cfnai": _summary(percentile_252d=90.0),
+        "cfnai_3m_avg": _summary(percentile_252d=80.0),
+        "real_retail_sales": _summary(percentile_252d=85.0),
+        "industrial_production": _summary(percentile_252d=80.0),
+        "durable_goods_orders": _summary(percentile_252d=75.0),
+        "nonfarm_payrolls": _summary(percentile_252d=80.0),
+        "unemployment_rate": _summary(percentile_252d=20.0),
+        "initial_claims": _summary(percentile_252d=15.0),
+        "sahm_rule": _summary(percentile_252d=10.0),
+        "headline_cpi": _summary(percentile_252d=80.0),
+        "core_cpi": _summary(percentile_252d=75.0),
+        "core_pce": _summary(percentile_252d=70.0),
+        "ppi_final_demand": _summary(percentile_252d=65.0),
+        "real_yield_10y": _summary(percentile_252d=85.0),
+        "real_gdp": _summary(percentile_252d=5.0),
+        "retail_sales": _summary(percentile_252d=5.0),
+        "consumer_sentiment": _summary(percentile_252d=5.0),
+        "pmi": _summary(percentile_252d=5.0),
+        "cpi": _summary(percentile_252d=10.0),
+        "pce": _summary(percentile_252d=10.0),
+    }
+
+    macro = compute_regime_score.build_score_summary(
+        series, "2026-05-04T00:00:00Z"
+    )["scores"]["macro_climate"]
+
+    assert macro["bucket_scores"]["growth"] > 0
+    assert macro["bucket_scores"]["labor"] > 0
+    assert macro["bucket_scores"]["consumer_production"] > 0
+    assert macro["bucket_scores"]["inflation"] < 0
+    assert macro["bucket_scores"]["real_yields"] < 0
+
+
+def test_market_weather_uses_phase_3_buckets_and_bucket_drivers_for_top_risks():
+    series = {
+        "vix": _summary(percentile_252d=55.0),
+        "real_yield_10y": _summary(percentile_252d=55.0),
+        "net_liquidity": _summary(percentile_252d=45.0),
+        "reverse_repo": _summary(percentile_252d=50.0),
+        "sofr": _summary(percentile_252d=50.0),
+        "commodity_inflation_impulse": _summary(latest_value=-95.0, change_1m=-20.0, percentile_252d=95.0),
+        "cftc_sp500_asset_mgr_net": _summary(latest_value=0.0, change_1m=0.0, percentile_252d=50.0),
+        "cftc_sp500_lev_money_net": _summary(latest_value=80.0, change_1m=15.0, percentile_252d=95.0),
+    }
+
+    market = compute_regime_score.build_score_summary(
+        series, "2026-05-04T00:00:00Z"
+    )["scores"]["market_weather"]
+
+    assert set(market["bucket_scores"]) == {
+        "credit_spreads",
+        "liquidity_funding",
+        "rates_real_yields",
+        "volatility_tail_risk",
+        "dollar_global",
+        "commodities_inflation_impulse",
+        "sentiment_positioning",
+    }
+    assert "Commodity inflation impulse is elevated." in market["top_risks"]
+    assert "Leveraged-money S&P 500 positioning is crowded." in market["top_risks"]
+
+
+def test_build_status_marks_missing_active_public_catalog_entries_unavailable(monkeypatch):
+    monkeypatch.setattr(
+        compute_regime_score,
+        "available_catalog_entries",
+        lambda: [
+            {
+                "id": "cfnai",
+                "source": "FRED",
+                "frequency": "monthly",
+                "max_stale_days": 45,
+                "score_status": "active",
+                "public": True,
+            }
+        ],
+    )
+
+    status = compute_regime_score.build_status({}, "2026-05-04T00:00:00Z")
+
+    assert status["overall_status"] == "partial"
+    assert status["series"]["cfnai"]["status"] == "unavailable"
+    assert status["series"]["cfnai"]["message"] == "Active public catalog series has no generated payload."
+
+
 def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monkeypatch):
     derived = tmp_path / "derived"
     derived.mkdir()
