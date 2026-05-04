@@ -7,7 +7,7 @@
     ]
   },
   "date": "2026-05-01",
-  "generated_at_utc": "2026-05-04T14:35:52Z",
+  "generated_at_utc": "2026-05-04T14:44:21Z",
   "method_version": "phase3-three-score-v1",
   "scores": {
     "fragility": {
@@ -51,7 +51,7 @@
           "cftc_sp500_asset_mgr_net",
           "cftc_sp500_lev_money_net"
         ],
-        "coverage_ratio": 0.9,
+        "coverage_ratio": 1.0,
         "expected": [
           "high_yield_oas",
           "investment_grade_oas",
@@ -61,8 +61,7 @@
           "broad_dollar",
           "net_liquidity",
           "cftc_sp500_asset_mgr_net",
-          "cftc_sp500_lev_money_net",
-          "move_index"
+          "cftc_sp500_lev_money_net"
         ],
         "groups": {
           "credit_spread_widening": {
@@ -113,13 +112,9 @@
           },
           "treasury_bond_volatility": {
             "available": [],
-            "coverage_ratio": 0.0,
-            "expected": [
-              "move_index"
-            ],
-            "missing": [
-              "move_index"
-            ]
+            "coverage_ratio": 1.0,
+            "expected": [],
+            "missing": []
           },
           "volatility_term_structure": {
             "available": [
@@ -134,9 +129,7 @@
             "missing": []
           }
         },
-        "missing": [
-          "move_index"
-        ]
+        "missing": []
       },
       "top_risks": [
         "Liquidity drains are visible."
@@ -293,7 +286,7 @@
     "market_weather": {
       "bucket_scores": {
         "commodities_inflation_impulse": -42.47,
-        "credit_spreads": 19.85,
+        "credit_spreads": 26.0,
         "dollar_global": 72.22,
         "liquidity_funding": 0.3,
         "rates_real_yields": -32.54,
@@ -319,7 +312,7 @@
         "The broad dollar backdrop is easing.",
         "Volatility tail risk is contained."
       ],
-      "score": 4.28,
+      "score": 5.64,
       "source_coverage": {
         "available": [
           "high_yield_oas",
