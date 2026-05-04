@@ -7,3 +7,9 @@
 - GitHub Actions ingestion must run before deployment for the site to include new data.
 - The weather score is explanatory and descriptive, not predictive.
 - The dashboard is not financial advice and should not be used as the sole basis for investment, trading, or risk decisions.
+
+## Source Limitations
+
+- AAII and NAAIM are deferred terms-reviewed candidates, not active Phase 2 inputs.
+- CFTC positioning is weekly, delayed, and futures-specific. It should be read as positioning context, not a complete sentiment model.
+- Crop prices come from monthly FRED series, not live futures curves.

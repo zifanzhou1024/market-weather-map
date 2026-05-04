@@ -20,6 +20,14 @@ Phase 1 does not include:
 - Real-time data, paid data, or authenticated provider data.
 - Financial advice, forecasts, or trade recommendations.
 
+Phase 2 adds:
+
+- Commodity coverage from no-secret FRED graph CSV endpoints.
+- Public CFTC E-mini S&P 500 positioning data from historical compressed text reports.
+- A derived net liquidity proxy and Brent-WTI spread.
+- `/commodities` and `/sentiment` routes.
+- A safe data update runner that preserves prior good JSON and surfaces failed update attempts in `data_status.json`.
+
 ## Local Setup
 
 Install Node and Python dependencies:

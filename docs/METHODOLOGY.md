@@ -34,6 +34,26 @@ The overall score is the weighted average of available bucket scores, clamped to
 | `-20` to `20` | Neutral |
 | `>= 20` | Supportive |
 
+## Phase 2 Derived Metrics
+
+Phase 2 adds derived series that are computed from fetched public inputs before scoring and static JSON publication.
+
+Net liquidity proxy:
+
+`Fed Assets - Treasury General Account - Reverse Repo`
+
+The reverse repo input is converted from billions to millions before it is combined with Fed assets and Treasury General Account values.
+
+Brent-WTI spread:
+
+`Brent crude spot price - WTI crude spot price`
+
+CFTC net positioning:
+
+`(Long contracts - Short contracts) / Open interest * 100`
+
+The sentiment bucket treats very high leveraged-money positioning percentiles as crowding risk. Low positioning readings are descriptive underexposure context, not a standalone bullish signal.
+
 ## Freshness And Provenance
 
 Each generated series includes source metadata, observation dates, summary values, and percentile context where applicable. The status output reports whether each active source is fresh, stale, or failed based on the configured cadence.
