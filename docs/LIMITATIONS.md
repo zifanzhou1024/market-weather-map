@@ -20,7 +20,8 @@
 
 - Active `free_public` inputs can still fail because public pages, CSV files, filenames, or rate-limit behavior can change without notice.
 - `terms_review_needed` sources are documented candidates only. They are not active scoring inputs until access, automation, attribution, and redistribution terms are reviewed.
-- `restricted_unavailable` sources are excluded from active scoring unless a compliant no-secret public source is later identified.
+- `restricted` sources are paid, gated, license-restricted, or otherwise not suitable for static public redistribution under current terms.
+- `unavailable` sources cannot currently be fetched or redistributed by the no-secret static workflow.
 - Candidate survey, flow, volatility, and term-premium sources can create coverage gaps. Those gaps should reduce score confidence rather than be silently filled with proxies.
 - Public macro series can be revised after initial publication, so historical scores may change when source data is refreshed.
 

@@ -34,9 +34,14 @@ export default function Methodology() {
         <section className="panel">
           <h3>Source access status</h3>
           <p>
-            Active inputs are public, no-secret feeds that can be fetched by GitHub Actions. Candidate sources
-            remain inactive until terms review confirms access, while restricted or unavailable sources are
-            documented but excluded from the production score.
+            <code>free_public</code> marks active no-secret public feeds that GitHub Actions can fetch and
+            publish as static JSON. <code>terms_review_needed</code> marks candidates that stay inactive until
+            access, automation, attribution, and redistribution terms are reviewed.
+          </p>
+          <p>
+            <code>restricted</code> marks paid, gated, or license-restricted sources. <code>unavailable</code>
+            marks sources that cannot currently be fetched or redistributed by the static no-secret workflow.
+            Restricted and unavailable sources are documented but excluded from production scoring.
           </p>
         </section>
       </div>

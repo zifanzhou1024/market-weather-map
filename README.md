@@ -45,7 +45,8 @@ Source access is tracked before data is treated as production scoring input.
 | --- | --- | --- |
 | `free_public` | Active no-secret public source that can be fetched in GitHub Actions and published as static JSON. | FRED graph CSV, Cboe historical VIX CSV, CFTC historical compressed reports. |
 | `terms_review_needed` | Candidate source with useful coverage, but access terms, redistribution rules, cadence, or automation constraints must be reviewed before ingestion. | ISM, AAII, NAAIM, SLOOS, MOVE, put-call, NY Fed ACM. |
-| `restricted_unavailable` | Restricted/unavailable source that is paid, gated, license-restricted, unavailable to the project, or not suitable for static public redistribution. | Authenticated feeds, licensed real-time data, vendor-only datasets. |
+| `restricted` | Source is paid, gated, license-restricted, or otherwise not suitable for static public redistribution under current terms. | Licensed index feeds, vendor-only datasets. |
+| `unavailable` | Source cannot currently be fetched or redistributed by the no-secret static workflow. | Missing historical files, sources without a compliant public endpoint. |
 
 ## Local Setup
 

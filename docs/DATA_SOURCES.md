@@ -48,7 +48,7 @@ Phase 3 keeps the GitHub-only data model. Inputs listed here are active `free_pu
 
 ## Candidate Sources
 
-Candidate sources are not active scoring inputs until legal, terms, cadence, and redistribution review is complete. They should be marked `terms_review_needed` in source planning unless a later review moves them to `free_public` or `restricted_unavailable`.
+Candidate sources are not active scoring inputs until legal, terms, cadence, and redistribution review is complete. They should be marked `terms_review_needed` in source planning unless a later review moves them to `free_public`, `restricted`, or `unavailable`.
 
 | Candidate | Provider | Access status | Potential use | Review notes |
 | --- | --- | --- | --- | --- |
@@ -56,7 +56,7 @@ Candidate sources are not active scoring inputs until legal, terms, cadence, and
 | AAII investor sentiment | AAII | `terms_review_needed` | Retail sentiment and contrarian crowding context. | Confirm historical access, redistribution rights, and automated download terms. |
 | NAAIM Exposure Index | NAAIM | `terms_review_needed` | Active manager exposure and risk appetite. | Confirm whether automated ingestion and public JSON redistribution are permitted. |
 | SLOOS | Federal Reserve | `terms_review_needed` | Bank lending standards and credit availability. | Public release is available, but transformation and redistribution format need review. |
-| MOVE Index | ICE Data Indices or licensed redistributors | `restricted_unavailable` | Rates volatility and fragility. | Treat as unavailable unless a no-secret redistributable source is confirmed. |
+| MOVE Index | ICE Data Indices or licensed redistributors | `restricted` | Rates volatility and fragility. | Treat as unavailable for scoring unless a no-secret redistributable source is confirmed. |
 | Equity put-call ratios | OCC, Cboe, or other exchanges | `terms_review_needed` | Options positioning and sentiment. | Confirm source-specific terms and whether historical files can be redistributed. |
 | NY Fed ACM term premium | Federal Reserve Bank of New York | `terms_review_needed` | Term premium and real-rate decomposition. | Review download format, attribution, and static redistribution expectations. |
 

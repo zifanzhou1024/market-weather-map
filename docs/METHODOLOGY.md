@@ -14,12 +14,13 @@ Market Weather is the headline cross-asset read. It summarizes current market co
 
 | Bucket | Weight | Scoring status |
 | --- | ---: | --- |
-| Volatility | 20% | Active |
-| Rates | 15% | Active |
-| Liquidity | 15% | Active |
-| Credit | 20% | Active |
-| Commodities | 10% | Active |
-| Sentiment and positioning | 20% | Active |
+| Credit spreads (`credit_spreads`) | 22% | Active |
+| Liquidity and funding (`liquidity_funding`) | 18% | Active |
+| Rates and real yields (`rates_real_yields`) | 15% | Active |
+| Volatility tail risk (`volatility_tail_risk`) | 15% | Active |
+| Dollar and global (`dollar_global`) | 10% | Active when broad dollar input is available |
+| Commodity inflation impulse (`commodities_inflation_impulse`) | 10% | Active |
+| Sentiment and positioning (`sentiment_positioning`) | 10% | Active |
 
 ### Macro Climate Score
 
@@ -27,10 +28,11 @@ Macro Climate separates slower growth, labor, inflation, and real-rate condition
 
 | Bucket | Weight | Scoring status |
 | --- | ---: | --- |
-| Growth breadth | 35% | Active when FRED growth inputs are available |
-| Labor and recession risk | 20% | Active when labor inputs are available |
-| Inflation trend | 25% | Active when CPI, PCE, and PPI inputs are available |
-| Real yields and breakevens | 20% | Active when TIPS and inflation expectation inputs are available |
+| Growth (`growth`) | 25% | Active when FRED growth inputs are available |
+| Labor (`labor`) | 25% | Active when labor inputs are available |
+| Inflation (`inflation`) | 20% | Active when CPI, PCE, and PPI inputs are available |
+| Consumer and production (`consumer_production`) | 20% | Active when retail sales, production, and durable goods inputs are available |
+| Real yields (`real_yields`) | 10% | Active when TIPS inputs are available |
 
 ### Fragility Score
 
@@ -38,12 +40,12 @@ Fragility focuses on channels that can amplify market moves or expose stress ben
 
 | Bucket | Weight | Scoring status |
 | --- | ---: | --- |
-| Credit OAS and financial conditions | 25% | Active when public spread and conditions inputs are available |
-| Liquidity and funding | 20% | Active |
-| Banking pressure | 20% | Active when weekly banking inputs are available |
-| Dollar pressure | 15% | Active when dollar and FX inputs are available |
-| Volatility pressure | 15% | Active |
-| Reviewed flow or survey stress | 5% | Candidate-only until terms review is complete |
+| Credit spread widening (`credit_spread_widening`) | 25% | Active when public spread inputs are available |
+| Volatility term structure (`volatility_term_structure`) | 20% | Active when public volatility-ratio inputs are available |
+| Dollar spike (`dollar_spike`) | 15% | Active when broad dollar input is available |
+| Liquidity drain (`liquidity_drain`) | 15% | Active |
+| Positioning crowding (`positioning_crowding`) | 15% | Active |
+| Treasury bond volatility (`treasury_bond_volatility`) | 10% | Candidate-only until terms review is complete |
 
 If a bucket is unavailable or stale, its missing input lowers confidence and the remaining available buckets are normalized within the score family. Candidate-only inputs do not enter the production score until source access is reviewed.
 

@@ -1048,5 +1048,11 @@ describe("data-backed routes", () => {
     expect(h3Texts(container)).toContain("Macro Climate Score");
     expect(h3Texts(container)).toContain("Fragility Score");
     expect(h3Texts(container)).toContain("Source access status");
+    expect(container.textContent).toContain("free_public");
+    expect(container.textContent).toContain("terms_review_needed");
+    expect(container.textContent).toContain("restricted");
+    expect(container.textContent).toContain("unavailable");
+    expect(container.textContent).toContain("active no-secret public feeds");
+    expect(container.textContent).toContain("paid, gated, or license-restricted");
   });
 });
