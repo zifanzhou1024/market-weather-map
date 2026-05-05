@@ -1014,6 +1014,51 @@ def test_validate_status_file_rejects_partial_series_status(tmp_path, monkeypatc
         validate_schema.validate_status_file()
 
 
+def test_validate_score_summary_file_rejects_missing_score_confidence_breakdown(tmp_path, monkeypatch):
+    derived_dir = tmp_path / "derived"
+    derived_dir.mkdir()
+    confidence_breakdown = {
+        "coverage_confidence": 1.0,
+        "freshness_confidence": 1.0,
+        "model_confidence": 1.0,
+        "source_confidence": 1.0,
+        "overall_confidence": 1.0,
+    }
+    score_block = {
+        "score": 0.0,
+        "confidence": 1.0,
+        "top_risks": [],
+        "top_supports": [],
+        "confidence_reasons": [],
+        "recent_changes": [],
+        "missing_or_stale_notes": [],
+        "confidence_breakdown": confidence_breakdown,
+    }
+    payload = {
+        "scores": {
+            "market_weather": {
+                key: value
+                for key, value in score_block.items()
+                if key != "confidence_breakdown"
+            },
+            "macro_climate": score_block,
+            "fragility": score_block,
+        },
+        "data_quality": {
+            **confidence_breakdown,
+            "reasons": [],
+        },
+    }
+    (derived_dir / "score_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(
+        ValueError,
+        match=r"market_weather\.confidence_breakdown must be an object",
+    ):
+        validate_schema.validate_score_summary_file()
+
+
 def test_validate_freshness_accepts_governance_series_statuses(tmp_path, monkeypatch):
     status_dir = tmp_path / "status"
     status_dir.mkdir()
@@ -1631,7 +1676,14 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
               "top_supports": [],
               "confidence_reasons": [],
               "recent_changes": [],
-              "missing_or_stale_notes": []
+              "missing_or_stale_notes": [],
+              "confidence_breakdown": {
+                "coverage_confidence": 1.0,
+                "freshness_confidence": 1.0,
+                "model_confidence": 1.0,
+                "source_confidence": 1.0,
+                "overall_confidence": 0.9
+              }
             },
             "macro_climate": {
               "score": 2,
@@ -1640,7 +1692,14 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
               "top_supports": [],
               "confidence_reasons": [],
               "recent_changes": [],
-              "missing_or_stale_notes": []
+              "missing_or_stale_notes": [],
+              "confidence_breakdown": {
+                "coverage_confidence": 1.0,
+                "freshness_confidence": 1.0,
+                "model_confidence": 1.0,
+                "source_confidence": 1.0,
+                "overall_confidence": 0.8
+              }
             },
             "fragility": {
               "score": -3,
@@ -1649,7 +1708,14 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
               "top_supports": [],
               "confidence_reasons": [],
               "recent_changes": [],
-              "missing_or_stale_notes": []
+              "missing_or_stale_notes": [],
+              "confidence_breakdown": {
+                "coverage_confidence": 1.0,
+                "freshness_confidence": 1.0,
+                "model_confidence": 1.0,
+                "source_confidence": 1.0,
+                "overall_confidence": 0.7
+              }
             }
           },
           "data_quality": {
@@ -1759,6 +1825,13 @@ def test_validate_score_summary_rejects_out_of_range_data_quality_confidence(
 ):
     derived = tmp_path / "derived"
     derived.mkdir()
+    confidence_breakdown = {
+        "coverage_confidence": 1.0,
+        "freshness_confidence": 1.0,
+        "model_confidence": 1.0,
+        "source_confidence": 1.0,
+        "overall_confidence": 1.0,
+    }
     payload = {
         "scores": {
             "market_weather": {
@@ -1769,6 +1842,7 @@ def test_validate_score_summary_rejects_out_of_range_data_quality_confidence(
                 "confidence_reasons": [],
                 "recent_changes": [],
                 "missing_or_stale_notes": [],
+                "confidence_breakdown": confidence_breakdown,
             },
             "macro_climate": {
                 "score": 2,
@@ -1778,6 +1852,7 @@ def test_validate_score_summary_rejects_out_of_range_data_quality_confidence(
                 "confidence_reasons": [],
                 "recent_changes": [],
                 "missing_or_stale_notes": [],
+                "confidence_breakdown": confidence_breakdown,
             },
             "fragility": {
                 "score": -3,
@@ -1787,6 +1862,7 @@ def test_validate_score_summary_rejects_out_of_range_data_quality_confidence(
                 "confidence_reasons": [],
                 "recent_changes": [],
                 "missing_or_stale_notes": [],
+                "confidence_breakdown": confidence_breakdown,
             },
         },
         "data_quality": {

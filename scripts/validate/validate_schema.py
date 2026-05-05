@@ -141,16 +141,15 @@ def validate_score_summary_file() -> None:
         for field in REQUIRED_SCORE_ARRAY_FIELDS:
             if not isinstance(block.get(field), list):
                 raise ValueError(f"{path} {score_key}.{field} must be a list")
-        if "confidence_breakdown" in block:
-            confidence_breakdown = block["confidence_breakdown"]
-            if not isinstance(confidence_breakdown, dict):
-                raise ValueError(f"{path} {score_key}.confidence_breakdown must be an object")
-            for field in CONFIDENCE_FIELDS:
-                _validate_confidence_value(
-                    confidence_breakdown.get(field),
-                    path,
-                    f"{score_key}.confidence_breakdown.{field}",
-                )
+        confidence_breakdown = block.get("confidence_breakdown")
+        if not isinstance(confidence_breakdown, dict):
+            raise ValueError(f"{path} {score_key}.confidence_breakdown must be an object")
+        for field in CONFIDENCE_FIELDS:
+            _validate_confidence_value(
+                confidence_breakdown.get(field),
+                path,
+                f"{score_key}.confidence_breakdown.{field}",
+            )
 
     data_quality = payload.get("data_quality")
     if not isinstance(data_quality, dict):
