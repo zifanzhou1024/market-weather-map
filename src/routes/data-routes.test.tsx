@@ -197,7 +197,10 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       "sofr",
       "soybean_price",
       "treasury_general_account",
+      "us2y",
       "us10y",
+      "us20y",
+      "us30y",
       "vix",
       "vix3m",
       "vix9d",
@@ -1219,6 +1222,58 @@ describe("data-backed routes", () => {
 
     expect(container.textContent).toContain("Active data is positioning only");
     expect(container.textContent).toContain("CFTC positioning is weekly, delayed, and futures-specific.");
+  });
+
+  it("growth route explains growth and labor interpretation", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/growth"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Growth and labor read");
+    expect(container.textContent).toContain("Monthly growth and labor data can lag source release schedules.");
+  });
+
+  it("inflation route explains level versus expectations", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/inflation"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Inflation pressure read");
+    expect(container.textContent).toContain("CPI, PCE, PPI, breakevens, and forward inflation expectations");
+  });
+
+  it("rates route explains nominal, real, and curve context", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/rates"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Rates and policy read");
+    expect(container.textContent).toContain("Nominal yields, real yields, breakevens, and the 10Y-2Y curve");
+  });
+
+  it("dollar route explains global tightening context", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/dollar-global"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Dollar pressure read");
+    expect(container.textContent).toContain("Broad dollar strength can tighten global financial conditions.");
   });
 
   it("renders volatility base data and status when a derived ratio 404s", async () => {

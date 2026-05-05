@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
@@ -62,6 +64,14 @@ export default function Inflation() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <InterpretationPanel
+            label="Inflation pressure read"
+            notes={["Monthly inflation indexes use observation months and should be read with release-aware freshness notes."]}
+            risks={["High or reaccelerating core inflation can keep policy pressure elevated."]}
+            summary="CPI, PCE, PPI, breakevens, and forward inflation expectations separate realized price pressure from market-implied inflation compensation."
+            supports={["Contained breakevens and easing core momentum can reduce macro climate pressure."]}
+          />
+          <DataGapPanel status={data.status} seriesIds={inflationSeriesIds} />
           <section className="metric-grid" aria-label="Inflation metrics">
             {data.series.map((series) => (
               <MetricCard

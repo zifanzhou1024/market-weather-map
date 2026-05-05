@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus, loadDerivedSeries } from "../lib/data";
@@ -83,6 +85,14 @@ export default function Rates() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <InterpretationPanel
+            label="Rates and policy read"
+            notes={["Real-yield and breakeven data are daily market-implied context, not policy forecasts."]}
+            risks={["Elevated real yields can tighten financial conditions and pressure valuation-sensitive assets."]}
+            summary="Nominal yields, real yields, breakevens, and the 10Y-2Y curve describe policy-rate pressure, inflation compensation, and curve regime."
+            supports={["Falling real yields or less inverted curves can ease market weather pressure."]}
+          />
+          <DataGapPanel status={data.status} seriesIds={ratesSeriesIds.concat(["us10y_minus_us2y"])} />
           <section className="metric-grid" aria-label="Rates metrics">
             {data.series.map((series) => (
               <MetricCard

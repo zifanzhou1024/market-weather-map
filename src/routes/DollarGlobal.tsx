@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
@@ -54,6 +56,14 @@ export default function DollarGlobal() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <InterpretationPanel
+            label="Dollar pressure read"
+            notes={["FX series can be stale around holidays and should be checked against freshness status."]}
+            risks={["Broad dollar strength can tighten global financial conditions."]}
+            summary="The broad dollar, USDJPY, and EURUSD provide global dollar-pressure context for Market Weather and Fragility."
+            supports={["Dollar easing can reduce global liquidity pressure."]}
+          />
+          <DataGapPanel status={data.status} seriesIds={dollarSeriesIds} />
           <section className="metric-grid" aria-label="Dollar and global metrics">
             {data.series.map((series) => (
               <MetricCard
