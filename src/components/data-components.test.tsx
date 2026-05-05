@@ -265,7 +265,7 @@ describe("data-driven components", () => {
       reasons: ["Housing is not active in Phase 4 PR 1."]
     };
 
-    const container = render(<ConfidenceBreakdown confidence={confidence} />);
+    const container = render(<ConfidenceBreakdown dataQuality={confidence} />);
 
     expect(container.textContent).toContain("Data confidence");
     expect(container.textContent).toContain("82% overall");

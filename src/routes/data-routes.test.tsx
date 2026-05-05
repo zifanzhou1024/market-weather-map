@@ -579,6 +579,10 @@ const scoreSummary: ScoreSummaryFile = {
   },
   conflicting_signals: ["Growth is firm while inflation momentum remains sticky."],
   data_quality: {
+    coverage_confidence: 0.8,
+    freshness_confidence: 0.7,
+    model_confidence: 0.75,
+    source_confidence: 0.68,
     overall_confidence: 0.73,
     reasons: ["Sentiment coverage is limited to public CFTC positioning."]
   }
@@ -632,7 +636,12 @@ describe("data-backed routes", () => {
       },
       conflicting_signals: "not an array",
       data_quality: {
-        overall_confidence: Number.NaN
+        coverage_confidence: 0.8,
+        freshness_confidence: 0.7,
+        model_confidence: 0.75,
+        source_confidence: 0.68,
+        overall_confidence: Number.NaN,
+        reasons: []
       }
     } as unknown as ScoreSummaryFile;
 

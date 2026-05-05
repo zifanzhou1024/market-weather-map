@@ -92,10 +92,6 @@ export interface ConfidenceBreakdownData {
   reasons: string[];
 }
 
-type ScoreSummaryDataQuality =
-  | ConfidenceBreakdownData
-  | Pick<ConfidenceBreakdownData, "overall_confidence" | "reasons">;
-
 export interface ScoreSummaryFile {
   generated_at_utc: string;
   date: string;
@@ -106,7 +102,7 @@ export interface ScoreSummaryFile {
     fragility: ScoreBlock;
   };
   conflicting_signals: string[];
-  data_quality: ScoreSummaryDataQuality;
+  data_quality: ConfidenceBreakdownData;
 }
 
 export interface SeriesCatalogEntry {
