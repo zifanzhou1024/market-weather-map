@@ -1018,10 +1018,12 @@ def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_
         return {
             "status": "unavailable",
             "last_observation": None,
+            "observation_period": None,
             "source": entry["source"],
             "expected_frequency": entry["frequency"],
             "freshness_days": None,
             "max_stale_days": entry["max_stale_days"],
+            "expected_next_release_window": None,
             "message": "Source is unavailable for automated static ingestion.",
         }
     if (
@@ -1032,10 +1034,12 @@ def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_
         return {
             "status": "terms_review_needed",
             "last_observation": None,
+            "observation_period": None,
             "source": entry["source"],
             "expected_frequency": entry["frequency"],
             "freshness_days": None,
             "max_stale_days": entry["max_stale_days"],
+            "expected_next_release_window": None,
             "message": "Candidate source requires access or terms review before scoring.",
         }
 

@@ -524,10 +524,12 @@ def test_status_for_candidate_series_requires_terms_review_before_observations()
     assert status == {
         "status": "terms_review_needed",
         "last_observation": None,
+        "observation_period": None,
         "source": "Candidate Source",
         "expected_frequency": "monthly",
         "freshness_days": None,
         "max_stale_days": 45,
+        "expected_next_release_window": None,
         "message": "Candidate source requires access or terms review before scoring.",
     }
 
@@ -547,7 +549,9 @@ def test_status_for_unavailable_or_restricted_series_reports_unavailable_before_
 
     assert status["status"] == "unavailable"
     assert status["last_observation"] is None
+    assert status["observation_period"] is None
     assert status["freshness_days"] is None
+    assert status["expected_next_release_window"] is None
     assert status["message"] == "Source is unavailable for automated static ingestion."
 
 
