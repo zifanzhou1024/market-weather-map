@@ -735,9 +735,9 @@ def test_build_score_summary_returns_three_scores_with_specific_drivers():
     assert set(summary["scores"]) == {"market_weather", "macro_climate", "fragility"}
     assert "High-yield spreads widened over the past month." in summary["scores"]["market_weather"]["top_risks"]
     assert summary["scores"]["macro_climate"]["confidence"] < 1.0
-    assert "Housing is not active in Phase 3." in summary["scores"]["macro_climate"]["missing_or_stale_notes"]
+    assert "Housing is not active in Phase 4 PR 1." in summary["scores"]["macro_climate"]["missing_or_stale_notes"]
     assert summary["data_quality"]["overall_confidence"] <= 1.0
-    assert "Housing is not active in Phase 3." in summary["data_quality"]["reasons"]
+    assert "Housing is not active in Phase 4 PR 1." in summary["data_quality"]["reasons"]
 
 
 def test_missing_phase_3_macro_coverage_lowers_confidence_and_adds_notes():
@@ -756,7 +756,7 @@ def test_missing_phase_3_macro_coverage_lowers_confidence_and_adds_notes():
     macro = summary["scores"]["macro_climate"]
 
     assert macro["confidence"] < 0.8
-    assert "Housing is not active in Phase 3." in macro["missing_or_stale_notes"]
+    assert "Housing is not active in Phase 4 PR 1." in macro["missing_or_stale_notes"]
     assert any("growth" in note and "cfnai" in note for note in macro["missing_or_stale_notes"])
     assert any("labor" in note and "nonfarm_payrolls" in note for note in macro["missing_or_stale_notes"])
     assert any("inflation" in note and "headline_cpi" in note for note in macro["missing_or_stale_notes"])
@@ -1114,7 +1114,7 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
             "macro_climate": {
               "score": 2,
               "confidence": 0.8,
-              "top_risks": ["Housing is not active in Phase 3."],
+              "top_risks": ["Housing is not active in Phase 4 PR 1."],
               "top_supports": [],
               "confidence_reasons": [],
               "recent_changes": [],
@@ -1129,6 +1129,14 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
               "recent_changes": [],
               "missing_or_stale_notes": []
             }
+          },
+          "data_quality": {
+            "coverage_confidence": 1.0,
+            "freshness_confidence": 1.0,
+            "model_confidence": 1.0,
+            "source_confidence": 1.0,
+            "overall_confidence": 1.0,
+            "reasons": []
           }
         }
         """,
@@ -1222,3 +1230,86 @@ def test_validate_score_summary_rejects_non_finite_score_values(tmp_path, monkey
 
     with pytest.raises(ValueError, match="market_weather.score must be finite"):
         validate_schema.validate_score_summary_file()
+
+
+def test_score_summary_emits_data_quality_confidence_breakdown():
+    series = {
+        "vix": _summary(percentile_252d=50.0),
+        "vvix": _summary(percentile_252d=50.0),
+        "vix9d": _summary(percentile_252d=50.0),
+        "vix3m": _summary(percentile_252d=50.0),
+        "vix9d_vix_ratio": _summary(percentile_252d=50.0),
+        "vix_vix3m_ratio": _summary(percentile_252d=50.0),
+        "high_yield_oas": _summary(percentile_252d=50.0),
+        "investment_grade_oas": _summary(percentile_252d=50.0),
+        "bbb_oas": _summary(percentile_252d=50.0),
+        "hy_minus_ig_oas": _summary(percentile_252d=50.0),
+        "net_liquidity": _summary(percentile_252d=50.0),
+        "reverse_repo": _summary(percentile_252d=50.0),
+        "sofr": _summary(percentile_252d=50.0),
+        "real_yield_10y": _summary(percentile_252d=50.0),
+        "broad_dollar": _summary(percentile_252d=50.0),
+        "commodity_inflation_impulse": _summary(latest_value=0.0, percentile_252d=50.0),
+        "breakeven_10y": _summary(percentile_252d=50.0),
+        "cftc_sp500_asset_mgr_net": _summary(percentile_252d=50.0),
+        "cftc_sp500_lev_money_net": _summary(percentile_252d=50.0),
+        "cfnai": _summary(percentile_252d=50.0),
+        "cfnai_3m_avg": _summary(percentile_252d=50.0),
+        "nonfarm_payrolls": _summary(percentile_252d=50.0),
+        "unemployment_rate": _summary(percentile_252d=50.0),
+        "initial_claims": _summary(percentile_252d=50.0),
+        "sahm_rule": _summary(percentile_252d=50.0),
+        "headline_cpi": _summary(percentile_252d=50.0),
+        "core_cpi": _summary(percentile_252d=50.0),
+        "core_pce": _summary(percentile_252d=50.0),
+        "ppi_final_demand": _summary(percentile_252d=50.0),
+        "real_retail_sales": _summary(percentile_252d=50.0),
+        "industrial_production": _summary(percentile_252d=50.0),
+        "durable_goods_orders": _summary(percentile_252d=50.0),
+    }
+    statuses = {
+        series_id: {"status": "ok", "message": "Fresh."}
+        for series_id in series
+    }
+
+    summary = compute_regime_score.build_score_summary(
+        series,
+        "2026-05-04T00:00:00Z",
+        statuses,
+    )
+
+    data_quality = summary["data_quality"]
+    assert set(data_quality) >= {
+        "coverage_confidence",
+        "freshness_confidence",
+        "model_confidence",
+        "source_confidence",
+        "overall_confidence",
+        "reasons",
+    }
+    assert data_quality["coverage_confidence"] > 0.9
+    assert data_quality["freshness_confidence"] == 1.0
+    assert data_quality["overall_confidence"] < 1.0
+    assert "Housing is not active in Phase 4 PR 1." in data_quality["reasons"]
+
+
+def test_stale_status_lowers_freshness_confidence():
+    series = {
+        "vix": _summary(percentile_252d=50.0),
+        "reverse_repo": _summary(percentile_252d=50.0),
+        "net_liquidity": _summary(percentile_252d=50.0),
+    }
+    statuses = {
+        "vix": {"status": "ok", "message": "Fresh."},
+        "reverse_repo": {"status": "stale", "message": "Latest daily observation is stale."},
+        "net_liquidity": {"status": "ok", "message": "Fresh."},
+    }
+
+    summary = compute_regime_score.build_score_summary(
+        series,
+        "2026-05-04T00:00:00Z",
+        statuses,
+    )
+
+    assert summary["data_quality"]["freshness_confidence"] < 1.0
+    assert any("reverse_repo" in reason for reason in summary["data_quality"]["reasons"])

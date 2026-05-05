@@ -590,6 +590,105 @@ def _source_coverage(
     )
 
 
+def _ratio_confidence(numerator: int, denominator: int) -> float:
+    if denominator <= 0:
+        return 1.0
+    return round(max(0.0, min(1.0, numerator / denominator)), 2)
+
+
+def _coverage_confidence(coverage: dict[str, object]) -> float:
+    available = coverage.get("available", [])
+    expected = coverage.get("expected", [])
+    return _ratio_confidence(
+        len(available) if isinstance(available, list) else 0,
+        len(expected) if isinstance(expected, list) else 0,
+    )
+
+
+def _freshness_confidence(
+    status_by_id: dict[str, dict[str, Any]],
+    series_ids: list[str],
+) -> tuple[float, list[str]]:
+    considered = [series_id for series_id in series_ids if series_id in status_by_id]
+    if not considered:
+        return 0.75, ["No status rows are available for confidence freshness checks."]
+    penalties = 0.0
+    reasons: list[str] = []
+    for series_id in considered:
+        row = status_by_id[series_id]
+        status = row.get("status")
+        if status == "stale":
+            penalties += 0.25
+            reasons.append(f"{series_id} is stale: {row.get('message', 'no message')}")
+        elif status == "failed":
+            penalties += 0.5
+            reasons.append(f"{series_id} failed: {row.get('message', 'no message')}")
+        elif status == "unavailable":
+            penalties += 0.2
+            reasons.append(f"{series_id} is unavailable for active scoring.")
+    confidence = max(0.0, 1.0 - min(0.8, penalties / max(1, len(considered))))
+    return round(confidence, 2), reasons
+
+
+def _model_confidence(coverage: dict[str, object]) -> tuple[float, list[str]]:
+    groups = coverage.get("groups", {})
+    if not isinstance(groups, dict) or not groups:
+        return 0.75, ["Model breadth cannot be evaluated without coverage groups."]
+    thin_groups = []
+    for group, row in groups.items():
+        if not isinstance(row, dict):
+            continue
+        available = row.get("available", [])
+        expected = row.get("expected", [])
+        if (
+            isinstance(available, list)
+            and isinstance(expected, list)
+            and len(expected) > 1
+            and len(available) <= 1
+        ):
+            thin_groups.append(str(group))
+    confidence = max(0.5, 1.0 - (0.08 * len(thin_groups)))
+    notes = [f"{group} depends on limited active inputs." for group in thin_groups]
+    return round(confidence, 2), notes
+
+
+def _source_confidence(notes: list[str]) -> tuple[float, list[str]]:
+    candidate_notes = [
+        note for note in notes
+        if "not active" in note or "Missing" in note or "candidate" in note.lower()
+    ]
+    confidence = max(0.5, 1.0 - (0.08 * len(candidate_notes)))
+    return round(confidence, 2), candidate_notes
+
+
+def _confidence_breakdown(
+    coverage: dict[str, object],
+    status_by_id: dict[str, dict[str, Any]],
+    notes: list[str],
+) -> tuple[dict[str, float], list[str]]:
+    expected = coverage.get("expected", [])
+    expected_ids = [str(item) for item in expected] if isinstance(expected, list) else []
+    coverage_confidence = _coverage_confidence(coverage)
+    freshness_confidence, freshness_reasons = _freshness_confidence(status_by_id, expected_ids)
+    model_confidence, model_reasons = _model_confidence(coverage)
+    source_confidence, source_reasons = _source_confidence(notes)
+    breakdown = {
+        "coverage_confidence": coverage_confidence,
+        "freshness_confidence": freshness_confidence,
+        "model_confidence": model_confidence,
+        "source_confidence": source_confidence,
+    }
+    breakdown["overall_confidence"] = round(
+        (coverage_confidence * 0.4)
+        + (freshness_confidence * 0.3)
+        + (model_confidence * 0.2)
+        + (source_confidence * 0.1),
+        2,
+    )
+    reasons = sorted(set(freshness_reasons + model_reasons + source_reasons + notes))
+    return breakdown, reasons
+
+
 def _series_driver(
     bucket: str,
     direction: str,
@@ -931,7 +1030,12 @@ def _fragility_drivers(series_by_id: dict[str, dict[str, Any]]) -> list[ScoreDri
     return drivers
 
 
-def build_score_summary(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> dict[str, Any]:
+def build_score_summary(
+    series_by_id: dict[str, dict[str, Any]],
+    generated_at: str,
+    status_by_id: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    statuses = status_by_id or {}
     market_buckets = _market_weather_scores(series_by_id)
     macro_buckets = _macro_climate_scores(series_by_id)
     fragility_buckets = _fragility_scores(series_by_id)
@@ -948,10 +1052,20 @@ def build_score_summary(series_by_id: dict[str, dict[str, Any]], generated_at: s
     macro_score = weighted_three_score(macro_buckets, MACRO_WEIGHTS)
     fragility_score = weighted_three_score(fragility_buckets, FRAGILITY_WEIGHTS)
 
-    macro_notes.append("Housing is not active in Phase 3.")
+    macro_notes.append("Housing is not active in Phase 4 PR 1.")
     if "Missing fragility treasury_bond_volatility coverage: move_index." in fragility_notes:
         fragility_notes.remove("Missing fragility treasury_bond_volatility coverage: move_index.")
     fragility_notes.append("Treasury/bond volatility source is not active.")
+
+    market_confidence, market_confidence_reasons = _confidence_breakdown(
+        market_coverage, statuses, market_notes
+    )
+    macro_confidence, macro_confidence_reasons = _confidence_breakdown(
+        macro_coverage, statuses, macro_notes
+    )
+    fragility_confidence, fragility_confidence_reasons = _confidence_breakdown(
+        fragility_coverage, statuses, fragility_notes
+    )
 
     market_block = score_block(
         market_score,
@@ -959,8 +1073,10 @@ def build_score_summary(series_by_id: dict[str, dict[str, Any]], generated_at: s
         market_buckets,
         MARKET_WEIGHTS,
         _market_weather_drivers(series_by_id, market_buckets),
-        [],
+        market_confidence_reasons,
         market_notes,
+        confidence=market_confidence["overall_confidence"],
+        confidence_breakdown=market_confidence,
     )
     market_block["source_coverage"] = market_coverage
     macro_block = score_block(
@@ -969,8 +1085,10 @@ def build_score_summary(series_by_id: dict[str, dict[str, Any]], generated_at: s
         macro_buckets,
         MACRO_WEIGHTS,
         _macro_climate_drivers(series_by_id),
-        [],
+        macro_confidence_reasons,
         macro_notes,
+        confidence=macro_confidence["overall_confidence"],
+        confidence_breakdown=macro_confidence,
     )
     macro_block["source_coverage"] = macro_coverage
     fragility_block = score_block(
@@ -979,23 +1097,66 @@ def build_score_summary(series_by_id: dict[str, dict[str, Any]], generated_at: s
         fragility_buckets,
         FRAGILITY_WEIGHTS,
         _fragility_drivers(series_by_id),
-        [],
+        fragility_confidence_reasons,
         fragility_notes,
+        confidence=fragility_confidence["overall_confidence"],
+        confidence_breakdown=fragility_confidence,
     )
     fragility_block["source_coverage"] = fragility_coverage
 
     latest_dates = _latest_dates(series_by_id)
     latest_date = max(latest_dates) if latest_dates else generated_at[:10]
-    quality_reasons = sorted(set(market_notes + macro_notes + fragility_notes))
-    overall_confidence = round(
-        (
-            float(market_block["confidence"])
-            + float(macro_block["confidence"])
-            + float(fragility_block["confidence"])
-        )
-        / 3,
-        2,
+    quality_reasons = sorted(
+        set(market_confidence_reasons + macro_confidence_reasons + fragility_confidence_reasons)
     )
+    data_quality = {
+        "coverage_confidence": round(
+            (
+                market_confidence["coverage_confidence"]
+                + macro_confidence["coverage_confidence"]
+                + fragility_confidence["coverage_confidence"]
+            )
+            / 3,
+            2,
+        ),
+        "freshness_confidence": round(
+            (
+                market_confidence["freshness_confidence"]
+                + macro_confidence["freshness_confidence"]
+                + fragility_confidence["freshness_confidence"]
+            )
+            / 3,
+            2,
+        ),
+        "model_confidence": round(
+            (
+                market_confidence["model_confidence"]
+                + macro_confidence["model_confidence"]
+                + fragility_confidence["model_confidence"]
+            )
+            / 3,
+            2,
+        ),
+        "source_confidence": round(
+            (
+                market_confidence["source_confidence"]
+                + macro_confidence["source_confidence"]
+                + fragility_confidence["source_confidence"]
+            )
+            / 3,
+            2,
+        ),
+        "overall_confidence": round(
+            (
+                float(market_block["confidence"])
+                + float(macro_block["confidence"])
+                + float(fragility_block["confidence"])
+            )
+            / 3,
+            2,
+        ),
+        "reasons": quality_reasons,
+    }
 
     return {
         "generated_at_utc": generated_at,
@@ -1006,10 +1167,7 @@ def build_score_summary(series_by_id: dict[str, dict[str, Any]], generated_at: s
             "macro_climate": macro_block,
             "fragility": fragility_block,
         },
-        "data_quality": {
-            "overall_confidence": overall_confidence,
-            "reasons": quality_reasons,
-        },
+        "data_quality": data_quality,
     }
 
 
@@ -1231,7 +1389,8 @@ def main() -> None:
         )
         series_by_id["commodity_inflation_impulse"] = commodity_inflation_impulse
 
-    score_summary = build_score_summary(series_by_id, generated_at)
+    status = build_status(series_by_id, generated_at)
+    score_summary = build_score_summary(series_by_id, generated_at, status["series"])
     write_json(data_dir() / "derived" / "score_summary.json", score_summary)
 
     market_weather = score_summary["scores"]["market_weather"]
@@ -1265,7 +1424,7 @@ def main() -> None:
         },
     )
 
-    write_json(data_dir() / "status" / "data_status.json", build_status(series_by_id, generated_at))
+    write_json(data_dir() / "status" / "data_status.json", status)
 
 
 if __name__ == "__main__":

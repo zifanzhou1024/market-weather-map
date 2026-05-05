@@ -40,6 +40,13 @@ REQUIRED_SCORE_ARRAY_FIELDS = (
     "recent_changes",
     "missing_or_stale_notes",
 )
+CONFIDENCE_FIELDS = (
+    "coverage_confidence",
+    "freshness_confidence",
+    "model_confidence",
+    "source_confidence",
+    "overall_confidence",
+)
 
 
 def _load_json(path: Path) -> Any:
@@ -126,6 +133,14 @@ def validate_score_summary_file() -> None:
             if not isinstance(block.get(field), list):
                 raise ValueError(f"{path} {score_key}.{field} must be a list")
 
+    data_quality = payload.get("data_quality")
+    if not isinstance(data_quality, dict):
+        raise ValueError(f"{path} data_quality must be an object")
+    for field in CONFIDENCE_FIELDS:
+        _validate_finite_number(data_quality.get(field), path, f"data_quality.{field}")
+    if not isinstance(data_quality.get("reasons"), list):
+        raise ValueError(f"{path} data_quality.reasons must be a list")
+
 
 def validate_status_file() -> None:
     path = data_dir() / "status" / "data_status.json"
@@ -144,6 +159,16 @@ def validate_status_file() -> None:
     for series_id, status in series_statuses.items():
         if not isinstance(status, dict) or status.get("status") not in SERIES_STATUSES:
             raise ValueError(f"{path} has invalid series status for {series_id}")
+        if "observation_period" in status and status["observation_period"] is not None and not isinstance(status["observation_period"], str):
+            raise ValueError(f"{path} observation_period must be a string or null for {series_id}")
+        if "expected_next_release_window" in status and status["expected_next_release_window"] is not None:
+            window = status["expected_next_release_window"]
+            if not isinstance(window, dict) or not isinstance(window.get("start"), str) or not isinstance(window.get("end"), str):
+                raise ValueError(
+                    f"{path} expected_next_release_window must contain start and end strings for {series_id}"
+                )
+        if "message" in status and status["message"] is not None and not isinstance(status["message"], str):
+            raise ValueError(f"{path} message must be a string or null for {series_id}")
 
 
 def main() -> None:

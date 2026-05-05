@@ -80,16 +80,20 @@ def score_block(
     drivers: list[ScoreDriver],
     confidence_reasons: list[str],
     missing_or_stale_notes: list[str],
+    confidence: float | None = None,
+    confidence_breakdown: dict[str, float] | None = None,
 ) -> dict[str, object]:
     recent_changes = driver_texts(drivers, "risk", limit=2) + driver_texts(
         drivers,
         "support",
         limit=2,
     )
-    return {
+    block: dict[str, object] = {
         "score": clamp(score),
         "label": label,
-        "confidence": confidence_from_reasons(confidence_reasons + missing_or_stale_notes),
+        "confidence": round(max(0.0, min(1.0, confidence)), 2)
+        if confidence is not None
+        else confidence_from_reasons(confidence_reasons + missing_or_stale_notes),
         "confidence_reasons": confidence_reasons,
         "bucket_scores": bucket_scores,
         "bucket_weights": bucket_weights,
@@ -98,3 +102,6 @@ def score_block(
         "recent_changes": recent_changes[:4],
         "missing_or_stale_notes": missing_or_stale_notes,
     }
+    if confidence_breakdown is not None:
+        block["confidence_breakdown"] = confidence_breakdown
+    return block
