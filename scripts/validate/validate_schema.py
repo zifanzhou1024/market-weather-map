@@ -148,12 +148,18 @@ def _validate_timestamp_with_timezone(value: str, path: Path) -> None:
         raise ValueError(f"{path} generated_at_utc must be an ISO timestamp with timezone") from error
     if parsed.tzinfo is None or parsed.utcoffset() is None:
         raise ValueError(f"{path} generated_at_utc must be an ISO timestamp with timezone")
+    if not value.endswith("Z") or parsed.utcoffset() != timezone.utc.utcoffset(parsed):
+        raise ValueError(f"{path} generated_at_utc must be a UTC timestamp ending in Z")
 
 
 def _validate_https_url(value: str, path: Path) -> None:
     parsed = urlparse(value)
     if parsed.scheme != "https" or not parsed.hostname:
         raise ValueError(f"{path} source_url must be an https URL with hostname")
+    if any(character.isspace() for character in parsed.netloc) or any(
+        character.isspace() for character in parsed.hostname
+    ):
+        raise ValueError(f"{path} source_url must be an https URL with valid hostname")
 
 
 def _validate_event_date(value: str | None, path: Path) -> None:

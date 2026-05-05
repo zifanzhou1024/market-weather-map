@@ -2169,7 +2169,13 @@ def test_macro_calendar_schema_rejects_duplicate_event_ids(tmp_path, monkeypatch
     ("payload_overrides", "event_overrides", "match"),
     [
         ({"generated_at_utc": "not-a-date"}, {}, "generated_at_utc must be an ISO timestamp with timezone"),
+        (
+            {"generated_at_utc": "2026-05-05T00:00:00+05:00"},
+            {},
+            "generated_at_utc must be a UTC timestamp ending in Z",
+        ),
         ({}, {"source_url": "not a url"}, "source_url must be an https URL with hostname"),
+        ({}, {"source_url": "https://bad host/path"}, "source_url must be an https URL with valid hostname"),
         ({}, {"date": "tomorrow"}, "date must be an ISO date"),
         ({}, {"time": "25:99"}, "time must be HH:MM 24-hour time"),
         ({}, {"timezone": "Mars/Olympus"}, "timezone is invalid"),
