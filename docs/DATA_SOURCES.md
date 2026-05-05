@@ -72,7 +72,7 @@ The calendar at `public/data/events/macro_calendar.json` is descriptive event-ri
 | CPI | BLS | `https://www.bls.gov/schedule/news_release/cpi.htm` | Source-linked calendar context. |
 | PPI | BLS | `https://www.bls.gov/schedule/news_release/ppi.htm` | Source-linked calendar context. |
 | Payrolls | BLS | `https://www.bls.gov/schedule/news_release/empsit.htm` | Source-linked calendar context. |
-| PCE and GDP | BEA | `https://www.bea.gov/news/schedule/` | Source-linked calendar context. |
+| Personal Income and Outlays / PCE | BEA | `https://www.bea.gov/news/schedule/` | Source-linked calendar context. |
 | FOMC meetings | Federal Reserve | `https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm` | Source-linked calendar context. |
 | Treasury auctions | TreasuryDirect | `https://www.treasuryauctions.gov/auctions/when-auctions-happen/` | Source-linked calendar context. |
 | Housing releases | Census | `https://www.census.gov/construction/nrc/` | Source-linked calendar context. |
