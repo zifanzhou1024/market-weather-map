@@ -48,7 +48,7 @@ Phase 3 keeps the GitHub-only data model. Inputs listed here are active `free_pu
 
 ## Phase 4 PR 1 Source Handling
 
-Phase 4 PR 1 does not add new source families. It improves release-aware freshness, confidence decomposition, and route interpretation for the existing active generated data.
+Phase 4 PR 1 does not add new source families. It improves release-aware freshness and confidence decomposition for the existing active generated data.
 
 Future Phase 4 source expansion should prefer FRED graph CSV mirrors for time series when a clean FRED-hosted series exists. Original no-secret government APIs or official machine-readable pages should be used when FRED is not enough, especially for event calendars, Treasury auction metadata, fiscal datasets, and release schedules.
 
