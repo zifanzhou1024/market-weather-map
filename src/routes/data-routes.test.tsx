@@ -467,6 +467,32 @@ const macroCalendar = {
       time: "08:30",
       timezone: "America/New_York",
       title: "Consumer Price Index"
+    },
+    {
+      category: "policy",
+      date: "2026-05-06",
+      id: "fomc_minutes",
+      importance: "medium",
+      notes: "Use Federal Reserve calendar for exact publication context.",
+      source: "Federal Reserve",
+      source_url: "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      status: "scheduled",
+      time: "14:00",
+      timezone: "America/New_York",
+      title: "FOMC Minutes"
+    },
+    {
+      category: "growth",
+      date: null,
+      id: "beige_book",
+      importance: "low",
+      notes: "District commentary calendar reference.",
+      source: "Federal Reserve",
+      source_url: "https://www.federalreserve.gov/monetarypolicy/beige-book-default.htm",
+      status: "estimated",
+      time: null,
+      timezone: null,
+      title: "Beige Book"
     }
   ]
 };
@@ -1036,10 +1062,82 @@ describe("data-backed routes", () => {
     await waitForContent(container, "Consumer Price Index");
 
     expect(container.textContent).toContain("Consumer Price Index");
+    expect(container.textContent).toContain("FOMC Minutes");
+    expect(container.textContent).toContain("Beige Book");
     expect(container.textContent).toContain("BLS");
     expect(container.textContent).toContain("High");
+    expect(container.textContent).toContain("Medium");
+    expect(container.textContent).toContain("Low");
     expect(container.textContent).toContain("Source link");
     expect(container.textContent).toContain("America/New_York");
+
+    const sourceLink = container.querySelector(
+      'a[aria-label="Source calendar for Consumer Price Index (BLS)"]'
+    );
+    expect(sourceLink?.getAttribute("href")).toBe("https://www.bls.gov/schedule/news_release/cpi.htm");
+  });
+
+  it("renders macro calendar empty group copy", async () => {
+    mockStaticFetch(
+      routeFetchFiles({
+        "/data/events/macro_calendar.json": {
+          ...macroCalendar,
+          events: macroCalendar.events.filter((event) => event.importance !== "low")
+        }
+      })
+    );
+
+    const container = render(
+      <MemoryRouter initialEntries={["/calendar"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "No low importance events in this file.");
+
+    expect(container.textContent).toContain("Consumer Price Index");
+    expect(container.textContent).toContain("FOMC Minutes");
+  });
+
+  it("surfaces a data error when macro calendar file is missing", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/events/macro_calendar.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/calendar"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Data error:");
+
+    expect(container.querySelector(".data-error")?.getAttribute("role")).toBe("alert");
+    expect(container.textContent).toContain("Failed to load /data/events/macro_calendar.json");
+  });
+
+  it("surfaces a data error when macro calendar importance is unknown", async () => {
+    mockStaticFetch(
+      routeFetchFiles({
+        "/data/events/macro_calendar.json": {
+          ...macroCalendar,
+          events: [
+            {
+              ...macroCalendar.events[0],
+              importance: "urgent" as any
+            }
+          ]
+        }
+      })
+    );
+
+    const container = render(
+      <MemoryRouter initialEntries={["/calendar"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Data error:");
+
+    expect(container.querySelector(".data-error")?.getAttribute("role")).toBe("alert");
+    expect(container.textContent).toContain("Invalid macro calendar importance");
   });
 
   it("renders housing route with active housing data", async () => {

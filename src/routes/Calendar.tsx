@@ -14,6 +14,18 @@ const statusLabels: Record<MacroEventStatus, string> = {
   source_link: "Source link"
 };
 
+function isMacroEventImportance(value: unknown): value is MacroEventImportance {
+  return value === "high" || value === "medium" || value === "low";
+}
+
+function validateCalendar(calendar: MacroCalendarFile) {
+  for (const event of calendar.events) {
+    if (!isMacroEventImportance(event.importance)) {
+      throw new Error(`Invalid macro calendar importance for ${event.id}.`);
+    }
+  }
+}
+
 function formatWhen(event: MacroCalendarEvent) {
   const parts = [event.date ?? "See source", event.time, event.timezone].filter(Boolean);
   return parts.join(" ");
@@ -29,6 +41,7 @@ export default function Calendar() {
     async function loadCalendar() {
       try {
         const calendar = await loadMacroCalendar();
+        validateCalendar(calendar);
         if (active) setData(calendar);
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load macro calendar.");
@@ -110,7 +123,12 @@ export default function Calendar() {
                           <div>
                             <dt>Source</dt>
                             <dd>
-                              <a href={event.source_url}>{event.source}</a>
+                              <a
+                                aria-label={`Source calendar for ${event.title} (${event.source})`}
+                                href={event.source_url}
+                              >
+                                {event.source}
+                              </a>
                             </dd>
                           </div>
                         </dl>

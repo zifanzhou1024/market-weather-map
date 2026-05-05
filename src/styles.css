@@ -436,6 +436,7 @@ select {
   color: #233029;
   font-size: 1rem;
   line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .calendar-event p {
@@ -448,6 +449,10 @@ select {
   gap: 12px;
   align-items: start;
   justify-content: space-between;
+}
+
+.calendar-event__summary > div {
+  min-width: 0;
 }
 
 .calendar-event dl {
@@ -472,8 +477,14 @@ select {
 }
 
 .calendar-event .status-pill {
+  flex-shrink: 0;
   color: #31516b;
   background: #e1edf6;
+}
+
+.calendar-event .metric-source,
+.calendar-event a {
+  overflow-wrap: anywhere;
 }
 
 .regime-badge,
