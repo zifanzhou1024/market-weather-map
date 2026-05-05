@@ -8,7 +8,6 @@ import App from "../App";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
-  RegimeScoreFile,
   ScoreSummaryFile,
   SeriesCategory,
   SeriesCatalogEntry,
@@ -78,17 +77,6 @@ function mockStaticFetch(files: Record<string, unknown>, failures: Record<string
 }
 
 function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
-  const regime: RegimeScoreFile = {
-    buckets: { volatility: -12.34, rates: 4.5 },
-    date: "2026-05-01",
-    generated_at_utc: "2026-05-03T18:32:54Z",
-    label: "Neutral",
-    method_version: "phase2-public-data-v1",
-    overall_score: 19.17,
-    top_risks: ["Volatility"],
-    top_supports: ["Rates"]
-  };
-
   return {
     "/data/catalog/series_catalog.json": catalog,
     "/data/derived/net_liquidity.json": {
@@ -110,7 +98,6 @@ function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
       },
       units: "USD billions"
     } satisfies DerivedSeriesFile,
-    "/data/derived/regime_score.json": regime,
     "/data/derived/score_summary.json": scoreSummaryFile,
     "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
     "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
@@ -598,22 +585,23 @@ afterEach(() => {
 });
 
 describe("data-backed routes", () => {
-  it("renders three score summary sections and market weather buckets on overview", async () => {
+  it("renders the three-score overview without legacy weather score duplication", async () => {
     mockStaticFetch(overviewFetchFiles());
 
-    const container = render(<Overview />);
-    await waitForContent(container, "Market Weather buckets");
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Macro Climate");
 
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Fragility");
-    expect(container.textContent).toContain("Recent changes");
-    expect(container.textContent).not.toContain("What changed this week");
-    expect(container.textContent).toContain("Conflicting signals");
     expect(container.textContent).toContain("Data confidence");
-    expect(container.textContent).toContain("73%");
-    expect(container.textContent).toContain("Sentiment coverage is limited to public CFTC positioning.");
-    expect(container.textContent).toContain("Volatility");
-    expect(container.textContent).toContain("-12.34");
+    expect(container.textContent).toContain("Freshness and coverage notes");
+    expect(container.textContent).not.toContain("Weather score");
+    expect(container.textContent).not.toContain("Market Weather buckets");
   });
 
   it("renders overview empty states for malformed score summary top-level fields", async () => {
@@ -652,8 +640,8 @@ describe("data-backed routes", () => {
 
     expect(container.textContent).toContain("No recent changes in the current score summary.");
     expect(container.textContent).toContain("No conflicting signals in the current score summary.");
-    expect(container.textContent).toContain("0% overall confidence");
-    expect(container.textContent).toContain("No data confidence notes in the current score summary.");
+    expect(container.textContent).toContain("0% overall");
+    expect(container.textContent).toContain("No confidence notes in the current score summary.");
   });
 
   it("announces overview data load errors", async () => {
@@ -668,16 +656,6 @@ describe("data-backed routes", () => {
   });
 
   it("renders net liquidity from the derived static file on overview", async () => {
-    const regime: RegimeScoreFile = {
-      buckets: { volatility: -12.34, rates: 4.5 },
-      date: "2026-05-01",
-      generated_at_utc: "2026-05-03T18:32:54Z",
-      label: "Neutral",
-      method_version: "phase2-public-data-v1",
-      overall_score: 19.17,
-      top_risks: ["Volatility"],
-      top_supports: ["Rates"]
-    };
     const netLiquidity: DerivedSeriesFile = {
       depends_on: ["fed_assets", "reverse_repo", "treasury_general_account"],
       frequency: "weekly",
@@ -701,7 +679,6 @@ describe("data-backed routes", () => {
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
       "/data/derived/net_liquidity.json": netLiquidity,
-      "/data/derived/regime_score.json": regime,
       "/data/derived/score_summary.json": scoreSummary,
       "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
       "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
