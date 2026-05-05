@@ -16,6 +16,7 @@ export type SeriesCategory =
   | "commodities"
   | "sentiment"
   | "growth"
+  | "housing"
   | "labor"
   | "inflation"
   | "dollar"

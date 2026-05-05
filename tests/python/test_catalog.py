@@ -145,6 +145,26 @@ def test_catalog_entries_include_phase3_active_fred_macro_series():
         assert entry["endpoint_url"].endswith(fred_id)
 
 
+def test_phase4_catalog_contains_active_housing_sources():
+    entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
+    expected_sources = {
+        "housing_starts": "HOUST",
+        "building_permits": "PERMIT",
+        "mortgage_rate_30y": "MORTGAGE30US",
+    }
+
+    for series_id, fred_id in expected_sources.items():
+        entry = entries[series_id]
+        assert entry["category"] == "housing"
+        assert entry["source"] == "FRED"
+        assert entry["source_url"] == f"https://fred.stlouisfed.org/series/{fred_id}"
+        assert entry["endpoint_url"] == f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
+        assert entry["public"] is True
+        assert entry["score_status"] == "active"
+        assert entry["access_status"] == "free_public"
+        assert entry["terms_status"] == "review_each_series"
+
+
 def test_catalog_entries_use_dollar_category_for_phase3_dollar_series():
     entries = {str(entry["id"]): entry for entry in catalog_entries()}
 
