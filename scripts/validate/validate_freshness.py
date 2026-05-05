@@ -76,10 +76,9 @@ def main() -> None:
             continue
         if status_value == "ok":
             expected = _expected_freshness(status, generated_at_utc, generated_at)
-            if expected is not None:
-                if not _freshness_payload_matches(status, expected):
-                    failures.append(f"{series_id} failed freshness invariant")
-                continue
+            if expected is None or not _freshness_payload_matches(status, expected):
+                failures.append(f"{series_id} failed freshness invariant")
+            continue
         freshness_days = status.get("freshness_days")
         max_stale_days = status.get("max_stale_days")
         if (

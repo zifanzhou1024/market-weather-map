@@ -1202,6 +1202,65 @@ def test_validate_freshness_rejects_stale_daily_ok_series_with_fabricated_low_ag
         validate_freshness.main()
 
 
+def test_validate_freshness_rejects_ok_series_with_missing_last_observation(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "missing_observation_series": {
+              "status": "ok",
+              "observation_period": "2026-04-20",
+              "expected_frequency": "daily",
+              "freshness_days": 1,
+              "max_stale_days": 7,
+              "expected_next_release_window": null,
+              "message": "Latest daily observation is 1 days old."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="missing_observation_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_ok_series_with_malformed_last_observation(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "malformed_observation_series": {
+              "status": "ok",
+              "last_observation": "not-a-date",
+              "observation_period": "not-a-date",
+              "expected_frequency": "daily",
+              "freshness_days": 1,
+              "max_stale_days": 7,
+              "expected_next_release_window": null,
+              "message": "Latest daily observation is 1 days old."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="malformed_observation_series failed freshness invariant"):
+        validate_freshness.main()
+
+
 def test_validate_freshness_rejects_stale_monthly_ok_series_with_missing_age(tmp_path, monkeypatch):
     status_dir = tmp_path / "status"
     status_dir.mkdir()
@@ -1430,7 +1489,7 @@ def test_validate_freshness_rejects_spoofed_release_window_with_malformed_dates(
     )
     monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
 
-    with pytest.raises(SystemExit, match="bad_window_series is stale: 65 days > 45 allowed"):
+    with pytest.raises(SystemExit, match="bad_window_series failed freshness invariant"):
         validate_freshness.main()
 
 
@@ -1460,7 +1519,7 @@ def test_validate_freshness_rejects_release_window_ok_after_window_end(tmp_path,
     )
     monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
 
-    with pytest.raises(SystemExit, match="late_monthly_series is stale: 77 days > 45 allowed"):
+    with pytest.raises(SystemExit, match="late_monthly_series failed freshness invariant"):
         validate_freshness.main()
 
 
@@ -1485,7 +1544,7 @@ def test_validate_freshness_rejects_ok_stale_series_without_release_allowance(tm
     )
     monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
 
-    with pytest.raises(SystemExit, match="bad_ok_series is stale: 65 days > 45 allowed"):
+    with pytest.raises(SystemExit, match="bad_ok_series failed freshness invariant"):
         validate_freshness.main()
 
 
