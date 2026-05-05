@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import datetime, timezone
 from typing import Any
 
@@ -120,7 +121,7 @@ def generate_macro_calendar() -> dict[str, Any]:
     return {
         "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "method_version": METHOD_VERSION,
-        "events": EVENTS,
+        "events": deepcopy(EVENTS),
     }
 
 

@@ -2165,6 +2165,35 @@ def test_macro_calendar_schema_rejects_duplicate_event_ids(tmp_path, monkeypatch
         validate_schema.validate_macro_calendar_file()
 
 
+@pytest.mark.parametrize(
+    ("payload_overrides", "event_overrides", "match"),
+    [
+        ({"generated_at_utc": "not-a-date"}, {}, "generated_at_utc must be an ISO timestamp with timezone"),
+        ({}, {"source_url": "not a url"}, "source_url must be an https URL with hostname"),
+        ({}, {"date": "tomorrow"}, "date must be an ISO date"),
+        ({}, {"time": "25:99"}, "time must be HH:MM 24-hour time"),
+        ({}, {"timezone": "Mars/Olympus"}, "timezone is invalid"),
+    ],
+)
+def test_macro_calendar_schema_rejects_invalid_semantic_fields(
+    tmp_path,
+    monkeypatch,
+    payload_overrides,
+    event_overrides,
+    match,
+):
+    payload = {
+        "generated_at_utc": "2026-05-05T00:00:00Z",
+        "method_version": "phase4-pr2-static-event-calendar-v1",
+        "events": [_macro_calendar_event(**event_overrides)],
+    }
+    payload.update(payload_overrides)
+    _write_macro_calendar(tmp_path, monkeypatch, payload)
+
+    with pytest.raises(ValueError, match=match):
+        validate_schema.validate_macro_calendar_file()
+
+
 def test_macro_calendar_generator_returns_static_event_payload():
     from scripts.generate_macro_calendar import generate_macro_calendar
 
@@ -2178,3 +2207,14 @@ def test_macro_calendar_generator_returns_static_event_payload():
         "source_link",
         "estimated",
     }
+
+
+def test_macro_calendar_generator_returns_fresh_event_objects():
+    from scripts.generate_macro_calendar import generate_macro_calendar
+
+    first_payload = generate_macro_calendar()
+    first_payload["events"][0]["title"] = "Mutated"
+
+    second_payload = generate_macro_calendar()
+
+    assert second_payload["events"][0]["title"] == "CPI"
