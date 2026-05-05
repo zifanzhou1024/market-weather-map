@@ -1077,6 +1077,8 @@ def test_validate_freshness_accepts_release_window_ok_series_status(tmp_path, mo
           "series": {
             "monthly_series": {
               "status": "ok",
+              "last_observation": "2026-03-01",
+              "expected_frequency": "monthly",
               "freshness_days": 65,
               "max_stale_days": 45,
               "expected_next_release_window": {
@@ -1093,6 +1095,81 @@ def test_validate_freshness_accepts_release_window_ok_series_status(tmp_path, mo
     monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
 
     validate_freshness.main()
+
+
+def test_validate_freshness_accepts_weekly_and_quarterly_release_window_ok_statuses(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "weekly_series": {
+              "status": "ok",
+              "last_observation": "2026-04-24",
+              "expected_frequency": "weekly",
+              "freshness_days": 11,
+              "max_stale_days": 7,
+              "expected_next_release_window": {
+                "start": "2026-05-01",
+                "end": "2026-05-08"
+              },
+              "message": "Latest weekly observation is within the expected release window ending 2026-05-08."
+            },
+            "quarterly_series": {
+              "status": "ok",
+              "last_observation": "2026-01-01",
+              "expected_frequency": "quarterly",
+              "freshness_days": 124,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest quarterly observation covers 2026-Q1 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    validate_freshness.main()
+
+
+def test_validate_freshness_rejects_daily_spoofed_release_window_status(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "daily_series": {
+              "status": "ok",
+              "last_observation": "2026-04-20",
+              "expected_frequency": "daily",
+              "freshness_days": 15,
+              "max_stale_days": 7,
+              "expected_next_release_window": {
+                "start": "2026-05-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest daily observation is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="daily_series is stale: 15 days > 7 allowed"):
+        validate_freshness.main()
 
 
 def test_validate_freshness_rejects_spoofed_release_window_with_malformed_dates(tmp_path, monkeypatch):
