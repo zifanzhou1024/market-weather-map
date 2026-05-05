@@ -6,13 +6,13 @@
     "liquidity_funding": -29.7,
     "rates_real_yields": -11.9,
     "sentiment_positioning": -30.15,
-    "volatility_tail_risk": 31.88
+    "volatility_tail_risk": -14.42
   },
   "date": "2026-05-04",
-  "generated_at_utc": "2026-05-05T00:52:11Z",
+  "generated_at_utc": "2026-05-05T00:56:59Z",
   "label": "Mixed",
   "method_version": "phase3-three-score-v1",
-  "overall_score": 5.76,
+  "overall_score": -1.18,
   "top_risks": [
     "Commodity inflation impulse is elevated.",
     "Leveraged-money S&P 500 positioning is crowded.",
@@ -20,7 +20,6 @@
   ],
   "top_supports": [
     "The broad dollar backdrop is easing.",
-    "Credit spread pressure is contained.",
-    "Volatility tail risk is contained."
+    "Credit spread pressure is contained."
   ]
 }
