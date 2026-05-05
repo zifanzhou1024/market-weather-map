@@ -604,6 +604,40 @@ def test_build_status_reports_source_governance_without_lowering_overall(monkeyp
     assert status["series"]["restricted_series"]["status"] == "unavailable"
 
 
+def test_build_status_reports_missing_active_public_payload_with_freshness_shape(monkeypatch):
+    monkeypatch.setattr(compute_regime_score, "available_catalog_entries", lambda: [])
+    monkeypatch.setattr(
+        compute_regime_score,
+        "catalog_entries",
+        lambda: [
+            {
+                "id": "missing_active_public",
+                "source": "FRED",
+                "frequency": "daily",
+                "max_stale_days": 7,
+                "score_status": "active",
+                "public": True,
+                "access_status": "free_public",
+                "terms_status": "ok",
+            },
+        ],
+    )
+
+    status = build_status({}, "2026-05-04T00:00:00Z")
+
+    assert status["series"]["missing_active_public"] == {
+        "status": "unavailable",
+        "last_observation": None,
+        "observation_period": None,
+        "source": "FRED",
+        "expected_frequency": "daily",
+        "freshness_days": None,
+        "max_stale_days": 7,
+        "expected_next_release_window": None,
+        "message": "Active public catalog series has no generated payload.",
+    }
+
+
 def test_build_status_includes_derived_series_rows(monkeypatch):
     generated_at = "2026-05-03T12:00:00Z"
     monkeypatch.setattr(compute_regime_score, "available_catalog_entries", lambda: [])

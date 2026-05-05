@@ -1068,10 +1068,12 @@ def _unavailable_status_for_series(entry: dict[str, Any]) -> dict[str, Any]:
     return {
         "status": "unavailable",
         "last_observation": None,
+        "observation_period": None,
         "source": entry["source"],
         "expected_frequency": entry["frequency"],
         "freshness_days": None,
         "max_stale_days": entry["max_stale_days"],
+        "expected_next_release_window": None,
         "message": "Active public catalog series has no generated payload.",
     }
 
