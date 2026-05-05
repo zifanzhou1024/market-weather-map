@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-05T07:53:10Z",
-  "last_successful_update_utc": "2026-05-05T07:53:10Z",
+  "generated_at_utc": "2026-05-05T08:09:38Z",
+  "last_successful_update_utc": "2026-05-05T08:09:38Z",
   "overall_status": "partial",
   "series": {
     "bank_credit": {
@@ -800,11 +800,11 @@
     "vix": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 4,
-      "last_observation": "2026-05-01",
+      "freshness_days": 1,
+      "last_observation": "2026-05-04",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 4 days old.",
-      "observation_period": "2026-05-01",
+      "message": "Latest daily observation is 1 days old.",
+      "observation_period": "2026-05-04",
       "source": "Cboe",
       "status": "ok"
     },
@@ -833,22 +833,22 @@
     "vix9d_vix_ratio": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 4,
-      "last_observation": "2026-05-01",
+      "freshness_days": 1,
+      "last_observation": "2026-05-04",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 4 days old.",
-      "observation_period": "2026-05-01",
+      "message": "Latest daily observation is 1 days old.",
+      "observation_period": "2026-05-04",
       "source": "Derived",
       "status": "ok"
     },
     "vix_vix3m_ratio": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 4,
-      "last_observation": "2026-05-01",
+      "freshness_days": 1,
+      "last_observation": "2026-05-04",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 4 days old.",
-      "observation_period": "2026-05-01",
+      "message": "Latest daily observation is 1 days old.",
+      "observation_period": "2026-05-04",
       "source": "Derived",
       "status": "ok"
     },
