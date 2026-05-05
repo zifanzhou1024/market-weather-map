@@ -2076,3 +2076,105 @@ def test_stale_status_lowers_freshness_confidence():
 
     assert summary["data_quality"]["freshness_confidence"] < 1.0
     assert any("reverse_repo" in reason for reason in summary["data_quality"]["reasons"])
+
+
+def _macro_calendar_event(**overrides):
+    event = {
+        "id": "cpi",
+        "title": "CPI",
+        "category": "inflation",
+        "importance": "high",
+        "source": "BLS",
+        "source_url": "https://www.bls.gov/schedule/news_release/cpi.htm",
+        "date": None,
+        "time": "08:30",
+        "timezone": "America/New_York",
+        "status": "source_link",
+        "notes": "Monthly release calendar source.",
+    }
+    event.update(overrides)
+    return event
+
+
+def _write_macro_calendar(tmp_path, monkeypatch, payload):
+    data_root = tmp_path / "public" / "data"
+    events_dir = data_root / "events"
+    events_dir.mkdir(parents=True)
+    (events_dir / "macro_calendar.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: data_root)
+
+
+def test_macro_calendar_schema_accepts_valid_payload(tmp_path, monkeypatch):
+    _write_macro_calendar(
+        tmp_path,
+        monkeypatch,
+        {
+            "generated_at_utc": "2026-05-05T00:00:00Z",
+            "method_version": "phase4-pr2-static-event-calendar-v1",
+            "events": [_macro_calendar_event()],
+        },
+    )
+
+    validate_schema.validate_macro_calendar_file()
+
+
+def test_macro_calendar_schema_requires_method_version(tmp_path, monkeypatch):
+    _write_macro_calendar(
+        tmp_path,
+        monkeypatch,
+        {
+            "generated_at_utc": "2026-05-05T00:00:00Z",
+            "events": [_macro_calendar_event()],
+        },
+    )
+
+    with pytest.raises(ValueError, match="method_version must be a string"):
+        validate_schema.validate_macro_calendar_file()
+
+
+def test_macro_calendar_schema_rejects_invalid_importance(tmp_path, monkeypatch):
+    _write_macro_calendar(
+        tmp_path,
+        monkeypatch,
+        {
+            "generated_at_utc": "2026-05-05T00:00:00Z",
+            "method_version": "phase4-pr2-static-event-calendar-v1",
+            "events": [_macro_calendar_event(importance="urgent")],
+        },
+    )
+
+    with pytest.raises(ValueError, match="importance is invalid"):
+        validate_schema.validate_macro_calendar_file()
+
+
+def test_macro_calendar_schema_rejects_duplicate_event_ids(tmp_path, monkeypatch):
+    _write_macro_calendar(
+        tmp_path,
+        monkeypatch,
+        {
+            "generated_at_utc": "2026-05-05T00:00:00Z",
+            "method_version": "phase4-pr2-static-event-calendar-v1",
+            "events": [
+                _macro_calendar_event(),
+                _macro_calendar_event(title="Duplicate CPI"),
+            ],
+        },
+    )
+
+    with pytest.raises(ValueError, match="duplicate event id"):
+        validate_schema.validate_macro_calendar_file()
+
+
+def test_macro_calendar_generator_returns_static_event_payload():
+    from scripts.generate_macro_calendar import generate_macro_calendar
+
+    payload = generate_macro_calendar()
+
+    assert payload["method_version"] == "phase4-pr2-static-event-calendar-v1"
+    assert payload["events"]
+    assert all(event["source_url"].startswith("https://") for event in payload["events"])
+    assert {event["status"] for event in payload["events"]} <= {
+        "scheduled",
+        "source_link",
+        "estimated",
+    }

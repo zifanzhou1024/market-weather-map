@@ -1,0 +1,110 @@
+{
+  "events": [
+    {
+      "category": "inflation",
+      "date": null,
+      "id": "cpi",
+      "importance": "high",
+      "notes": "BLS monthly Consumer Price Index release calendar.",
+      "source": "BLS",
+      "source_url": "https://www.bls.gov/schedule/news_release/cpi.htm",
+      "status": "source_link",
+      "time": "08:30",
+      "timezone": "America/New_York",
+      "title": "CPI"
+    },
+    {
+      "category": "inflation",
+      "date": null,
+      "id": "ppi",
+      "importance": "medium",
+      "notes": "BLS monthly Producer Price Index release calendar.",
+      "source": "BLS",
+      "source_url": "https://www.bls.gov/schedule/news_release/ppi.htm",
+      "status": "source_link",
+      "time": "08:30",
+      "timezone": "America/New_York",
+      "title": "PPI"
+    },
+    {
+      "category": "growth",
+      "date": null,
+      "id": "employment_situation_payrolls",
+      "importance": "high",
+      "notes": "BLS monthly Employment Situation release calendar.",
+      "source": "BLS",
+      "source_url": "https://www.bls.gov/schedule/news_release/empsit.htm",
+      "status": "source_link",
+      "time": "08:30",
+      "timezone": "America/New_York",
+      "title": "Employment Situation/payrolls"
+    },
+    {
+      "category": "inflation",
+      "date": null,
+      "id": "personal_income_outlays_pce",
+      "importance": "high",
+      "notes": "BEA release schedule for Personal Income and Outlays including PCE.",
+      "source": "BEA",
+      "source_url": "https://www.bea.gov/news/schedule/",
+      "status": "source_link",
+      "time": "08:30",
+      "timezone": "America/New_York",
+      "title": "Personal Income and Outlays/PCE"
+    },
+    {
+      "category": "rates",
+      "date": null,
+      "id": "fomc_meeting",
+      "importance": "high",
+      "notes": "Federal Reserve FOMC calendars and policy statement schedule.",
+      "source": "Federal Reserve",
+      "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      "status": "source_link",
+      "time": "14:00",
+      "timezone": "America/New_York",
+      "title": "FOMC Meeting"
+    },
+    {
+      "category": "rates",
+      "date": null,
+      "id": "treasury_auctions",
+      "importance": "medium",
+      "notes": "TreasuryDirect auction schedule source.",
+      "source": "TreasuryDirect",
+      "source_url": "https://www.treasuryauctions.gov/auctions/when-auctions-happen/",
+      "status": "source_link",
+      "time": null,
+      "timezone": "America/New_York",
+      "title": "Treasury Auctions"
+    },
+    {
+      "category": "housing",
+      "date": null,
+      "id": "new_residential_construction",
+      "importance": "medium",
+      "notes": "Census housing starts and building permits release source.",
+      "source": "Census",
+      "source_url": "https://www.census.gov/construction/nrc/",
+      "status": "source_link",
+      "time": "08:30",
+      "timezone": "America/New_York",
+      "title": "New Residential Construction"
+    },
+    {
+      "category": "sentiment",
+      "date": null,
+      "id": "commitments_of_traders",
+      "importance": "medium",
+      "notes": "CFTC Commitments of Traders release schedule source.",
+      "source": "CFTC",
+      "source_url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/ReleaseSchedule/index.htm",
+      "status": "source_link",
+      "time": "15:30",
+      "timezone": "America/New_York",
+      "title": "Commitments of Traders"
+    }
+  ],
+  "generated_at_utc": "2026-05-05T07:23:03Z",
+  "method_version": "phase4-pr2-static-event-calendar-v1"
+}
