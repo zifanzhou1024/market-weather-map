@@ -188,10 +188,13 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       "fed_assets",
       "financial_conditions",
       "financial_stress",
+      "housing_starts",
       "high_yield_oas",
       "investment_grade_oas",
+      "building_permits",
       "loans_and_leases",
       "bank_deposits",
+      "mortgage_rate_30y",
       "reserve_balances",
       "reverse_repo",
       "sofr",
@@ -417,6 +420,9 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("nonfarm_payrolls", "growth", "Nonfarm payrolls", "thousands", "monthly"),
   catalogEntry("initial_claims", "growth", "Initial jobless claims", "thousands", "weekly"),
   catalogEntry("sahm_rule", "growth", "Sahm Rule recession indicator", "percentage points", "monthly"),
+  catalogEntry("housing_starts", "housing", "Housing Starts", "thousands_saar", "monthly"),
+  catalogEntry("building_permits", "housing", "Building Permits", "thousands_saar", "monthly"),
+  catalogEntry("mortgage_rate_30y", "housing", "30-Year Fixed Mortgage Rate", "percent", "weekly"),
   catalogEntry("headline_cpi", "inflation", "Headline CPI", "percent", "monthly"),
   catalogEntry("core_cpi", "inflation", "Core CPI", "percent", "monthly"),
   catalogEntry("core_pce", "inflation", "Core PCE", "percent", "monthly"),
@@ -620,6 +626,9 @@ const status: DataStatusFile = {
     nonfarm_payrolls: statusRow("unavailable", "monthly"),
     initial_claims: statusRow("unavailable", "weekly"),
     sahm_rule: statusRow("unavailable", "monthly"),
+    housing_starts: statusRow("unavailable", "monthly"),
+    building_permits: statusRow("unavailable", "monthly"),
+    mortgage_rate_30y: statusRow("unavailable", "weekly"),
     headline_cpi: statusRow("unavailable", "monthly"),
     core_cpi: statusRow("unavailable", "monthly"),
     core_pce: statusRow("unavailable", "monthly"),
@@ -992,6 +1001,27 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Featured chart unavailable until source data is available.");
     expect(container.querySelector('[aria-label="Chart placeholder"]')).toBeNull();
     expect(container.querySelector(".data-error")).toBeNull();
+  });
+
+  it("renders housing route with active housing data", async () => {
+    mockStaticFetch({
+      "/data/catalog/series_catalog.json": catalog,
+      ...seriesFiles(["housing_starts", "building_permits", "mortgage_rate_30y"]),
+      "/data/status/data_status.json": status
+    });
+
+    const container = render(
+      <MemoryRouter initialEntries={["/housing"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Housing Starts");
+
+    expect(container.textContent).toContain("Housing");
+    expect(container.textContent).toContain("Housing Starts");
+    expect(container.textContent).toContain("Building Permits");
+    expect(container.textContent).toContain("30-Year Fixed Mortgage Rate");
+    expect(container.textContent).toContain("mortgage-rate sensitivity");
   });
 
   it("surfaces a data error when a missing core series is marked ok", async () => {
