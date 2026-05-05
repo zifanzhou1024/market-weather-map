@@ -1078,6 +1078,7 @@ def test_validate_freshness_accepts_release_window_ok_series_status(tmp_path, mo
             "monthly_series": {
               "status": "ok",
               "last_observation": "2026-03-01",
+              "observation_period": "2026-03",
               "expected_frequency": "monthly",
               "freshness_days": 65,
               "max_stale_days": 45,
@@ -1109,6 +1110,7 @@ def test_validate_freshness_accepts_weekly_and_quarterly_release_window_ok_statu
             "weekly_series": {
               "status": "ok",
               "last_observation": "2026-04-24",
+              "observation_period": "week of 2026-04-24",
               "expected_frequency": "weekly",
               "freshness_days": 11,
               "max_stale_days": 7,
@@ -1121,6 +1123,7 @@ def test_validate_freshness_accepts_weekly_and_quarterly_release_window_ok_statu
             "quarterly_series": {
               "status": "ok",
               "last_observation": "2026-01-01",
+              "observation_period": "2026-Q1",
               "expected_frequency": "quarterly",
               "freshness_days": 124,
               "max_stale_days": 45,
@@ -1169,6 +1172,78 @@ def test_validate_freshness_rejects_daily_spoofed_release_window_status(tmp_path
     monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
 
     with pytest.raises(SystemExit, match="daily_series is stale: 15 days > 7 allowed"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_release_window_row_with_fabricated_freshness_days(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "fabricated_freshness_series": {
+              "status": "ok",
+              "last_observation": "2026-03-01",
+              "observation_period": "2026-03",
+              "expected_frequency": "monthly",
+              "freshness_days": 999,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(
+        SystemExit,
+        match="fabricated_freshness_series is stale: 999 days > 45 allowed",
+    ):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_release_window_row_with_fabricated_message(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "fabricated_message_series": {
+              "status": "ok",
+              "last_observation": "2026-03-01",
+              "observation_period": "2026-03",
+              "expected_frequency": "monthly",
+              "freshness_days": 65,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Arbitrary validator bypass text within the expected release window."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(
+        SystemExit,
+        match="fabricated_message_series is stale: 65 days > 45 allowed",
+    ):
         validate_freshness.main()
 
 

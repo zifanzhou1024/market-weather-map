@@ -60,12 +60,16 @@ def _release_window_allows_ok_status(
         )
     except (TypeError, ValueError):
         return False
-    return (
-        expected.get("status") == "ok"
-        and expected.get("expected_next_release_window") == {
-            "start": window.get("start"),
-            "end": window.get("end"),
-        }
+    return all(
+        status.get(field) == expected.get(field)
+        for field in (
+            "status",
+            "freshness_days",
+            "last_observation",
+            "observation_period",
+            "expected_next_release_window",
+            "message",
+        )
     )
 
 
