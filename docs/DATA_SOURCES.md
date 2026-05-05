@@ -29,9 +29,9 @@ Phase 2 extends the same no-secret ingestion model with additional public FRED g
 | Commodities | PSOYBUSDM | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSOYBUSDM` | Monthly | Global soybean price. |
 | Sentiment | E-mini S&P 500 positioning | CFTC | `https://www.cftc.gov/files/dea/history/fut_fin_txt_<year>.zip` | Weekly | Historical compressed text report for futures positioning. The ingest script selects the current UTC year dynamically. |
 
-## Active Phase 3 No-Secret Inputs
+## Active No-Secret Inputs
 
-Phase 3 keeps the GitHub-only data model. Inputs listed here are active `free_public` targets when they can be fetched without secrets, normalized into static JSON, and redistributed as source-referenced observations.
+The GitHub-only data model uses active `free_public` targets when they can be fetched without secrets, normalized into static JSON, and redistributed as source-referenced observations.
 
 | Theme | Series or group | Provider | Public endpoint pattern | Frequency | Score use |
 | --- | --- | --- | --- | --- | --- |
@@ -69,7 +69,9 @@ The calendar at `public/data/events/macro_calendar.json` is descriptive event-ri
 
 | Event Area | Source | Source URL | Treatment |
 | --- | --- | --- | --- |
-| CPI, PPI, payrolls | BLS | `https://www.bls.gov/schedule/news_release/current_year.asp` | Source-linked calendar context. |
+| CPI | BLS | `https://www.bls.gov/schedule/news_release/cpi.htm` | Source-linked calendar context. |
+| PPI | BLS | `https://www.bls.gov/schedule/news_release/ppi.htm` | Source-linked calendar context. |
+| Payrolls | BLS | `https://www.bls.gov/schedule/news_release/empsit.htm` | Source-linked calendar context. |
 | PCE and GDP | BEA | `https://www.bea.gov/news/schedule/` | Source-linked calendar context. |
 | FOMC meetings | Federal Reserve | `https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm` | Source-linked calendar context. |
 | Treasury auctions | TreasuryDirect | `https://www.treasuryauctions.gov/auctions/when-auctions-happen/` | Source-linked calendar context. |
