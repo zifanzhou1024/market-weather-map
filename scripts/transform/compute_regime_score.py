@@ -8,6 +8,7 @@ from typing import Any
 from scripts.shared.catalog import available_catalog_entries, catalog_entries
 from scripts.shared.io import data_dir, series_path, write_json
 from scripts.transform.compute_percentiles import enrich_observations, series_summary
+from scripts.transform.freshness import evaluate_freshness
 from scripts.transform.score_models import (
     ScoreDriver,
     label_for_three_score,
@@ -1040,30 +1041,22 @@ def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_
 
     summary = latest_summary(series)
     latest_date = summary.get("latest_date")
-    freshness_days = None
-    status = "failed"
-    message = "No observations available."
-    if isinstance(latest_date, str):
-        current_date = datetime.fromisoformat(generated_at.replace("Z", "+00:00")).date()
-        observed_date = datetime.fromisoformat(latest_date).date()
-        freshness_days = (current_date - observed_date).days
-        if freshness_days < 0:
-            status = "failed"
-            message = "Latest observation is future-dated."
-        elif freshness_days > int(entry["max_stale_days"]):
-            status = "stale"
-            message = f"Latest observation is {freshness_days} days old."
-        else:
-            status = "ok"
-            message = "Fresh."
+    freshness = evaluate_freshness(
+        latest_date=latest_date if isinstance(latest_date, str) else None,
+        generated_at=generated_at,
+        frequency=str(entry["frequency"]),
+        max_stale_days=int(entry["max_stale_days"]),
+    )
     return {
-        "status": status,
-        "last_observation": latest_date if isinstance(latest_date, str) else None,
+        "status": freshness["status"],
+        "last_observation": freshness["last_observation"],
+        "observation_period": freshness["observation_period"],
         "source": entry["source"],
         "expected_frequency": entry["frequency"],
-        "freshness_days": freshness_days,
+        "freshness_days": freshness["freshness_days"],
         "max_stale_days": entry["max_stale_days"],
-        "message": message,
+        "expected_next_release_window": freshness["expected_next_release_window"],
+        "message": freshness["message"],
     }
 
 

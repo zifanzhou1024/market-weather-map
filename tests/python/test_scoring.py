@@ -623,11 +623,13 @@ def test_build_status_includes_derived_series_rows(monkeypatch):
     assert status["series"]["us10y_minus_us2y"] == {
         "status": "ok",
         "last_observation": "2026-05-01",
+        "observation_period": "2026-05-01",
         "source": "Derived",
         "expected_frequency": "daily",
         "freshness_days": 2,
         "max_stale_days": 7,
-        "message": "Fresh.",
+        "expected_next_release_window": None,
+        "message": "Latest daily observation is 2 days old.",
     }
     assert status["series"]["brent_wti_spread"]["source"] == "Derived"
     assert status["series"]["brent_wti_spread"]["max_stale_days"] == 10
