@@ -731,13 +731,13 @@ def test_build_score_summary_returns_three_scores_with_specific_drivers():
 
     summary = compute_regime_score.build_score_summary(series, "2026-05-04T00:00:00Z")
 
-    assert summary["method_version"] == "phase3-three-score-v1"
+    assert summary["method_version"] == "phase4-pr2-macro-completeness-v1"
     assert set(summary["scores"]) == {"market_weather", "macro_climate", "fragility"}
     assert "High-yield spreads widened over the past month." in summary["scores"]["market_weather"]["top_risks"]
     assert summary["scores"]["macro_climate"]["confidence"] < 1.0
-    assert "Housing is not active in Phase 4 PR 1." in summary["scores"]["macro_climate"]["missing_or_stale_notes"]
+    assert "Housing is not active in Phase 4 PR 1." not in summary["scores"]["macro_climate"]["missing_or_stale_notes"]
     assert summary["data_quality"]["overall_confidence"] <= 1.0
-    assert "Housing is not active in Phase 4 PR 1." in summary["data_quality"]["reasons"]
+    assert "Housing is not active in Phase 4 PR 1." not in summary["data_quality"]["reasons"]
 
 
 def test_missing_phase_3_macro_coverage_lowers_confidence_and_adds_notes():
@@ -756,11 +756,55 @@ def test_missing_phase_3_macro_coverage_lowers_confidence_and_adds_notes():
     macro = summary["scores"]["macro_climate"]
 
     assert macro["confidence"] < 0.8
-    assert "Housing is not active in Phase 4 PR 1." in macro["missing_or_stale_notes"]
+    assert "Housing is not active in Phase 4 PR 1." not in macro["missing_or_stale_notes"]
     assert any("growth" in note and "cfnai" in note for note in macro["missing_or_stale_notes"])
     assert any("labor" in note and "nonfarm_payrolls" in note for note in macro["missing_or_stale_notes"])
     assert any("inflation" in note and "headline_cpi" in note for note in macro["missing_or_stale_notes"])
     assert any("consumer/production" in note and "real_retail_sales" in note for note in macro["missing_or_stale_notes"])
+
+
+def test_macro_climate_includes_active_housing_bucket():
+    series = {
+        "housing_starts": _summary(percentile_252d=80.0),
+        "building_permits": _summary(percentile_252d=70.0),
+        "mortgage_rate_30y": _summary(percentile_252d=20.0),
+        "cfnai": _summary(percentile_252d=50.0),
+        "cfnai_3m_avg": _summary(percentile_252d=50.0),
+        "nonfarm_payrolls": _summary(percentile_252d=50.0),
+        "unemployment_rate": _summary(percentile_252d=50.0),
+        "initial_claims": _summary(percentile_252d=50.0),
+        "sahm_rule": _summary(percentile_252d=50.0),
+        "headline_cpi": _summary(percentile_252d=50.0),
+        "core_cpi": _summary(percentile_252d=50.0),
+        "core_pce": _summary(percentile_252d=50.0),
+        "ppi_final_demand": _summary(percentile_252d=50.0),
+        "real_retail_sales": _summary(percentile_252d=50.0),
+        "industrial_production": _summary(percentile_252d=50.0),
+        "durable_goods_orders": _summary(percentile_252d=50.0),
+        "real_yield_10y": _summary(percentile_252d=50.0),
+    }
+
+    summary = compute_regime_score.build_score_summary(series, "2026-05-05T00:00:00Z")
+    macro = summary["scores"]["macro_climate"]
+
+    assert "housing" in macro["bucket_scores"]
+    assert macro["bucket_weights"]["housing"] == 0.15
+    assert macro["bucket_scores"]["housing"] > 0
+    assert "Housing activity and rate sensitivity are supportive." in macro["top_supports"]
+    assert "Housing is not active" not in " ".join(macro["missing_or_stale_notes"])
+
+
+def test_missing_housing_lowers_macro_confidence_with_pr2_note():
+    series = {
+        "cfnai": _summary(percentile_252d=50.0),
+        "cfnai_3m_avg": _summary(percentile_252d=50.0),
+    }
+
+    summary = compute_regime_score.build_score_summary(series, "2026-05-05T00:00:00Z")
+    macro = summary["scores"]["macro_climate"]
+
+    assert any("housing" in note.lower() for note in macro["missing_or_stale_notes"])
+    assert macro["confidence_breakdown"]["coverage_confidence"] < 1.0
 
 
 def test_score_summary_does_not_embed_candidate_source_ids():
@@ -1688,7 +1732,7 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
             "macro_climate": {
               "score": 2,
               "confidence": 0.8,
-              "top_risks": ["Housing is not active in Phase 4 PR 1."],
+              "top_risks": [],
               "top_supports": [],
               "confidence_reasons": [],
               "recent_changes": [],
@@ -1980,6 +2024,9 @@ def test_score_summary_emits_data_quality_confidence_breakdown():
         "real_retail_sales": _summary(percentile_252d=50.0),
         "industrial_production": _summary(percentile_252d=50.0),
         "durable_goods_orders": _summary(percentile_252d=50.0),
+        "housing_starts": _summary(percentile_252d=50.0),
+        "building_permits": _summary(percentile_252d=50.0),
+        "mortgage_rate_30y": _summary(percentile_252d=50.0),
     }
     statuses = {
         series_id: {"status": "ok", "message": "Fresh."}
@@ -2003,8 +2050,8 @@ def test_score_summary_emits_data_quality_confidence_breakdown():
     }
     assert data_quality["coverage_confidence"] > 0.9
     assert data_quality["freshness_confidence"] == 1.0
-    assert data_quality["overall_confidence"] < 1.0
-    assert "Housing is not active in Phase 4 PR 1." in data_quality["reasons"]
+    assert data_quality["overall_confidence"] == 1.0
+    assert "Housing is not active in Phase 4 PR 1." not in data_quality["reasons"]
 
 
 def test_stale_status_lowers_freshness_confidence():
