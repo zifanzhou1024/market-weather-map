@@ -30,8 +30,9 @@ export default function DataStatusTable({ status, seriesIds }: DataStatusTablePr
             <tr>
               <th>Series</th>
               <th>Status</th>
-              <th>Last observation</th>
+              <th>Observation</th>
               <th>Freshness</th>
+              <th>Note</th>
             </tr>
           </thead>
           <tbody>
@@ -41,8 +42,9 @@ export default function DataStatusTable({ status, seriesIds }: DataStatusTablePr
                 <td>
                   <span className={`status-pill status-${row.status}`}>{statusLabel(row.status)}</span>
                 </td>
-                <td>{formatDate(row.last_observation)}</td>
+                <td>{row.observation_period ?? formatDate(row.last_observation)}</td>
                 <td>{formatFreshness(row.freshness_days)}</td>
+                <td>{row.message ?? "N/A"}</td>
               </tr>
             ))}
           </tbody>
