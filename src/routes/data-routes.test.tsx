@@ -108,6 +108,108 @@ function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
   };
 }
 
+function derivedFile(seriesId: string, value: number): DerivedSeriesFile {
+  return {
+    depends_on: [],
+    frequency: "daily",
+    generated_at_utc: "2026-05-03T18:32:54Z",
+    method: `${seriesId} derived test fixture.`,
+    observations: [{ date: "2026-05-01", percentile_252d: 52, value }],
+    series_id: seriesId,
+    source: "Derived",
+    source_url: `https://example.com/${seriesId}`,
+    summary: {
+      change_1d: 0.01,
+      change_1m: 0.05,
+      change_1w: -0.02,
+      latest_date: "2026-05-01",
+      latest_value: value,
+      percentile_252d: 52
+    },
+    units: seriesId.includes("ratio") ? "ratio" : "index"
+  };
+}
+
+function routeFetchFiles(overrides: Record<string, unknown> = {}) {
+  return {
+    "/data/catalog/series_catalog.json": catalog,
+    "/data/derived/brent_wti_spread.json": {
+      ...derivedFile("brent_wti_spread", 3.21),
+      depends_on: ["brent_crude", "wti_crude"],
+      method: "Brent crude minus WTI crude by matched observation date.",
+      units: "USD/barrel"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/commodity_inflation_impulse.json": {
+      ...derivedFile("commodity_inflation_impulse", 1.42),
+      depends_on: ["wti_crude", "corn_price", "wheat_price", "soybean_price"],
+      method: "Composite commodity price impulse test fixture.",
+      units: "index"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/hy_minus_ig_oas.json": {
+      ...derivedFile("hy_minus_ig_oas", 2.35),
+      depends_on: ["high_yield_oas", "investment_grade_oas"],
+      method: "High-yield OAS minus investment-grade OAS.",
+      units: "basis points"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/net_liquidity.json": {
+      ...derivedFile("net_liquidity", 6123),
+      depends_on: ["fed_assets", "reverse_repo", "treasury_general_account"],
+      frequency: "weekly",
+      method: "Fed assets less reverse repo and Treasury General Account.",
+      units: "USD billions"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/score_summary.json": scoreSummary,
+    "/data/derived/us10y_minus_us2y.json": {
+      ...derivedFile("us10y_minus_us2y", 0.42),
+      depends_on: ["us10y", "us2y"],
+      method: "10-year Treasury yield minus 2-year Treasury yield by matched observation date.",
+      units: "percentage points"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/vix9d_vix_ratio.json": {
+      ...derivedFile("vix9d_vix_ratio", 0.91),
+      depends_on: ["vix9d", "vix"],
+      method: "Cboe VIX9D divided by Cboe VIX.",
+      units: "ratio"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/vix_vix3m_ratio.json": {
+      ...derivedFile("vix_vix3m_ratio", 0.84),
+      depends_on: ["vix", "vix3m"],
+      method: "Cboe VIX divided by Cboe VIX3M.",
+      units: "ratio"
+    } satisfies DerivedSeriesFile,
+    ...seriesFiles([
+      "bank_credit",
+      "bbb_oas",
+      "brent_crude",
+      "business_loans",
+      "cftc_sp500_asset_mgr_net",
+      "cftc_sp500_lev_money_net",
+      "corn_price",
+      "fed_assets",
+      "financial_conditions",
+      "financial_stress",
+      "high_yield_oas",
+      "investment_grade_oas",
+      "loans_and_leases",
+      "bank_deposits",
+      "reserve_balances",
+      "reverse_repo",
+      "sofr",
+      "soybean_price",
+      "treasury_general_account",
+      "us10y",
+      "vix",
+      "vix3m",
+      "vix9d",
+      "vvix",
+      "wheat_price",
+      "wti_crude"
+    ]),
+    "/data/status/data_status.json": status,
+    ...overrides
+  };
+}
+
 function catalogEntry(
   id: string,
   category: SeriesCategory,
@@ -144,6 +246,9 @@ const catalog: SeriesCatalogEntry[] = [
     source_url: "https://example.com/vix",
     units: "index"
   },
+  catalogEntry("vvix", "volatility", "Cboe VIX Volatility Index", "index"),
+  catalogEntry("vix9d", "volatility", "Cboe 9-Day Volatility Index", "index"),
+  catalogEntry("vix3m", "volatility", "Cboe 3-Month Volatility Index", "index"),
   {
     category: "rates",
     frequency: "daily",
@@ -322,7 +427,11 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("investment_grade_oas", "credit", "Investment grade OAS", "basis points"),
   catalogEntry("bbb_oas", "credit", "BBB OAS", "basis points"),
   catalogEntry("financial_conditions", "credit", "Financial conditions index", "index", "weekly"),
-  catalogEntry("reserve_balances", "credit", "Reserve balances", "USD billions", "weekly"),
+  catalogEntry("fed_assets", "liquidity", "Fed assets", "USD billions", "weekly"),
+  catalogEntry("reverse_repo", "liquidity", "Reverse repo", "USD billions", "weekly"),
+  catalogEntry("treasury_general_account", "liquidity", "Treasury General Account", "USD billions", "weekly"),
+  catalogEntry("sofr", "liquidity", "SOFR", "percent"),
+  catalogEntry("reserve_balances", "credit", "Reserve Balances", "USD billions", "weekly"),
   catalogEntry("bank_credit", "credit", "Bank credit", "USD billions", "weekly"),
   catalogEntry("loans_and_leases", "credit", "Loans and leases", "USD billions", "weekly"),
   catalogEntry("business_loans", "credit", "Commercial and industrial loans", "USD billions", "weekly"),
@@ -417,6 +526,11 @@ const status: DataStatusFile = {
       source: "Cboe",
       status: "ok"
     },
+    vvix: statusRow("ok"),
+    vix9d: statusRow("ok"),
+    vix3m: statusRow("ok"),
+    vix9d_vix_ratio: statusRow("ok"),
+    vix_vix3m_ratio: statusRow("ok"),
     net_liquidity: {
       expected_frequency: "weekly",
       freshness_days: 4,
@@ -425,6 +539,10 @@ const status: DataStatusFile = {
       source: "Derived",
       status: "ok"
     },
+    reverse_repo: statusRow("ok", "weekly"),
+    treasury_general_account: statusRow("ok", "weekly"),
+    sofr: statusRow("ok"),
+    hy_minus_ig_oas: statusRow("ok"),
     wti_crude: {
       expected_frequency: "daily",
       freshness_days: 2,
@@ -473,6 +591,7 @@ const status: DataStatusFile = {
       source: "Derived",
       status: "ok"
     },
+    commodity_inflation_impulse: statusRow("ok"),
     cftc_sp500_asset_mgr_net: {
       expected_frequency: "weekly",
       freshness_days: 3,
@@ -1030,6 +1149,78 @@ describe("data-backed routes", () => {
     expect(container.querySelector(".data-error")).toBeNull();
   });
 
+  it("surfaces active Cboe volatility curve inputs", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/volatility"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Cboe Volatility Index");
+
+    expect(container.textContent).toContain("Cboe Volatility Index");
+    expect(container.textContent).toContain("Cboe VIX Volatility Index");
+    expect(container.textContent).toContain("Cboe 9-Day Volatility Index");
+    expect(container.textContent).toContain("Cboe 3-Month Volatility Index");
+    expect(container.textContent).toContain("VIX9D / VIX");
+    expect(container.textContent).toContain("VIX / VIX3M");
+  });
+
+  it("surfaces net liquidity and reserve balances on liquidity", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/liquidity"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Net liquidity proxy");
+
+    expect(container.textContent).toContain("Net liquidity proxy");
+    expect(container.textContent).toContain("Reserve Balances");
+  });
+
+  it("surfaces HY minus IG OAS on credit", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/credit"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "HY minus IG OAS");
+
+    expect(container.textContent).toContain("HY minus IG OAS");
+  });
+
+  it("surfaces commodity inflation impulse on commodities", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/commodities"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Commodity inflation impulse");
+
+    expect(container.textContent).toContain("Commodity inflation impulse");
+  });
+
+  it("labels sentiment active data as positioning only", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/sentiment"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Active data is positioning only");
+
+    expect(container.textContent).toContain("Active data is positioning only");
+    expect(container.textContent).toContain("CFTC positioning is weekly, delayed, and futures-specific.");
+  });
+
   it("renders the commodities route with series and the Brent-WTI spread from static files", async () => {
     const spread: DerivedSeriesFile = {
       depends_on: ["brent_crude", "wti_crude"],
@@ -1054,6 +1245,7 @@ describe("data-backed routes", () => {
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
       "/data/derived/brent_wti_spread.json": spread,
+      "/data/derived/commodity_inflation_impulse.json": derivedFile("commodity_inflation_impulse", 1.42),
       "/data/series/brent_crude.json": seriesFile("brent_crude", 81.61),
       "/data/series/corn_price.json": seriesFile("corn_price", 4.85),
       "/data/series/soybean_price.json": seriesFile("soybean_price", 11.25),
