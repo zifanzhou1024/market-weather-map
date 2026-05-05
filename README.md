@@ -46,6 +46,27 @@ Phase 4 direction:
 - Surface active Phase 3 data more fully before adding many new source families.
 - Keep Housing, GDP/final demand, consumer balance sheet, fiscal/Treasury supply, Event Calendar, PMIs, SLOOS, survey sentiment, valuation, and market internals as staged follow-up work unless their source status is reviewed and documented.
 
+### Phase 4 PR 2: Macro Completeness Foundation
+
+Phase 4 PR 2 adds the first missing macro pillar and a descriptive event-risk surface without changing the static GitHub Pages architecture.
+
+Active additions:
+
+- Housing is active through FRED-hosted `HOUST`, `PERMIT`, and `MORTGAGE30US`.
+- Macro Climate includes a Housing bucket combining starts, permits, and 30-year mortgage-rate pressure.
+- The Housing route shows construction activity, permits, mortgage-rate sensitivity, freshness notes, and source caveats.
+- The Calendar route reads `public/data/events/macro_calendar.json` and links official public source calendars for major macro releases and policy events.
+
+Candidate-only additions:
+
+- Consumer balance sheet and Fiscal/Treasury supply rows are catalog/status roadmap entries only.
+- Candidate-only rows remain `terms_review_needed`, do not generate active series files in PR 2, and do not enter scoring.
+
+Still out of scope:
+
+- No live alerts, notifications, trading signals, backend service, browser-side provider calls, or paid/licensed source ingestion.
+- No full Consumer route, Fiscal/Treasury route, SLOOS, PMIs, valuation, market internals, or regime-matrix implementation in PR 2.
+
 ## Data Access Status
 
 Source access is tracked before data is treated as production scoring input.

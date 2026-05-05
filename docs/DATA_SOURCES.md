@@ -41,16 +41,57 @@ Phase 3 keeps the GitHub-only data model. Inputs listed here are active `free_pu
 | Credit OAS | BAMLH0A0HYM2, BAMLC0A0CM, BAMLC0A4CBBB | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily | High yield, investment grade, and BBB spread stress for Market Weather and Fragility. |
 | Growth/Labor | CFNAI, CFNAIMA3, RRSFS, INDPRO, DGORDER, UNRATE, PAYEMS, ICSA, SAHMREALTIME | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Weekly or monthly | Macro Climate growth breadth, labor trend, and recession-risk context. |
 | Inflation | CPIAUCSL, CPILFESL, PCEPILFE, PPIFIS | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Monthly | Macro Climate inflation trend and policy pressure. |
+| Housing | HOUST, PERMIT, MORTGAGE30US | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Weekly or monthly | Macro Climate housing bucket: construction activity, permits, and mortgage-rate pressure. |
 | Dollar/Banking | DTWEXBGS, DEXJPUS, DEXUSEU, WRESBAL, TOTBKCR, TOTLL, BUSLOANS, DPSACBW027SBOG | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily or weekly | Dollar pressure, reserve balances, bank credit, loans, business lending, and deposits for Fragility. |
 | Liquidity | WALCL, RRPONTSYD, WTREGEN, SOFR | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily or weekly | Net liquidity proxy and funding context. |
 | Commodities | DCOILWTICO, DCOILBRENTEU, PMAIZMTUSDM, PWHEAMTUSDM, PSOYBUSDM | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily or monthly | Commodity impulse and inflation-pressure context. |
 | Positioning | E-mini S&P 500 commitments | CFTC | `https://www.cftc.gov/files/dea/history/fut_fin_txt_<year>.zip` | Weekly | Crowding and underexposure context for Market Weather. |
+
+## Active Phase 4 PR 2 Housing Sources
+
+Housing uses the existing no-secret FRED graph CSV ingestion path. Census New Residential Construction remains the primary source context for starts and permits.
+
+| Bucket | Series ID | FRED series | Public endpoint | Frequency | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Housing | `housing_starts` | HOUST | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=HOUST` | Monthly | Privately-owned housing starts, seasonally adjusted annual rate; stronger starts are treated as more supportive housing activity. |
+| Housing | `building_permits` | PERMIT | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=PERMIT` | Monthly | Privately-owned housing units authorized by building permits, seasonally adjusted annual rate; stronger permits are treated as more supportive forward construction activity. |
+| Housing | `mortgage_rate_30y` | MORTGAGE30US | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=MORTGAGE30US` | Weekly | 30-year fixed mortgage rate; higher mortgage-rate pressure is treated as more restrictive for housing. |
 
 ## Phase 4 PR 1 Source Handling
 
 Phase 4 PR 1 does not add new source families. It improves release-aware freshness and confidence decomposition for the existing active generated data.
 
 Future Phase 4 source expansion should prefer FRED graph CSV mirrors for time series when a clean FRED-hosted series exists. Original no-secret government APIs or official machine-readable pages should be used when FRED is not enough, especially for event calendars, Treasury auction metadata, fiscal datasets, and release schedules.
+
+## Static Macro Calendar Sources
+
+The calendar at `public/data/events/macro_calendar.json` is descriptive event-risk context. PR 2 uses source-linked rows rather than scraped exact-date alerts.
+
+| Event Area | Source | Source URL | Treatment |
+| --- | --- | --- | --- |
+| CPI, PPI, payrolls | BLS | `https://www.bls.gov/schedule/news_release/current_year.asp` | Source-linked calendar context. |
+| PCE and GDP | BEA | `https://www.bea.gov/news/schedule/` | Source-linked calendar context. |
+| FOMC meetings | Federal Reserve | `https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm` | Source-linked calendar context. |
+| Treasury auctions | TreasuryDirect | `https://www.treasuryauctions.gov/auctions/when-auctions-happen/` | Source-linked calendar context. |
+| Housing releases | Census | `https://www.census.gov/construction/nrc/` | Source-linked calendar context. |
+| COT positioning | CFTC | `https://www.cftc.gov/MarketReports/CommitmentsofTraders/ReleaseSchedule/index.htm` | Source-linked calendar context. |
+
+## Candidate-Only Macro Completeness Sources
+
+These rows are in the catalog/status files for roadmap transparency only. They are `terms_review_needed`, do not generate active series files in PR 2, and do not enter scoring.
+
+| Domain | Series ID | Source | Source URL | Reason Not Active |
+| --- | --- | --- | --- | --- |
+| Consumer balance sheet | `real_disposable_personal_income` | FRED `DSPIC96` | `https://fred.stlouisfed.org/series/DSPIC96` | Scoring design deferred. |
+| Consumer balance sheet | `personal_saving_rate` | FRED `PSAVERT` | `https://fred.stlouisfed.org/series/PSAVERT` | Scoring design deferred. |
+| Consumer credit | `total_consumer_credit` | FRED `TOTALSL` | `https://fred.stlouisfed.org/series/TOTALSL` | Scoring design deferred. |
+| Consumer credit | `revolving_consumer_credit` | FRED `REVOLSL` | `https://fred.stlouisfed.org/series/REVOLSL` | Scoring design deferred. |
+| Consumer stress | `household_debt_service_ratio` | FRED `DSR` | `https://fred.stlouisfed.org/series/DSR` | Scoring design deferred. |
+| Fiscal/Treasury supply | `monthly_treasury_receipts` | FiscalData MTS | `https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/` | Direct FiscalData ingestion deferred. |
+| Fiscal/Treasury supply | `monthly_treasury_outlays` | FiscalData MTS | `https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/` | Direct FiscalData ingestion deferred. |
+| Fiscal/Treasury supply | `monthly_treasury_deficit_surplus` | FiscalData MTS | `https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/` | Direct FiscalData ingestion deferred. |
+| Fiscal/Treasury supply | `treasury_interest_expense` | FiscalData MTS | `https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/` | Direct FiscalData ingestion deferred. |
+| Treasury auction supply | `treasury_auction_supply` | TreasuryDirect | `https://www.treasuryauctions.gov/auctions/when-auctions-happen/` | Numeric auction ingestion deferred. |
 
 ## Candidate Sources
 

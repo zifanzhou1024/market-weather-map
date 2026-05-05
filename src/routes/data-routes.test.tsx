@@ -1598,7 +1598,7 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("active no-secret public feeds");
     expect(container.textContent).toContain("paid, gated, or license-restricted");
     expect(container.textContent).toContain("credit_spreads");
-    expect(container.textContent).toContain("growth, labor, inflation, consumer_production, and real_yields");
+    expect(container.textContent).toContain("growth, labor, inflation, consumer_production, housing, and real_yields");
     expect(container.textContent).toContain("commodity_inflation_impulse");
     expect(container.textContent).toContain("Net liquidity");
     expect(container.textContent).toContain("0.0 neutral fallbacks");
