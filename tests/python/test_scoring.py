@@ -1072,6 +1072,7 @@ def test_validate_freshness_accepts_release_window_ok_series_status(tmp_path, mo
     (status_dir / "data_status.json").write_text(
         """
         {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
           "overall_status": "ok",
           "series": {
             "monthly_series": {
@@ -1092,6 +1093,66 @@ def test_validate_freshness_accepts_release_window_ok_series_status(tmp_path, mo
     monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
 
     validate_freshness.main()
+
+
+def test_validate_freshness_rejects_spoofed_release_window_with_malformed_dates(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "bad_window_series": {
+              "status": "ok",
+              "freshness_days": 65,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "not-a-date",
+                "end": "also-not-a-date"
+              },
+              "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="bad_window_series is stale: 65 days > 45 allowed"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_release_window_ok_after_window_end(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-17T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "late_monthly_series": {
+              "status": "ok",
+              "freshness_days": 77,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="late_monthly_series is stale: 77 days > 45 allowed"):
+        validate_freshness.main()
 
 
 def test_validate_freshness_rejects_ok_stale_series_without_release_allowance(tmp_path, monkeypatch):

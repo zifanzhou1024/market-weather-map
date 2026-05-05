@@ -1,26 +1,44 @@
 from __future__ import annotations
 
 import json
+from datetime import date, datetime
+from typing import Any
 
 from scripts.shared.io import data_dir
 
 
-def _release_window_allows_ok_status(status: dict[str, object]) -> bool:
+def _parse_iso_date(value: Any) -> date | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).date()
+    except ValueError:
+        return None
+
+
+def _release_window_allows_ok_status(status: dict[str, object], generated_at: date | None) -> bool:
     window = status.get("expected_next_release_window")
     message = status.get("message")
-    return (
-        status.get("status") == "ok"
-        and isinstance(window, dict)
-        and isinstance(window.get("start"), str)
-        and isinstance(window.get("end"), str)
-        and isinstance(message, str)
-        and "within the expected release window" in message
-    )
+    if (
+        status.get("status") != "ok"
+        or generated_at is None
+        or not isinstance(window, dict)
+        or not isinstance(message, str)
+        or "within the expected release window" not in message
+    ):
+        return False
+
+    start = _parse_iso_date(window.get("start"))
+    end = _parse_iso_date(window.get("end"))
+    if start is None or end is None:
+        return False
+    return start <= generated_at <= end
 
 
 def main() -> None:
     path = data_dir() / "status" / "data_status.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
+    generated_at = _parse_iso_date(payload.get("generated_at_utc"))
     failures = []
 
     for series_id, status in payload.get("series", {}).items():
@@ -36,7 +54,7 @@ def main() -> None:
             isinstance(freshness_days, int | float)
             and isinstance(max_stale_days, int | float)
             and freshness_days > max_stale_days
-            and not _release_window_allows_ok_status(status)
+            and not _release_window_allows_ok_status(status, generated_at)
         ):
             failures.append(
                 f"{series_id} is stale: {freshness_days} days > {max_stale_days} allowed"
