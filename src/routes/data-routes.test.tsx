@@ -1224,7 +1224,7 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("CFTC positioning is weekly, delayed, and futures-specific.");
   });
 
-  it("growth route explains growth and labor interpretation", async () => {
+  it("growth route renders growth and labor read interpretation", async () => {
     mockStaticFetch(routeFetchFiles());
 
     const container = render(
@@ -1237,7 +1237,7 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Monthly growth and labor data can lag source release schedules.");
   });
 
-  it("inflation route explains level versus expectations", async () => {
+  it("inflation route renders inflation pressure read interpretation", async () => {
     mockStaticFetch(routeFetchFiles());
 
     const container = render(
@@ -1250,7 +1250,7 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("CPI, PCE, PPI, breakevens, and forward inflation expectations");
   });
 
-  it("rates route explains nominal, real, and curve context", async () => {
+  it("rates route renders rates and policy read interpretation", async () => {
     mockStaticFetch(routeFetchFiles());
 
     const container = render(
@@ -1263,7 +1263,7 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Nominal yields, real yields, breakevens, and the 10Y-2Y curve");
   });
 
-  it("dollar route explains global tightening context", async () => {
+  it("dollar route renders dollar pressure read interpretation", async () => {
     mockStaticFetch(routeFetchFiles());
 
     const container = render(
