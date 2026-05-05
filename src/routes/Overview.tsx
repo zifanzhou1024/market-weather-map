@@ -15,6 +15,7 @@ import {
   loadSeries
 } from "../lib/data";
 import type {
+  ConfidenceBreakdownData,
   DataStatusFile,
   DerivedSeriesFile,
   ScoreSummaryFile,
@@ -66,6 +67,42 @@ function catalogEntryForSeries(
 
 function safeStringList(value: unknown) {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+function safeConfidenceValue(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+function safeDataQuality(value: unknown): ConfidenceBreakdownData {
+  if (!value || typeof value !== "object") {
+    return {
+      coverage_confidence: 0,
+      freshness_confidence: 0,
+      model_confidence: 0,
+      source_confidence: 0,
+      overall_confidence: 0,
+      reasons: []
+    };
+  }
+
+  const dataQuality = value as Partial<ConfidenceBreakdownData>;
+  return {
+    coverage_confidence: safeConfidenceValue(dataQuality.coverage_confidence),
+    freshness_confidence: safeConfidenceValue(dataQuality.freshness_confidence),
+    model_confidence: safeConfidenceValue(dataQuality.model_confidence),
+    source_confidence: safeConfidenceValue(dataQuality.source_confidence),
+    overall_confidence: safeConfidenceValue(dataQuality.overall_confidence),
+    reasons: safeStringList(dataQuality.reasons)
+  };
+}
+
+function safeLabel(value: unknown, fallback = "unknown") {
+  return typeof value === "string" && value.trim().length > 0 ? value.trim() : fallback;
+}
+
+function fragilityPhrase(value: unknown) {
+  const label = safeLabel(value).toLowerCase();
+  return label.includes("fragility") ? label : `${label} fragility`;
 }
 
 export default function Overview() {
@@ -120,6 +157,7 @@ export default function Overview() {
             const market = scoreSummary.scores.market_weather;
             const macro = scoreSummary.scores.macro_climate;
             const fragility = scoreSummary.scores.fragility;
+            const dataQuality = safeDataQuality(scoreSummary.data_quality);
             const recentChanges = safeStringList(market.recent_changes)
               .concat(safeStringList(macro.recent_changes))
               .concat(safeStringList(fragility.recent_changes));
@@ -143,8 +181,8 @@ export default function Overview() {
                 </section>
                 <InterpretationPanel
                   conflicts={conflictingSignals}
-                  label={`${market.label} market weather, ${macro.label} macro climate, ${fragility.label.toLowerCase()} fragility`}
-                  notes={safeStringList(scoreSummary.data_quality?.reasons)}
+                  label={`${safeLabel(market.label)} market weather, ${safeLabel(macro.label)} macro climate, ${fragilityPhrase(fragility.label)}`}
+                  notes={dataQuality.reasons}
                   risks={topRisks}
                   summary="The overview combines the three descriptive scores with source freshness and coverage notes so stale or missing inputs remain visible beside the headline read."
                   supports={topSupports}
@@ -162,7 +200,7 @@ export default function Overview() {
                     title="Conflicting signals"
                   />
                 </section>
-                <ConfidenceBreakdown dataQuality={scoreSummary.data_quality} />
+                <ConfidenceBreakdown dataQuality={dataQuality} />
                 <DataGapPanel status={data.status} />
               </>
             );

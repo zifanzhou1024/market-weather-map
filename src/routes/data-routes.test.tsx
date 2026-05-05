@@ -644,6 +644,80 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("No confidence notes in the current score summary.");
   });
 
+  it("renders overview fallback confidence when score summary data quality is missing", async () => {
+    const malformedScoreSummary = {
+      ...scoreSummary,
+      data_quality: null
+    } as unknown as ScoreSummaryFile;
+
+    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Data confidence");
+
+    expect(container.textContent).toContain("0% overall");
+    expect(container.textContent).toContain("No confidence notes in the current score summary.");
+  });
+
+  it("renders overview fallback confidence when score summary data quality is omitted", async () => {
+    const malformedScoreSummary = { ...scoreSummary } as Partial<ScoreSummaryFile>;
+    delete malformedScoreSummary.data_quality;
+
+    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Data confidence");
+
+    expect(container.textContent).toContain("0% overall");
+    expect(container.textContent).toContain("No confidence notes in the current score summary.");
+  });
+
+  it("renders overview fallback labels for malformed score summary labels", async () => {
+    const malformedScoreSummary = {
+      ...scoreSummary,
+      scores: {
+        ...scoreSummary.scores,
+        market_weather: {
+          ...scoreSummary.scores.market_weather,
+          label: undefined
+        },
+        fragility: {
+          ...scoreSummary.scores.fragility,
+          label: 12
+        }
+      }
+    } as unknown as ScoreSummaryFile;
+
+    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Current regime read");
+
+    expect(container.textContent).toContain("unknown market weather");
+    expect(container.textContent).toContain("unknown fragility");
+  });
+
+  it("does not duplicate fragility in the overview regime label", async () => {
+    const lowFragilityScoreSummary: ScoreSummaryFile = {
+      ...scoreSummary,
+      scores: {
+        ...scoreSummary.scores,
+        fragility: {
+          ...scoreSummary.scores.fragility,
+          label: "Low Fragility"
+        }
+      }
+    };
+
+    mockStaticFetch(overviewFetchFiles(lowFragilityScoreSummary));
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Current regime read");
+
+    expect(container.textContent).toContain("low fragility");
+    expect(container.textContent).not.toContain("fragility fragility");
+  });
+
   it("announces overview data load errors", async () => {
     const files = overviewFetchFiles();
     delete files["/data/derived/score_summary.json"];
