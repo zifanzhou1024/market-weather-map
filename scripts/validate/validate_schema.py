@@ -25,6 +25,9 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "derived" / "us10y_minus_us2y.json",
     data_dir() / "derived" / "brent_wti_spread.json",
     data_dir() / "derived" / "net_liquidity.json",
+    data_dir() / "derived" / "hy_minus_ig_oas.json",
+    data_dir() / "derived" / "vix9d_vix_ratio.json",
+    data_dir() / "derived" / "vix_vix3m_ratio.json",
     data_dir() / "derived" / "commodity_inflation_impulse.json",
     data_dir() / "derived" / "score_summary.json",
     data_dir() / "derived" / "bucket_scores.json",
@@ -117,6 +120,12 @@ def _validate_finite_number(value: Any, path: Path, field_name: str) -> None:
         raise ValueError(f"{path} {field_name} must be finite")
 
 
+def _validate_confidence_value(value: Any, path: Path, field_name: str) -> None:
+    _validate_finite_number(value, path, field_name)
+    if not 0 <= float(value) <= 1:
+        raise ValueError(f"{path} {field_name} must be between 0 and 1")
+
+
 def validate_score_summary_file() -> None:
     path = data_dir() / "derived" / "score_summary.json"
     payload = _load_json(path)
@@ -128,16 +137,26 @@ def validate_score_summary_file() -> None:
         if not isinstance(block, dict):
             raise ValueError(f"{path} {score_key} score block must be an object")
         _validate_finite_number(block.get("score"), path, f"{score_key}.score")
-        _validate_finite_number(block.get("confidence"), path, f"{score_key}.confidence")
+        _validate_confidence_value(block.get("confidence"), path, f"{score_key}.confidence")
         for field in REQUIRED_SCORE_ARRAY_FIELDS:
             if not isinstance(block.get(field), list):
                 raise ValueError(f"{path} {score_key}.{field} must be a list")
+        if "confidence_breakdown" in block:
+            confidence_breakdown = block["confidence_breakdown"]
+            if not isinstance(confidence_breakdown, dict):
+                raise ValueError(f"{path} {score_key}.confidence_breakdown must be an object")
+            for field in CONFIDENCE_FIELDS:
+                _validate_confidence_value(
+                    confidence_breakdown.get(field),
+                    path,
+                    f"{score_key}.confidence_breakdown.{field}",
+                )
 
     data_quality = payload.get("data_quality")
     if not isinstance(data_quality, dict):
         raise ValueError(f"{path} data_quality must be an object")
     for field in CONFIDENCE_FIELDS:
-        _validate_finite_number(data_quality.get(field), path, f"data_quality.{field}")
+        _validate_confidence_value(data_quality.get(field), path, f"data_quality.{field}")
     if not isinstance(data_quality.get("reasons"), list):
         raise ValueError(f"{path} data_quality.reasons must be a list")
 

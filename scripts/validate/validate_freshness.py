@@ -69,12 +69,12 @@ def main() -> None:
 
     for series_id, status in payload.get("series", {}).items():
         status_value = status.get("status")
-        if status_value in {"terms_review_needed", "unavailable", "stale"}:
+        if status_value in {"terms_review_needed", "unavailable"}:
             continue
         if status_value == "failed":
             failures.append(f"{series_id} failed: {status.get('message', 'no message')}")
             continue
-        if status_value == "ok":
+        if status_value in {"ok", "stale"}:
             expected = _expected_freshness(status, generated_at_utc, generated_at)
             if expected is None or not _freshness_payload_matches(status, expected):
                 failures.append(f"{series_id} failed freshness invariant")

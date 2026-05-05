@@ -109,7 +109,7 @@ Each generated series includes source metadata, observation dates, summary value
 
 Daily series use short calendar-day freshness buffers with normal non-trading-day tolerance. Weekly series use expected weekly cadence plus buffer. Monthly and quarterly series are evaluated against their observation period and expected release window, so a first-of-month observation is not automatically stale before the next release is expected.
 
-Derived series inherit freshness context from their dependencies. A derived file can be generated today while still depending on lagged monthly inputs, so dependency notes should be read with headline status.
+Derived series expose their own generated status and observation dates. Their dependency methods should be read when interpreting lagged inputs.
 
 ## Confidence
 

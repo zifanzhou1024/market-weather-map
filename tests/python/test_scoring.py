@@ -1048,13 +1048,18 @@ def test_validate_freshness_accepts_partial_stale_series_status(tmp_path, monkey
     (status_dir / "data_status.json").write_text(
         """
         {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
           "overall_status": "partial",
           "series": {
             "macro_series": {
               "status": "stale",
-              "freshness_days": 64,
-              "max_stale_days": 45,
-              "message": "Latest observation is 64 days old."
+              "last_observation": "2026-04-20",
+              "observation_period": "2026-04-20",
+              "expected_frequency": "daily",
+              "freshness_days": 15,
+              "max_stale_days": 7,
+              "expected_next_release_window": null,
+              "message": "Latest daily observation is 15 days old, above the 7 day freshness buffer."
             }
           }
         }
@@ -1064,6 +1069,36 @@ def test_validate_freshness_accepts_partial_stale_series_status(tmp_path, monkey
     monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
 
     validate_freshness.main()
+
+
+def test_validate_freshness_rejects_malformed_stale_series_status(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "partial",
+          "series": {
+            "macro_series": {
+              "status": "stale",
+              "last_observation": "2026-04-20",
+              "observation_period": "2026-04-20",
+              "expected_frequency": "daily",
+              "freshness_days": 1,
+              "max_stale_days": 7,
+              "expected_next_release_window": null,
+              "message": "Latest daily observation is 1 days old."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="macro_series failed freshness invariant"):
+        validate_freshness.main()
 
 
 def test_validate_freshness_accepts_release_window_ok_series_status(tmp_path, monkeypatch):
@@ -1571,10 +1606,15 @@ def test_validate_freshness_rejects_failed_series_status(tmp_path, monkeypatch):
         validate_freshness.main()
 
 
-def test_generated_file_validation_requires_commodity_inflation_impulse():
+def test_generated_file_validation_requires_active_derived_files():
+    required_paths = set(validate_schema.REQUIRED_GENERATED_FILES)
+
     assert (
         validate_schema.data_dir() / "derived" / "commodity_inflation_impulse.json"
-    ) in validate_schema.REQUIRED_GENERATED_FILES
+    ) in required_paths
+    assert validate_schema.data_dir() / "derived" / "hy_minus_ig_oas.json" in required_paths
+    assert validate_schema.data_dir() / "derived" / "vix9d_vix_ratio.json" in required_paths
+    assert validate_schema.data_dir() / "derived" / "vix_vix3m_ratio.json" in required_paths
 
 
 def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monkeypatch):
@@ -1711,6 +1751,122 @@ def test_validate_score_summary_rejects_non_finite_score_values(tmp_path, monkey
     monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
 
     with pytest.raises(ValueError, match="market_weather.score must be finite"):
+        validate_schema.validate_score_summary_file()
+
+
+def test_validate_score_summary_rejects_out_of_range_data_quality_confidence(
+    tmp_path, monkeypatch
+):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    payload = {
+        "scores": {
+            "market_weather": {
+                "score": -1,
+                "confidence": 0.9,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+            "macro_climate": {
+                "score": 2,
+                "confidence": 0.8,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+            "fragility": {
+                "score": -3,
+                "confidence": 0.7,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+        },
+        "data_quality": {
+            "coverage_confidence": 1.2,
+            "freshness_confidence": 1.0,
+            "model_confidence": 1.0,
+            "source_confidence": 1.0,
+            "overall_confidence": 1.0,
+            "reasons": [],
+        },
+    }
+    (derived / "score_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(
+        ValueError,
+        match="data_quality.coverage_confidence must be between 0 and 1",
+    ):
+        validate_schema.validate_score_summary_file()
+
+
+def test_validate_score_summary_rejects_out_of_range_score_confidence_breakdown(
+    tmp_path, monkeypatch
+):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    payload = {
+        "scores": {
+            "market_weather": {
+                "score": -1,
+                "confidence": 0.9,
+                "confidence_breakdown": {
+                    "coverage_confidence": 1.0,
+                    "freshness_confidence": 1.0,
+                    "model_confidence": 1.0,
+                    "source_confidence": 1.0,
+                    "overall_confidence": -0.1,
+                    "reasons": [],
+                },
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+            "macro_climate": {
+                "score": 2,
+                "confidence": 0.8,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+            "fragility": {
+                "score": -3,
+                "confidence": 0.7,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+        },
+        "data_quality": {
+            "coverage_confidence": 1.0,
+            "freshness_confidence": 1.0,
+            "model_confidence": 1.0,
+            "source_confidence": 1.0,
+            "overall_confidence": 1.0,
+            "reasons": [],
+        },
+    }
+    (derived / "score_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(
+        ValueError,
+        match="market_weather.confidence_breakdown.overall_confidence must be between 0 and 1",
+    ):
         validate_schema.validate_score_summary_file()
 
 
