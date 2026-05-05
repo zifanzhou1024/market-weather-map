@@ -825,6 +825,50 @@ def test_score_summary_does_not_embed_candidate_source_ids():
     assert "Treasury/bond volatility source is not active." in summary_text
 
 
+def test_candidate_scaffolding_does_not_change_score_summary():
+    active_series = {
+        "housing_starts": _summary(percentile_252d=50.0),
+        "building_permits": _summary(percentile_252d=50.0),
+        "mortgage_rate_30y": _summary(percentile_252d=50.0),
+        "cfnai": _summary(percentile_252d=50.0),
+        "cfnai_3m_avg": _summary(percentile_252d=50.0),
+        "nonfarm_payrolls": _summary(percentile_252d=50.0),
+        "unemployment_rate": _summary(percentile_252d=50.0),
+        "initial_claims": _summary(percentile_252d=50.0),
+        "sahm_rule": _summary(percentile_252d=50.0),
+        "headline_cpi": _summary(percentile_252d=50.0),
+        "core_cpi": _summary(percentile_252d=50.0),
+        "core_pce": _summary(percentile_252d=50.0),
+        "ppi_final_demand": _summary(percentile_252d=50.0),
+        "real_retail_sales": _summary(percentile_252d=50.0),
+        "industrial_production": _summary(percentile_252d=50.0),
+        "durable_goods_orders": _summary(percentile_252d=50.0),
+        "real_yield_10y": _summary(percentile_252d=50.0),
+    }
+    candidate_extremes = {
+        "real_disposable_personal_income": _summary(percentile_252d=100.0),
+        "personal_saving_rate": _summary(percentile_252d=100.0),
+        "total_consumer_credit": _summary(percentile_252d=100.0),
+        "revolving_consumer_credit": _summary(percentile_252d=100.0),
+        "household_debt_service_ratio": _summary(percentile_252d=100.0),
+        "monthly_treasury_receipts": _summary(percentile_252d=100.0),
+        "monthly_treasury_outlays": _summary(percentile_252d=100.0),
+        "monthly_treasury_deficit_surplus": _summary(percentile_252d=100.0),
+        "treasury_interest_expense": _summary(percentile_252d=100.0),
+        "treasury_auction_supply": _summary(percentile_252d=100.0),
+    }
+
+    baseline = compute_regime_score.build_score_summary(
+        active_series, "2026-05-05T00:00:00Z"
+    )
+    with_candidates = compute_regime_score.build_score_summary(
+        {**active_series, **candidate_extremes}, "2026-05-05T00:00:00Z"
+    )
+
+    assert with_candidates["scores"] == baseline["scores"]
+    assert with_candidates["data_quality"] == baseline["data_quality"]
+
+
 def test_macro_climate_uses_phase_3_catalog_ids_not_legacy_aliases():
     series = {
         "cfnai": _summary(percentile_252d=90.0),

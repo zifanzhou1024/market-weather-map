@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-05T07:11:42Z",
-  "last_successful_update_utc": "2026-05-05T07:11:42Z",
+  "generated_at_utc": "2026-05-05T07:53:10Z",
+  "last_successful_update_utc": "2026-05-05T07:53:10Z",
   "overall_status": "partial",
   "series": {
     "bank_credit": {
@@ -337,6 +337,17 @@
       "source": "FRED",
       "status": "ok"
     },
+    "household_debt_service_ratio": {
+      "expected_frequency": "quarterly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 75,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "FRED",
+      "status": "terms_review_needed"
+    },
     "housing_starts": {
       "expected_frequency": "monthly",
       "expected_next_release_window": {
@@ -426,6 +437,39 @@
       "source": "FRED",
       "status": "ok"
     },
+    "monthly_treasury_deficit_surplus": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "FiscalData",
+      "status": "terms_review_needed"
+    },
+    "monthly_treasury_outlays": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "FiscalData",
+      "status": "terms_review_needed"
+    },
+    "monthly_treasury_receipts": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "FiscalData",
+      "status": "terms_review_needed"
+    },
     "mortgage_rate_30y": {
       "expected_frequency": "weekly",
       "expected_next_release_window": {
@@ -479,6 +523,17 @@
       "source": "FRED",
       "status": "ok"
     },
+    "personal_saving_rate": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "FRED",
+      "status": "terms_review_needed"
+    },
     "ppi_final_demand": {
       "expected_frequency": "monthly",
       "expected_next_release_window": {
@@ -492,6 +547,17 @@
       "observation_period": "2026-03",
       "source": "FRED",
       "status": "ok"
+    },
+    "real_disposable_personal_income": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "FRED",
+      "status": "terms_review_needed"
     },
     "real_retail_sales": {
       "expected_frequency": "monthly",
@@ -554,6 +620,17 @@
       "source": "FRED",
       "status": "ok"
     },
+    "revolving_consumer_credit": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "FRED",
+      "status": "terms_review_needed"
+    },
     "sahm_rule": {
       "expected_frequency": "monthly",
       "expected_next_release_window": {
@@ -593,6 +670,28 @@
       "source": "FRED",
       "status": "ok"
     },
+    "total_consumer_credit": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "FRED",
+      "status": "terms_review_needed"
+    },
+    "treasury_auction_supply": {
+      "expected_frequency": "weekly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 14,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "TreasuryDirect",
+      "status": "terms_review_needed"
+    },
     "treasury_general_account": {
       "expected_frequency": "weekly",
       "expected_next_release_window": {
@@ -606,6 +705,17 @@
       "observation_period": "week of 2026-04-29",
       "source": "FRED",
       "status": "ok"
+    },
+    "treasury_interest_expense": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "FiscalData",
+      "status": "terms_review_needed"
     },
     "unemployment_rate": {
       "expected_frequency": "monthly",
