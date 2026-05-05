@@ -4,9 +4,9 @@ import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus, loadDerivedSeries } from "../lib/data";
+import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { hasObservations, loadRouteSeries } from "./routeSeries";
+import { hasObservations, loadRouteDerivedSeries, loadRouteSeries } from "./routeSeries";
 
 const creditSeriesIds = [
   "high_yield_oas",
@@ -55,9 +55,11 @@ export default function Credit() {
     async function loadCredit() {
       try {
         const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
-        const [series, hyMinusIgOas] = await Promise.all([
+        const [series, [hyMinusIgOas]] = await Promise.all([
           loadRouteSeries(creditSeriesIds, catalog, status),
-          loadDerivedSeries("hy_minus_ig_oas")
+          loadRouteDerivedSeries(["hy_minus_ig_oas"], catalog, status, {
+            allowMissing: new Set(["hy_minus_ig_oas"])
+          })
         ]);
         if (active) setData({ catalog, hyMinusIgOas, series, status });
       } catch (loadError) {

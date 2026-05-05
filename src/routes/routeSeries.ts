@@ -1,5 +1,5 @@
-import { DataLoadError, loadSeries } from "../lib/data";
-import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { DataLoadError, loadDerivedSeries, loadSeries } from "../lib/data";
+import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 
 interface LoadRouteSeriesOptions {
   allowMissing?: ReadonlySet<string>;
@@ -34,7 +34,7 @@ async function loadSeriesWithPlaceholder(
       const catalogEntry = catalog.find((entry) => entry.id === seriesId);
       const status = dataStatus.series[seriesId]?.status;
       const mayUseStatusPlaceholder = status ? placeholderStatuses.has(status) : false;
-      const mayUseExplicitPlaceholder = !status && options.allowMissing?.has(seriesId);
+      const mayUseExplicitPlaceholder = options.allowMissing?.has(seriesId) ?? false;
 
       if (catalogEntry && (mayUseStatusPlaceholder || mayUseExplicitPlaceholder)) {
         return placeholderSeries(seriesId, catalog);
@@ -53,6 +53,55 @@ export function loadRouteSeries(
 ): Promise<TimeSeriesFile[]> {
   return Promise.all(
     seriesIds.map((seriesId) => loadSeriesWithPlaceholder(seriesId, catalog, dataStatus, options))
+  );
+}
+
+function placeholderDerivedSeries(seriesId: string, catalogEntry?: SeriesCatalogEntry): DerivedSeriesFile {
+  return {
+    depends_on: [],
+    frequency: catalogEntry?.frequency ?? "daily",
+    generated_at_utc: "",
+    method: catalogEntry?.notes ?? "Derived data unavailable.",
+    observations: [],
+    series_id: seriesId,
+    source: catalogEntry?.source ?? "Unavailable",
+    source_url: catalogEntry?.source_url ?? "",
+    units: catalogEntry?.units ?? ""
+  };
+}
+
+async function loadDerivedSeriesWithPlaceholder(
+  seriesId: string,
+  catalog: SeriesCatalogEntry[],
+  dataStatus: DataStatusFile,
+  options: LoadRouteSeriesOptions
+): Promise<DerivedSeriesFile> {
+  try {
+    return await loadDerivedSeries(seriesId);
+  } catch (error) {
+    if (error instanceof DataLoadError && error.status === 404) {
+      const catalogEntry = catalog.find((entry) => entry.id === seriesId);
+      const status = dataStatus.series[seriesId]?.status;
+      const mayUseStatusPlaceholder = status ? placeholderStatuses.has(status) : false;
+      const mayUseExplicitPlaceholder = options.allowMissing?.has(seriesId) ?? false;
+
+      if (mayUseStatusPlaceholder || mayUseExplicitPlaceholder) {
+        return placeholderDerivedSeries(seriesId, catalogEntry);
+      }
+    }
+
+    throw error;
+  }
+}
+
+export function loadRouteDerivedSeries(
+  seriesIds: string[],
+  catalog: SeriesCatalogEntry[],
+  dataStatus: DataStatusFile,
+  options: LoadRouteSeriesOptions = {}
+): Promise<DerivedSeriesFile[]> {
+  return Promise.all(
+    seriesIds.map((seriesId) => loadDerivedSeriesWithPlaceholder(seriesId, catalog, dataStatus, options))
   );
 }
 

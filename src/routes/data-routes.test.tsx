@@ -1221,6 +1221,57 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("CFTC positioning is weekly, delayed, and futures-specific.");
   });
 
+  it("renders volatility base data and status when a derived ratio 404s", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/vix9d_vix_ratio.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/volatility"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Cboe Volatility Index");
+
+    expect(container.textContent).toContain("Cboe Volatility Index");
+    expect(container.textContent).toContain("Static feed freshness");
+    expect(container.querySelector(".data-error")).toBeNull();
+  });
+
+  it("renders credit base data and status when HY minus IG OAS 404s", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/hy_minus_ig_oas.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/credit"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "High yield OAS");
+
+    expect(container.textContent).toContain("High yield OAS");
+    expect(container.textContent).toContain("Static feed freshness");
+    expect(container.querySelector(".data-error")).toBeNull();
+  });
+
+  it("renders commodity base data and status when commodity impulse 404s", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/commodity_inflation_impulse.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/commodities"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "WTI crude oil");
+
+    expect(container.textContent).toContain("WTI crude oil");
+    expect(container.textContent).toContain("Static feed freshness");
+    expect(container.querySelector(".data-error")).toBeNull();
+  });
+
   it("renders the commodities route with series and the Brent-WTI spread from static files", async () => {
     const spread: DerivedSeriesFile = {
       depends_on: ["brent_crude", "wti_crude"],

@@ -5,8 +5,9 @@ import MetricCard from "../components/MetricCard";
 import PercentileBandChart from "../components/PercentileBandChart";
 import SourceNote from "../components/SourceNote";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus, loadDerivedSeries, loadSeries } from "../lib/data";
+import { loadCatalog, loadDataStatus, loadSeries } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadRouteDerivedSeries } from "./routeSeries";
 
 const volatilitySeriesIds = ["vix", "vvix", "vix9d", "vix3m"];
 const volatilityDerivedIds = ["vix9d_vix_ratio", "vix_vix3m_ratio"];
@@ -44,11 +45,12 @@ export default function Volatility() {
 
     async function loadVolatility() {
       try {
-        const [catalog, status, series, derived] = await Promise.all([
-          loadCatalog(),
-          loadDataStatus(),
+        const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
+        const [series, derived] = await Promise.all([
           Promise.all(volatilitySeriesIds.map((seriesId) => loadSeries(seriesId))),
-          Promise.all(volatilityDerivedIds.map((seriesId) => loadDerivedSeries(seriesId)))
+          loadRouteDerivedSeries(volatilityDerivedIds, [], status, {
+            allowMissing: new Set(volatilityDerivedIds)
+          })
         ]);
         if (active) setData({ catalog, derived, series, status });
       } catch (loadError) {
@@ -62,6 +64,8 @@ export default function Volatility() {
       active = false;
     };
   }, []);
+
+  const vix = data?.series.find((series) => series.series_id === "vix");
 
   return (
     <main className="page-shell">
@@ -96,17 +100,15 @@ export default function Volatility() {
               <MetricCard catalogEntry={volatilityDerivedEntry(series)} key={series.series_id} series={series} />
             ))}
           </section>
-          <div className="detail-grid">
-            <PercentileBandChart percentile={data.series[0]?.summary?.percentile_252d} />
-            <SourceNote
-              catalogEntry={data.catalog.find((entry) => entry.id === "vix")}
-              series={data.series[0]}
-            />
-          </div>
-          <TimeSeriesChart
-            catalogEntry={data.catalog.find((entry) => entry.id === "vix")}
-            series={data.series[0]}
-          />
+          {vix ? (
+            <>
+              <div className="detail-grid">
+                <PercentileBandChart percentile={vix.summary?.percentile_252d} />
+                <SourceNote catalogEntry={data.catalog.find((entry) => entry.id === "vix")} series={vix} />
+              </div>
+              <TimeSeriesChart catalogEntry={data.catalog.find((entry) => entry.id === "vix")} series={vix} />
+            </>
+          ) : null}
           <DataStatusTable seriesIds={volatilityStatusIds} status={data.status} />
         </div>
       ) : null}

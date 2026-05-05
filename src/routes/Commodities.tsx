@@ -6,6 +6,7 @@ import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus, loadDerivedSeries, loadSeries } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadRouteDerivedSeries } from "./routeSeries";
 
 const commoditySeriesIds = ["wti_crude", "brent_crude", "corn_price", "wheat_price", "soybean_price"];
 const commodityStatusIds = ["commodity_inflation_impulse", ...commoditySeriesIds, "brent_wti_spread"];
@@ -59,12 +60,13 @@ export default function Commodities() {
 
     async function loadCommodities() {
       try {
-        const [catalog, status, series, spread, impulse] = await Promise.all([
-          loadCatalog(),
-          loadDataStatus(),
+        const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
+        const [series, spread, [impulse]] = await Promise.all([
           Promise.all(commoditySeriesIds.map((seriesId) => loadSeries(seriesId))),
           loadDerivedSeries("brent_wti_spread"),
-          loadDerivedSeries("commodity_inflation_impulse")
+          loadRouteDerivedSeries(["commodity_inflation_impulse"], catalog, status, {
+            allowMissing: new Set(["commodity_inflation_impulse"])
+          })
         ]);
         if (active) setData({ catalog, impulse, spread, series, status });
       } catch (loadError) {

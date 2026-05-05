@@ -4,8 +4,9 @@ import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus, loadDerivedSeries, loadSeries } from "../lib/data";
+import { loadCatalog, loadDataStatus, loadDerivedSeries } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadRouteSeries } from "./routeSeries";
 
 const liquiditySeriesIds = ["fed_assets", "reverse_repo", "treasury_general_account", "sofr", "reserve_balances"];
 const liquidityStatusIds = ["net_liquidity", ...liquiditySeriesIds];
@@ -26,10 +27,9 @@ export default function Liquidity() {
 
     async function loadLiquidity() {
       try {
-        const [catalog, status, series, netLiquidity] = await Promise.all([
-          loadCatalog(),
-          loadDataStatus(),
-          Promise.all(liquiditySeriesIds.map((seriesId) => loadSeries(seriesId))),
+        const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
+        const [series, netLiquidity] = await Promise.all([
+          loadRouteSeries(liquiditySeriesIds, catalog, status),
           loadDerivedSeries("net_liquidity")
         ]);
         if (active) setData({ catalog, netLiquidity, series, status });
