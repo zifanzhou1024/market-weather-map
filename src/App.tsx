@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
+import Calendar from "./routes/Calendar";
 import Commodities from "./routes/Commodities";
 import Credit from "./routes/Credit";
 import DollarGlobal from "./routes/DollarGlobal";
@@ -18,6 +19,7 @@ export default function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Overview />} />
+        <Route path="/calendar" element={<Calendar />} />
         <Route path="/growth" element={<Growth />} />
         <Route path="/housing" element={<Housing />} />
         <Route path="/inflation" element={<Inflation />} />

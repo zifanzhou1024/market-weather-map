@@ -133,6 +133,7 @@ function derivedFile(seriesId: string, value: number): DerivedSeriesFile {
 function routeFetchFiles(overrides: Record<string, unknown> = {}) {
   return {
     "/data/catalog/series_catalog.json": catalog,
+    "/data/events/macro_calendar.json": macroCalendar,
     "/data/derived/brent_wti_spread.json": {
       ...derivedFile("brent_wti_spread", 3.21),
       depends_on: ["brent_crude", "wti_crude"],
@@ -449,6 +450,26 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("usdjpy", "dollar", "USD/JPY", "exchange rate"),
   catalogEntry("eurusd", "dollar", "EUR/USD", "exchange rate")
 ];
+
+const macroCalendar = {
+  generated_at_utc: "2026-05-03T18:32:54Z",
+  method_version: "test",
+  events: [
+    {
+      category: "inflation",
+      date: null,
+      id: "consumer_price_index",
+      importance: "high",
+      notes: "Use BLS schedule for exact dates.",
+      source: "BLS",
+      source_url: "https://www.bls.gov/schedule/news_release/cpi.htm",
+      status: "source_link",
+      time: "08:30",
+      timezone: "America/New_York",
+      title: "Consumer Price Index"
+    }
+  ]
+};
 
 function seriesFile(seriesId: string, latestValue: number): TimeSeriesFile {
   return {
@@ -1001,6 +1022,24 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Featured chart unavailable until source data is available.");
     expect(container.querySelector('[aria-label="Chart placeholder"]')).toBeNull();
     expect(container.querySelector(".data-error")).toBeNull();
+  });
+
+  it("renders macro calendar route", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/calendar"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Macro Calendar");
+    await waitForContent(container, "Consumer Price Index");
+
+    expect(container.textContent).toContain("Consumer Price Index");
+    expect(container.textContent).toContain("BLS");
+    expect(container.textContent).toContain("High");
+    expect(container.textContent).toContain("Source link");
+    expect(container.textContent).toContain("America/New_York");
   });
 
   it("renders housing route with active housing data", async () => {
