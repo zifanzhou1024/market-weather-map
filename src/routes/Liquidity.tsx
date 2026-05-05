@@ -4,9 +4,9 @@ import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus, loadDerivedSeries } from "../lib/data";
+import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { loadRouteSeries } from "./routeSeries";
+import { hasObservations, loadRouteDerivedSeries, loadRouteSeries } from "./routeSeries";
 
 const liquiditySeriesIds = ["fed_assets", "reverse_repo", "treasury_general_account", "sofr", "reserve_balances"];
 const liquidityStatusIds = ["net_liquidity", ...liquiditySeriesIds];
@@ -28,9 +28,11 @@ export default function Liquidity() {
     async function loadLiquidity() {
       try {
         const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
-        const [series, netLiquidity] = await Promise.all([
+        const [series, [netLiquidity]] = await Promise.all([
           loadRouteSeries(liquiditySeriesIds, catalog, status),
-          loadDerivedSeries("net_liquidity")
+          loadRouteDerivedSeries(["net_liquidity"], catalog, status, {
+            allowMissing: new Set(["net_liquidity"])
+          })
         ]);
         if (active) setData({ catalog, netLiquidity, series, status });
       } catch (loadError) {
@@ -92,7 +94,20 @@ export default function Liquidity() {
               />
             ))}
           </section>
-          <TimeSeriesChart catalogEntry={netLiquidityCatalogEntry} series={data.netLiquidity} />
+          {hasObservations(data.netLiquidity) ? (
+            <TimeSeriesChart catalogEntry={netLiquidityCatalogEntry} series={data.netLiquidity} />
+          ) : (
+            <section className="panel chart-panel">
+              <div className="section-header">
+                <div>
+                  <p className="eyebrow">History</p>
+                  <h3>Net liquidity proxy</h3>
+                </div>
+                <p>{netLiquidityCatalogEntry?.units ?? ""}</p>
+              </div>
+              <p>Featured chart unavailable until source data is available.</p>
+            </section>
+          )}
           <DataGapPanel seriesIds={liquidityStatusIds} status={data.status} />
           <DataStatusTable seriesIds={liquidityStatusIds} status={data.status} />
         </div>

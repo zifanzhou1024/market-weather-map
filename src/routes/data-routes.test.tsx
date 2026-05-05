@@ -1272,6 +1272,24 @@ describe("data-backed routes", () => {
     expect(container.querySelector(".data-error")).toBeNull();
   });
 
+  it("renders liquidity base data and status when net liquidity 404s", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/net_liquidity.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/liquidity"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Reserve Balances");
+
+    expect(container.textContent).toContain("Reserve Balances");
+    expect(container.textContent).toContain("Static feed freshness");
+    expect(container.textContent).toContain("Featured chart unavailable until source data is available.");
+    expect(container.querySelector(".data-error")).toBeNull();
+  });
+
   it("renders the commodities route with series and the Brent-WTI spread from static files", async () => {
     const spread: DerivedSeriesFile = {
       depends_on: ["brent_crude", "wti_crude"],
