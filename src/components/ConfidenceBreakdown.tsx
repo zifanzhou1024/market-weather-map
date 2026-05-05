@@ -9,7 +9,13 @@ function formatConfidence(value: number) {
   return `${Math.round(clamped * 100)}%`;
 }
 
+function stringList(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string" && item.length > 0);
+}
+
 export default function ConfidenceBreakdown({ dataQuality }: ConfidenceBreakdownProps) {
+  const reasons = stringList(dataQuality.reasons);
   const rows = [
     ["Coverage", dataQuality.coverage_confidence],
     ["Freshness", dataQuality.freshness_confidence],
@@ -29,9 +35,9 @@ export default function ConfidenceBreakdown({ dataQuality }: ConfidenceBreakdown
           </div>
         ))}
       </dl>
-      {dataQuality.reasons.length > 0 ? (
+      {reasons.length > 0 ? (
         <ul className="score-list">
-          {dataQuality.reasons.map((reason) => (
+          {reasons.map((reason) => (
             <li key={reason}>{reason}</li>
           ))}
         </ul>

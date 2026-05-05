@@ -14,7 +14,10 @@ const gapStatuses = new Set<SeriesStatus["status"]>([
 ]);
 
 function isGapRow(row: SeriesStatus) {
-  return gapStatuses.has(row.status) || row.message?.toLowerCase().includes("expected release window") === true;
+  return (
+    gapStatuses.has(row.status) ||
+    (row.expected_next_release_window !== null && row.expected_next_release_window !== undefined)
+  );
 }
 
 export default function DataGapPanel({ status, seriesIds }: DataGapPanelProps) {

@@ -270,8 +270,28 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Data confidence");
     expect(container.textContent).toContain("82% overall");
     expect(container.textContent).toContain("Coverage");
+    expect(container.textContent).toContain("91%");
     expect(container.textContent).toContain("Freshness");
+    expect(container.textContent).toContain("72%");
+    expect(container.textContent).toContain("84%");
+    expect(container.textContent).toContain("75%");
     expect(container.textContent).toContain("Housing is not active in Phase 4 PR 1.");
+  });
+
+  it("renders confidence fallback when fetched reasons are malformed", () => {
+    const confidence = {
+      coverage_confidence: 0.91,
+      freshness_confidence: 0.72,
+      model_confidence: 0.84,
+      source_confidence: 0.75,
+      overall_confidence: 0.82,
+      reasons: "not an array"
+    } as unknown as ConfidenceBreakdownData;
+
+    const container = render(<ConfidenceBreakdown dataQuality={confidence} />);
+
+    expect(container.textContent).toContain("82% overall");
+    expect(container.textContent).toContain("No confidence notes in the current score summary.");
   });
 
   it("renders signal list items without empty fallback when items exist", () => {
@@ -310,7 +330,7 @@ describe("data-driven components", () => {
           freshness_days: 33,
           last_observation: "2026-03-31",
           max_stale_days: 45,
-          message: "Core CPI is current but inside the expected release window ending 2026-05-16.",
+          message: "Core CPI next update is still pending.",
           observation_period: "2026-03",
           expected_next_release_window: { start: "2026-04-01", end: "2026-05-16" },
           source: "BLS",
@@ -343,7 +363,7 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Data gaps");
     expect(container.textContent).toContain("core_cpi");
     expect(container.textContent).toContain("2026-03");
-    expect(container.textContent).toContain("expected release window ending 2026-05-16");
+    expect(container.textContent).toContain("Core CPI next update is still pending.");
     expect(container.textContent).toContain("ism_manufacturing_pmi");
     expect(container.textContent).toContain("Terms Review Needed");
     expect(container.textContent).toContain("broad_dollar");

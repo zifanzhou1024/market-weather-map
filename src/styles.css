@@ -304,14 +304,14 @@ select {
   background: #f8faf5;
 }
 
-dt {
+.confidence-grid dt {
   color: #607066;
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
 }
 
-dd {
+.confidence-grid dd {
   margin: 3px 0 0;
   color: #24332a;
   font-weight: 700;
