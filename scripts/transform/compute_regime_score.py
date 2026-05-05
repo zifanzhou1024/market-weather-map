@@ -691,6 +691,25 @@ def _confidence_breakdown(
     return breakdown, reasons
 
 
+def _weighted_confidence_with_caveat_cap(
+    components: dict[str, float],
+    weights: dict[str, float],
+    reasons: list[str],
+) -> float:
+    total_weight = sum(weight for key, weight in weights.items() if key in components)
+    if total_weight == 0:
+        return 0.0
+    raw_confidence = (
+        sum(components[key] * weights[key] for key in weights if key in components)
+        / total_weight
+    )
+    confidence = round(raw_confidence, 2)
+    has_caveats = bool(reasons) or any(value < 1.0 for value in components.values())
+    if has_caveats and confidence >= 1.0:
+        return 0.99
+    return confidence
+
+
 def _series_driver(
     bucket: str,
     direction: str,
@@ -1131,7 +1150,7 @@ def build_score_summary(
     quality_reasons = sorted(
         set(market_confidence_reasons + macro_confidence_reasons + fragility_confidence_reasons)
     )
-    data_quality = {
+    data_quality_components = {
         "coverage_confidence": round(
             (
                 market_confidence["coverage_confidence"]
@@ -1168,14 +1187,18 @@ def build_score_summary(
             / 3,
             2,
         ),
-        "overall_confidence": round(
-            (
-                float(market_block["confidence"])
-                + float(macro_block["confidence"])
-                + float(fragility_block["confidence"])
-            )
-            / 3,
-            2,
+    }
+    data_quality = {
+        **data_quality_components,
+        "overall_confidence": _weighted_confidence_with_caveat_cap(
+            data_quality_components,
+            {
+                "coverage_confidence": 0.4,
+                "freshness_confidence": 0.3,
+                "model_confidence": 0.2,
+                "source_confidence": 0.1,
+            },
+            quality_reasons,
         ),
         "reasons": quality_reasons,
     }

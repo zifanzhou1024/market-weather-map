@@ -2050,7 +2050,9 @@ def test_score_summary_emits_data_quality_confidence_breakdown():
     }
     assert data_quality["coverage_confidence"] > 0.9
     assert data_quality["freshness_confidence"] == 1.0
-    assert data_quality["overall_confidence"] == 1.0
+    assert data_quality["source_confidence"] < 1.0
+    assert data_quality["reasons"]
+    assert data_quality["overall_confidence"] == 0.99
     assert "Housing is not active in Phase 4 PR 1." not in data_quality["reasons"]
 
 
