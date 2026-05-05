@@ -5,7 +5,7 @@ export type DataStatus =
   | "failed"
   | "terms_review_needed"
   | "unavailable";
-export type SeriesFrequency = "daily" | "weekly" | "monthly";
+export type SeriesFrequency = "daily" | "weekly" | "monthly" | "quarterly";
 export type UpdateStatus = "ok" | "failed";
 
 export type SeriesCategory =
@@ -73,6 +73,7 @@ export interface ScoreBlock {
     | "Elevated Fragility"
     | "High Fragility";
   confidence: number;
+  confidence_breakdown?: Omit<ConfidenceBreakdownData, "reasons">;
   confidence_reasons: string[];
   bucket_scores: Record<string, number>;
   bucket_weights: Record<string, number>;
@@ -80,6 +81,15 @@ export interface ScoreBlock {
   top_risks: string[];
   recent_changes: string[];
   missing_or_stale_notes: string[];
+}
+
+export interface ConfidenceBreakdownData {
+  coverage_confidence: number;
+  freshness_confidence: number;
+  model_confidence: number;
+  source_confidence: number;
+  overall_confidence: number;
+  reasons: string[];
 }
 
 export interface ScoreSummaryFile {
@@ -92,10 +102,7 @@ export interface ScoreSummaryFile {
     fragility: ScoreBlock;
   };
   conflicting_signals: string[];
-  data_quality: {
-    overall_confidence: number;
-    reasons: string[];
-  };
+  data_quality: ConfidenceBreakdownData;
 }
 
 export interface SeriesCatalogEntry {
@@ -173,10 +180,15 @@ export interface RegimeScoreFile {
 export interface SeriesStatus {
   status: DataStatus;
   last_observation: string | null;
+  observation_period?: string | null;
   source: string;
   expected_frequency: SeriesFrequency;
   freshness_days: number | null;
   max_stale_days: number;
+  expected_next_release_window?: {
+    start: string;
+    end: string;
+  } | null;
   message?: string;
 }
 

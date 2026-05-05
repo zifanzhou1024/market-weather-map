@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
@@ -65,6 +67,14 @@ export default function Growth() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <InterpretationPanel
+            label="Growth and labor read"
+            notes={["Monthly growth and labor data can lag source release schedules."]}
+            risks={["Rising claims, unemployment, or Sahm Rule pressure can indicate recession risk."]}
+            summary="Growth combines activity breadth, real demand, production, durable goods, labor momentum, and recession-risk indicators."
+            supports={["Firm CFNAI, retail sales, production, and payroll inputs support the macro climate score."]}
+          />
+          <DataGapPanel status={data.status} seriesIds={growthSeriesIds.concat(laborSeriesIds)} />
           <section className="metric-grid" aria-label="Growth metrics">
             {data.growthSeries.map((series) => (
               <MetricCard

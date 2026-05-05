@@ -31,3 +31,6 @@
 - A high-confidence score can still be wrong as an interpretation of market risk because the model is intentionally simple and descriptive.
 - A low-confidence score can still contain useful context, but it should be read with the missing or stale source notes.
 - Score builders emit all weighted bucket keys. Missing or stale coverage may enter as `0.0` neutral fallback values and lower confidence, so users should read confidence reasons and source status alongside headline values.
+- Release-aware freshness reduces false stale flags for monthly and quarterly data, but it still depends on configured cadence assumptions.
+- Expected release-window notes mean the source may be behaving normally; they do not mean the latest economic observation is current in a real-time sense.
+- Confidence decomposition makes stale, missing, candidate, and thin-model inputs visible, but it does not turn descriptive scores into forecasts.

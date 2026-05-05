@@ -281,6 +281,46 @@ select {
   color: #607066;
 }
 
+.confidence-grid,
+.interpretation-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.confidence-grid {
+  margin: 0 0 16px;
+}
+
+.interpretation-grid {
+  margin-top: 16px;
+}
+
+.confidence-grid div {
+  min-width: 0;
+  border: 1px solid #e4e8df;
+  border-radius: 8px;
+  padding: 12px;
+  background: #f8faf5;
+}
+
+.confidence-grid dt {
+  color: #607066;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.confidence-grid dd {
+  margin: 3px 0 0;
+  color: #24332a;
+  font-weight: 700;
+}
+
+.interpretation-panel > p {
+  color: #536157;
+}
+
 .how-to-read h3,
 .how-to-read p {
   margin-top: 0;
@@ -411,6 +451,12 @@ select {
   background: #f4d6d6;
 }
 
+.status-terms_review_needed,
+.status-unavailable {
+  color: #6b4b1d;
+  background: #f5e3cf;
+}
+
 .chart-panel {
   min-height: 420px;
 }
@@ -488,7 +534,7 @@ select {
 
 .status-table {
   width: 100%;
-  min-width: 620px;
+  min-width: 760px;
   border-collapse: collapse;
 }
 
@@ -498,6 +544,12 @@ select {
   border-top: 1px solid #e4e8df;
   text-align: left;
   white-space: nowrap;
+}
+
+.data-gap-panel .status-table td:last-child,
+.status-table td:last-child {
+  max-width: 420px;
+  white-space: normal;
 }
 
 .status-table th {
@@ -539,7 +591,9 @@ code {
 
   .metric-grid,
   .metric-grid.single,
-  .score-grid {
+  .score-grid,
+  .confidence-grid,
+  .interpretation-grid {
     grid-template-columns: 1fr;
   }
 

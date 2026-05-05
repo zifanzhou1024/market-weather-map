@@ -1,13 +1,17 @@
 {
   "data_quality": {
-    "overall_confidence": 0.93,
+    "coverage_confidence": 1.0,
+    "freshness_confidence": 1.0,
+    "model_confidence": 1.0,
+    "overall_confidence": 0.99,
     "reasons": [
-      "Housing is not active in Phase 3.",
+      "Housing is not active in Phase 4 PR 1.",
       "Treasury/bond volatility source is not active."
-    ]
+    ],
+    "source_confidence": 0.95
   },
   "date": "2026-05-04",
-  "generated_at_utc": "2026-05-05T00:13:26Z",
+  "generated_at_utc": "2026-05-05T06:00:03Z",
   "method_version": "phase3-three-score-v1",
   "scores": {
     "fragility": {
@@ -27,8 +31,17 @@
         "treasury_bond_volatility": 0.1,
         "volatility_term_structure": 0.2
       },
-      "confidence": 0.9,
-      "confidence_reasons": [],
+      "confidence": 0.99,
+      "confidence_breakdown": {
+        "coverage_confidence": 1.0,
+        "freshness_confidence": 1.0,
+        "model_confidence": 1.0,
+        "overall_confidence": 0.99,
+        "source_confidence": 0.92
+      },
+      "confidence_reasons": [
+        "Treasury/bond volatility source is not active."
+      ],
       "label": "Low Fragility",
       "missing_or_stale_notes": [
         "Treasury/bond volatility source is not active."
@@ -155,11 +168,20 @@
         "labor": 0.25,
         "real_yields": 0.1
       },
-      "confidence": 0.9,
-      "confidence_reasons": [],
+      "confidence": 0.99,
+      "confidence_breakdown": {
+        "coverage_confidence": 1.0,
+        "freshness_confidence": 1.0,
+        "model_confidence": 1.0,
+        "overall_confidence": 0.99,
+        "source_confidence": 0.92
+      },
+      "confidence_reasons": [
+        "Housing is not active in Phase 4 PR 1."
+      ],
       "label": "Mixed",
       "missing_or_stale_notes": [
-        "Housing is not active in Phase 3."
+        "Housing is not active in Phase 4 PR 1."
       ],
       "recent_changes": [
         "Inflation pressure remains elevated.",
@@ -303,6 +325,13 @@
         "volatility_tail_risk": 0.15
       },
       "confidence": 1.0,
+      "confidence_breakdown": {
+        "coverage_confidence": 1.0,
+        "freshness_confidence": 1.0,
+        "model_confidence": 1.0,
+        "overall_confidence": 1.0,
+        "source_confidence": 1.0
+      },
       "confidence_reasons": [],
       "label": "Mixed",
       "missing_or_stale_notes": [],

@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
+import ConfidenceBreakdown from "../components/ConfidenceBreakdown";
+import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import HowToReadPanel from "../components/HowToReadPanel";
+import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
-import RegimeBadge from "../components/RegimeBadge";
 import ScoreCard from "../components/ScoreCard";
+import SignalList from "../components/SignalList";
 import {
   loadCatalog,
   loadDataStatus,
   loadDerivedSeries,
-  loadRegimeScore,
   loadScoreSummary,
   loadSeries
 } from "../lib/data";
-import { formatSigned } from "../lib/formatters";
 import type {
+  ConfidenceBreakdownData,
   DataStatusFile,
   DerivedSeriesFile,
-  RegimeScoreFile,
   ScoreSummaryFile,
   SeriesCatalogEntry,
   TimeSeriesFile
@@ -33,17 +34,9 @@ const overviewSeriesIds = [
 
 interface OverviewState {
   catalog: SeriesCatalogEntry[];
-  regime: RegimeScoreFile;
   scoreSummary: ScoreSummaryFile;
   status: DataStatusFile;
   series: Array<TimeSeriesFile | DerivedSeriesFile>;
-}
-
-function titleCaseBucket(bucket: string) {
-  return bucket
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
 }
 
 function netLiquidityCatalogEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
@@ -76,38 +69,40 @@ function safeStringList(value: unknown) {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 }
 
-function confidencePercent(value: unknown) {
-  const confidence = typeof value === "number" && Number.isFinite(value) ? value : 0;
-  return Math.round(Math.min(1, Math.max(0, confidence)) * 100);
+function safeConfidenceValue(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
 }
 
-function ScoreListPanel({
-  emptyText,
-  items,
-  title
-}: {
-  emptyText: string;
-  items: string[];
-  title: string;
-}) {
-  return (
-    <section className="panel">
-      <div className="section-header">
-        <div>
-          <h3>{title}</h3>
-        </div>
-      </div>
-      {items.length ? (
-        <ul className="score-list">
-          {items.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      ) : (
-        <p className="score-note">{emptyText}</p>
-      )}
-    </section>
-  );
+function safeDataQuality(value: unknown): ConfidenceBreakdownData {
+  if (!value || typeof value !== "object") {
+    return {
+      coverage_confidence: 0,
+      freshness_confidence: 0,
+      model_confidence: 0,
+      source_confidence: 0,
+      overall_confidence: 0,
+      reasons: []
+    };
+  }
+
+  const dataQuality = value as Partial<ConfidenceBreakdownData>;
+  return {
+    coverage_confidence: safeConfidenceValue(dataQuality.coverage_confidence),
+    freshness_confidence: safeConfidenceValue(dataQuality.freshness_confidence),
+    model_confidence: safeConfidenceValue(dataQuality.model_confidence),
+    source_confidence: safeConfidenceValue(dataQuality.source_confidence),
+    overall_confidence: safeConfidenceValue(dataQuality.overall_confidence),
+    reasons: safeStringList(dataQuality.reasons)
+  };
+}
+
+function safeLabel(value: unknown, fallback = "unknown") {
+  return typeof value === "string" && value.trim().length > 0 ? value.trim() : fallback;
+}
+
+function fragilityPhrase(value: unknown) {
+  const label = safeLabel(value).toLowerCase();
+  return label.includes("fragility") ? label : `${label} fragility`;
 }
 
 export default function Overview() {
@@ -119,9 +114,8 @@ export default function Overview() {
 
     async function loadOverview() {
       try {
-        const [catalog, regime, scoreSummary, status, series] = await Promise.all([
+        const [catalog, scoreSummary, status, series] = await Promise.all([
           loadCatalog(),
-          loadRegimeScore(),
           loadScoreSummary(),
           loadDataStatus(),
           Promise.all(
@@ -131,7 +125,7 @@ export default function Overview() {
           )
         ]);
 
-        if (active) setData({ catalog, regime, scoreSummary, status, series });
+        if (active) setData({ catalog, scoreSummary, status, series });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load market data.");
       }
@@ -160,14 +154,22 @@ export default function Overview() {
         <>
           {(() => {
             const { scoreSummary } = data;
-            const recentChanges = [
-              ...safeStringList(scoreSummary.scores.market_weather.recent_changes),
-              ...safeStringList(scoreSummary.scores.macro_climate.recent_changes),
-              ...safeStringList(scoreSummary.scores.fragility.recent_changes)
-            ];
+            const market = scoreSummary.scores.market_weather;
+            const macro = scoreSummary.scores.macro_climate;
+            const fragility = scoreSummary.scores.fragility;
+            const dataQuality = safeDataQuality(scoreSummary.data_quality);
+            const recentChanges = safeStringList(market.recent_changes)
+              .concat(safeStringList(macro.recent_changes))
+              .concat(safeStringList(fragility.recent_changes));
+            const topSupports = safeStringList(market.top_supports)
+              .concat(safeStringList(macro.top_supports))
+              .concat(safeStringList(fragility.top_supports))
+              .slice(0, 6);
+            const topRisks = safeStringList(market.top_risks)
+              .concat(safeStringList(macro.top_risks))
+              .concat(safeStringList(fragility.top_risks))
+              .slice(0, 6);
             const conflictingSignals = safeStringList(scoreSummary.conflicting_signals);
-            const dataConfidenceReasons = safeStringList(scoreSummary.data_quality?.reasons);
-            const dataConfidence = confidencePercent(scoreSummary.data_quality?.overall_confidence);
 
             return (
               <>
@@ -177,79 +179,32 @@ export default function Overview() {
                   <ScoreCard score={scoreSummary.scores.macro_climate} title="Macro Climate" />
                   <ScoreCard score={scoreSummary.scores.fragility} title="Fragility" />
                 </section>
+                <InterpretationPanel
+                  conflicts={conflictingSignals}
+                  label={`${safeLabel(market.label)} market weather, ${safeLabel(macro.label)} macro climate, ${fragilityPhrase(fragility.label)}`}
+                  notes={dataQuality.reasons}
+                  risks={topRisks}
+                  summary="The overview combines the three descriptive scores with source freshness and coverage notes so stale or missing inputs remain visible beside the headline read."
+                  supports={topSupports}
+                  title="Current regime read"
+                />
                 <section className="detail-grid overview-detail-grid">
-                  <ScoreListPanel
+                  <SignalList
                     emptyText="No recent changes in the current score summary."
                     items={recentChanges}
                     title="Recent changes"
                   />
-                  <ScoreListPanel
+                  <SignalList
                     emptyText="No conflicting signals in the current score summary."
                     items={conflictingSignals}
                     title="Conflicting signals"
                   />
                 </section>
-                <section className="panel bucket-panel">
-                  <div className="section-header">
-                    <div>
-                      <h3>Data confidence</h3>
-                    </div>
-                    <p>{dataConfidence}% overall confidence</p>
-                  </div>
-                  {dataConfidenceReasons.length ? (
-                    <ul className="score-list">
-                      {dataConfidenceReasons.map((reason) => (
-                        <li key={reason}>{reason}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="score-note">No data confidence notes in the current score summary.</p>
-                  )}
-                </section>
+                <ConfidenceBreakdown dataQuality={dataQuality} />
+                <DataGapPanel status={data.status} />
               </>
             );
           })()}
-          <section className="hero-panel">
-            <div>
-              <p className="eyebrow">Weather score</p>
-              <h3>{data.regime.overall_score.toFixed(2)}</h3>
-              <RegimeBadge label={data.regime.label} score={data.regime.overall_score} />
-            </div>
-            <div className="detail-grid">
-              <section>
-                <h4>Top supports</h4>
-                <ul>
-                  {data.regime.top_supports.map((support) => (
-                    <li key={support}>{support}</li>
-                  ))}
-                </ul>
-              </section>
-              <section>
-                <h4>Top risks</h4>
-                <ul>
-                  {data.regime.top_risks.map((risk) => (
-                    <li key={risk}>{risk}</li>
-                  ))}
-                </ul>
-              </section>
-            </div>
-          </section>
-          <section className="panel bucket-panel">
-            <div className="section-header">
-              <div>
-                <p className="eyebrow">Regime inputs</p>
-                <h3>Market Weather buckets</h3>
-              </div>
-            </div>
-            <dl className="bucket-grid">
-              {Object.entries(data.regime.buckets).map(([bucket, score]) => (
-                <div className="bucket-score" key={bucket}>
-                  <dt>{titleCaseBucket(bucket)}</dt>
-                  <dd>{formatSigned(score)}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
           <section className="metric-grid" aria-label="Overview metrics">
             {data.series.map((series) => (
               <MetricCard

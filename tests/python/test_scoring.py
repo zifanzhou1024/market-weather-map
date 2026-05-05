@@ -524,10 +524,12 @@ def test_status_for_candidate_series_requires_terms_review_before_observations()
     assert status == {
         "status": "terms_review_needed",
         "last_observation": None,
+        "observation_period": None,
         "source": "Candidate Source",
         "expected_frequency": "monthly",
         "freshness_days": None,
         "max_stale_days": 45,
+        "expected_next_release_window": None,
         "message": "Candidate source requires access or terms review before scoring.",
     }
 
@@ -547,7 +549,9 @@ def test_status_for_unavailable_or_restricted_series_reports_unavailable_before_
 
     assert status["status"] == "unavailable"
     assert status["last_observation"] is None
+    assert status["observation_period"] is None
     assert status["freshness_days"] is None
+    assert status["expected_next_release_window"] is None
     assert status["message"] == "Source is unavailable for automated static ingestion."
 
 
@@ -600,6 +604,40 @@ def test_build_status_reports_source_governance_without_lowering_overall(monkeyp
     assert status["series"]["restricted_series"]["status"] == "unavailable"
 
 
+def test_build_status_reports_missing_active_public_payload_with_freshness_shape(monkeypatch):
+    monkeypatch.setattr(compute_regime_score, "available_catalog_entries", lambda: [])
+    monkeypatch.setattr(
+        compute_regime_score,
+        "catalog_entries",
+        lambda: [
+            {
+                "id": "missing_active_public",
+                "source": "FRED",
+                "frequency": "daily",
+                "max_stale_days": 7,
+                "score_status": "active",
+                "public": True,
+                "access_status": "free_public",
+                "terms_status": "ok",
+            },
+        ],
+    )
+
+    status = build_status({}, "2026-05-04T00:00:00Z")
+
+    assert status["series"]["missing_active_public"] == {
+        "status": "unavailable",
+        "last_observation": None,
+        "observation_period": None,
+        "source": "FRED",
+        "expected_frequency": "daily",
+        "freshness_days": None,
+        "max_stale_days": 7,
+        "expected_next_release_window": None,
+        "message": "Active public catalog series has no generated payload.",
+    }
+
+
 def test_build_status_includes_derived_series_rows(monkeypatch):
     generated_at = "2026-05-03T12:00:00Z"
     monkeypatch.setattr(compute_regime_score, "available_catalog_entries", lambda: [])
@@ -623,11 +661,13 @@ def test_build_status_includes_derived_series_rows(monkeypatch):
     assert status["series"]["us10y_minus_us2y"] == {
         "status": "ok",
         "last_observation": "2026-05-01",
+        "observation_period": "2026-05-01",
         "source": "Derived",
         "expected_frequency": "daily",
         "freshness_days": 2,
         "max_stale_days": 7,
-        "message": "Fresh.",
+        "expected_next_release_window": None,
+        "message": "Latest daily observation is 2 days old.",
     }
     assert status["series"]["brent_wti_spread"]["source"] == "Derived"
     assert status["series"]["brent_wti_spread"]["max_stale_days"] == 10
@@ -695,9 +735,9 @@ def test_build_score_summary_returns_three_scores_with_specific_drivers():
     assert set(summary["scores"]) == {"market_weather", "macro_climate", "fragility"}
     assert "High-yield spreads widened over the past month." in summary["scores"]["market_weather"]["top_risks"]
     assert summary["scores"]["macro_climate"]["confidence"] < 1.0
-    assert "Housing is not active in Phase 3." in summary["scores"]["macro_climate"]["missing_or_stale_notes"]
+    assert "Housing is not active in Phase 4 PR 1." in summary["scores"]["macro_climate"]["missing_or_stale_notes"]
     assert summary["data_quality"]["overall_confidence"] <= 1.0
-    assert "Housing is not active in Phase 3." in summary["data_quality"]["reasons"]
+    assert "Housing is not active in Phase 4 PR 1." in summary["data_quality"]["reasons"]
 
 
 def test_missing_phase_3_macro_coverage_lowers_confidence_and_adds_notes():
@@ -716,7 +756,7 @@ def test_missing_phase_3_macro_coverage_lowers_confidence_and_adds_notes():
     macro = summary["scores"]["macro_climate"]
 
     assert macro["confidence"] < 0.8
-    assert "Housing is not active in Phase 3." in macro["missing_or_stale_notes"]
+    assert "Housing is not active in Phase 4 PR 1." in macro["missing_or_stale_notes"]
     assert any("growth" in note and "cfnai" in note for note in macro["missing_or_stale_notes"])
     assert any("labor" in note and "nonfarm_payrolls" in note for note in macro["missing_or_stale_notes"])
     assert any("inflation" in note and "headline_cpi" in note for note in macro["missing_or_stale_notes"])
@@ -974,6 +1014,51 @@ def test_validate_status_file_rejects_partial_series_status(tmp_path, monkeypatc
         validate_schema.validate_status_file()
 
 
+def test_validate_score_summary_file_rejects_missing_score_confidence_breakdown(tmp_path, monkeypatch):
+    derived_dir = tmp_path / "derived"
+    derived_dir.mkdir()
+    confidence_breakdown = {
+        "coverage_confidence": 1.0,
+        "freshness_confidence": 1.0,
+        "model_confidence": 1.0,
+        "source_confidence": 1.0,
+        "overall_confidence": 1.0,
+    }
+    score_block = {
+        "score": 0.0,
+        "confidence": 1.0,
+        "top_risks": [],
+        "top_supports": [],
+        "confidence_reasons": [],
+        "recent_changes": [],
+        "missing_or_stale_notes": [],
+        "confidence_breakdown": confidence_breakdown,
+    }
+    payload = {
+        "scores": {
+            "market_weather": {
+                key: value
+                for key, value in score_block.items()
+                if key != "confidence_breakdown"
+            },
+            "macro_climate": score_block,
+            "fragility": score_block,
+        },
+        "data_quality": {
+            **confidence_breakdown,
+            "reasons": [],
+        },
+    }
+    (derived_dir / "score_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(
+        ValueError,
+        match=r"market_weather\.confidence_breakdown must be an object",
+    ):
+        validate_schema.validate_score_summary_file()
+
+
 def test_validate_freshness_accepts_governance_series_statuses(tmp_path, monkeypatch):
     status_dir = tmp_path / "status"
     status_dir.mkdir()
@@ -1008,13 +1093,18 @@ def test_validate_freshness_accepts_partial_stale_series_status(tmp_path, monkey
     (status_dir / "data_status.json").write_text(
         """
         {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
           "overall_status": "partial",
           "series": {
             "macro_series": {
               "status": "stale",
-              "freshness_days": 64,
-              "max_stale_days": 45,
-              "message": "Latest observation is 64 days old."
+              "last_observation": "2026-04-20",
+              "observation_period": "2026-04-20",
+              "expected_frequency": "daily",
+              "freshness_days": 15,
+              "max_stale_days": 7,
+              "expected_next_release_window": null,
+              "message": "Latest daily observation is 15 days old, above the 7 day freshness buffer."
             }
           }
         }
@@ -1024,6 +1114,518 @@ def test_validate_freshness_accepts_partial_stale_series_status(tmp_path, monkey
     monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
 
     validate_freshness.main()
+
+
+def test_validate_freshness_rejects_malformed_stale_series_status(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "partial",
+          "series": {
+            "macro_series": {
+              "status": "stale",
+              "last_observation": "2026-04-20",
+              "observation_period": "2026-04-20",
+              "expected_frequency": "daily",
+              "freshness_days": 1,
+              "max_stale_days": 7,
+              "expected_next_release_window": null,
+              "message": "Latest daily observation is 1 days old."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="macro_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_accepts_release_window_ok_series_status(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "monthly_series": {
+              "status": "ok",
+              "last_observation": "2026-03-01",
+              "observation_period": "2026-03",
+              "expected_frequency": "monthly",
+              "freshness_days": 65,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    validate_freshness.main()
+
+
+def test_validate_freshness_accepts_weekly_and_quarterly_release_window_ok_statuses(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "weekly_series": {
+              "status": "ok",
+              "last_observation": "2026-04-24",
+              "observation_period": "week of 2026-04-24",
+              "expected_frequency": "weekly",
+              "freshness_days": 11,
+              "max_stale_days": 7,
+              "expected_next_release_window": {
+                "start": "2026-05-01",
+                "end": "2026-05-08"
+              },
+              "message": "Latest weekly observation is within the expected release window ending 2026-05-08."
+            },
+            "quarterly_series": {
+              "status": "ok",
+              "last_observation": "2026-01-01",
+              "observation_period": "2026-Q1",
+              "expected_frequency": "quarterly",
+              "freshness_days": 124,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest quarterly observation covers 2026-Q1 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    validate_freshness.main()
+
+
+def test_validate_freshness_accepts_valid_fresh_daily_ok_series(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "fresh_daily_series": {
+              "status": "ok",
+              "last_observation": "2026-05-04",
+              "observation_period": "2026-05-04",
+              "expected_frequency": "daily",
+              "freshness_days": 1,
+              "max_stale_days": 7,
+              "expected_next_release_window": null,
+              "message": "Latest daily observation is 1 days old."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    validate_freshness.main()
+
+
+def test_validate_freshness_rejects_stale_daily_ok_series_with_fabricated_low_age(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "daily_low_age_series": {
+              "status": "ok",
+              "last_observation": "2026-04-20",
+              "observation_period": "2026-04-20",
+              "expected_frequency": "daily",
+              "freshness_days": 1,
+              "max_stale_days": 7,
+              "expected_next_release_window": null,
+              "message": "Latest daily observation is 1 days old."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="daily_low_age_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_ok_series_with_missing_last_observation(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "missing_observation_series": {
+              "status": "ok",
+              "observation_period": "2026-04-20",
+              "expected_frequency": "daily",
+              "freshness_days": 1,
+              "max_stale_days": 7,
+              "expected_next_release_window": null,
+              "message": "Latest daily observation is 1 days old."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="missing_observation_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_ok_series_with_malformed_last_observation(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "malformed_observation_series": {
+              "status": "ok",
+              "last_observation": "not-a-date",
+              "observation_period": "not-a-date",
+              "expected_frequency": "daily",
+              "freshness_days": 1,
+              "max_stale_days": 7,
+              "expected_next_release_window": null,
+              "message": "Latest daily observation is 1 days old."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="malformed_observation_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_stale_monthly_ok_series_with_missing_age(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-07-01T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "monthly_missing_age_series": {
+              "status": "ok",
+              "last_observation": "2026-03-01",
+              "observation_period": "2026-03",
+              "expected_frequency": "monthly",
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="monthly_missing_age_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_stale_monthly_ok_series_with_non_numeric_age(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-07-01T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "monthly_non_numeric_age_series": {
+              "status": "ok",
+              "last_observation": "2026-03-01",
+              "observation_period": "2026-03",
+              "expected_frequency": "monthly",
+              "freshness_days": "1",
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="monthly_non_numeric_age_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_stale_monthly_ok_series_with_fabricated_low_age(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-07-01T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "monthly_low_age_series": {
+              "status": "ok",
+              "last_observation": "2026-03-01",
+              "observation_period": "2026-03",
+              "expected_frequency": "monthly",
+              "freshness_days": 1,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="monthly_low_age_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_daily_spoofed_release_window_status(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "daily_series": {
+              "status": "ok",
+              "last_observation": "2026-04-20",
+              "expected_frequency": "daily",
+              "freshness_days": 15,
+              "max_stale_days": 7,
+              "expected_next_release_window": {
+                "start": "2026-05-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest daily observation is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="daily_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_release_window_row_with_fabricated_freshness_days(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "fabricated_freshness_series": {
+              "status": "ok",
+              "last_observation": "2026-03-01",
+              "observation_period": "2026-03",
+              "expected_frequency": "monthly",
+              "freshness_days": 999,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(
+        SystemExit,
+        match="fabricated_freshness_series failed freshness invariant",
+    ):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_release_window_row_with_fabricated_message(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "fabricated_message_series": {
+              "status": "ok",
+              "last_observation": "2026-03-01",
+              "observation_period": "2026-03",
+              "expected_frequency": "monthly",
+              "freshness_days": 65,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Arbitrary validator bypass text within the expected release window."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(
+        SystemExit,
+        match="fabricated_message_series failed freshness invariant",
+    ):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_spoofed_release_window_with_malformed_dates(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-05T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "bad_window_series": {
+              "status": "ok",
+              "freshness_days": 65,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "not-a-date",
+                "end": "also-not-a-date"
+              },
+              "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="bad_window_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_release_window_ok_after_window_end(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "generated_at_utc": "2026-05-17T00:00:00Z",
+          "overall_status": "ok",
+          "series": {
+            "late_monthly_series": {
+              "status": "ok",
+              "freshness_days": 77,
+              "max_stale_days": 45,
+              "expected_next_release_window": {
+                "start": "2026-04-01",
+                "end": "2026-05-16"
+              },
+              "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="late_monthly_series failed freshness invariant"):
+        validate_freshness.main()
+
+
+def test_validate_freshness_rejects_ok_stale_series_without_release_allowance(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    status_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "overall_status": "ok",
+          "series": {
+            "bad_ok_series": {
+              "status": "ok",
+              "freshness_days": 65,
+              "max_stale_days": 45,
+              "message": "Fresh."
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_freshness, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(SystemExit, match="bad_ok_series failed freshness invariant"):
+        validate_freshness.main()
 
 
 def test_validate_freshness_rejects_failed_series_status(tmp_path, monkeypatch):
@@ -1049,10 +1651,15 @@ def test_validate_freshness_rejects_failed_series_status(tmp_path, monkeypatch):
         validate_freshness.main()
 
 
-def test_generated_file_validation_requires_commodity_inflation_impulse():
+def test_generated_file_validation_requires_active_derived_files():
+    required_paths = set(validate_schema.REQUIRED_GENERATED_FILES)
+
     assert (
         validate_schema.data_dir() / "derived" / "commodity_inflation_impulse.json"
-    ) in validate_schema.REQUIRED_GENERATED_FILES
+    ) in required_paths
+    assert validate_schema.data_dir() / "derived" / "hy_minus_ig_oas.json" in required_paths
+    assert validate_schema.data_dir() / "derived" / "vix9d_vix_ratio.json" in required_paths
+    assert validate_schema.data_dir() / "derived" / "vix_vix3m_ratio.json" in required_paths
 
 
 def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monkeypatch):
@@ -1069,16 +1676,30 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
               "top_supports": [],
               "confidence_reasons": [],
               "recent_changes": [],
-              "missing_or_stale_notes": []
+              "missing_or_stale_notes": [],
+              "confidence_breakdown": {
+                "coverage_confidence": 1.0,
+                "freshness_confidence": 1.0,
+                "model_confidence": 1.0,
+                "source_confidence": 1.0,
+                "overall_confidence": 0.9
+              }
             },
             "macro_climate": {
               "score": 2,
               "confidence": 0.8,
-              "top_risks": ["Housing is not active in Phase 3."],
+              "top_risks": ["Housing is not active in Phase 4 PR 1."],
               "top_supports": [],
               "confidence_reasons": [],
               "recent_changes": [],
-              "missing_or_stale_notes": []
+              "missing_or_stale_notes": [],
+              "confidence_breakdown": {
+                "coverage_confidence": 1.0,
+                "freshness_confidence": 1.0,
+                "model_confidence": 1.0,
+                "source_confidence": 1.0,
+                "overall_confidence": 0.8
+              }
             },
             "fragility": {
               "score": -3,
@@ -1087,8 +1708,23 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
               "top_supports": [],
               "confidence_reasons": [],
               "recent_changes": [],
-              "missing_or_stale_notes": []
+              "missing_or_stale_notes": [],
+              "confidence_breakdown": {
+                "coverage_confidence": 1.0,
+                "freshness_confidence": 1.0,
+                "model_confidence": 1.0,
+                "source_confidence": 1.0,
+                "overall_confidence": 0.7
+              }
             }
+          },
+          "data_quality": {
+            "coverage_confidence": 1.0,
+            "freshness_confidence": 1.0,
+            "model_confidence": 1.0,
+            "source_confidence": 1.0,
+            "overall_confidence": 1.0,
+            "reasons": []
           }
         }
         """,
@@ -1182,3 +1818,212 @@ def test_validate_score_summary_rejects_non_finite_score_values(tmp_path, monkey
 
     with pytest.raises(ValueError, match="market_weather.score must be finite"):
         validate_schema.validate_score_summary_file()
+
+
+def test_validate_score_summary_rejects_out_of_range_data_quality_confidence(
+    tmp_path, monkeypatch
+):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    confidence_breakdown = {
+        "coverage_confidence": 1.0,
+        "freshness_confidence": 1.0,
+        "model_confidence": 1.0,
+        "source_confidence": 1.0,
+        "overall_confidence": 1.0,
+    }
+    payload = {
+        "scores": {
+            "market_weather": {
+                "score": -1,
+                "confidence": 0.9,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+                "confidence_breakdown": confidence_breakdown,
+            },
+            "macro_climate": {
+                "score": 2,
+                "confidence": 0.8,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+                "confidence_breakdown": confidence_breakdown,
+            },
+            "fragility": {
+                "score": -3,
+                "confidence": 0.7,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+                "confidence_breakdown": confidence_breakdown,
+            },
+        },
+        "data_quality": {
+            "coverage_confidence": 1.2,
+            "freshness_confidence": 1.0,
+            "model_confidence": 1.0,
+            "source_confidence": 1.0,
+            "overall_confidence": 1.0,
+            "reasons": [],
+        },
+    }
+    (derived / "score_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(
+        ValueError,
+        match="data_quality.coverage_confidence must be between 0 and 1",
+    ):
+        validate_schema.validate_score_summary_file()
+
+
+def test_validate_score_summary_rejects_out_of_range_score_confidence_breakdown(
+    tmp_path, monkeypatch
+):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    payload = {
+        "scores": {
+            "market_weather": {
+                "score": -1,
+                "confidence": 0.9,
+                "confidence_breakdown": {
+                    "coverage_confidence": 1.0,
+                    "freshness_confidence": 1.0,
+                    "model_confidence": 1.0,
+                    "source_confidence": 1.0,
+                    "overall_confidence": -0.1,
+                    "reasons": [],
+                },
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+            "macro_climate": {
+                "score": 2,
+                "confidence": 0.8,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+            "fragility": {
+                "score": -3,
+                "confidence": 0.7,
+                "top_risks": [],
+                "top_supports": [],
+                "confidence_reasons": [],
+                "recent_changes": [],
+                "missing_or_stale_notes": [],
+            },
+        },
+        "data_quality": {
+            "coverage_confidence": 1.0,
+            "freshness_confidence": 1.0,
+            "model_confidence": 1.0,
+            "source_confidence": 1.0,
+            "overall_confidence": 1.0,
+            "reasons": [],
+        },
+    }
+    (derived / "score_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(
+        ValueError,
+        match="market_weather.confidence_breakdown.overall_confidence must be between 0 and 1",
+    ):
+        validate_schema.validate_score_summary_file()
+
+
+def test_score_summary_emits_data_quality_confidence_breakdown():
+    series = {
+        "vix": _summary(percentile_252d=50.0),
+        "vvix": _summary(percentile_252d=50.0),
+        "vix9d": _summary(percentile_252d=50.0),
+        "vix3m": _summary(percentile_252d=50.0),
+        "vix9d_vix_ratio": _summary(percentile_252d=50.0),
+        "vix_vix3m_ratio": _summary(percentile_252d=50.0),
+        "high_yield_oas": _summary(percentile_252d=50.0),
+        "investment_grade_oas": _summary(percentile_252d=50.0),
+        "bbb_oas": _summary(percentile_252d=50.0),
+        "hy_minus_ig_oas": _summary(percentile_252d=50.0),
+        "net_liquidity": _summary(percentile_252d=50.0),
+        "reverse_repo": _summary(percentile_252d=50.0),
+        "sofr": _summary(percentile_252d=50.0),
+        "real_yield_10y": _summary(percentile_252d=50.0),
+        "broad_dollar": _summary(percentile_252d=50.0),
+        "commodity_inflation_impulse": _summary(latest_value=0.0, percentile_252d=50.0),
+        "breakeven_10y": _summary(percentile_252d=50.0),
+        "cftc_sp500_asset_mgr_net": _summary(percentile_252d=50.0),
+        "cftc_sp500_lev_money_net": _summary(percentile_252d=50.0),
+        "cfnai": _summary(percentile_252d=50.0),
+        "cfnai_3m_avg": _summary(percentile_252d=50.0),
+        "nonfarm_payrolls": _summary(percentile_252d=50.0),
+        "unemployment_rate": _summary(percentile_252d=50.0),
+        "initial_claims": _summary(percentile_252d=50.0),
+        "sahm_rule": _summary(percentile_252d=50.0),
+        "headline_cpi": _summary(percentile_252d=50.0),
+        "core_cpi": _summary(percentile_252d=50.0),
+        "core_pce": _summary(percentile_252d=50.0),
+        "ppi_final_demand": _summary(percentile_252d=50.0),
+        "real_retail_sales": _summary(percentile_252d=50.0),
+        "industrial_production": _summary(percentile_252d=50.0),
+        "durable_goods_orders": _summary(percentile_252d=50.0),
+    }
+    statuses = {
+        series_id: {"status": "ok", "message": "Fresh."}
+        for series_id in series
+    }
+
+    summary = compute_regime_score.build_score_summary(
+        series,
+        "2026-05-04T00:00:00Z",
+        statuses,
+    )
+
+    data_quality = summary["data_quality"]
+    assert set(data_quality) >= {
+        "coverage_confidence",
+        "freshness_confidence",
+        "model_confidence",
+        "source_confidence",
+        "overall_confidence",
+        "reasons",
+    }
+    assert data_quality["coverage_confidence"] > 0.9
+    assert data_quality["freshness_confidence"] == 1.0
+    assert data_quality["overall_confidence"] < 1.0
+    assert "Housing is not active in Phase 4 PR 1." in data_quality["reasons"]
+
+
+def test_stale_status_lowers_freshness_confidence():
+    series = {
+        "vix": _summary(percentile_252d=50.0),
+        "reverse_repo": _summary(percentile_252d=50.0),
+        "net_liquidity": _summary(percentile_252d=50.0),
+    }
+    statuses = {
+        "vix": {"status": "ok", "message": "Fresh."},
+        "reverse_repo": {"status": "stale", "message": "Latest daily observation is stale."},
+        "net_liquidity": {"status": "ok", "message": "Fresh."},
+    }
+
+    summary = compute_regime_score.build_score_summary(
+        series,
+        "2026-05-04T00:00:00Z",
+        statuses,
+    )
+
+    assert summary["data_quality"]["freshness_confidence"] < 1.0
+    assert any("reverse_repo" in reason for reason in summary["data_quality"]["reasons"])

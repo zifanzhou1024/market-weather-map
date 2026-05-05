@@ -185,6 +185,10 @@ test("type contracts support phase 3 source governance and score summary", () =>
     },
     conflicting_signals: ["Credit is calm while inflation momentum is elevated."],
     data_quality: {
+      coverage_confidence: 0.8,
+      freshness_confidence: 0.7,
+      model_confidence: 0.75,
+      source_confidence: 0.68,
       overall_confidence: 0.73,
       reasons: ["Sentiment is limited to CFTC positioning."]
     }

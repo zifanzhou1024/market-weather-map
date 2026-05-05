@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus, loadSeries } from "../lib/data";
@@ -49,9 +51,23 @@ export default function Sentiment() {
         <h2>Sentiment & Positioning</h2>
         <p>S&P 500 asset manager and leveraged money net positioning from CFTC public data.</p>
       </section>
-      {error ? <p className="data-error">Data error: {error}</p> : null}
+      {error ? (
+        <p className="data-error" role="alert">
+          Data error: {error}
+        </p>
+      ) : null}
       {data ? (
         <div className="route-stack">
+          <InterpretationPanel
+            label="Active data is positioning only"
+            notes={[
+              "CFTC positioning is weekly, delayed, and futures-specific.",
+              "Survey sentiment, options sentiment, fund flows, and exposure indexes remain candidate sources."
+            ]}
+            risks={["Very high leveraged-money positioning can indicate crowding risk."]}
+            summary="This page currently shows CFTC E-mini S&P 500 asset-manager and leveraged-money positioning. It should not be read as a complete sentiment model."
+            supports={["Low or moderate positioning can describe underexposure context."]}
+          />
           <section className="metric-grid" aria-label="Sentiment metrics">
             {data.series.map((series) => (
               <MetricCard
@@ -67,6 +83,7 @@ export default function Sentiment() {
               series={leveragedMoney}
             />
           ) : null}
+          <DataGapPanel seriesIds={sentimentSeriesIds} status={data.status} />
           <DataStatusTable seriesIds={sentimentSeriesIds} status={data.status} />
         </div>
       ) : null}

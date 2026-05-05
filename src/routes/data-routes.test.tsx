@@ -8,7 +8,6 @@ import App from "../App";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
-  RegimeScoreFile,
   ScoreSummaryFile,
   SeriesCategory,
   SeriesCatalogEntry,
@@ -78,17 +77,6 @@ function mockStaticFetch(files: Record<string, unknown>, failures: Record<string
 }
 
 function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
-  const regime: RegimeScoreFile = {
-    buckets: { volatility: -12.34, rates: 4.5 },
-    date: "2026-05-01",
-    generated_at_utc: "2026-05-03T18:32:54Z",
-    label: "Neutral",
-    method_version: "phase2-public-data-v1",
-    overall_score: 19.17,
-    top_risks: ["Volatility"],
-    top_supports: ["Rates"]
-  };
-
   return {
     "/data/catalog/series_catalog.json": catalog,
     "/data/derived/net_liquidity.json": {
@@ -110,7 +98,6 @@ function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
       },
       units: "USD billions"
     } satisfies DerivedSeriesFile,
-    "/data/derived/regime_score.json": regime,
     "/data/derived/score_summary.json": scoreSummaryFile,
     "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
     "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
@@ -118,6 +105,111 @@ function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
     "/data/series/vix.json": seriesFile("vix", 17.1),
     "/data/series/wti_crude.json": seriesFile("wti_crude", 78.4),
     "/data/status/data_status.json": status
+  };
+}
+
+function derivedFile(seriesId: string, value: number): DerivedSeriesFile {
+  return {
+    depends_on: [],
+    frequency: "daily",
+    generated_at_utc: "2026-05-03T18:32:54Z",
+    method: `${seriesId} derived test fixture.`,
+    observations: [{ date: "2026-05-01", percentile_252d: 52, value }],
+    series_id: seriesId,
+    source: "Derived",
+    source_url: `https://example.com/${seriesId}`,
+    summary: {
+      change_1d: 0.01,
+      change_1m: 0.05,
+      change_1w: -0.02,
+      latest_date: "2026-05-01",
+      latest_value: value,
+      percentile_252d: 52
+    },
+    units: seriesId.includes("ratio") ? "ratio" : "index"
+  };
+}
+
+function routeFetchFiles(overrides: Record<string, unknown> = {}) {
+  return {
+    "/data/catalog/series_catalog.json": catalog,
+    "/data/derived/brent_wti_spread.json": {
+      ...derivedFile("brent_wti_spread", 3.21),
+      depends_on: ["brent_crude", "wti_crude"],
+      method: "Brent crude minus WTI crude by matched observation date.",
+      units: "USD/barrel"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/commodity_inflation_impulse.json": {
+      ...derivedFile("commodity_inflation_impulse", 1.42),
+      depends_on: ["wti_crude", "corn_price", "wheat_price", "soybean_price"],
+      method: "Composite commodity price impulse test fixture.",
+      units: "index"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/hy_minus_ig_oas.json": {
+      ...derivedFile("hy_minus_ig_oas", 2.35),
+      depends_on: ["high_yield_oas", "investment_grade_oas"],
+      method: "High-yield OAS minus investment-grade OAS.",
+      units: "basis points"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/net_liquidity.json": {
+      ...derivedFile("net_liquidity", 6123),
+      depends_on: ["fed_assets", "reverse_repo", "treasury_general_account"],
+      frequency: "weekly",
+      method: "Fed assets less reverse repo and Treasury General Account.",
+      units: "USD billions"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/score_summary.json": scoreSummary,
+    "/data/derived/us10y_minus_us2y.json": {
+      ...derivedFile("us10y_minus_us2y", 0.42),
+      depends_on: ["us10y", "us2y"],
+      method: "10-year Treasury yield minus 2-year Treasury yield by matched observation date.",
+      units: "percentage points"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/vix9d_vix_ratio.json": {
+      ...derivedFile("vix9d_vix_ratio", 0.91),
+      depends_on: ["vix9d", "vix"],
+      method: "Cboe VIX9D divided by Cboe VIX.",
+      units: "ratio"
+    } satisfies DerivedSeriesFile,
+    "/data/derived/vix_vix3m_ratio.json": {
+      ...derivedFile("vix_vix3m_ratio", 0.84),
+      depends_on: ["vix", "vix3m"],
+      method: "Cboe VIX divided by Cboe VIX3M.",
+      units: "ratio"
+    } satisfies DerivedSeriesFile,
+    ...seriesFiles([
+      "bank_credit",
+      "bbb_oas",
+      "brent_crude",
+      "business_loans",
+      "cftc_sp500_asset_mgr_net",
+      "cftc_sp500_lev_money_net",
+      "corn_price",
+      "fed_assets",
+      "financial_conditions",
+      "financial_stress",
+      "high_yield_oas",
+      "investment_grade_oas",
+      "loans_and_leases",
+      "bank_deposits",
+      "reserve_balances",
+      "reverse_repo",
+      "sofr",
+      "soybean_price",
+      "treasury_general_account",
+      "us2y",
+      "us10y",
+      "us20y",
+      "us30y",
+      "vix",
+      "vix3m",
+      "vix9d",
+      "vvix",
+      "wheat_price",
+      "wti_crude"
+    ]),
+    "/data/status/data_status.json": status,
+    ...overrides
   };
 }
 
@@ -157,6 +249,9 @@ const catalog: SeriesCatalogEntry[] = [
     source_url: "https://example.com/vix",
     units: "index"
   },
+  catalogEntry("vvix", "volatility", "Cboe VIX Volatility Index", "index"),
+  catalogEntry("vix9d", "volatility", "Cboe 9-Day Volatility Index", "index"),
+  catalogEntry("vix3m", "volatility", "Cboe 3-Month Volatility Index", "index"),
   {
     category: "rates",
     frequency: "daily",
@@ -335,7 +430,11 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("investment_grade_oas", "credit", "Investment grade OAS", "basis points"),
   catalogEntry("bbb_oas", "credit", "BBB OAS", "basis points"),
   catalogEntry("financial_conditions", "credit", "Financial conditions index", "index", "weekly"),
-  catalogEntry("reserve_balances", "credit", "Reserve balances", "USD billions", "weekly"),
+  catalogEntry("fed_assets", "liquidity", "Fed assets", "USD billions", "weekly"),
+  catalogEntry("reverse_repo", "liquidity", "Reverse repo", "USD billions", "weekly"),
+  catalogEntry("treasury_general_account", "liquidity", "Treasury General Account", "USD billions", "weekly"),
+  catalogEntry("sofr", "liquidity", "SOFR", "percent"),
+  catalogEntry("reserve_balances", "credit", "Reserve Balances", "USD billions", "weekly"),
   catalogEntry("bank_credit", "credit", "Bank credit", "USD billions", "weekly"),
   catalogEntry("loans_and_leases", "credit", "Loans and leases", "USD billions", "weekly"),
   catalogEntry("business_loans", "credit", "Commercial and industrial loans", "USD billions", "weekly"),
@@ -430,6 +529,11 @@ const status: DataStatusFile = {
       source: "Cboe",
       status: "ok"
     },
+    vvix: statusRow("ok"),
+    vix9d: statusRow("ok"),
+    vix3m: statusRow("ok"),
+    vix9d_vix_ratio: statusRow("ok"),
+    vix_vix3m_ratio: statusRow("ok"),
     net_liquidity: {
       expected_frequency: "weekly",
       freshness_days: 4,
@@ -438,6 +542,10 @@ const status: DataStatusFile = {
       source: "Derived",
       status: "ok"
     },
+    reverse_repo: statusRow("ok", "weekly"),
+    treasury_general_account: statusRow("ok", "weekly"),
+    sofr: statusRow("ok"),
+    hy_minus_ig_oas: statusRow("ok"),
     wti_crude: {
       expected_frequency: "daily",
       freshness_days: 2,
@@ -486,6 +594,7 @@ const status: DataStatusFile = {
       source: "Derived",
       status: "ok"
     },
+    commodity_inflation_impulse: statusRow("ok"),
     cftc_sp500_asset_mgr_net: {
       expected_frequency: "weekly",
       freshness_days: 3,
@@ -579,6 +688,10 @@ const scoreSummary: ScoreSummaryFile = {
   },
   conflicting_signals: ["Growth is firm while inflation momentum remains sticky."],
   data_quality: {
+    coverage_confidence: 0.8,
+    freshness_confidence: 0.7,
+    model_confidence: 0.75,
+    source_confidence: 0.68,
     overall_confidence: 0.73,
     reasons: ["Sentiment coverage is limited to public CFTC positioning."]
   }
@@ -594,22 +707,23 @@ afterEach(() => {
 });
 
 describe("data-backed routes", () => {
-  it("renders three score summary sections and market weather buckets on overview", async () => {
+  it("renders the three-score overview without legacy weather score duplication", async () => {
     mockStaticFetch(overviewFetchFiles());
 
-    const container = render(<Overview />);
-    await waitForContent(container, "Market Weather buckets");
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Macro Climate");
 
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Fragility");
-    expect(container.textContent).toContain("Recent changes");
-    expect(container.textContent).not.toContain("What changed this week");
-    expect(container.textContent).toContain("Conflicting signals");
     expect(container.textContent).toContain("Data confidence");
-    expect(container.textContent).toContain("73%");
-    expect(container.textContent).toContain("Sentiment coverage is limited to public CFTC positioning.");
-    expect(container.textContent).toContain("Volatility");
-    expect(container.textContent).toContain("-12.34");
+    expect(container.textContent).toContain("Freshness and coverage notes");
+    expect(container.textContent).not.toContain("Weather score");
+    expect(container.textContent).not.toContain("Market Weather buckets");
   });
 
   it("renders overview empty states for malformed score summary top-level fields", async () => {
@@ -632,7 +746,12 @@ describe("data-backed routes", () => {
       },
       conflicting_signals: "not an array",
       data_quality: {
-        overall_confidence: Number.NaN
+        coverage_confidence: 0.8,
+        freshness_confidence: 0.7,
+        model_confidence: 0.75,
+        source_confidence: 0.68,
+        overall_confidence: Number.NaN,
+        reasons: []
       }
     } as unknown as ScoreSummaryFile;
 
@@ -643,8 +762,82 @@ describe("data-backed routes", () => {
 
     expect(container.textContent).toContain("No recent changes in the current score summary.");
     expect(container.textContent).toContain("No conflicting signals in the current score summary.");
-    expect(container.textContent).toContain("0% overall confidence");
-    expect(container.textContent).toContain("No data confidence notes in the current score summary.");
+    expect(container.textContent).toContain("0% overall");
+    expect(container.textContent).toContain("No confidence notes in the current score summary.");
+  });
+
+  it("renders overview fallback confidence when score summary data quality is missing", async () => {
+    const malformedScoreSummary = {
+      ...scoreSummary,
+      data_quality: null
+    } as unknown as ScoreSummaryFile;
+
+    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Data confidence");
+
+    expect(container.textContent).toContain("0% overall");
+    expect(container.textContent).toContain("No confidence notes in the current score summary.");
+  });
+
+  it("renders overview fallback confidence when score summary data quality is omitted", async () => {
+    const malformedScoreSummary = { ...scoreSummary } as Partial<ScoreSummaryFile>;
+    delete malformedScoreSummary.data_quality;
+
+    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Data confidence");
+
+    expect(container.textContent).toContain("0% overall");
+    expect(container.textContent).toContain("No confidence notes in the current score summary.");
+  });
+
+  it("renders overview fallback labels for malformed score summary labels", async () => {
+    const malformedScoreSummary = {
+      ...scoreSummary,
+      scores: {
+        ...scoreSummary.scores,
+        market_weather: {
+          ...scoreSummary.scores.market_weather,
+          label: undefined
+        },
+        fragility: {
+          ...scoreSummary.scores.fragility,
+          label: 12
+        }
+      }
+    } as unknown as ScoreSummaryFile;
+
+    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Current regime read");
+
+    expect(container.textContent).toContain("unknown market weather");
+    expect(container.textContent).toContain("unknown fragility");
+  });
+
+  it("does not duplicate fragility in the overview regime label", async () => {
+    const lowFragilityScoreSummary: ScoreSummaryFile = {
+      ...scoreSummary,
+      scores: {
+        ...scoreSummary.scores,
+        fragility: {
+          ...scoreSummary.scores.fragility,
+          label: "Low Fragility"
+        }
+      }
+    };
+
+    mockStaticFetch(overviewFetchFiles(lowFragilityScoreSummary));
+
+    const container = render(<Overview />);
+    await waitForContent(container, "Current regime read");
+
+    expect(container.textContent).toContain("low fragility");
+    expect(container.textContent).not.toContain("fragility fragility");
   });
 
   it("announces overview data load errors", async () => {
@@ -659,16 +852,6 @@ describe("data-backed routes", () => {
   });
 
   it("renders net liquidity from the derived static file on overview", async () => {
-    const regime: RegimeScoreFile = {
-      buckets: { volatility: -12.34, rates: 4.5 },
-      date: "2026-05-01",
-      generated_at_utc: "2026-05-03T18:32:54Z",
-      label: "Neutral",
-      method_version: "phase2-public-data-v1",
-      overall_score: 19.17,
-      top_risks: ["Volatility"],
-      top_supports: ["Rates"]
-    };
     const netLiquidity: DerivedSeriesFile = {
       depends_on: ["fed_assets", "reverse_repo", "treasury_general_account"],
       frequency: "weekly",
@@ -692,7 +875,6 @@ describe("data-backed routes", () => {
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
       "/data/derived/net_liquidity.json": netLiquidity,
-      "/data/derived/regime_score.json": regime,
       "/data/derived/score_summary.json": scoreSummary,
       "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
       "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
@@ -970,6 +1152,199 @@ describe("data-backed routes", () => {
     expect(container.querySelector(".data-error")).toBeNull();
   });
 
+  it("surfaces active Cboe volatility curve inputs", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/volatility"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Cboe Volatility Index");
+
+    expect(container.textContent).toContain("Cboe Volatility Index");
+    expect(container.textContent).toContain("Cboe VIX Volatility Index");
+    expect(container.textContent).toContain("Cboe 9-Day Volatility Index");
+    expect(container.textContent).toContain("Cboe 3-Month Volatility Index");
+    expect(container.textContent).toContain("VIX9D / VIX");
+    expect(container.textContent).toContain("VIX / VIX3M");
+  });
+
+  it("surfaces net liquidity and reserve balances on liquidity", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/liquidity"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Net liquidity proxy");
+
+    expect(container.textContent).toContain("Net liquidity proxy");
+    expect(container.textContent).toContain("Reserve Balances");
+  });
+
+  it("surfaces HY minus IG OAS on credit", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/credit"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "HY minus IG OAS");
+
+    expect(container.textContent).toContain("HY minus IG OAS");
+  });
+
+  it("surfaces commodity inflation impulse on commodities", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/commodities"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Commodity inflation impulse");
+
+    expect(container.textContent).toContain("Commodity inflation impulse");
+  });
+
+  it("labels sentiment active data as positioning only", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/sentiment"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Active data is positioning only");
+
+    expect(container.textContent).toContain("Active data is positioning only");
+    expect(container.textContent).toContain("CFTC positioning is weekly, delayed, and futures-specific.");
+  });
+
+  it("growth route renders growth and labor read interpretation", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/growth"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Growth and labor read");
+    expect(container.textContent).toContain("Monthly growth and labor data can lag source release schedules.");
+  });
+
+  it("inflation route renders inflation pressure read interpretation", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/inflation"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Inflation pressure read");
+    expect(container.textContent).toContain("CPI, PCE, PPI, breakevens, and forward inflation expectations");
+  });
+
+  it("rates route renders rates and policy read interpretation", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/rates"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Rates and policy read");
+    expect(container.textContent).toContain("Nominal yields, real yields, breakevens, and the 10Y-2Y curve");
+  });
+
+  it("dollar route renders dollar pressure read interpretation", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/dollar-global"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Dollar pressure read");
+    expect(container.textContent).toContain("Broad dollar strength can tighten global financial conditions.");
+  });
+
+  it("renders volatility base data and status when a derived ratio 404s", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/vix9d_vix_ratio.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/volatility"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Cboe Volatility Index");
+
+    expect(container.textContent).toContain("Cboe Volatility Index");
+    expect(container.textContent).toContain("Static feed freshness");
+    expect(container.querySelector(".data-error")).toBeNull();
+  });
+
+  it("renders credit base data and status when HY minus IG OAS 404s", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/hy_minus_ig_oas.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/credit"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "High yield OAS");
+
+    expect(container.textContent).toContain("High yield OAS");
+    expect(container.textContent).toContain("Static feed freshness");
+    expect(container.querySelector(".data-error")).toBeNull();
+  });
+
+  it("renders commodity base data and status when commodity impulse 404s", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/commodity_inflation_impulse.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/commodities"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "WTI crude oil");
+
+    expect(container.textContent).toContain("WTI crude oil");
+    expect(container.textContent).toContain("Static feed freshness");
+    expect(container.querySelector(".data-error")).toBeNull();
+  });
+
+  it("renders liquidity base data and status when net liquidity 404s", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/net_liquidity.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/liquidity"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Reserve Balances");
+
+    expect(container.textContent).toContain("Reserve Balances");
+    expect(container.textContent).toContain("Static feed freshness");
+    expect(container.textContent).toContain("Featured chart unavailable until source data is available.");
+    expect(container.querySelector(".data-error")).toBeNull();
+  });
+
   it("renders the commodities route with series and the Brent-WTI spread from static files", async () => {
     const spread: DerivedSeriesFile = {
       depends_on: ["brent_crude", "wti_crude"],
@@ -994,6 +1369,7 @@ describe("data-backed routes", () => {
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
       "/data/derived/brent_wti_spread.json": spread,
+      "/data/derived/commodity_inflation_impulse.json": derivedFile("commodity_inflation_impulse", 1.42),
       "/data/series/brent_crude.json": seriesFile("brent_crude", 81.61),
       "/data/series/corn_price.json": seriesFile("corn_price", 4.85),
       "/data/series/soybean_price.json": seriesFile("soybean_price", 11.25),

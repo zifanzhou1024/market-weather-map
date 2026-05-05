@@ -105,10 +105,19 @@ The sentiment bucket treats very high leveraged-money positioning percentiles as
 
 ## Freshness And Provenance
 
-Each generated series includes source metadata, observation dates, summary values, and percentile context where applicable. The status output reports whether each active source is fresh, stale, or failed based on the configured cadence.
+Each generated series includes source metadata, observation dates, summary values, and percentile context where applicable. The status output distinguishes raw data age from expected release cadence.
+
+Daily series use short calendar-day freshness buffers with normal non-trading-day tolerance. Weekly series use expected weekly cadence plus buffer. Monthly and quarterly series are evaluated against their observation period and expected release window, so a first-of-month observation is not automatically stale before the next release is expected.
+
+Derived series expose their own generated status and observation dates. Their dependency methods should be read when interpreting lagged inputs.
 
 ## Confidence
 
-Each score includes a confidence value from `0` to `1`. Confidence is descriptive metadata based on source freshness, missing inputs, stale observations, candidate-only gaps, and whether active buckets are broad enough to support the score. A high confidence score means the current public inputs are reasonably complete and fresh; it does not mean the score is more predictive.
+Each score includes a confidence value from `0` to `1`. The overall data-quality block decomposes confidence into:
 
-Confidence reasons should be displayed with the score so users can see whether a result is supported by active `free_public` inputs or weakened by missing, stale, or `terms_review_needed` sources.
+- Coverage confidence: active expected series are present and have usable observations.
+- Freshness confidence: active series are fresh or within expected release lag.
+- Model confidence: buckets have enough breadth and are not overly dependent on one proxy.
+- Source confidence: important domains are not blocked by candidate, unavailable, restricted, or unresolved source status.
+
+Overall confidence is a weighted blend of those components. Confidence is a data-quality indicator, not a probability that the score is predictive.

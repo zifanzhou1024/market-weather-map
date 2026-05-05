@@ -38,6 +38,14 @@ Phase 3 direction:
 - Fragility focuses on stress channels that can amplify drawdowns, including credit spreads, financial conditions, dollar pressure, banking data, liquidity, and volatility.
 - Preserve the no-backend GitHub Pages model by favoring active no-secret public inputs and documenting access status before sources enter the score.
 
+Phase 4 direction:
+
+- Make the three-score model the primary Overview experience.
+- Replace raw observation-age freshness with release-aware freshness for daily, weekly, monthly, and quarterly data.
+- Decompose confidence into coverage, freshness, model breadth, source readiness, and overall confidence.
+- Surface active Phase 3 data more fully before adding many new source families.
+- Keep Housing, GDP/final demand, consumer balance sheet, fiscal/Treasury supply, Event Calendar, PMIs, SLOOS, survey sentiment, valuation, and market internals as staged follow-up work unless their source status is reviewed and documented.
+
 ## Data Access Status
 
 Source access is tracked before data is treated as production scoring input.

@@ -1,15 +1,25 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it } from "vitest";
+import ConfidenceBreakdown from "./ConfidenceBreakdown";
+import DataGapPanel from "./DataGapPanel";
 import DataStatusTable from "./DataStatusTable";
 import HowToReadPanel from "./HowToReadPanel";
+import InterpretationPanel from "./InterpretationPanel";
 import MetricCard from "./MetricCard";
 import PercentileBandChart from "./PercentileBandChart";
 import RegimeBadge from "./RegimeBadge";
 import ScoreCard from "./ScoreCard";
+import SignalList from "./SignalList";
 import SourceNote from "./SourceNote";
 import SourceAccessBadge from "./SourceAccessBadge";
-import type { DataStatusFile, ScoreBlock, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import type {
+  ConfidenceBreakdownData,
+  DataStatusFile,
+  ScoreBlock,
+  SeriesCatalogEntry,
+  TimeSeriesFile
+} from "../lib/types";
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT =
   true;
@@ -243,5 +253,142 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Stale");
     expect(container.textContent).toContain("2 days");
     expect(container.textContent).not.toContain("fed_assets");
+  });
+
+  it("renders confidence breakdown detail and reason text", () => {
+    const confidence: ConfidenceBreakdownData = {
+      coverage_confidence: 0.91,
+      freshness_confidence: 0.72,
+      model_confidence: 0.84,
+      source_confidence: 0.75,
+      overall_confidence: 0.82,
+      reasons: ["Housing is not active in Phase 4 PR 1."]
+    };
+
+    const container = render(<ConfidenceBreakdown dataQuality={confidence} />);
+
+    expect(container.textContent).toContain("Data confidence");
+    expect(container.textContent).toContain("82% overall");
+    expect(container.textContent).toContain("Coverage");
+    expect(container.textContent).toContain("91%");
+    expect(container.textContent).toContain("Freshness");
+    expect(container.textContent).toContain("72%");
+    expect(container.textContent).toContain("84%");
+    expect(container.textContent).toContain("75%");
+    expect(container.textContent).toContain("Housing is not active in Phase 4 PR 1.");
+  });
+
+  it("renders confidence fallback when fetched reasons are malformed", () => {
+    const confidence = {
+      coverage_confidence: 0.91,
+      freshness_confidence: 0.72,
+      model_confidence: 0.84,
+      source_confidence: 0.75,
+      overall_confidence: 0.82,
+      reasons: "not an array"
+    } as unknown as ConfidenceBreakdownData;
+
+    const container = render(<ConfidenceBreakdown dataQuality={confidence} />);
+
+    expect(container.textContent).toContain("82% overall");
+    expect(container.textContent).toContain("No confidence notes in the current score summary.");
+  });
+
+  it("renders signal list items without empty fallback when items exist", () => {
+    const container = render(
+      <SignalList
+        emptyText="No support signals."
+        items={["Reserve balances improved.", "Credit spreads narrowed."]}
+        title="Supports"
+      />
+    );
+
+    expect(container.textContent).toContain("Supports");
+    expect(container.textContent).toContain("Reserve balances improved.");
+    expect(container.textContent).toContain("Credit spreads narrowed.");
+    expect(container.textContent).not.toContain("No support signals.");
+    expect(container.querySelector(".score-list")).not.toBeNull();
+  });
+
+  it("renders data gap notes for stale candidate and expected-release-window rows", () => {
+    const status: DataStatusFile = {
+      generated_at_utc: "2026-05-03T18:32:54Z",
+      last_successful_update_utc: "2026-05-03T18:32:54Z",
+      overall_status: "partial",
+      series: {
+        broad_dollar: {
+          expected_frequency: "daily",
+          freshness_days: 23,
+          last_observation: "2026-04-10",
+          max_stale_days: 7,
+          message: "Broad dollar feed is stale.",
+          source: "FRED",
+          status: "stale"
+        },
+        core_cpi: {
+          expected_frequency: "monthly",
+          freshness_days: 33,
+          last_observation: "2026-03-31",
+          max_stale_days: 45,
+          message: "Core CPI next update is still pending.",
+          observation_period: "2026-03",
+          expected_next_release_window: { start: "2026-04-01", end: "2026-05-16" },
+          source: "BLS",
+          status: "ok"
+        },
+        ism_manufacturing_pmi: {
+          expected_frequency: "monthly",
+          freshness_days: null,
+          last_observation: null,
+          max_stale_days: 45,
+          message: "Candidate source requires terms review.",
+          source: "ISM",
+          status: "terms_review_needed"
+        },
+        vix: {
+          expected_frequency: "daily",
+          freshness_days: 2,
+          last_observation: "2026-05-01",
+          max_stale_days: 7,
+          source: "Cboe",
+          status: "ok"
+        }
+      }
+    };
+
+    const container = render(
+      <DataGapPanel seriesIds={["core_cpi", "ism_manufacturing_pmi", "broad_dollar"]} status={status} />
+    );
+
+    expect(container.textContent).toContain("Data gaps");
+    expect(container.textContent).toContain("core_cpi");
+    expect(container.textContent).toContain("2026-03");
+    expect(container.textContent).toContain("Core CPI next update is still pending.");
+    expect(container.textContent).toContain("ism_manufacturing_pmi");
+    expect(container.textContent).toContain("Terms Review Needed");
+    expect(container.textContent).toContain("broad_dollar");
+    expect(container.textContent).toContain("Stale");
+    expect(container.textContent).not.toContain("vix");
+  });
+
+  it("renders interpretation label summary signals conflicts and caveats", () => {
+    const container = render(
+      <InterpretationPanel
+        caveats={["Housing is not active in Phase 4 PR 1."]}
+        conflicts={["Dollar strength conflicts with easier liquidity."]}
+        label="Mixed"
+        risks={["Credit spreads widened."]}
+        summary="Conditions are balanced but fragile."
+        supports={["Reserve balances improved."]}
+      />
+    );
+
+    expect(container.textContent).toContain("What this page says");
+    expect(container.textContent).toContain("Mixed");
+    expect(container.textContent).toContain("Conditions are balanced but fragile.");
+    expect(container.textContent).toContain("Reserve balances improved.");
+    expect(container.textContent).toContain("Credit spreads widened.");
+    expect(container.textContent).toContain("Dollar strength conflicts with easier liquidity.");
+    expect(container.textContent).toContain("Housing is not active in Phase 4 PR 1.");
   });
 });
