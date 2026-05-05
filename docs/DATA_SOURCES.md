@@ -46,6 +46,12 @@ Phase 3 keeps the GitHub-only data model. Inputs listed here are active `free_pu
 | Commodities | DCOILWTICO, DCOILBRENTEU, PMAIZMTUSDM, PWHEAMTUSDM, PSOYBUSDM | FRED | `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<series>` | Daily or monthly | Commodity impulse and inflation-pressure context. |
 | Positioning | E-mini S&P 500 commitments | CFTC | `https://www.cftc.gov/files/dea/history/fut_fin_txt_<year>.zip` | Weekly | Crowding and underexposure context for Market Weather. |
 
+## Phase 4 PR 1 Source Handling
+
+Phase 4 PR 1 does not add new source families. It improves release-aware freshness, confidence decomposition, and route interpretation for the existing active generated data.
+
+Future Phase 4 source expansion should prefer FRED graph CSV mirrors for time series when a clean FRED-hosted series exists. Original no-secret government APIs or official machine-readable pages should be used when FRED is not enough, especially for event calendars, Treasury auction metadata, fiscal datasets, and release schedules.
+
 ## Candidate Sources
 
 Candidate sources are not active scoring inputs until legal, terms, cadence, and redistribution review is complete. They should be marked `terms_review_needed` in source planning unless a later review moves them to `free_public`, `restricted`, or `unavailable`.
