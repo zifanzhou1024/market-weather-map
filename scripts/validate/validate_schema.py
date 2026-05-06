@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import json
 import math
-from datetime import datetime, timezone
+import re
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 from scripts.shared.catalog import available_catalog_entries
 from scripts.shared.io import data_dir, series_path
@@ -22,6 +24,7 @@ REQUIRED_SERIES_FIELDS = {
 REQUIRED_GENERATED_FILES = [
     data_dir() / "catalog" / "series_catalog.json",
     data_dir() / "catalog" / "source_registry.json",
+    data_dir() / "events" / "macro_calendar.json",
     data_dir() / "derived" / "us10y_minus_us2y.json",
     data_dir() / "derived" / "brent_wti_spread.json",
     data_dir() / "derived" / "net_liquidity.json",
@@ -36,6 +39,10 @@ REQUIRED_GENERATED_FILES = [
 ]
 ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
 SERIES_STATUSES = {"ok", "stale", "failed", "terms_review_needed", "unavailable"}
+EVENT_IMPORTANCES = {"high", "medium", "low"}
+EVENT_STATUSES = {"scheduled", "source_link", "estimated"}
+EVENT_CATEGORIES = {"inflation", "growth", "rates", "housing", "sentiment"}
+EVENT_TIMEZONES = {"America/New_York"}
 REQUIRED_SCORE_ARRAY_FIELDS = (
     "top_risks",
     "top_supports",
@@ -111,6 +118,111 @@ def validate_generated_files() -> None:
         if not path.exists():
             raise ValueError(f"Missing generated data file: {path}")
         _load_json(path)
+
+
+def _require_string(payload: dict[str, Any], field_name: str, path: Path) -> str:
+    value = payload.get(field_name)
+    if not isinstance(value, str):
+        raise ValueError(f"{path} {field_name} must be a string")
+    return value
+
+
+def _require_non_empty_string(payload: dict[str, Any], field_name: str, path: Path) -> str:
+    value = _require_string(payload, field_name, path)
+    if not value.strip():
+        raise ValueError(f"{path} {field_name} must be a non-empty string")
+    return value
+
+
+def _validate_optional_string_or_null(payload: dict[str, Any], field_name: str, path: Path) -> None:
+    value = payload.get(field_name)
+    if value is not None and not isinstance(value, str):
+        raise ValueError(f"{path} {field_name} must be a string or null")
+
+
+def _validate_timestamp_with_timezone(value: str, path: Path) -> None:
+    normalized = value[:-1] + "+00:00" if value.endswith("Z") else value
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as error:
+        raise ValueError(f"{path} generated_at_utc must be an ISO timestamp with timezone") from error
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ValueError(f"{path} generated_at_utc must be an ISO timestamp with timezone")
+    if not value.endswith("Z") or parsed.utcoffset() != timezone.utc.utcoffset(parsed):
+        raise ValueError(f"{path} generated_at_utc must be a UTC timestamp ending in Z")
+
+
+def _validate_https_url(value: str, path: Path) -> None:
+    parsed = urlparse(value)
+    if parsed.scheme != "https" or not parsed.hostname:
+        raise ValueError(f"{path} source_url must be an https URL with hostname")
+    if any(character.isspace() for character in parsed.netloc) or any(
+        character.isspace() for character in parsed.hostname
+    ):
+        raise ValueError(f"{path} source_url must be an https URL with valid hostname")
+
+
+def _validate_event_date(value: str | None, path: Path) -> None:
+    if value is None:
+        return
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        raise ValueError(f"{path} date must be an ISO date")
+    try:
+        date.fromisoformat(value)
+    except ValueError as error:
+        raise ValueError(f"{path} date must be an ISO date") from error
+
+
+def _validate_event_time(value: str | None, path: Path) -> None:
+    if value is None:
+        return
+    if not re.fullmatch(r"\d{2}:\d{2}", value):
+        raise ValueError(f"{path} time must be HH:MM 24-hour time")
+    hour, minute = (int(part) for part in value.split(":"))
+    if hour > 23 or minute > 59:
+        raise ValueError(f"{path} time must be HH:MM 24-hour time")
+
+
+def _validate_event_timezone(value: str | None, path: Path) -> None:
+    if value is not None and value not in EVENT_TIMEZONES:
+        raise ValueError(f"{path} timezone is invalid")
+
+
+def validate_macro_calendar_file() -> None:
+    path = data_dir() / "events" / "macro_calendar.json"
+    payload = _load_json(path)
+    if not isinstance(payload, dict):
+        raise ValueError(f"{path} must be an object")
+    _validate_timestamp_with_timezone(_require_string(payload, "generated_at_utc", path), path)
+    _require_string(payload, "method_version", path)
+    events = payload.get("events")
+    if not isinstance(events, list) or not events:
+        raise ValueError(f"{path} events must be a non-empty list")
+
+    seen_ids: set[str] = set()
+    for event in events:
+        if not isinstance(event, dict):
+            raise ValueError(f"{path} event must be an object")
+        event_id = _require_non_empty_string(event, "id", path)
+        if event_id in seen_ids:
+            raise ValueError(f"{path} duplicate event id: {event_id}")
+        seen_ids.add(event_id)
+
+        for field_name in ("title", "category", "importance", "source", "source_url", "notes", "status"):
+            _require_non_empty_string(event, field_name, path)
+
+        _validate_https_url(event["source_url"], path)
+        if event["category"] not in EVENT_CATEGORIES:
+            raise ValueError(f"{path} category is invalid for {event_id}")
+        if event["importance"] not in EVENT_IMPORTANCES:
+            raise ValueError(f"{path} importance is invalid for {event_id}")
+        if event["status"] not in EVENT_STATUSES:
+            raise ValueError(f"{path} status is invalid for {event_id}")
+        for field_name in ("date", "time", "timezone"):
+            _validate_optional_string_or_null(event, field_name, path)
+        _validate_event_date(event.get("date"), path)
+        _validate_event_time(event.get("time"), path)
+        _validate_event_timezone(event.get("timezone"), path)
 
 
 def _validate_finite_number(value: Any, path: Path, field_name: str) -> None:
@@ -193,6 +305,7 @@ def main() -> None:
     for entry in available_catalog_entries():
         validate_series_file(str(entry["id"]))
     validate_generated_files()
+    validate_macro_calendar_file()
     validate_score_summary_file()
     validate_status_file()
 

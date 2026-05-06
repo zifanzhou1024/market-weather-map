@@ -15,6 +15,8 @@
 - AAII and NAAIM are deferred terms-reviewed candidates, not active Phase 2 inputs.
 - CFTC positioning is weekly, delayed, and futures-specific. It should be read as positioning context, not a complete sentiment model.
 - Crop prices come from monthly FRED series, not live futures curves.
+- Housing excludes home prices, existing home sales, affordability, and mortgage applications until source handling is reviewed.
+- Event Calendar rows are descriptive source links in PR 2, not guaranteed exact alert dates for every release.
 
 ## Source Access And Review
 
@@ -23,6 +25,7 @@
 - `restricted` sources are paid, gated, license-restricted, or otherwise not suitable for static public redistribution under current terms.
 - `unavailable` sources cannot currently be fetched or redistributed by the no-secret static workflow.
 - Candidate survey, flow, volatility, and term-premium sources can create coverage gaps. Those gaps should reduce score confidence rather than be silently filled with proxies.
+- Consumer/Fiscal/Treasury candidate rows do not affect scores.
 - Public macro series can be revised after initial publication, so historical scores may change when source data is refreshed.
 
 ## Score Confidence Limitations
