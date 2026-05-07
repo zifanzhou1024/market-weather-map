@@ -821,15 +821,20 @@ def build_shock_risk_snapshot(
     dollar_score = clamp(-dollar_change * 15) if dollar_change is not None else None
     real_yield_score = clamp(-real_yield_change * 120) if real_yield_change is not None else None
     liquidity_score = clamp(liquidity_change / 25) if liquidity_change is not None else None
+    active_pressure_scores = {
+        key: score
+        for key, score in {
+            "vix": vix_score,
+            "curve": vix_curve_score,
+            "credit": credit_score,
+            "dollar": dollar_score,
+            "real_yield": real_yield_score,
+            "liquidity": liquidity_score,
+        }.items()
+        if score is not None
+    }
     active_pressure = weighted_score(
-        {
-            "vix": vix_score or 0.0,
-            "curve": vix_curve_score or 0.0,
-            "credit": credit_score or 0.0,
-            "dollar": dollar_score or 0.0,
-            "real_yield": real_yield_score or 0.0,
-            "liquidity": liquidity_score or 0.0,
-        },
+        active_pressure_scores,
         {
             "vix": 0.2,
             "curve": 0.2,
