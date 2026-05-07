@@ -554,6 +554,23 @@ describe("data-driven components", () => {
     expect(text).toContain("-8.39");
   });
 
+  it("renders shock risk empty states when snapshot arrays are malformed", () => {
+    const malformedSnapshot = {
+      ...shockRiskSnapshot,
+      active_signals: "not an array",
+      source_gaps: undefined
+    } as unknown as ShockRiskSnapshotFile;
+
+    const container = render(<ShockRiskDashboard snapshot={malformedSnapshot} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Contained shock risk");
+    expect(text).toContain("0 active shock-risk signal rows.");
+    expect(text).toContain("0 gated or unavailable source rows.");
+    expect(text).toContain("No active shock-risk signals in the current snapshot.");
+    expect(text).toContain("No shock-risk source gaps in the current snapshot.");
+  });
+
   it("renders MOVE and SKEW source gaps with terms-review readiness copy", () => {
     const container = render(
       <TailRiskPanel catalog={tailRiskCatalog} snapshot={shockRiskSnapshot} status={tailRiskStatus} />
@@ -585,6 +602,13 @@ describe("data-driven components", () => {
 
     expect(emptyContainer.textContent).toContain("Mismatch warnings");
     expect(emptyContainer.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
+  });
+
+  it("renders mismatch warning empty state when warnings are malformed", () => {
+    const container = render(<MismatchWarningPanel warnings={"not an array" as never} />);
+
+    expect(container.textContent).toContain("Mismatch warnings");
+    expect(container.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
   });
 
   it("filters data status rows by selected series ids", () => {

@@ -5,7 +5,14 @@ interface ShockRiskDashboardProps {
   snapshot: ShockRiskSnapshotFile;
 }
 
+function safeArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
 export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps) {
+  const activeSignals = safeArray<(typeof snapshot.active_signals)[number]>(snapshot.active_signals);
+  const sourceGaps = safeArray<(typeof snapshot.source_gaps)[number]>(snapshot.source_gaps);
+
   return (
     <section className="panel">
       <div className="section-header">
@@ -23,13 +30,13 @@ export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps
         <article className="candidate-source-row">
           <div>
             <h4>Active signals</h4>
-            <p>{snapshot.active_signals.length} active shock-risk signal rows.</p>
+            <p>{activeSignals.length} active shock-risk signal rows.</p>
           </div>
         </article>
         <article className="candidate-source-row">
           <div>
             <h4>Source gaps</h4>
-            <p>{snapshot.source_gaps.length} gated or unavailable source rows.</p>
+            <p>{sourceGaps.length} gated or unavailable source rows.</p>
           </div>
         </article>
       </div>
@@ -37,9 +44,9 @@ export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps
       <div className="section-heading">
         <h3>Active signal rows</h3>
       </div>
-      {snapshot.active_signals.length > 0 ? (
+      {activeSignals.length > 0 ? (
         <div className="candidate-source-list" role="list">
-          {snapshot.active_signals.map((signal) => (
+          {activeSignals.map((signal) => (
             <article className="candidate-source-row" key={signal.id} role="listitem">
               <div>
                 <h4>{signal.label}</h4>
@@ -59,9 +66,9 @@ export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps
       <div className="section-heading">
         <h3>Source gap rows</h3>
       </div>
-      {snapshot.source_gaps.length > 0 ? (
+      {sourceGaps.length > 0 ? (
         <div className="candidate-source-list" role="list">
-          {snapshot.source_gaps.map((gap) => (
+          {sourceGaps.map((gap) => (
             <article className="candidate-source-row" key={gap.id} role="listitem">
               <div>
                 <h4>{gap.label}</h4>

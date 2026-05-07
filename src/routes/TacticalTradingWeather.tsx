@@ -139,6 +139,10 @@ function candidateItems(
   });
 }
 
+function safeArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
 export default function TacticalTradingWeather() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -175,6 +179,13 @@ export default function TacticalTradingWeather() {
       active = false;
     };
   }, []);
+
+  const shockSourceGaps = data
+    ? safeArray<ShockRiskSnapshotFile["source_gaps"][number]>(data.shockSnapshot.source_gaps)
+    : [];
+  const shockMismatchWarnings = data
+    ? safeArray<ShockRiskSnapshotFile["mismatch_warnings"][number]>(data.shockSnapshot.mismatch_warnings)
+    : [];
 
   return (
     <main className="page-shell">
@@ -215,13 +226,13 @@ export default function TacticalTradingWeather() {
               <article className="candidate-source-row">
                 <div>
                   <h4>Source gaps</h4>
-                  <p>{data.shockSnapshot.source_gaps.length} gated or unavailable source rows.</p>
+                  <p>{shockSourceGaps.length} gated or unavailable source rows.</p>
                 </div>
               </article>
               <article className="candidate-source-row">
                 <div>
                   <h4>Mismatch warnings</h4>
-                  <p>{data.shockSnapshot.mismatch_warnings.length} mismatch warning rows.</p>
+                  <p>{shockMismatchWarnings.length} mismatch warning rows.</p>
                 </div>
               </article>
             </div>

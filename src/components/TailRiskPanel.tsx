@@ -27,13 +27,18 @@ function fallbackNote(id: (typeof tailRiskIds)[number]) {
   return "SKEW is distinct from VIX: it describes equity tail-risk pricing readiness rather than spot implied volatility.";
 }
 
+function safeArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
 function sourceGapById(sourceGaps: ShockRiskSourceGap[], id: string) {
   return sourceGaps.find((gap) => gap.id === id);
 }
 
 export default function TailRiskPanel({ snapshot, catalog, status }: TailRiskPanelProps) {
+  const sourceGaps = safeArray<ShockRiskSourceGap>(snapshot.source_gaps);
   const rows = tailRiskIds.map((id) => {
-    const gap = sourceGapById(snapshot.source_gaps, id);
+    const gap = sourceGapById(sourceGaps, id);
     const catalogEntry = catalog.find((entry) => entry.id === id);
     const statusRow = status.series[id];
     const rowStatus: DataStatus = gap?.status ?? statusRow?.status ?? "terms_review_needed";

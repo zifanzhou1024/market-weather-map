@@ -975,6 +975,13 @@ const shockRiskSnapshot: ShockRiskSnapshotFile = {
   ]
 };
 
+const malformedShockRiskSnapshot = {
+  ...shockRiskSnapshot,
+  active_signals: "not an array",
+  source_gaps: null,
+  mismatch_warnings: { id: "not-array" }
+} as unknown as ShockRiskSnapshotFile;
+
 afterEach(() => {
   if (root) {
     act(() => root?.unmount());
@@ -1561,6 +1568,40 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("MOVE");
     expect(container.textContent).toContain("SKEW");
     expect(container.textContent).toContain("Mismatch warnings");
+  });
+
+  it("renders tactical shock-risk overlay fallback counts with malformed snapshot arrays", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": malformedShockRiskSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/tactical"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Tactical Trading Weather");
+    await waitForContent(container, "Fragility overlay");
+    expect(container.textContent).toContain("0 gated or unavailable source rows.");
+    expect(container.textContent).toContain("0 mismatch warning rows.");
+  });
+
+  it("renders fragility route empty states with malformed snapshot arrays", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": malformedShockRiskSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/fragility"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("No active shock-risk signals in the current snapshot.");
+    expect(container.textContent).toContain("No shock-risk source gaps in the current snapshot.");
+    expect(container.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
   });
 
   it("renders long-term macro climate from current score summary", async () => {

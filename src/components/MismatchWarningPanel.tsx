@@ -4,7 +4,13 @@ interface MismatchWarningPanelProps {
   warnings: ShockRiskMismatchWarning[];
 }
 
+function safeArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
 export default function MismatchWarningPanel({ warnings }: MismatchWarningPanelProps) {
+  const safeWarnings = safeArray<ShockRiskMismatchWarning>(warnings);
+
   return (
     <section className="panel">
       <div className="section-header">
@@ -14,9 +20,9 @@ export default function MismatchWarningPanel({ warnings }: MismatchWarningPanelP
           <p>Rows describe where shock-risk inputs and cross-asset confirmation do not line up.</p>
         </div>
       </div>
-      {warnings.length > 0 ? (
+      {safeWarnings.length > 0 ? (
         <div className="candidate-source-list" role="list">
-          {warnings.map((warning) => (
+          {safeWarnings.map((warning) => (
             <article className="candidate-source-row" key={warning.id} role="listitem">
               <div>
                 <h4>{warning.label}</h4>
