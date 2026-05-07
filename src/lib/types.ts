@@ -38,6 +38,15 @@ export type ScoreStatus = "active" | "candidate" | "unavailable";
 
 export type Horizon = "tactical" | "strategic" | "both";
 
+export type DirectionState = "up" | "down" | "flat" | "unavailable";
+
+export type YieldDriver =
+  | "real_yield_driven"
+  | "breakeven_inflation_driven"
+  | "real_yield_easing"
+  | "safe_haven_or_growth_scare"
+  | "mixed";
+
 export type RegimeRole =
   | "real_yield"
   | "nominal_yield"
@@ -205,6 +214,35 @@ export interface RegimeScoreFile {
   top_supports: string[];
   top_risks: string[];
   method_version: string;
+}
+
+export interface RegimeSnapshotFile {
+  generated_at_utc: string;
+  date: string;
+  method_version: string;
+  regime: {
+    label: string;
+    tips_direction: DirectionState;
+    dollar_direction: DirectionState;
+    nominal_yield_direction: DirectionState;
+    yield_driver: YieldDriver;
+  };
+  checklist: Array<{ id: string; label: string; state: string; message: string }>;
+  confirmations: Array<{ id: string; label: string; status: string; message: string }>;
+  quadrant_trail: Array<{
+    date: string;
+    dollar_change: number;
+    real_yield_change: number;
+    nominal_yield_change: number;
+    vix_percentile?: number | null;
+    credit_change?: number | null;
+  }>;
+  yield_decomposition: Array<{
+    date: string;
+    nominal_10y: number;
+    real_yield_10y: number;
+    breakeven_10y: number;
+  }>;
 }
 
 export interface SeriesStatus {

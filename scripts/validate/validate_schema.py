@@ -32,6 +32,7 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "derived" / "score_summary.json",
     data_dir() / "derived" / "bucket_scores.json",
     data_dir() / "derived" / "regime_score.json",
+    data_dir() / "derived" / "regime_snapshot.json",
     data_dir() / "status" / "data_status.json",
 ]
 ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
@@ -160,6 +161,54 @@ def validate_score_summary_file() -> None:
         raise ValueError(f"{path} data_quality.reasons must be a list")
 
 
+def validate_regime_snapshot_file() -> None:
+    path = data_dir() / "derived" / "regime_snapshot.json"
+    payload = _load_json(path)
+    for field in ["generated_at_utc", "date", "method_version"]:
+        if not isinstance(payload.get(field), str):
+            raise ValueError(f"{path} {field} must be a string")
+
+    regime = payload.get("regime")
+    if not isinstance(regime, dict):
+        raise ValueError(f"{path} regime must be an object")
+    for field in [
+        "label",
+        "tips_direction",
+        "dollar_direction",
+        "nominal_yield_direction",
+        "yield_driver",
+    ]:
+        if not isinstance(regime.get(field), str):
+            raise ValueError(f"{path} regime.{field} must be a string")
+
+    checklist = payload.get("checklist")
+    if not isinstance(checklist, list):
+        raise ValueError(f"{path} checklist must be a list")
+    for item in checklist:
+        if not isinstance(item, dict):
+            raise ValueError(f"{path} checklist items must be objects")
+        for field in ["id", "label", "state", "message"]:
+            if not isinstance(item.get(field), str):
+                raise ValueError(f"{path} checklist.{field} must be a string")
+
+    confirmations = payload.get("confirmations")
+    if not isinstance(confirmations, list):
+        raise ValueError(f"{path} confirmations must be a list")
+    for item in confirmations:
+        if not isinstance(item, dict):
+            raise ValueError(f"{path} confirmations items must be objects")
+        for field in ["id", "label", "status", "message"]:
+            if not isinstance(item.get(field), str):
+                raise ValueError(f"{path} confirmations.{field} must be a string")
+        if item["status"] not in {"confirming", "diverging", "mixed", "unavailable"}:
+            raise ValueError(f"{path} confirmations.status has invalid value")
+
+    if not isinstance(payload.get("quadrant_trail"), list):
+        raise ValueError(f"{path} quadrant_trail must be a list")
+    if not isinstance(payload.get("yield_decomposition"), list):
+        raise ValueError(f"{path} yield_decomposition must be a list")
+
+
 def validate_status_file() -> None:
     path = data_dir() / "status" / "data_status.json"
     payload = _load_json(path)
@@ -194,6 +243,7 @@ def main() -> None:
         validate_series_file(str(entry["id"]))
     validate_generated_files()
     validate_score_summary_file()
+    validate_regime_snapshot_file()
     validate_status_file()
 
 

@@ -1658,6 +1658,7 @@ def test_generated_file_validation_requires_active_derived_files():
         validate_schema.data_dir() / "derived" / "commodity_inflation_impulse.json"
     ) in required_paths
     assert validate_schema.data_dir() / "derived" / "hy_minus_ig_oas.json" in required_paths
+    assert validate_schema.data_dir() / "derived" / "regime_snapshot.json" in required_paths
     assert validate_schema.data_dir() / "derived" / "vix9d_vix_ratio.json" in required_paths
     assert validate_schema.data_dir() / "derived" / "vix_vix3m_ratio.json" in required_paths
 

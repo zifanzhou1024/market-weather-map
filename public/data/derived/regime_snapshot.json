@@ -1,0 +1,1812 @@
+{
+  "checklist": [
+    {
+      "id": "real_yield_10y",
+      "label": "10Y real yield",
+      "message": "10Y real yield is flat over one month.",
+      "state": "flat"
+    },
+    {
+      "id": "dollar",
+      "label": "Broad dollar",
+      "message": "The broad dollar is down over one month.",
+      "state": "down"
+    },
+    {
+      "id": "nominal_10y",
+      "label": "10Y nominal yield",
+      "message": "10Y nominal yield is up over one month.",
+      "state": "up"
+    },
+    {
+      "id": "yield_driver",
+      "label": "Yield driver",
+      "message": "The nominal yield move is classified as breakeven inflation driven.",
+      "state": "breakeven_inflation_driven"
+    },
+    {
+      "id": "vix_curve",
+      "label": "VIX curve",
+      "message": "VIX curve state is contango proxy.",
+      "state": "contango_proxy"
+    },
+    {
+      "id": "credit",
+      "label": "Credit spreads",
+      "message": "Credit spread pressure is based on HY minus IG OAS when available.",
+      "state": "down"
+    },
+    {
+      "id": "liquidity",
+      "label": "Net liquidity",
+      "message": "Net liquidity confirmation uses the one-month change.",
+      "state": "down"
+    },
+    {
+      "id": "overall_regime",
+      "label": "Overall regime",
+      "message": "Active data classifies the backdrop as Mixed.",
+      "state": "Mixed"
+    }
+  ],
+  "confirmations": [
+    {
+      "id": "credit",
+      "label": "Credit",
+      "message": "Credit spreads are mixed for the active regime.",
+      "status": "mixed"
+    },
+    {
+      "id": "vix_curve",
+      "label": "VIX curve",
+      "message": "Volatility is mixed and the curve is contango proxy.",
+      "status": "mixed"
+    },
+    {
+      "id": "liquidity",
+      "label": "Liquidity",
+      "message": "Net liquidity is mixed for the active regime.",
+      "status": "mixed"
+    },
+    {
+      "id": "rates",
+      "label": "Rates",
+      "message": "Real yield momentum is mixed for the active regime.",
+      "status": "mixed"
+    }
+  ],
+  "date": "2026-05-06",
+  "generated_at_utc": "2026-05-07T08:35:26Z",
+  "method_version": "phase5-horizon-regime-v1",
+  "quadrant_trail": [
+    {
+      "credit_change": null,
+      "date": "2026-04-06",
+      "dollar_change": 0.0,
+      "nominal_yield_change": 0.0,
+      "real_yield_change": 0.0,
+      "vix_percentile": 87.3
+    },
+    {
+      "credit_change": 0.06,
+      "date": "2026-04-07",
+      "dollar_change": -0.1102,
+      "nominal_yield_change": -0.01,
+      "real_yield_change": -0.02,
+      "vix_percentile": 93.25
+    },
+    {
+      "credit_change": -0.15,
+      "date": "2026-04-08",
+      "dollar_change": -1.2604,
+      "nominal_yield_change": -0.04,
+      "real_yield_change": 0.0,
+      "vix_percentile": 78.17
+    },
+    {
+      "credit_change": -0.04,
+      "date": "2026-04-09",
+      "dollar_change": -0.1598,
+      "nominal_yield_change": 0.0,
+      "real_yield_change": -0.01,
+      "vix_percentile": 68.65
+    },
+    {
+      "credit_change": 0.05,
+      "date": "2026-04-10",
+      "dollar_change": -0.0446,
+      "nominal_yield_change": 0.02,
+      "real_yield_change": 0.0,
+      "vix_percentile": 68.25
+    },
+    {
+      "credit_change": 0.01,
+      "date": "2026-04-13",
+      "dollar_change": 0.1364,
+      "nominal_yield_change": -0.01,
+      "real_yield_change": -0.03,
+      "vix_percentile": 67.86
+    },
+    {
+      "credit_change": -0.1,
+      "date": "2026-04-14",
+      "dollar_change": -0.6335,
+      "nominal_yield_change": -0.04,
+      "real_yield_change": -0.03,
+      "vix_percentile": 61.9
+    },
+    {
+      "credit_change": 0.02,
+      "date": "2026-04-15",
+      "dollar_change": 0.0042,
+      "nominal_yield_change": 0.03,
+      "real_yield_change": 0.01,
+      "vix_percentile": 60.71
+    },
+    {
+      "credit_change": 0.0,
+      "date": "2026-04-16",
+      "dollar_change": -0.0007,
+      "nominal_yield_change": 0.03,
+      "real_yield_change": 0.03,
+      "vix_percentile": 58.73
+    },
+    {
+      "credit_change": -0.02,
+      "date": "2026-04-17",
+      "dollar_change": -0.2821,
+      "nominal_yield_change": -0.06,
+      "real_yield_change": -0.03,
+      "vix_percentile": 53.17
+    },
+    {
+      "credit_change": 0.03,
+      "date": "2026-04-20",
+      "dollar_change": 0.1579,
+      "nominal_yield_change": 0.0,
+      "real_yield_change": 0.01,
+      "vix_percentile": 67.06
+    },
+    {
+      "credit_change": -0.01,
+      "date": "2026-04-21",
+      "dollar_change": 0.1957,
+      "nominal_yield_change": 0.04,
+      "real_yield_change": 0.01,
+      "vix_percentile": 72.22
+    },
+    {
+      "credit_change": 0.0,
+      "date": "2026-04-22",
+      "dollar_change": 0.1673,
+      "nominal_yield_change": 0.0,
+      "real_yield_change": 0.0,
+      "vix_percentile": 67.46
+    },
+    {
+      "credit_change": 0.01,
+      "date": "2026-04-23",
+      "dollar_change": 0.1151,
+      "nominal_yield_change": 0.04,
+      "real_yield_change": 0.0,
+      "vix_percentile": 71.83
+    },
+    {
+      "credit_change": 0.0,
+      "date": "2026-04-24",
+      "dollar_change": 0.0139,
+      "nominal_yield_change": -0.03,
+      "real_yield_change": -0.03,
+      "vix_percentile": 66.67
+    },
+    {
+      "credit_change": -0.03,
+      "date": "2026-04-27",
+      "dollar_change": -0.1836,
+      "nominal_yield_change": 0.04,
+      "real_yield_change": 0.02,
+      "vix_percentile": 60.71
+    },
+    {
+      "credit_change": 0.01,
+      "date": "2026-04-28",
+      "dollar_change": 0.2259,
+      "nominal_yield_change": 0.01,
+      "real_yield_change": 0.01,
+      "vix_percentile": 57.94
+    },
+    {
+      "credit_change": -0.03,
+      "date": "2026-04-29",
+      "dollar_change": 0.3258,
+      "nominal_yield_change": 0.06,
+      "real_yield_change": 0.04,
+      "vix_percentile": 67.86
+    },
+    {
+      "credit_change": 0.01,
+      "date": "2026-04-30",
+      "dollar_change": -0.4265,
+      "nominal_yield_change": -0.02,
+      "real_yield_change": -0.02,
+      "vix_percentile": 43.65
+    },
+    {
+      "credit_change": -0.06,
+      "date": "2026-05-01",
+      "dollar_change": -0.2784,
+      "nominal_yield_change": -0.01,
+      "real_yield_change": -0.03,
+      "vix_percentile": 46.03
+    }
+  ],
+  "regime": {
+    "dollar_direction": "down",
+    "label": "Mixed",
+    "nominal_yield_direction": "up",
+    "tips_direction": "flat",
+    "yield_driver": "breakeven_inflation_driven"
+  },
+  "yield_decomposition": [
+    {
+      "breakeven_10y": 2.27,
+      "date": "2025-04-22",
+      "nominal_10y": 4.41,
+      "real_yield_10y": 2.14
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-04-23",
+      "nominal_10y": 4.4,
+      "real_yield_10y": 2.11
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2025-04-24",
+      "nominal_10y": 4.32,
+      "real_yield_10y": 2.02
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2025-04-25",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 2.02
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2025-04-28",
+      "nominal_10y": 4.23,
+      "real_yield_10y": 1.98
+    },
+    {
+      "breakeven_10y": 2.23,
+      "date": "2025-04-29",
+      "nominal_10y": 4.19,
+      "real_yield_10y": 1.96
+    },
+    {
+      "breakeven_10y": 2.23,
+      "date": "2025-04-30",
+      "nominal_10y": 4.17,
+      "real_yield_10y": 1.94
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2025-05-01",
+      "nominal_10y": 4.25,
+      "real_yield_10y": 2.0
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2025-05-02",
+      "nominal_10y": 4.33,
+      "real_yield_10y": 2.06
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-05-05",
+      "nominal_10y": 4.36,
+      "real_yield_10y": 2.08
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2025-05-06",
+      "nominal_10y": 4.3,
+      "real_yield_10y": 2.04
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2025-05-07",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 2.01
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-05-08",
+      "nominal_10y": 4.37,
+      "real_yield_10y": 2.08
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-05-09",
+      "nominal_10y": 4.37,
+      "real_yield_10y": 2.08
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-05-12",
+      "nominal_10y": 4.45,
+      "real_yield_10y": 2.16
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2025-05-13",
+      "nominal_10y": 4.49,
+      "real_yield_10y": 2.17
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2025-05-14",
+      "nominal_10y": 4.53,
+      "real_yield_10y": 2.16
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2025-05-15",
+      "nominal_10y": 4.45,
+      "real_yield_10y": 2.11
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2025-05-16",
+      "nominal_10y": 4.43,
+      "real_yield_10y": 2.09
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2025-05-19",
+      "nominal_10y": 4.46,
+      "real_yield_10y": 2.1
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-05-20",
+      "nominal_10y": 4.48,
+      "real_yield_10y": 2.13
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-05-21",
+      "nominal_10y": 4.58,
+      "real_yield_10y": 2.23
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2025-05-22",
+      "nominal_10y": 4.54,
+      "real_yield_10y": 2.2
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2025-05-23",
+      "nominal_10y": 4.51,
+      "real_yield_10y": 2.18
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2025-05-27",
+      "nominal_10y": 4.43,
+      "real_yield_10y": 2.11
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2025-05-28",
+      "nominal_10y": 4.47,
+      "real_yield_10y": 2.15
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2025-05-29",
+      "nominal_10y": 4.43,
+      "real_yield_10y": 2.11
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2025-05-30",
+      "nominal_10y": 4.41,
+      "real_yield_10y": 2.07
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2025-06-02",
+      "nominal_10y": 4.46,
+      "real_yield_10y": 2.13
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2025-06-03",
+      "nominal_10y": 4.46,
+      "real_yield_10y": 2.14
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2025-06-04",
+      "nominal_10y": 4.37,
+      "real_yield_10y": 2.06
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-06-05",
+      "nominal_10y": 4.4,
+      "real_yield_10y": 2.11
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2025-06-06",
+      "nominal_10y": 4.51,
+      "real_yield_10y": 2.2
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2025-06-09",
+      "nominal_10y": 4.49,
+      "real_yield_10y": 2.18
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-06-10",
+      "nominal_10y": 4.47,
+      "real_yield_10y": 2.18
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2025-06-11",
+      "nominal_10y": 4.41,
+      "real_yield_10y": 2.14
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2025-06-12",
+      "nominal_10y": 4.36,
+      "real_yield_10y": 2.11
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-06-13",
+      "nominal_10y": 4.41,
+      "real_yield_10y": 2.13
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2025-06-16",
+      "nominal_10y": 4.46,
+      "real_yield_10y": 2.16
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2025-06-17",
+      "nominal_10y": 4.39,
+      "real_yield_10y": 2.08
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2025-06-18",
+      "nominal_10y": 4.38,
+      "real_yield_10y": 2.07
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2025-06-20",
+      "nominal_10y": 4.38,
+      "real_yield_10y": 2.05
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2025-06-23",
+      "nominal_10y": 4.34,
+      "real_yield_10y": 2.04
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-06-24",
+      "nominal_10y": 4.3,
+      "real_yield_10y": 2.01
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-06-25",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 2.01
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-06-26",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.98
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-06-27",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 2.0
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-06-30",
+      "nominal_10y": 4.24,
+      "real_yield_10y": 1.95
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-07-01",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.97
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2025-07-02",
+      "nominal_10y": 4.3,
+      "real_yield_10y": 2.0
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2025-07-03",
+      "nominal_10y": 4.35,
+      "real_yield_10y": 2.02
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-07-07",
+      "nominal_10y": 4.4,
+      "real_yield_10y": 2.05
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-07-08",
+      "nominal_10y": 4.42,
+      "real_yield_10y": 2.07
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2025-07-09",
+      "nominal_10y": 4.34,
+      "real_yield_10y": 2.01
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2025-07-10",
+      "nominal_10y": 4.35,
+      "real_yield_10y": 2.01
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2025-07-11",
+      "nominal_10y": 4.43,
+      "real_yield_10y": 2.06
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2025-07-14",
+      "nominal_10y": 4.43,
+      "real_yield_10y": 2.04
+    },
+    {
+      "breakeven_10y": 2.41,
+      "date": "2025-07-15",
+      "nominal_10y": 4.5,
+      "real_yield_10y": 2.09
+    },
+    {
+      "breakeven_10y": 2.41,
+      "date": "2025-07-16",
+      "nominal_10y": 4.46,
+      "real_yield_10y": 2.05
+    },
+    {
+      "breakeven_10y": 2.43,
+      "date": "2025-07-17",
+      "nominal_10y": 4.47,
+      "real_yield_10y": 2.04
+    },
+    {
+      "breakeven_10y": 2.41,
+      "date": "2025-07-18",
+      "nominal_10y": 4.44,
+      "real_yield_10y": 2.03
+    },
+    {
+      "breakeven_10y": 2.4,
+      "date": "2025-07-21",
+      "nominal_10y": 4.38,
+      "real_yield_10y": 1.98
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2025-07-22",
+      "nominal_10y": 4.35,
+      "real_yield_10y": 1.96
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2025-07-23",
+      "nominal_10y": 4.4,
+      "real_yield_10y": 2.03
+    },
+    {
+      "breakeven_10y": 2.45,
+      "date": "2025-07-24",
+      "nominal_10y": 4.43,
+      "real_yield_10y": 1.98
+    },
+    {
+      "breakeven_10y": 2.44,
+      "date": "2025-07-25",
+      "nominal_10y": 4.4,
+      "real_yield_10y": 1.96
+    },
+    {
+      "breakeven_10y": 2.44,
+      "date": "2025-07-28",
+      "nominal_10y": 4.42,
+      "real_yield_10y": 1.98
+    },
+    {
+      "breakeven_10y": 2.43,
+      "date": "2025-07-29",
+      "nominal_10y": 4.34,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.42,
+      "date": "2025-07-30",
+      "nominal_10y": 4.38,
+      "real_yield_10y": 1.96
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2025-07-31",
+      "nominal_10y": 4.37,
+      "real_yield_10y": 1.98
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2025-08-01",
+      "nominal_10y": 4.23,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2025-08-04",
+      "nominal_10y": 4.22,
+      "real_yield_10y": 1.85
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2025-08-05",
+      "nominal_10y": 4.22,
+      "real_yield_10y": 1.86
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2025-08-06",
+      "nominal_10y": 4.22,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-08-07",
+      "nominal_10y": 4.23,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2025-08-08",
+      "nominal_10y": 4.27,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.4,
+      "date": "2025-08-11",
+      "nominal_10y": 4.27,
+      "real_yield_10y": 1.87
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2025-08-12",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2025-08-13",
+      "nominal_10y": 4.24,
+      "real_yield_10y": 1.87
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2025-08-14",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2025-08-15",
+      "nominal_10y": 4.33,
+      "real_yield_10y": 1.95
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2025-08-18",
+      "nominal_10y": 4.34,
+      "real_yield_10y": 1.96
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-08-19",
+      "nominal_10y": 4.3,
+      "real_yield_10y": 1.95
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-08-20",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 1.94
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2025-08-21",
+      "nominal_10y": 4.33,
+      "real_yield_10y": 1.94
+    },
+    {
+      "breakeven_10y": 2.41,
+      "date": "2025-08-22",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.85
+    },
+    {
+      "breakeven_10y": 2.41,
+      "date": "2025-08-25",
+      "nominal_10y": 4.28,
+      "real_yield_10y": 1.87
+    },
+    {
+      "breakeven_10y": 2.42,
+      "date": "2025-08-26",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.84
+    },
+    {
+      "breakeven_10y": 2.43,
+      "date": "2025-08-27",
+      "nominal_10y": 4.24,
+      "real_yield_10y": 1.81
+    },
+    {
+      "breakeven_10y": 2.41,
+      "date": "2025-08-28",
+      "nominal_10y": 4.22,
+      "real_yield_10y": 1.81
+    },
+    {
+      "breakeven_10y": 2.41,
+      "date": "2025-08-29",
+      "nominal_10y": 4.23,
+      "real_yield_10y": 1.82
+    },
+    {
+      "breakeven_10y": 2.41,
+      "date": "2025-09-02",
+      "nominal_10y": 4.28,
+      "real_yield_10y": 1.87
+    },
+    {
+      "breakeven_10y": 2.4,
+      "date": "2025-09-03",
+      "nominal_10y": 4.22,
+      "real_yield_10y": 1.82
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2025-09-04",
+      "nominal_10y": 4.17,
+      "real_yield_10y": 1.79
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2025-09-05",
+      "nominal_10y": 4.1,
+      "real_yield_10y": 1.73
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-09-08",
+      "nominal_10y": 4.05,
+      "real_yield_10y": 1.7
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2025-09-09",
+      "nominal_10y": 4.08,
+      "real_yield_10y": 1.72
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-09-10",
+      "nominal_10y": 4.04,
+      "real_yield_10y": 1.69
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2025-09-11",
+      "nominal_10y": 4.01,
+      "real_yield_10y": 1.67
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2025-09-12",
+      "nominal_10y": 4.06,
+      "real_yield_10y": 1.7
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2025-09-15",
+      "nominal_10y": 4.05,
+      "real_yield_10y": 1.68
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2025-09-16",
+      "nominal_10y": 4.04,
+      "real_yield_10y": 1.67
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2025-09-17",
+      "nominal_10y": 4.06,
+      "real_yield_10y": 1.68
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2025-09-18",
+      "nominal_10y": 4.11,
+      "real_yield_10y": 1.73
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2025-09-19",
+      "nominal_10y": 4.14,
+      "real_yield_10y": 1.75
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2025-09-22",
+      "nominal_10y": 4.15,
+      "real_yield_10y": 1.78
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2025-09-23",
+      "nominal_10y": 4.12,
+      "real_yield_10y": 1.75
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2025-09-24",
+      "nominal_10y": 4.16,
+      "real_yield_10y": 1.78
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2025-09-25",
+      "nominal_10y": 4.18,
+      "real_yield_10y": 1.8
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2025-09-26",
+      "nominal_10y": 4.2,
+      "real_yield_10y": 1.82
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-09-29",
+      "nominal_10y": 4.15,
+      "real_yield_10y": 1.8
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2025-09-30",
+      "nominal_10y": 4.16,
+      "real_yield_10y": 1.8
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-10-01",
+      "nominal_10y": 4.12,
+      "real_yield_10y": 1.77
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2025-10-02",
+      "nominal_10y": 4.1,
+      "real_yield_10y": 1.76
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2025-10-03",
+      "nominal_10y": 4.13,
+      "real_yield_10y": 1.8
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2025-10-06",
+      "nominal_10y": 4.18,
+      "real_yield_10y": 1.84
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-10-07",
+      "nominal_10y": 4.14,
+      "real_yield_10y": 1.79
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2025-10-08",
+      "nominal_10y": 4.13,
+      "real_yield_10y": 1.78
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2025-10-09",
+      "nominal_10y": 4.14,
+      "real_yield_10y": 1.8
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2025-10-10",
+      "nominal_10y": 4.05,
+      "real_yield_10y": 1.75
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2025-10-14",
+      "nominal_10y": 4.03,
+      "real_yield_10y": 1.73
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-10-15",
+      "nominal_10y": 4.05,
+      "real_yield_10y": 1.76
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-10-16",
+      "nominal_10y": 3.99,
+      "real_yield_10y": 1.71
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2025-10-17",
+      "nominal_10y": 4.02,
+      "real_yield_10y": 1.75
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2025-10-20",
+      "nominal_10y": 4.0,
+      "real_yield_10y": 1.74
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-10-21",
+      "nominal_10y": 3.98,
+      "real_yield_10y": 1.7
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-10-22",
+      "nominal_10y": 3.97,
+      "real_yield_10y": 1.68
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2025-10-23",
+      "nominal_10y": 4.01,
+      "real_yield_10y": 1.71
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-10-24",
+      "nominal_10y": 4.02,
+      "real_yield_10y": 1.73
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-10-27",
+      "nominal_10y": 4.01,
+      "real_yield_10y": 1.73
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-10-28",
+      "nominal_10y": 3.99,
+      "real_yield_10y": 1.71
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2025-10-29",
+      "nominal_10y": 4.08,
+      "real_yield_10y": 1.78
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-10-30",
+      "nominal_10y": 4.11,
+      "real_yield_10y": 1.82
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2025-10-31",
+      "nominal_10y": 4.11,
+      "real_yield_10y": 1.81
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2025-11-03",
+      "nominal_10y": 4.13,
+      "real_yield_10y": 1.82
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-11-04",
+      "nominal_10y": 4.1,
+      "real_yield_10y": 1.81
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2025-11-05",
+      "nominal_10y": 4.17,
+      "real_yield_10y": 1.87
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-11-06",
+      "nominal_10y": 4.11,
+      "real_yield_10y": 1.83
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-11-07",
+      "nominal_10y": 4.11,
+      "real_yield_10y": 1.83
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2025-11-10",
+      "nominal_10y": 4.13,
+      "real_yield_10y": 1.84
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2025-11-12",
+      "nominal_10y": 4.08,
+      "real_yield_10y": 1.81
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-11-13",
+      "nominal_10y": 4.11,
+      "real_yield_10y": 1.83
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-11-14",
+      "nominal_10y": 4.14,
+      "real_yield_10y": 1.86
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2025-11-17",
+      "nominal_10y": 4.13,
+      "real_yield_10y": 1.85
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2025-11-18",
+      "nominal_10y": 4.12,
+      "real_yield_10y": 1.85
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2025-11-19",
+      "nominal_10y": 4.13,
+      "real_yield_10y": 1.86
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-11-20",
+      "nominal_10y": 4.1,
+      "real_yield_10y": 1.86
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-11-21",
+      "nominal_10y": 4.06,
+      "real_yield_10y": 1.82
+    },
+    {
+      "breakeven_10y": 2.23,
+      "date": "2025-11-24",
+      "nominal_10y": 4.04,
+      "real_yield_10y": 1.81
+    },
+    {
+      "breakeven_10y": 2.22,
+      "date": "2025-11-25",
+      "nominal_10y": 4.01,
+      "real_yield_10y": 1.79
+    },
+    {
+      "breakeven_10y": 2.23,
+      "date": "2025-11-26",
+      "nominal_10y": 4.0,
+      "real_yield_10y": 1.77
+    },
+    {
+      "breakeven_10y": 2.23,
+      "date": "2025-11-28",
+      "nominal_10y": 4.02,
+      "real_yield_10y": 1.79
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-12-01",
+      "nominal_10y": 4.09,
+      "real_yield_10y": 1.85
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-12-02",
+      "nominal_10y": 4.09,
+      "real_yield_10y": 1.85
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-12-03",
+      "nominal_10y": 4.06,
+      "real_yield_10y": 1.82
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2025-12-04",
+      "nominal_10y": 4.11,
+      "real_yield_10y": 1.85
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2025-12-05",
+      "nominal_10y": 4.14,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2025-12-08",
+      "nominal_10y": 4.17,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2025-12-09",
+      "nominal_10y": 4.18,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2025-12-10",
+      "nominal_10y": 4.13,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2025-12-11",
+      "nominal_10y": 4.14,
+      "real_yield_10y": 1.89
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2025-12-12",
+      "nominal_10y": 4.19,
+      "real_yield_10y": 1.93
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2025-12-15",
+      "nominal_10y": 4.18,
+      "real_yield_10y": 1.93
+    },
+    {
+      "breakeven_10y": 2.23,
+      "date": "2025-12-16",
+      "nominal_10y": 4.15,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-12-17",
+      "nominal_10y": 4.16,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-12-18",
+      "nominal_10y": 4.12,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-12-19",
+      "nominal_10y": 4.16,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.23,
+      "date": "2025-12-22",
+      "nominal_10y": 4.17,
+      "real_yield_10y": 1.94
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-12-23",
+      "nominal_10y": 4.18,
+      "real_yield_10y": 1.94
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-12-24",
+      "nominal_10y": 4.15,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.23,
+      "date": "2025-12-26",
+      "nominal_10y": 4.14,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.22,
+      "date": "2025-12-29",
+      "nominal_10y": 4.12,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2025-12-30",
+      "nominal_10y": 4.14,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2025-12-31",
+      "nominal_10y": 4.18,
+      "real_yield_10y": 1.93
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2026-01-02",
+      "nominal_10y": 4.19,
+      "real_yield_10y": 1.94
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2026-01-05",
+      "nominal_10y": 4.17,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2026-01-06",
+      "nominal_10y": 4.18,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2026-01-07",
+      "nominal_10y": 4.15,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2026-01-08",
+      "nominal_10y": 4.19,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2026-01-09",
+      "nominal_10y": 4.18,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2026-01-12",
+      "nominal_10y": 4.19,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2026-01-13",
+      "nominal_10y": 4.18,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2026-01-14",
+      "nominal_10y": 4.15,
+      "real_yield_10y": 1.86
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2026-01-15",
+      "nominal_10y": 4.17,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2026-01-16",
+      "nominal_10y": 4.24,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2026-01-20",
+      "nominal_10y": 4.3,
+      "real_yield_10y": 1.97
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2026-01-21",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2026-01-22",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.95
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2026-01-23",
+      "nominal_10y": 4.24,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2026-01-26",
+      "nominal_10y": 4.22,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2026-01-27",
+      "nominal_10y": 4.24,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2026-01-28",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2026-01-29",
+      "nominal_10y": 4.24,
+      "real_yield_10y": 1.89
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2026-01-30",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2026-02-02",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 1.94
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2026-02-03",
+      "nominal_10y": 4.28,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2026-02-04",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 1.94
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2026-02-05",
+      "nominal_10y": 4.21,
+      "real_yield_10y": 1.89
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2026-02-06",
+      "nominal_10y": 4.22,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2026-02-09",
+      "nominal_10y": 4.22,
+      "real_yield_10y": 1.87
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2026-02-10",
+      "nominal_10y": 4.16,
+      "real_yield_10y": 1.84
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2026-02-11",
+      "nominal_10y": 4.18,
+      "real_yield_10y": 1.86
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2026-02-12",
+      "nominal_10y": 4.09,
+      "real_yield_10y": 1.8
+    },
+    {
+      "breakeven_10y": 2.27,
+      "date": "2026-02-13",
+      "nominal_10y": 4.04,
+      "real_yield_10y": 1.77
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2026-02-17",
+      "nominal_10y": 4.05,
+      "real_yield_10y": 1.79
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2026-02-18",
+      "nominal_10y": 4.09,
+      "real_yield_10y": 1.8
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2026-02-19",
+      "nominal_10y": 4.08,
+      "real_yield_10y": 1.79
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2026-02-20",
+      "nominal_10y": 4.08,
+      "real_yield_10y": 1.8
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2026-02-23",
+      "nominal_10y": 4.03,
+      "real_yield_10y": 1.77
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2026-02-24",
+      "nominal_10y": 4.04,
+      "real_yield_10y": 1.78
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2026-02-25",
+      "nominal_10y": 4.05,
+      "real_yield_10y": 1.77
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2026-02-26",
+      "nominal_10y": 4.02,
+      "real_yield_10y": 1.74
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2026-02-27",
+      "nominal_10y": 3.97,
+      "real_yield_10y": 1.72
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2026-03-02",
+      "nominal_10y": 4.05,
+      "real_yield_10y": 1.76
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2026-03-03",
+      "nominal_10y": 4.06,
+      "real_yield_10y": 1.77
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2026-03-04",
+      "nominal_10y": 4.09,
+      "real_yield_10y": 1.8
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2026-03-05",
+      "nominal_10y": 4.13,
+      "real_yield_10y": 1.82
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2026-03-06",
+      "nominal_10y": 4.15,
+      "real_yield_10y": 1.8
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2026-03-09",
+      "nominal_10y": 4.12,
+      "real_yield_10y": 1.78
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2026-03-10",
+      "nominal_10y": 4.15,
+      "real_yield_10y": 1.82
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2026-03-11",
+      "nominal_10y": 4.21,
+      "real_yield_10y": 1.85
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2026-03-12",
+      "nominal_10y": 4.27,
+      "real_yield_10y": 1.89
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2026-03-13",
+      "nominal_10y": 4.28,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2026-03-16",
+      "nominal_10y": 4.23,
+      "real_yield_10y": 1.87
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2026-03-17",
+      "nominal_10y": 4.2,
+      "real_yield_10y": 1.83
+    },
+    {
+      "breakeven_10y": 2.4,
+      "date": "2026-03-18",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.86
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2026-03-19",
+      "nominal_10y": 4.25,
+      "real_yield_10y": 1.88
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2026-03-20",
+      "nominal_10y": 4.39,
+      "real_yield_10y": 2.01
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2026-03-23",
+      "nominal_10y": 4.34,
+      "real_yield_10y": 2.01
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2026-03-24",
+      "nominal_10y": 4.39,
+      "real_yield_10y": 2.06
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2026-03-25",
+      "nominal_10y": 4.33,
+      "real_yield_10y": 2.02
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2026-03-26",
+      "nominal_10y": 4.42,
+      "real_yield_10y": 2.08
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2026-03-27",
+      "nominal_10y": 4.44,
+      "real_yield_10y": 2.13
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2026-03-30",
+      "nominal_10y": 4.35,
+      "real_yield_10y": 2.04
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2026-03-31",
+      "nominal_10y": 4.3,
+      "real_yield_10y": 2.0
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2026-04-01",
+      "nominal_10y": 4.33,
+      "real_yield_10y": 2.02
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2026-04-02",
+      "nominal_10y": 4.31,
+      "real_yield_10y": 1.97
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2026-04-03",
+      "nominal_10y": 4.35,
+      "real_yield_10y": 1.99
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2026-04-06",
+      "nominal_10y": 4.34,
+      "real_yield_10y": 1.98
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2026-04-07",
+      "nominal_10y": 4.33,
+      "real_yield_10y": 1.96
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2026-04-08",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 1.96
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2026-04-09",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 1.95
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2026-04-10",
+      "nominal_10y": 4.31,
+      "real_yield_10y": 1.95
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2026-04-13",
+      "nominal_10y": 4.3,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.37,
+      "date": "2026-04-14",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.89
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2026-04-15",
+      "nominal_10y": 4.29,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2026-04-16",
+      "nominal_10y": 4.32,
+      "real_yield_10y": 1.93
+    },
+    {
+      "breakeven_10y": 2.36,
+      "date": "2026-04-17",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.9
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2026-04-20",
+      "nominal_10y": 4.26,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2026-04-21",
+      "nominal_10y": 4.3,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2026-04-22",
+      "nominal_10y": 4.3,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.42,
+      "date": "2026-04-23",
+      "nominal_10y": 4.34,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.42,
+      "date": "2026-04-24",
+      "nominal_10y": 4.31,
+      "real_yield_10y": 1.89
+    },
+    {
+      "breakeven_10y": 2.44,
+      "date": "2026-04-27",
+      "nominal_10y": 4.35,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.44,
+      "date": "2026-04-28",
+      "nominal_10y": 4.36,
+      "real_yield_10y": 1.92
+    },
+    {
+      "breakeven_10y": 2.46,
+      "date": "2026-04-29",
+      "nominal_10y": 4.42,
+      "real_yield_10y": 1.96
+    },
+    {
+      "breakeven_10y": 2.46,
+      "date": "2026-04-30",
+      "nominal_10y": 4.4,
+      "real_yield_10y": 1.94
+    },
+    {
+      "breakeven_10y": 2.48,
+      "date": "2026-05-01",
+      "nominal_10y": 4.39,
+      "real_yield_10y": 1.91
+    },
+    {
+      "breakeven_10y": 2.5,
+      "date": "2026-05-04",
+      "nominal_10y": 4.45,
+      "real_yield_10y": 1.95
+    },
+    {
+      "breakeven_10y": 2.47,
+      "date": "2026-05-05",
+      "nominal_10y": 4.43,
+      "real_yield_10y": 1.96
+    }
+  ]
+}
