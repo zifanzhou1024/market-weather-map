@@ -24,9 +24,14 @@ import { loadRouteDerivedSeries, loadRouteSeries } from "./routeSeries";
 
 const macroGroups = [
   {
-    ids: ["cfnai", "industrial_production"],
+    ids: ["cfnai", "cfnai_3m_avg"],
     label: "Growth cycle",
-    summary: "Activity breadth and production inputs describe the growth portion of the macro climate score."
+    summary: "Activity breadth inputs describe the growth portion of the macro climate score."
+  },
+  {
+    ids: ["real_retail_sales", "industrial_production", "durable_goods_orders"],
+    label: "Consumer and production",
+    summary: "Retail sales, industrial production, and durable goods describe the consumer-production bucket."
   },
   {
     ids: ["unemployment_rate", "initial_claims"],
@@ -88,6 +93,13 @@ const macroCyclePanels = [
     title: "Inflation trend"
   },
   {
+    bucket: "consumer_production",
+    caveat: "Monthly consumer and production series can be revised and may lag turning points.",
+    risks: ["Weak retail sales, production, or durable-goods momentum would pressure this panel."],
+    supports: ["Retail sales, industrial production, and durable goods describe public production-cycle context."],
+    title: "Consumer and production"
+  },
+  {
     bucket: "housing",
     caveat: "Active public FRED housing data only; private housing-credit and affordability sources are not scored.",
     risks: ["Elevated mortgage rates can offset starts and permits strength."],
@@ -100,20 +112,6 @@ const macroCyclePanels = [
     risks: ["Higher debt-service ratios or credit-card delinquencies would pressure this panel."],
     supports: ["Household and consumer debt-service ratios describe public balance-sheet context."],
     title: "Consumer balance sheet"
-  },
-  {
-    bucket: "credit",
-    caveat: "SLOOS lending standards remain candidate-only until a governed public endpoint is promoted.",
-    risks: ["Wider spreads or tighter financial conditions would pressure this panel."],
-    supports: ["High-yield, BBB, and financial-condition inputs describe active credit-cycle context."],
-    title: "Credit cycle"
-  },
-  {
-    bucket: "liquidity",
-    caveat: "Treasury supply and auction metrics remain source-gated candidate rows outside this active read.",
-    risks: ["Falling reserve balances or weaker net liquidity would pressure this panel."],
-    supports: ["Fed assets, reserves, and net liquidity provide public liquidity-cycle context."],
-    title: "Liquidity cycle"
   },
   {
     bucket: "real_yields",

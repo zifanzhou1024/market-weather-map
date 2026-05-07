@@ -875,22 +875,20 @@ const scoreSummary: ScoreSummaryFile = {
     macro_climate: {
       bucket_scores: {
         consumer_balance_sheet: -2,
-        credit: -1,
+        consumer_production: 5,
         growth: 6,
         housing: 4,
         inflation: -3,
         labor: 2,
-        liquidity: 3,
         real_yields: -4
       },
       bucket_weights: {
         consumer_balance_sheet: 0.1,
-        credit: 0.1,
+        consumer_production: 0.16,
         growth: 0.18,
         housing: 0.12,
         inflation: 0.16,
         labor: 0.18,
-        liquidity: 0.08,
         real_yields: 0.1
       },
       confidence: 0.74,
@@ -1814,8 +1812,12 @@ describe("data-backed routes", () => {
     await waitForContent(container, "Long-Term Macro Climate");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
+    expect(container.textContent).toContain("Consumer and production");
     expect(container.textContent).toContain("Housing cycle");
     expect(container.textContent).toContain("Consumer balance sheet");
+    expect(container.textContent).toContain("Credit cycle");
+    expect(container.textContent).toContain("Liquidity cycle");
+    expect(container.textContent).not.toContain("Not scored");
   });
 
   it("renders the regime map route", async () => {
