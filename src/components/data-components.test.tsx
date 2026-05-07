@@ -360,6 +360,18 @@ describe("data-driven components", () => {
     expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
   });
 
+  it("deduplicates duplicate active options sentiment series ids", () => {
+    const container = render(
+      <OptionsSentimentPanel activeSeries={[activeOptionsSeries, activeOptionsSeries]} items={candidateRows} />
+    );
+    const activeRows = Array.from(container.querySelectorAll(".candidate-source-row")).filter((row) =>
+      row.textContent?.includes("Active data")
+    );
+
+    expect(activeRows).toHaveLength(1);
+    expect(activeRows[0]?.textContent).toContain("SPX/SPXW put/call");
+  });
+
   it("renders options sentiment source-review empty state without active signal labels", () => {
     const container = render(<OptionsSentimentPanel items={[]} />);
     const text = container.textContent ?? "";

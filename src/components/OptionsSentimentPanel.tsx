@@ -52,10 +52,20 @@ function activeSeriesItem(series: TimeSeriesFile, candidatesById: Map<string, Ca
   };
 }
 
+function uniqueActiveSeries(activeSeries: TimeSeriesFile[]) {
+  const seenIds = new Set<string>();
+  return activeSeries.filter((series) => {
+    if (seenIds.has(series.series_id)) return false;
+    seenIds.add(series.series_id);
+    return true;
+  });
+}
+
 export default function OptionsSentimentPanel({ items, activeSeries = [] }: OptionsSentimentPanelProps) {
   const candidatesById = new Map(items.map((item) => [item.id, item]));
-  const activeItems = activeSeries.map((series) => activeSeriesItem(series, candidatesById));
-  const activeIds = new Set(activeSeries.map((series) => series.series_id));
+  const activeOptionsSeries = uniqueActiveSeries(activeSeries);
+  const activeItems = activeOptionsSeries.map((series) => activeSeriesItem(series, candidatesById));
+  const activeIds = new Set(activeOptionsSeries.map((series) => series.series_id));
   const combinedItems = sortCandidateItems([
     ...activeItems,
     ...items.filter((item) => !activeIds.has(item.id))
