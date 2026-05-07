@@ -2,11 +2,11 @@ import {
   CartesianGrid,
   Line,
   LineChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis
 } from "recharts";
+import ChartResponsiveContainer from "./ChartResponsiveContainer";
 import { formatNumber } from "../lib/formatters";
 import type { TimeSeriesChartProps } from "./TimeSeriesChart";
 
@@ -23,7 +23,7 @@ export default function TimeSeriesChartInner({ series, catalogEntry }: TimeSerie
         <p>{catalogEntry?.units ?? series.units}</p>
       </div>
       <div className="chart-frame">
-        <ResponsiveContainer height="100%" width="100%">
+        <ChartResponsiveContainer>
           <LineChart data={data} margin={{ bottom: 8, left: 0, right: 20, top: 8 }}>
             <CartesianGrid stroke="#dfe5da" strokeDasharray="3 3" />
             <XAxis dataKey="date" minTickGap={36} tick={{ fill: "#607066", fontSize: 12 }} />
@@ -46,7 +46,7 @@ export default function TimeSeriesChartInner({ series, catalogEntry }: TimeSerie
               type="monotone"
             />
           </LineChart>
-        </ResponsiveContainer>
+        </ChartResponsiveContainer>
       </div>
     </section>
   );

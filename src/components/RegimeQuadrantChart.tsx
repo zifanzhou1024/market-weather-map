@@ -1,7 +1,6 @@
 import {
   CartesianGrid,
   ReferenceLine,
-  ResponsiveContainer,
   Scatter,
   ScatterChart,
   Tooltip,
@@ -9,6 +8,7 @@ import {
   YAxis,
   ZAxis
 } from "recharts";
+import ChartResponsiveContainer from "./ChartResponsiveContainer";
 import { formatNumber, formatSigned } from "../lib/formatters";
 import { safeNumber } from "../lib/regime";
 import type { RegimeSnapshotFile } from "../lib/types";
@@ -60,7 +60,7 @@ export default function RegimeQuadrantChart({
         <span className="quadrant-label quadrant-label--bottom-right">Tightening / risk-off</span>
         <span className="quadrant-label quadrant-label--bottom-left">Bonds-first / safe haven</span>
         {data.length ? (
-          <ResponsiveContainer height="100%" width="100%">
+          <ChartResponsiveContainer>
             <ScatterChart margin={{ bottom: 20, left: 0, right: 20, top: 20 }}>
               <CartesianGrid stroke="#dfe5da" strokeDasharray="3 3" />
               <XAxis
@@ -89,7 +89,7 @@ export default function RegimeQuadrantChart({
               />
               <Scatter data={data} fill="#2f6f73" isAnimationActive={false} line={{ stroke: "#2f6f73", strokeWidth: 1.5 }} />
             </ScatterChart>
-          </ResponsiveContainer>
+          </ChartResponsiveContainer>
         ) : (
           <p>No quadrant trail data is available.</p>
         )}

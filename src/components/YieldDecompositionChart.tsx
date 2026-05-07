@@ -2,11 +2,11 @@ import {
   CartesianGrid,
   Line,
   LineChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis
 } from "recharts";
+import ChartResponsiveContainer from "./ChartResponsiveContainer";
 import { formatNumber } from "../lib/formatters";
 import type { RegimeSnapshotFile } from "../lib/types";
 
@@ -40,7 +40,7 @@ export default function YieldDecompositionChart({
       </ul>
       {data.length ? (
         <div className="chart-frame">
-          <ResponsiveContainer height="100%" width="100%">
+          <ChartResponsiveContainer>
             <LineChart data={data} margin={{ bottom: 8, left: 0, right: 20, top: 8 }}>
               <CartesianGrid stroke="#dfe5da" strokeDasharray="3 3" />
               <XAxis dataKey="date" minTickGap={36} tick={{ fill: "#607066", fontSize: 12 }} />
@@ -59,7 +59,7 @@ export default function YieldDecompositionChart({
                 />
               ))}
             </LineChart>
-          </ResponsiveContainer>
+          </ChartResponsiveContainer>
         </div>
       ) : (
         <p>No yield decomposition data is available.</p>
