@@ -36,6 +36,33 @@ export type SourceTermsStatus =
 
 export type ScoreStatus = "active" | "candidate" | "unavailable";
 
+export type Horizon = "tactical" | "strategic" | "both";
+
+export type RegimeRole =
+  | "real_yield"
+  | "nominal_yield"
+  | "inflation_expectation"
+  | "dollar"
+  | "credit"
+  | "volatility"
+  | "liquidity"
+  | "growth"
+  | "labor"
+  | "housing"
+  | "commodity"
+  | "sentiment"
+  | "tail_risk"
+  | "bond_volatility"
+  | "banking";
+
+export type PreferredChart =
+  | "line"
+  | "multi_line"
+  | "curve"
+  | "heatmap"
+  | "quadrant"
+  | "decomposition";
+
 export type WeatherLabel =
   | "Supportive"
   | "Neutral"
@@ -123,6 +150,9 @@ export interface SeriesCatalogEntry {
   access_status?: SourceAccessStatus;
   terms_status?: SourceTermsStatus;
   score_status?: ScoreStatus;
+  horizon?: Horizon;
+  regime_role?: RegimeRole[];
+  preferred_chart?: PreferredChart;
 }
 
 export interface Observation {

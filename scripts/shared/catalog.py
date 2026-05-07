@@ -27,6 +27,110 @@ CBOE_INDEX_SOURCE_URL = "https://www.cboe.com/us/indices/dashboard/"
 CBOE_INDEX_ENDPOINT_BASE = "https://cdn.cboe.com/api/global/us_indices/daily_prices"
 
 
+TACTICAL_IDS = {
+    "vix", "vvix", "vix9d", "vix3m", "high_yield_oas", "investment_grade_oas",
+    "bbb_oas", "hy_minus_ig_oas", "broad_dollar", "usdjpy", "eurusd",
+    "us2y", "us10y", "us30y", "real_yield_10y", "breakeven_10y",
+    "net_liquidity", "reverse_repo", "treasury_general_account", "sofr",
+    "cftc_sp500_asset_mgr_net", "cftc_sp500_lev_money_net",
+}
+
+STRATEGIC_IDS = {
+    "real_yield_5y", "real_yield_10y", "breakeven_5y", "breakeven_10y",
+    "forward_inflation_5y5y", "cfnai", "cfnai_3m_avg", "real_retail_sales",
+    "industrial_production", "durable_goods_orders", "unemployment_rate",
+    "nonfarm_payrolls", "initial_claims", "sahm_rule", "headline_cpi",
+    "core_cpi", "core_pce", "ppi_final_demand", "bank_credit",
+    "loans_and_leases", "business_loans", "bank_deposits", "fed_assets",
+    "reserve_balances",
+}
+
+REGIME_ROLES_BY_ID = {
+    "vix": ["volatility"],
+    "vvix": ["tail_risk", "volatility"],
+    "vix9d": ["volatility"],
+    "vix3m": ["volatility"],
+    "us2y": ["nominal_yield"],
+    "us10y": ["nominal_yield"],
+    "us20y": ["nominal_yield"],
+    "us30y": ["nominal_yield"],
+    "real_yield_5y": ["real_yield"],
+    "real_yield_10y": ["real_yield"],
+    "breakeven_5y": ["inflation_expectation"],
+    "breakeven_10y": ["inflation_expectation"],
+    "forward_inflation_5y5y": ["inflation_expectation"],
+    "broad_dollar": ["dollar"],
+    "usdjpy": ["dollar"],
+    "eurusd": ["dollar"],
+    "high_yield_oas": ["credit"],
+    "investment_grade_oas": ["credit"],
+    "bbb_oas": ["credit"],
+    "financial_conditions": ["credit"],
+    "financial_stress": ["credit"],
+    "net_liquidity": ["liquidity"],
+    "fed_assets": ["liquidity"],
+    "reverse_repo": ["liquidity"],
+    "treasury_general_account": ["liquidity"],
+    "reserve_balances": ["liquidity"],
+    "sofr": ["liquidity"],
+    "wti_crude": ["commodity"],
+    "brent_crude": ["commodity"],
+    "corn_price": ["commodity"],
+    "wheat_price": ["commodity"],
+    "soybean_price": ["commodity"],
+    "cftc_sp500_asset_mgr_net": ["sentiment"],
+    "cftc_sp500_lev_money_net": ["sentiment"],
+    "cfnai": ["growth"],
+    "cfnai_3m_avg": ["growth"],
+    "real_retail_sales": ["growth"],
+    "industrial_production": ["growth"],
+    "durable_goods_orders": ["growth"],
+    "unemployment_rate": ["labor"],
+    "nonfarm_payrolls": ["labor"],
+    "initial_claims": ["labor"],
+    "sahm_rule": ["labor"],
+    "bank_credit": ["banking", "credit"],
+    "loans_and_leases": ["banking", "credit"],
+    "business_loans": ["banking", "credit"],
+    "bank_deposits": ["banking", "liquidity"],
+}
+
+PREFERRED_CHART_BY_ROLE = {
+    "real_yield": "decomposition",
+    "nominal_yield": "decomposition",
+    "inflation_expectation": "decomposition",
+    "volatility": "curve",
+    "dollar": "line",
+    "credit": "line",
+    "liquidity": "line",
+    "growth": "line",
+    "labor": "line",
+    "commodity": "line",
+    "sentiment": "line",
+    "tail_risk": "line",
+    "banking": "line",
+}
+
+
+def decision_metadata(series_id: str, category: str) -> dict[str, object]:
+    tactical = series_id in TACTICAL_IDS
+    strategic = series_id in STRATEGIC_IDS
+    if tactical and strategic:
+        horizon = "both"
+    elif tactical:
+        horizon = "tactical"
+    elif strategic:
+        horizon = "strategic"
+    else:
+        horizon = "strategic" if category in {"growth", "labor", "inflation", "banking"} else "tactical"
+    roles = REGIME_ROLES_BY_ID.get(series_id, [category])
+    return {
+        "horizon": horizon,
+        "regime_role": roles,
+        "preferred_chart": PREFERRED_CHART_BY_ROLE.get(str(roles[0]), "line"),
+    }
+
+
 def cboe_index_series(
     series_id: str,
     name: str,
@@ -48,6 +152,7 @@ def cboe_index_series(
         "public": True,
         "max_stale_days": 7,
         "notes": notes,
+        **decision_metadata(series_id, "volatility"),
         **governance(
             "cboe",
             citation_notes="Cboe public historical index data; displayed with source caveats.",
@@ -665,6 +770,7 @@ def catalog_entries() -> list[dict[str, object]]:
                 "public": True,
                 "max_stale_days": series["max_stale_days"],
                 "notes": series["notes"],
+                **decision_metadata(str(series["id"]), str(series["category"])),
                 **governance(
                     "fred",
                     score_status=str(series.get("score_status", "active")),
@@ -689,10 +795,19 @@ def catalog_entries() -> list[dict[str, object]]:
                 "public": True,
                 "max_stale_days": series["max_stale_days"],
                 "notes": series["notes"],
+                **decision_metadata(str(series["id"]), str(series["category"])),
                 **governance("cftc", citation_notes="Public CFTC historical compressed report transformed into derived positioning context."),
             }
         )
-    entries.extend([series.copy() for series in CANDIDATE_SERIES])
+    entries.extend(
+        [
+            {
+                **series,
+                **decision_metadata(str(series["id"]), str(series["category"])),
+            }
+            for series in CANDIDATE_SERIES
+        ]
+    )
     return entries
 
 
