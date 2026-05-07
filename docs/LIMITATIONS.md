@@ -18,7 +18,8 @@
 - CFTC positioning is weekly, delayed, and futures-specific. It should be read as positioning context, not a complete sentiment model.
 - Crop prices come from monthly FRED series, not live futures curves.
 - VIX9D, VIX, and VIX3M ratios are public volatility-term proxies. They are not a tradable VIX futures curve.
-- VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, Treasury supply, and similar candidates do not affect scores, labels, or checklists before access terms, automation constraints, attribution, and redistribution rules are reviewed.
+- Put/call categories, VIX futures, and event calendar panels are source-readiness displays only until terms, access, cadence, automation, attribution, and redistribution rules are reviewed.
+- VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, Treasury supply, event calendars, and similar candidates do not affect scores, labels, or checklists before access terms, automation constraints, attribution, and redistribution rules are reviewed.
 - Housing excludes home prices, existing home sales, affordability, and mortgage applications until source handling is reviewed.
 - Event Calendar rows are descriptive source links in PR 2, not guaranteed exact alert dates for every release.
 

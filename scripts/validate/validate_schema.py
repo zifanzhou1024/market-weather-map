@@ -40,6 +40,7 @@ REQUIRED_GENERATED_FILES = [
 ]
 ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
 SERIES_STATUSES = {"ok", "stale", "failed", "terms_review_needed", "unavailable"}
+STATUSES_WITH_PAYLOAD_OBSERVATIONS = {"ok", "stale", "partial"}
 EVENT_IMPORTANCES = {"high", "medium", "low"}
 EVENT_STATUSES = {"scheduled", "source_link", "estimated"}
 EVENT_CATEGORIES = {"inflation", "growth", "rates", "housing", "sentiment"}
@@ -239,6 +240,53 @@ def _validate_confidence_value(value: Any, path: Path, field_name: str) -> None:
         raise ValueError(f"{path} {field_name} must be between 0 and 1")
 
 
+def _payload_path_for_status_series(series_id: str) -> Path | None:
+    root = data_dir()
+    for path in (root / "series" / f"{series_id}.json", root / "derived" / f"{series_id}.json"):
+        if path.exists():
+            return path
+    return None
+
+
+def _payload_latest_date(path: Path) -> str | None:
+    payload = _load_json(path)
+    summary = payload.get("summary")
+    if isinstance(summary, dict) and isinstance(summary.get("latest_date"), str):
+        return str(summary["latest_date"])
+
+    observations = payload.get("observations")
+    if isinstance(observations, list) and observations:
+        latest = observations[-1]
+        if isinstance(latest, dict) and isinstance(latest.get("date"), str):
+            return str(latest["date"])
+    return None
+
+
+def _validate_status_last_observation_matches_payload(
+    status_path: Path,
+    series_id: str,
+    status: dict[str, Any],
+) -> None:
+    status_value = status.get("last_observation")
+    if status.get("status") not in STATUSES_WITH_PAYLOAD_OBSERVATIONS or status_value is None:
+        return
+    if not isinstance(status_value, str):
+        raise ValueError(f"{status_path} last_observation must be a string or null for {series_id}")
+
+    payload_path = _payload_path_for_status_series(series_id)
+    if payload_path is None:
+        raise ValueError(f"{status_path} active series status for {series_id} has no series or derived payload")
+
+    payload_latest = _payload_latest_date(payload_path)
+    if payload_latest is None:
+        raise ValueError(f"{payload_path} has no latest observation date for status series {series_id}")
+    if status_value != payload_latest:
+        raise ValueError(
+            f"{status_path} {series_id} last_observation {status_value} does not match "
+            f"{payload_path} latest observation {payload_latest}"
+        )
+
+
 def validate_score_summary_file() -> None:
     path = data_dir() / "derived" / "score_summary.json"
     payload = _load_json(path)
@@ -348,6 +396,7 @@ def validate_status_file() -> None:
                 )
         if "message" in status and status["message"] is not None and not isinstance(status["message"], str):
             raise ValueError(f"{path} message must be a string or null for {series_id}")
+        _validate_status_last_observation_matches_payload(path, str(series_id), status)
 
 
 def main() -> None:

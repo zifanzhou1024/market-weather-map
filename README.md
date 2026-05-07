@@ -13,6 +13,7 @@ The current project includes:
 - A GitHub Pages deployment workflow.
 - Source notes, freshness status, and descriptive scoring metadata in the generated data and UI.
 - Phase 2 commodity, liquidity, and sentiment extensions.
+- Phase 5 PR 2 tactical source gates for options sentiment, VX futures readiness, and event risk.
 
 The current project does not include:
 
@@ -71,7 +72,8 @@ Phase 5 direction:
 
 - Organize the primary experience by use case: Tactical Trading Weather, Long-Term Macro Climate, and Regime Map.
 - Use existing active no-secret data for PR 1.
-- Treat VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, and Treasury supply as candidate or future inputs until source terms and redistribution rules are reviewed.
+- Treat options sentiment, VX futures readiness, event risk, SKEW, MOVE, valuation, PMIs/SLOOS, and Treasury supply as candidate or future inputs until source terms and redistribution rules are reviewed.
+- Keep PR 2 tactical source gates descriptive: put/call categories, VX futures readiness, and event calendar families expose source gaps before any backend, credentials, or paid data are added.
 - Keep outputs descriptive and avoid trade recommendations.
 
 ## Data Access Status

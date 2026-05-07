@@ -2,13 +2,16 @@ import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it } from "vitest";
 import ConfidenceBreakdown from "./ConfidenceBreakdown";
+import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
 import CrossAssetConfirmationMatrix from "./CrossAssetConfirmationMatrix";
 import DataGapPanel from "./DataGapPanel";
 import DataStatusTable from "./DataStatusTable";
+import EventRiskPanel from "./EventRiskPanel";
 import HowToReadPanel from "./HowToReadPanel";
 import InterpretationPanel from "./InterpretationPanel";
 import MetricCard from "./MetricCard";
 import MultiSeriesChart from "./MultiSeriesChart";
+import OptionsSentimentPanel from "./OptionsSentimentPanel";
 import PercentileBandChart from "./PercentileBandChart";
 import RegimeQuadrantChart, { domainIncludingZero } from "./RegimeQuadrantChart";
 import RegimeBadge from "./RegimeBadge";
@@ -17,6 +20,7 @@ import SignalChecklist from "./SignalChecklist";
 import SignalList from "./SignalList";
 import SourceNote from "./SourceNote";
 import SourceAccessBadge from "./SourceAccessBadge";
+import VixFuturesReadinessPanel from "./VixFuturesReadinessPanel";
 import YieldDecompositionChart from "./YieldDecompositionChart";
 import type {
   ConfidenceBreakdownData,
@@ -102,6 +106,69 @@ const scoreBlock: ScoreBlock = {
   score: -12.34,
   top_risks: ["High-yield spreads widened over the past month."],
   top_supports: ["Reserve balances improved over the past month."]
+};
+
+const candidateRows: CandidateSourceItem[] = [
+  {
+    id: "put_call_spxw",
+    label: "SPX/SPXW put/call",
+    note: "Candidate SPX and weekly SPX options source.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "put_call_spx",
+    label: "SPX put/call",
+    note: "Candidate SPX options source.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "put_call_index",
+    label: "Index put/call",
+    note: "Candidate index options source.",
+    status: "source_review_required"
+  },
+  {
+    id: "put_call_equity",
+    label: "Equity put/call",
+    note: "Candidate equity options source.",
+    status: "source_review_required"
+  },
+  {
+    id: "put_call_vix",
+    label: "VIX put/call",
+    note: "Candidate VIX options source.",
+    status: "source_review_required"
+  },
+  {
+    id: "put_call_etp",
+    label: "ETP put/call",
+    note: "Candidate ETP options source.",
+    status: "source_review_required"
+  },
+  {
+    id: "put_call_total",
+    label: "Total put/call",
+    note: "Candidate aggregate options source.",
+    status: "source_review_required"
+  }
+];
+
+const activeOptionsSeries: TimeSeriesFile = {
+  frequency: "daily",
+  generated_at_utc: "2026-05-01T21:00:00Z",
+  observations: [{ date: "2026-05-01", value: 1.23 }],
+  series_id: "put_call_spxw",
+  source: "Cboe",
+  source_url: "https://example.com/options",
+  summary: {
+    change_1d: 0.04,
+    change_1m: null,
+    change_1w: null,
+    latest_date: "2026-05-01",
+    latest_value: 1.23,
+    percentile_252d: null
+  },
+  units: "ratio"
 };
 
 describe("data-driven components", () => {
@@ -224,6 +291,167 @@ describe("data-driven components", () => {
 
     expect(container.textContent).toContain("Pending license");
     expect(container.textContent).toContain("Needs counsel");
+  });
+
+  it("renders candidate source names and normalized review status", () => {
+    const container = render(
+      <CandidateSourcePanel
+        items={[
+          {
+            id: "put_call_index",
+            label: "Index put/call",
+            note: "Candidate options source pending review.",
+            status: "terms_review_needed"
+          }
+        ]}
+        title="Candidate inputs"
+      />
+    );
+
+    expect(container.textContent).toContain("Candidate inputs");
+    expect(container.textContent).toContain("Index put/call");
+    expect(container.textContent).toContain("Terms review needed");
+    expect(container.textContent).toContain("Candidate options source pending review.");
+  });
+
+  it("renders an explicit candidate source empty state", () => {
+    const container = render(<CandidateSourcePanel items={[]} title="Candidate inputs" />);
+
+    expect(container.textContent).toContain("Candidate inputs");
+    expect(container.textContent).toContain("No candidate source rows are configured for this view.");
+  });
+
+  it("orders options sentiment candidates without active signal labels", () => {
+    const container = render(<OptionsSentimentPanel items={[...candidateRows].reverse()} />);
+    const text = container.textContent ?? "";
+    const orderedLabels = [
+      "SPX/SPXW put/call",
+      "SPX put/call",
+      "Index put/call",
+      "Equity put/call",
+      "VIX put/call",
+      "ETP put/call",
+      "Total put/call"
+    ];
+
+    expect(text).toContain("Options sentiment");
+    expect(text).toContain("Source review required");
+    for (const label of orderedLabels) {
+      expect(text).toContain(label);
+    }
+    for (let index = 0; index < orderedLabels.length - 1; index += 1) {
+      expect(text.indexOf(orderedLabels[index])).toBeLessThan(text.indexOf(orderedLabels[index + 1]));
+    }
+    expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
+  });
+
+  it("renders active options sentiment series before candidate-only fallback rows", () => {
+    const container = render(
+      <OptionsSentimentPanel activeSeries={[activeOptionsSeries]} items={candidateRows} />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Options sentiment");
+    expect(text).toContain("SPX/SPXW put/call");
+    expect(text).toContain("Active data");
+    expect(text).toContain("Latest ratio 1.23 on 2026-05-01.");
+    expect(text.indexOf("SPX/SPXW put/call")).toBeLessThan(text.indexOf("SPX put/call"));
+    expect(text).toContain("Source review required");
+    expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
+  });
+
+  it("deduplicates duplicate active options sentiment series ids", () => {
+    const container = render(
+      <OptionsSentimentPanel activeSeries={[activeOptionsSeries, activeOptionsSeries]} items={candidateRows} />
+    );
+    const activeRows = Array.from(container.querySelectorAll(".candidate-source-row")).filter((row) =>
+      row.textContent?.includes("Active data")
+    );
+
+    expect(activeRows).toHaveLength(1);
+    expect(activeRows[0]?.textContent).toContain("SPX/SPXW put/call");
+  });
+
+  it("renders options sentiment source-review empty state without active signal labels", () => {
+    const container = render(<OptionsSentimentPanel items={[]} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Options sentiment");
+    expect(text).toContain("Source review required");
+    expect(text).toContain("No active options sentiment candidate rows are configured.");
+    expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
+  });
+
+  it("renders event risk source-gated candidate rows", () => {
+    const container = render(<EventRiskPanel />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Event risk");
+    expect(text).toContain("does not publish event predictions");
+    expect(text).toContain("CPI");
+    expect(text).toContain("FOMC");
+    expect(text).toContain("payrolls");
+    expect(text).toContain("Treasury auctions");
+    expect(text).toContain("OPEX");
+  });
+
+  it("renders route-provided event risk candidate rows", () => {
+    const container = render(
+      <EventRiskPanel
+        items={[
+          {
+            id: "event_cpi",
+            label: "Distinct CPI route event",
+            note: "Route-provided CPI calendar readiness note.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Event risk");
+    expect(text).toContain("does not publish event predictions");
+    expect(text).toContain("Distinct CPI route event");
+    expect(text).toContain("Route-provided CPI calendar readiness note.");
+    expect(text).toContain("Terms review needed");
+  });
+
+  it("renders VIX futures candidates and fallback proxy text when VX data is inactive", () => {
+    const container = render(<VixFuturesReadinessPanel />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("VIX futures readiness");
+    for (let month = 1; month <= 8; month += 1) {
+      expect(text).toContain(`VX${month}`);
+    }
+    expect(text).toContain("Fallback proxy");
+    expect(text).toContain("not a tradable futures curve");
+    expect(text).toContain("VIX9D");
+    expect(text).toContain("VIX");
+    expect(text).toContain("VIX3M");
+  });
+
+  it("renders route-provided VIX futures candidate rows", () => {
+    const container = render(
+      <VixFuturesReadinessPanel
+        items={[
+          {
+            id: "vx1",
+            label: "Distinct VX1 route candidate",
+            note: "Route-provided VX1 readiness note.",
+            status: "partial"
+          }
+        ]}
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("VIX futures readiness");
+    expect(text).toContain("Distinct VX1 route candidate");
+    expect(text).toContain("Route-provided VX1 readiness note.");
+    expect(text).toContain("Partial");
+    expect(text).toContain("Fallback proxy");
   });
 
   it("filters data status rows by selected series ids", () => {

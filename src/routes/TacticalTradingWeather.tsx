@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
+import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import EventRiskPanel from "../components/EventRiskPanel";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/MultiSeriesChart";
+import OptionsSentimentPanel from "../components/OptionsSentimentPanel";
 import ScoreCard from "../components/ScoreCard";
 import SignalChecklist from "../components/SignalChecklist";
+import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
 import {
   loadCatalog,
   loadDataStatus,
@@ -33,7 +37,30 @@ const tacticalSeriesIds = [
   "real_yield_10y"
 ];
 const tacticalDerivedIds = ["vix9d_vix_ratio", "vix_vix3m_ratio", "hy_minus_ig_oas", "net_liquidity"];
-const tacticalStatusIds = [...tacticalSeriesIds, ...tacticalDerivedIds];
+const optionCandidateIds = [
+  "put_call_spxw",
+  "put_call_spx",
+  "put_call_index",
+  "put_call_equity",
+  "put_call_vix",
+  "put_call_etp",
+  "put_call_total"
+];
+const vxCandidateIds = ["vx1", "vx2", "vx3", "vx4", "vx5", "vx6", "vx7", "vx8"];
+const eventCandidateIds = [
+  "event_cpi",
+  "event_fomc",
+  "event_payrolls",
+  "event_treasury_auction",
+  "event_opex"
+];
+const tacticalStatusIds = [
+  ...tacticalSeriesIds,
+  ...tacticalDerivedIds,
+  ...optionCandidateIds,
+  ...eventCandidateIds,
+  ...vxCandidateIds
+];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
@@ -84,6 +111,28 @@ function toChartSeries(series: TimeSeriesFile[]): MultiSeriesChartSeries[] {
       id: item.series_id,
       name: item.series_id.toUpperCase()
     }));
+}
+
+function fallbackCandidateStatus(entry?: SeriesCatalogEntry) {
+  return entry?.access_status ?? entry?.score_status ?? "source_review_required";
+}
+
+function candidateItems(
+  catalog: SeriesCatalogEntry[],
+  status: DataStatusFile,
+  ids: string[]
+): CandidateSourceItem[] {
+  return ids.map((id) => {
+    const entry = catalog.find((candidate) => candidate.id === id);
+    const statusRow = status.series[id];
+
+    return {
+      id,
+      label: entry?.name ?? id,
+      note: statusRow?.message ?? entry?.notes ?? "Source review required.",
+      status: statusRow?.status ?? fallbackCandidateStatus(entry)
+    };
+  });
 }
 
 export default function TacticalTradingWeather() {
@@ -153,6 +202,8 @@ export default function TacticalTradingWeather() {
           </div>
           <SignalChecklist items={data.snapshot.checklist} />
           <CrossAssetConfirmationMatrix items={data.snapshot.confirmations} />
+          <OptionsSentimentPanel items={candidateItems(data.catalog, data.status, optionCandidateIds)} />
+          <EventRiskPanel items={candidateItems(data.catalog, data.status, eventCandidateIds)} />
           <section className="metric-grid" aria-label="Tactical metrics">
             {data.series.map((series) => (
               <MetricCard
@@ -170,6 +221,7 @@ export default function TacticalTradingWeather() {
             title="VIX term-structure proxy"
             units="index"
           />
+          <VixFuturesReadinessPanel items={candidateItems(data.catalog, data.status, vxCandidateIds)} />
           <DataGapPanel seriesIds={tacticalStatusIds} status={data.status} />
           <DataStatusTable seriesIds={tacticalStatusIds} status={data.status} />
         </div>

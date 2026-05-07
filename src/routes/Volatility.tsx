@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
@@ -6,13 +7,15 @@ import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/Mul
 import PercentileBandChart from "../components/PercentileBandChart";
 import SourceNote from "../components/SourceNote";
 import TimeSeriesChart from "../components/TimeSeriesChart";
+import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
 import { loadCatalog, loadDataStatus, loadSeries } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 import { loadRouteDerivedSeries } from "./routeSeries";
 
 const volatilitySeriesIds = ["vix", "vvix", "vix9d", "vix3m"];
 const volatilityDerivedIds = ["vix9d_vix_ratio", "vix_vix3m_ratio"];
-const volatilityStatusIds = [...volatilitySeriesIds, ...volatilityDerivedIds];
+const vxCandidateIds = ["vx1", "vx2", "vx3", "vx4", "vx5", "vx6", "vx7", "vx8"];
+const volatilityStatusIds = [...volatilitySeriesIds, ...volatilityDerivedIds, ...vxCandidateIds];
 const volatilityChartLines = [
   { id: "vix9d", name: "VIX9D", color: "#b76f2b" },
   { id: "vix", name: "VIX", color: "#2f6f73" },
@@ -88,6 +91,28 @@ function termStructureNotes(series: TimeSeriesFile[]) {
   }
 
   return notes;
+}
+
+function fallbackCandidateStatus(entry?: SeriesCatalogEntry) {
+  return entry?.access_status ?? entry?.score_status ?? "source_review_required";
+}
+
+function candidateItems(
+  catalog: SeriesCatalogEntry[],
+  status: DataStatusFile,
+  ids: string[]
+): CandidateSourceItem[] {
+  return ids.map((id) => {
+    const entry = catalog.find((candidate) => candidate.id === id);
+    const statusRow = status.series[id];
+
+    return {
+      id,
+      label: entry?.name ?? id,
+      note: statusRow?.message ?? entry?.notes ?? "Source review required.",
+      status: statusRow?.status ?? fallbackCandidateStatus(entry)
+    };
+  });
 }
 
 export default function Volatility() {
@@ -169,6 +194,10 @@ export default function Volatility() {
             </>
           ) : null}
           <MultiSeriesChart series={toChartSeries(data.series)} title="VIX term-structure proxy" units="index" />
+          <VixFuturesReadinessPanel
+            items={candidateItems(data.catalog, data.status, vxCandidateIds)}
+            title="VX futures curve"
+          />
           <DataStatusTable seriesIds={volatilityStatusIds} status={data.status} />
         </div>
       ) : null}

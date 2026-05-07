@@ -99,6 +99,8 @@ These rows are in the catalog/status files for roadmap transparency only. They a
 
 Candidate sources are not active scoring inputs until legal, terms, cadence, and redistribution review is complete. They should be marked `terms_review_needed` in source planning unless a later review moves them to `free_public`, `restricted`, or `unavailable`.
 
+These candidate rows are displayed as source gaps. They do not affect active scores, regime labels, checklist states, or confidence except as documented source-readiness gaps.
+
 | Candidate | Provider | Access status | Potential use | Review notes |
 | --- | --- | --- | --- | --- |
 | ISM manufacturing and services | Institute for Supply Management | `terms_review_needed` | Growth breadth and business-cycle momentum. | Confirm redistribution and automation terms before static publication. |
@@ -118,6 +120,18 @@ Candidate sources are not active scoring inputs until legal, terms, cadence, and
 | Valuation | S&P, MSCI, FactSet, Robert Shiller dataset, or other providers | `terms_review_needed` | Long-term macro climate and expected-return context. | Candidate score status until source coverage, calculation method, and redistribution rules are reviewed. |
 | Treasury supply | U.S. Treasury, TreasuryDirect, or fiscal-data APIs | `terms_review_needed` | Issuance, auction, and duration-supply pressure. | Candidate score status until source endpoints, transformation rules, and redistribution expectations are reviewed. |
 | PMIs/SLOOS | ISM, S&P Global, Federal Reserve, or FRED mirrors | `terms_review_needed` | Business-cycle breadth and lending-standards confirmation. | Candidate score status until survey terms, redistribution rules, and permitted derived publication are reviewed. |
+
+## PR 2 Tactical Source Gates
+
+PR 2 tactical panels expose source-readiness gaps for options sentiment, VX futures readiness, and event risk while source access is reviewed. Each row remains `terms_review_needed` until source terms, automation constraints, attribution, cadence, historical coverage, and static redistribution rules are documented.
+
+These candidate rows are displayed as source gaps. They do not affect active scores, regime labels, checklist states, or confidence except as documented source-readiness gaps.
+
+| Candidate family | Candidate rows | Provider candidates | Access status | Source-readiness use | Review notes |
+| --- | --- | --- | --- | --- | --- |
+| Put/call categories | Total, index, equity, ETP, VIX, SPX, SPXW | OCC, Cboe, exchanges, or licensed redistributors | `terms_review_needed` | Options sentiment coverage and category-level source gaps. | Confirm category definitions, historical access, redistribution rules, and automated ingestion terms. |
+| VIX futures curve | VX1, VX2, VX3, VX4, VX5, VX6, VX7, VX8 | Cboe Futures Exchange or licensed redistributors | `terms_review_needed` | VX futures readiness and volatility term-structure source gaps. | Confirm delayed-data constraints, contract roll handling, access terms, attribution, and static redistribution rules. |
+| Event calendar families | CPI, FOMC, payrolls, Treasury auctions, OPEX | BLS, Federal Reserve, Treasury, OCC, exchanges, or official calendars | `terms_review_needed` | Event-risk source gaps and calendar-readiness context. | Confirm official machine-readable endpoints, update cadence, historical coverage, attribution, and redistribution expectations. |
 
 ## Source Handling
 

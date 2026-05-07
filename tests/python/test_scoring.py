@@ -1102,6 +1102,79 @@ def test_validate_status_file_rejects_partial_series_status(tmp_path, monkeypatc
         validate_schema.validate_status_file()
 
 
+def test_validate_status_file_rejects_series_last_observation_drift(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    series_dir = tmp_path / "series"
+    status_dir.mkdir()
+    series_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "overall_status": "ok",
+          "series": {
+            "daily_series": {
+              "status": "ok",
+              "last_observation": "2026-05-03"
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    (series_dir / "daily_series.json").write_text(
+        """
+        {
+          "summary": {"latest_date": "2026-05-02"},
+          "observations": [
+            {"date": "2026-05-01", "value": 1.0},
+            {"date": "2026-05-02", "value": 2.0}
+          ]
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(ValueError, match="daily_series.*last_observation.*2026-05-03.*2026-05-02"):
+        validate_schema.validate_status_file()
+
+
+def test_validate_status_file_rejects_derived_last_observation_drift(tmp_path, monkeypatch):
+    status_dir = tmp_path / "status"
+    derived_dir = tmp_path / "derived"
+    status_dir.mkdir()
+    derived_dir.mkdir()
+    (status_dir / "data_status.json").write_text(
+        """
+        {
+          "overall_status": "ok",
+          "series": {
+            "derived_series": {
+              "status": "stale",
+              "last_observation": "2026-05-04"
+            }
+          }
+        }
+        """,
+        encoding="utf-8",
+    )
+    (derived_dir / "derived_series.json").write_text(
+        """
+        {
+          "summary": {"latest_date": "2026-05-03"},
+          "observations": [
+            {"date": "2026-05-03", "value": 3.0}
+          ]
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(ValueError, match="derived_series.*last_observation.*2026-05-04.*2026-05-03"):
+        validate_schema.validate_status_file()
+
+
 def test_validate_score_summary_file_rejects_missing_score_confidence_breakdown(tmp_path, monkeypatch):
     derived_dir = tmp_path / "derived"
     derived_dir.mkdir()
