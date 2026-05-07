@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-07T14:23:32Z",
-  "last_successful_update_utc": "2026-05-07T14:23:32Z",
+  "generated_at_utc": "2026-05-07T14:33:49Z",
+  "last_successful_update_utc": "2026-05-07T14:33:49Z",
   "overall_status": "partial",
   "series": {
     "bank_credit": {
@@ -34,11 +34,11 @@
     "bbb_oas": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 1,
-      "last_observation": "2026-05-06",
+      "freshness_days": 2,
+      "last_observation": "2026-05-05",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 1 days old.",
-      "observation_period": "2026-05-06",
+      "message": "Latest daily observation is 2 days old.",
+      "observation_period": "2026-05-05",
       "source": "FRED",
       "status": "ok"
     },
@@ -370,22 +370,22 @@
     "high_yield_oas": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 1,
-      "last_observation": "2026-05-06",
+      "freshness_days": 2,
+      "last_observation": "2026-05-05",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 1 days old.",
-      "observation_period": "2026-05-06",
+      "message": "Latest daily observation is 2 days old.",
+      "observation_period": "2026-05-05",
       "source": "FRED",
       "status": "ok"
     },
     "hy_minus_ig_oas": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 1,
-      "last_observation": "2026-05-06",
+      "freshness_days": 2,
+      "last_observation": "2026-05-05",
       "max_stale_days": 10,
-      "message": "Latest daily observation is 1 days old.",
-      "observation_period": "2026-05-06",
+      "message": "Latest daily observation is 2 days old.",
+      "observation_period": "2026-05-05",
       "source": "Derived",
       "status": "ok"
     },
@@ -406,25 +406,25 @@
     "initial_claims": {
       "expected_frequency": "weekly",
       "expected_next_release_window": {
-        "end": "2026-05-23",
-        "start": "2026-05-09"
+        "end": "2026-05-16",
+        "start": "2026-05-02"
       },
-      "freshness_days": 5,
-      "last_observation": "2026-05-02",
+      "freshness_days": 12,
+      "last_observation": "2026-04-25",
       "max_stale_days": 14,
-      "message": "Latest weekly observation is within the expected release window ending 2026-05-23.",
-      "observation_period": "week of 2026-05-02",
+      "message": "Latest weekly observation is within the expected release window ending 2026-05-16.",
+      "observation_period": "week of 2026-04-25",
       "source": "FRED",
       "status": "ok"
     },
     "investment_grade_oas": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 1,
-      "last_observation": "2026-05-06",
+      "freshness_days": 2,
+      "last_observation": "2026-05-05",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 1 days old.",
-      "observation_period": "2026-05-06",
+      "message": "Latest daily observation is 2 days old.",
+      "observation_period": "2026-05-05",
       "source": "FRED",
       "status": "ok"
     },
@@ -661,11 +661,11 @@
     "sofr": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 1,
-      "last_observation": "2026-05-06",
+      "freshness_days": 2,
+      "last_observation": "2026-05-05",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 1 days old.",
-      "observation_period": "2026-05-06",
+      "message": "Latest daily observation is 2 days old.",
+      "observation_period": "2026-05-05",
       "source": "FRED",
       "status": "ok"
     },
