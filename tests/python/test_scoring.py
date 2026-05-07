@@ -1782,6 +1782,8 @@ def _write_shock_snapshot(tmp_path, payload):
     [
         (lambda payload: payload.update({"label": "Severe shock risk"}), "label has invalid value"),
         (lambda payload: payload.update({"active_signals": [{}]}), "active_signals.id must be a string"),
+        (lambda payload: payload["active_signals"][0].pop("value"), "active_signals.value must be numeric or null"),
+        (lambda payload: payload["active_signals"][0].pop("change"), "active_signals.change must be numeric or null"),
         (lambda payload: payload["active_signals"][0].update({"value": "22"}), "active_signals.value must be numeric or null"),
         (lambda payload: payload["source_gaps"][0].update({"status": "paused"}), "source_gaps.status has invalid value"),
         (lambda payload: payload.update({"mismatch_warnings": [42]}), "mismatch_warnings items must be objects"),

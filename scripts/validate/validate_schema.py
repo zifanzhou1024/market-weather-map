@@ -140,13 +140,15 @@ def _validate_string_field(
         raise ValueError(f"{path} {display_name or field_name} must be a string")
 
 
-def _validate_optional_number_or_null(
+def _validate_number_or_null(
     payload: dict[str, Any],
     path: Path,
     field_name: str,
     display_name: str | None = None,
 ) -> None:
-    if field_name not in payload or payload[field_name] is None:
+    if field_name not in payload:
+        raise ValueError(f"{path} {display_name or field_name} must be numeric or null")
+    if payload[field_name] is None:
         return
     value = payload[field_name]
     if not isinstance(value, int | float) or isinstance(value, bool) or not math.isfinite(float(value)):
@@ -301,7 +303,7 @@ def validate_shock_risk_snapshot_file() -> None:
             _validate_string_field(item, path, field, f"active_signals.{field}")
         _validate_finite_number(item.get("score"), path, "active_signals.score")
         for field in ["value", "change"]:
-            _validate_optional_number_or_null(item, path, field, f"active_signals.{field}")
+            _validate_number_or_null(item, path, field, f"active_signals.{field}")
 
     for item in payload["source_gaps"]:
         if not isinstance(item, dict):
