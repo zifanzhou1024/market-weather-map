@@ -815,17 +815,20 @@ def build_shock_risk_snapshot(
     vix_score = _score_inverse_percentile_for_first(series_by_id, ["vix"])
     vix_curve_score = _score_inverse_percentile_for_first(series_by_id, ["vix_vix3m_ratio"])
     credit_score = _score_inverse_percentile_for_first(series_by_id, ["hy_minus_ig_oas", "high_yield_oas"])
-    dollar_change = _summary_change(series_by_id, "broad_dollar") or 0.0
-    real_yield_change = _summary_change(series_by_id, "real_yield_10y") or 0.0
-    liquidity_change = _summary_change(series_by_id, "net_liquidity") or 0.0
+    dollar_change = _summary_change(series_by_id, "broad_dollar")
+    real_yield_change = _summary_change(series_by_id, "real_yield_10y")
+    liquidity_change = _summary_change(series_by_id, "net_liquidity")
+    dollar_score = clamp(-dollar_change * 15) if dollar_change is not None else None
+    real_yield_score = clamp(-real_yield_change * 120) if real_yield_change is not None else None
+    liquidity_score = clamp(liquidity_change / 25) if liquidity_change is not None else None
     active_pressure = weighted_score(
         {
             "vix": vix_score or 0.0,
             "curve": vix_curve_score or 0.0,
             "credit": credit_score or 0.0,
-            "dollar": clamp(-dollar_change * 15),
-            "real_yield": clamp(-real_yield_change * 120),
-            "liquidity": clamp(liquidity_change / 25),
+            "dollar": dollar_score or 0.0,
+            "real_yield": real_yield_score or 0.0,
+            "liquidity": liquidity_score or 0.0,
         },
         {
             "vix": 0.2,
@@ -849,19 +852,19 @@ def build_shock_risk_snapshot(
         (
             "broad_dollar",
             "Broad dollar",
-            clamp(-dollar_change * 15),
+            dollar_score,
             "Broad dollar one-month change is included in active shock-risk pressure.",
         ),
         (
             "real_yield_10y",
             "10Y real yield",
-            clamp(-real_yield_change * 120),
+            real_yield_score,
             "Real yield one-month change is included in active shock-risk pressure.",
         ),
         (
             "net_liquidity",
             "Net liquidity",
-            clamp(liquidity_change / 25),
+            liquidity_score,
             "Net liquidity one-month change is included in active shock-risk pressure.",
         ),
     ]
@@ -896,12 +899,37 @@ def build_shock_risk_snapshot(
                     "message": str(row.get("message") or "Candidate source is not active for scoring."),
                 }
             )
+    change_source_gaps = [
+        ("broad_dollar", "Broad dollar", dollar_change),
+        ("real_yield_10y", "10Y real yield", real_yield_change),
+        ("net_liquidity", "Net liquidity", liquidity_change),
+    ]
+    for series_id, label, change in change_source_gaps:
+        if series_id in series_by_id and change is None:
+            source_gaps.append(
+                {
+                    "id": series_id,
+                    "label": label,
+                    "status": "unavailable",
+                    "message": (
+                        "One-month change is unavailable, so this input is not active "
+                        "in shock-risk signal rows."
+                    ),
+                }
+            )
 
     credit_change = _summary_change(series_by_id, "hy_minus_ig_oas")
     if credit_change is None:
         credit_change = _summary_change(series_by_id, "high_yield_oas")
     mismatch_warnings = []
-    if real_yield_change > 0 and dollar_change > 0 and (credit_change or 0.0) > 0:
+    if (
+        real_yield_change is not None
+        and dollar_change is not None
+        and credit_change is not None
+        and real_yield_change > 0
+        and dollar_change > 0
+        and credit_change > 0
+    ):
         mismatch_warnings.append(
             {
                 "id": "tightening_confirmation",
