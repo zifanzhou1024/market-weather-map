@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import CandidateSourcePanel, { type CandidateSourceItem } from "../components/CandidateSourcePanel";
 import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import EventRiskPanel from "../components/EventRiskPanel";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/MultiSeriesChart";
+import OptionsSentimentPanel from "../components/OptionsSentimentPanel";
 import ScoreCard from "../components/ScoreCard";
 import SignalChecklist from "../components/SignalChecklist";
 import {
@@ -33,7 +36,30 @@ const tacticalSeriesIds = [
   "real_yield_10y"
 ];
 const tacticalDerivedIds = ["vix9d_vix_ratio", "vix_vix3m_ratio", "hy_minus_ig_oas", "net_liquidity"];
-const tacticalStatusIds = [...tacticalSeriesIds, ...tacticalDerivedIds];
+const optionCandidateIds = [
+  "put_call_spxw",
+  "put_call_spx",
+  "put_call_index",
+  "put_call_equity",
+  "put_call_vix",
+  "put_call_etp",
+  "put_call_total"
+];
+const vxCandidateIds = ["vx1", "vx2", "vx3", "vx4", "vx5", "vx6", "vx7", "vx8"];
+const eventCandidateIds = [
+  "event_cpi",
+  "event_fomc",
+  "event_payrolls",
+  "event_treasury_auction",
+  "event_opex"
+];
+const tacticalStatusIds = [
+  ...tacticalSeriesIds,
+  ...tacticalDerivedIds,
+  ...optionCandidateIds,
+  ...eventCandidateIds,
+  ...vxCandidateIds
+];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
@@ -84,6 +110,40 @@ function toChartSeries(series: TimeSeriesFile[]): MultiSeriesChartSeries[] {
       id: item.series_id,
       name: item.series_id.toUpperCase()
     }));
+}
+
+function fallbackCandidateStatus(entry?: SeriesCatalogEntry) {
+  return entry?.access_status ?? entry?.score_status ?? "source_review_required";
+}
+
+function candidateItems(
+  catalog: SeriesCatalogEntry[],
+  status: DataStatusFile,
+  ids: string[]
+): CandidateSourceItem[] {
+  return ids.map((id) => {
+    const entry = catalog.find((candidate) => candidate.id === id);
+    const statusRow = status.series[id];
+
+    return {
+      id,
+      label: entry?.name ?? id,
+      note: statusRow?.message ?? entry?.notes ?? "Source review required.",
+      status: statusRow?.status ?? fallbackCandidateStatus(entry)
+    };
+  });
+}
+
+function vixFuturesFooter() {
+  return (
+    <div className="fallback-proxy-note">
+      <span className="status-pill status-partial">Fallback proxy</span>
+      <p>
+        VIX9D/VIX and VIX/VIX3M can provide fallback proxy context while VX data is inactive. This is not
+        a tradable futures curve.
+      </p>
+    </div>
+  );
 }
 
 export default function TacticalTradingWeather() {
@@ -153,6 +213,8 @@ export default function TacticalTradingWeather() {
           </div>
           <SignalChecklist items={data.snapshot.checklist} />
           <CrossAssetConfirmationMatrix items={data.snapshot.confirmations} />
+          <OptionsSentimentPanel items={candidateItems(data.catalog, data.status, optionCandidateIds)} />
+          <EventRiskPanel />
           <section className="metric-grid" aria-label="Tactical metrics">
             {data.series.map((series) => (
               <MetricCard
@@ -169,6 +231,13 @@ export default function TacticalTradingWeather() {
             series={toChartSeries(data.series)}
             title="VIX term-structure proxy"
             units="index"
+          />
+          <CandidateSourcePanel
+            eyebrow="Candidate sources"
+            footer={vixFuturesFooter()}
+            items={candidateItems(data.catalog, data.status, vxCandidateIds)}
+            summary="VX candidate rows remain gated until active futures data is approved for publication."
+            title="VIX futures readiness"
           />
           <DataGapPanel seriesIds={tacticalStatusIds} status={data.status} />
           <DataStatusTable seriesIds={tacticalStatusIds} status={data.status} />

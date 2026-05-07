@@ -237,6 +237,22 @@ function catalogEntry(
   };
 }
 
+function candidateCatalogEntry(
+  id: string,
+  category: SeriesCategory,
+  name: string,
+  notes: string
+): SeriesCatalogEntry {
+  return {
+    ...catalogEntry(id, category, name, "candidate"),
+    access_status: "terms_review_needed",
+    notes,
+    score_status: "candidate",
+    source: "Candidate registry",
+    source_url: `https://example.com/${id}`
+  };
+}
+
 const catalog: SeriesCatalogEntry[] = [
   {
     category: "volatility",
@@ -443,7 +459,88 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("bank_deposits", "credit", "Bank deposits", "USD billions", "weekly"),
   catalogEntry("broad_dollar", "dollar", "Nominal Broad U.S. Dollar Index", "index"),
   catalogEntry("usdjpy", "dollar", "USD/JPY", "exchange rate"),
-  catalogEntry("eurusd", "dollar", "EUR/USD", "exchange rate")
+  catalogEntry("eurusd", "dollar", "EUR/USD", "exchange rate"),
+  candidateCatalogEntry(
+    "put_call_spxw",
+    "sentiment",
+    "SPXW put/call ratio",
+    "SPXW option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_spx",
+    "sentiment",
+    "SPX put/call ratio",
+    "SPX option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_index",
+    "sentiment",
+    "Index put/call ratio",
+    "Index option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_equity",
+    "sentiment",
+    "Equity put/call ratio",
+    "Equity option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_vix",
+    "sentiment",
+    "VIX put/call ratio",
+    "VIX option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_etp",
+    "sentiment",
+    "ETP put/call ratio",
+    "ETP option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_total",
+    "sentiment",
+    "Total put/call ratio",
+    "Total option sentiment candidate pending source and terms readiness review."
+  ),
+  ...Array.from({ length: 8 }, (_, index) => {
+    const month = index + 1;
+    return candidateCatalogEntry(
+      `vx${month}`,
+      "volatility",
+      `VX${month} futures`,
+      `VX${month} futures candidate month pending source and terms readiness review.`
+    );
+  }),
+  candidateCatalogEntry(
+    "event_cpi",
+    "inflation",
+    "CPI release calendar",
+    "Release-calendar candidate pending source readiness review."
+  ),
+  candidateCatalogEntry(
+    "event_fomc",
+    "rates",
+    "FOMC meeting calendar",
+    "Meeting-calendar candidate pending source readiness review."
+  ),
+  candidateCatalogEntry(
+    "event_payrolls",
+    "labor",
+    "Payrolls release calendar",
+    "Labor-release candidate pending source readiness review."
+  ),
+  candidateCatalogEntry(
+    "event_treasury_auction",
+    "rates",
+    "Treasury auction calendar",
+    "Auction-calendar candidate pending source readiness review."
+  ),
+  candidateCatalogEntry(
+    "event_opex",
+    "sentiment",
+    "OPEX calendar",
+    "Options-expiration calendar candidate pending source readiness review."
+  )
 ];
 
 function seriesFile(seriesId: string, latestValue: number): TimeSeriesFile {
@@ -483,6 +580,17 @@ function statusRow(
     max_stale_days: frequency === "weekly" ? 14 : 7,
     source: "FRED",
     status: statusValue
+  };
+}
+
+function candidateStatusRow(message: string): DataStatusFile["series"][string] {
+  return {
+    ...statusRow("terms_review_needed"),
+    freshness_days: null,
+    last_observation: null,
+    max_stale_days: 30,
+    message,
+    source: "Candidate registry"
   };
 }
 
@@ -642,7 +750,27 @@ const status: DataStatusFile = {
     bank_deposits: statusRow("unavailable", "weekly"),
     broad_dollar: statusRow("unavailable"),
     usdjpy: statusRow("unavailable"),
-    eurusd: statusRow("unavailable")
+    eurusd: statusRow("unavailable"),
+    put_call_spxw: candidateStatusRow("SPXW options source remains under terms review."),
+    put_call_spx: candidateStatusRow("SPX options source remains under terms review."),
+    put_call_index: candidateStatusRow("Index options source remains under terms review."),
+    put_call_equity: candidateStatusRow("Equity options source remains under terms review."),
+    put_call_vix: candidateStatusRow("VIX options source remains under terms review."),
+    put_call_etp: candidateStatusRow("ETP options source remains under terms review."),
+    put_call_total: candidateStatusRow("Total options source remains under terms review."),
+    vx1: candidateStatusRow("VX1 futures source remains under terms review."),
+    vx2: candidateStatusRow("VX2 futures source remains under terms review."),
+    vx3: candidateStatusRow("VX3 futures source remains under terms review."),
+    vx4: candidateStatusRow("VX4 futures source remains under terms review."),
+    vx5: candidateStatusRow("VX5 futures source remains under terms review."),
+    vx6: candidateStatusRow("VX6 futures source remains under terms review."),
+    vx7: candidateStatusRow("VX7 futures source remains under terms review."),
+    vx8: candidateStatusRow("VX8 futures source remains under terms review."),
+    event_cpi: candidateStatusRow("CPI calendar source remains under review."),
+    event_fomc: candidateStatusRow("FOMC calendar source remains under review."),
+    event_payrolls: candidateStatusRow("Payrolls calendar source remains under review."),
+    event_treasury_auction: candidateStatusRow("Treasury auction calendar source remains under review."),
+    event_opex: candidateStatusRow("OPEX calendar source remains under review.")
   }
 };
 
@@ -1265,6 +1393,11 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Cboe 3-Month Volatility Index");
     expect(container.textContent).toContain("VIX9D / VIX");
     expect(container.textContent).toContain("VIX / VIX3M");
+    expect(container.textContent).toContain("VX futures curve");
+    expect(container.textContent).toContain("Fallback proxy");
+    expect(container.textContent).toContain("VX1 futures");
+    expect(container.textContent).toContain("VX1 futures source remains under terms review.");
+    expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
   });
 
   it("surfaces net liquidity and reserve balances on liquidity", async () => {
@@ -1337,6 +1470,24 @@ describe("data-backed routes", () => {
     await waitForContent(container, "Tactical Trading Weather");
     expect(container.textContent).toContain("Daily checklist");
     expect(container.textContent).toContain("VIX term-structure proxy");
+    expect(container.textContent).toContain("Options sentiment");
+    expect(container.textContent).toContain("Event risk");
+    expect(container.textContent).toContain("VIX futures readiness");
+    expect(container.textContent).toContain("SPXW put/call ratio");
+    expect(container.textContent).toContain("SPXW options source remains under terms review.");
+    expect(container.textContent).toContain("VX1 futures");
+    expect(container.textContent).toContain("CPI");
+
+    const scoreCards = Array.from(container.querySelectorAll(".score-card"));
+    const marketWeatherCard = scoreCards.find((card) => card.textContent?.includes("Market Weather"));
+    const fragilityCard = scoreCards.find((card) => card.textContent?.includes("Fragility"));
+
+    expect(marketWeatherCard?.textContent).toContain("Mixed");
+    expect(marketWeatherCard?.textContent).toContain("19.17");
+    expect(fragilityCard?.textContent).toContain("Moderate");
+    expect(fragilityCard?.textContent).toContain("-4.10");
+    expect(fetch).not.toHaveBeenCalledWith("/data/series/put_call_spxw.json");
+    expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
   });
 
   it("renders long-term macro climate from current score summary", async () => {
