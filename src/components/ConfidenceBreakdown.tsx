@@ -37,8 +37,8 @@ export default function ConfidenceBreakdown({ dataQuality }: ConfidenceBreakdown
       </dl>
       {reasons.length > 0 ? (
         <ul className="score-list">
-          {reasons.map((reason) => (
-            <li key={reason}>{reason}</li>
+          {reasons.map((reason, index) => (
+            <li key={`${index}-${reason}`}>{reason}</li>
           ))}
         </ul>
       ) : (

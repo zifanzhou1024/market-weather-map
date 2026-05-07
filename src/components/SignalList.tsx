@@ -10,8 +10,8 @@ export default function SignalList({ emptyText, items, title }: SignalListProps)
       <h4>{title}</h4>
       {items.length > 0 ? (
         <ul className="score-list">
-          {items.map((item) => (
-            <li key={item}>{item}</li>
+          {items.map((item, index) => (
+            <li key={`${title}-${index}-${item}`}>{item}</li>
           ))}
         </ul>
       ) : (

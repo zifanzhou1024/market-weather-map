@@ -1,6 +1,6 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import ConfidenceBreakdown from "./ConfidenceBreakdown";
 import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
 import CrossAssetConfirmationMatrix from "./CrossAssetConfirmationMatrix";
@@ -333,6 +333,22 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Sentiment is limited to CFTC positioning.");
     expect(container.textContent).toContain("High-yield spreads widened over the past month.");
     expect(container.textContent).toContain("Reserve balances improved over the past month.");
+  });
+
+  it("renders duplicate score messages without React key warnings", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const duplicateScore = {
+      ...scoreBlock,
+      recent_changes: ["Credit spread pressure is contained.", "Credit spread pressure is contained."],
+      top_risks: ["Real yields are elevated.", "Real yields are elevated."],
+      top_supports: ["Credit spread pressure is contained.", "Credit spread pressure is contained."]
+    };
+
+    render(<ScoreCard title="Duplicate Score" score={duplicateScore} />);
+
+    const messages = consoleError.mock.calls.map((call) => String(call[0])).join("\n");
+    expect(messages).not.toContain("Encountered two children with the same key");
+    consoleError.mockRestore();
   });
 
   it("renders score card fallbacks for stale partial score payloads", () => {
@@ -698,6 +714,22 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Credit spreads narrowed.");
     expect(container.textContent).not.toContain("No support signals.");
     expect(container.querySelector(".score-list")).not.toBeNull();
+  });
+
+  it("renders duplicate signal list messages without React key warnings", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    render(
+      <SignalList
+        emptyText="No signals."
+        items={["Real yields are elevated.", "Real yields are elevated."]}
+        title="Risks"
+      />
+    );
+
+    const messages = consoleError.mock.calls.map((call) => String(call[0])).join("\n");
+    expect(messages).not.toContain("Encountered two children with the same key");
+    consoleError.mockRestore();
   });
 
   it("renders data gap notes for stale candidate and expected-release-window rows", () => {
