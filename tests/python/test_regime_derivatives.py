@@ -62,3 +62,22 @@ def test_regime_snapshot_labels_risk_on_easing():
     assert snapshot["regime"]["label"] == "Strong risk-on"
     assert snapshot["regime"]["yield_driver"] == "real_yield_easing"
     assert any(item["id"] == "credit" and item["status"] == "confirming" for item in snapshot["confirmations"])
+
+
+def test_regime_snapshot_marks_missing_inputs_unavailable():
+    snapshot = compute_regime_score.build_regime_snapshot({}, "2026-05-07T00:00:00Z")
+
+    assert snapshot["regime"]["label"] == "Unavailable"
+    assert snapshot["regime"]["tips_direction"] == "unavailable"
+    assert snapshot["regime"]["dollar_direction"] == "unavailable"
+    assert snapshot["regime"]["nominal_yield_direction"] == "unavailable"
+    assert snapshot["regime"]["yield_driver"] == "unavailable"
+
+    checklist_by_id = {item["id"]: item for item in snapshot["checklist"]}
+    assert checklist_by_id["real_yield_10y"]["state"] == "unavailable"
+    assert "flat" not in checklist_by_id["real_yield_10y"]["message"]
+    assert checklist_by_id["overall_regime"]["state"] == "Unavailable"
+
+    assert all(item["status"] == "unavailable" for item in snapshot["confirmations"])
+    assert snapshot["quadrant_trail"] == []
+    assert snapshot["yield_decomposition"] == []

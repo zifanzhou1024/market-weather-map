@@ -16,9 +16,10 @@ export function yieldDriverLabel(driver: YieldDriver) {
     breakeven_inflation_driven: "Breakeven / inflation driven",
     real_yield_easing: "Real-yield easing",
     safe_haven_or_growth_scare: "Safe-haven / growth-scare",
-    mixed: "Mixed"
+    mixed: "Mixed",
+    unavailable: "Unavailable"
   };
-  return labels[driver] ?? "Mixed";
+  return labels[driver] ?? "Unavailable";
 }
 
 export function safeNumber(value: unknown): number | null {

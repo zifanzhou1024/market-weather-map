@@ -45,7 +45,8 @@ export type YieldDriver =
   | "breakeven_inflation_driven"
   | "real_yield_easing"
   | "safe_haven_or_growth_scare"
-  | "mixed";
+  | "mixed"
+  | "unavailable";
 
 export type RegimeRole =
   | "real_yield"

@@ -479,7 +479,7 @@ def _latest_dates(series_by_id: dict[str, dict[str, Any]]) -> list[str]:
 
 def _direction_from_change(change: object, threshold: float = 0.05) -> str:
     if not _finite_number(change):
-        return "flat"
+        return "unavailable"
     value = float(change)
     if value >= threshold:
         return "up"
@@ -500,6 +500,8 @@ def _summary_change(
 
 
 def _regime_label(tips_direction: str, dollar_direction: str) -> str:
+    if "unavailable" in {tips_direction, dollar_direction}:
+        return "Unavailable"
     if tips_direction == "down" and dollar_direction == "down":
         return "Strong risk-on"
     if tips_direction == "up" and dollar_direction == "down":
@@ -516,15 +518,17 @@ def _yield_driver(
     real_change: float | None,
     breakeven_change: float | None,
 ) -> str:
-    if nominal_change is None or abs(nominal_change) < 0.05:
+    if nominal_change is None or real_change is None or breakeven_change is None:
+        return "unavailable"
+    if abs(nominal_change) < 0.05:
         return "mixed"
-    real_abs = abs(real_change or 0.0)
-    breakeven_abs = abs(breakeven_change or 0.0)
-    if nominal_change > 0 and real_abs > breakeven_abs and (real_change or 0.0) > 0:
+    real_abs = abs(real_change)
+    breakeven_abs = abs(breakeven_change)
+    if nominal_change > 0 and real_abs > breakeven_abs and real_change > 0:
         return "real_yield_driven"
-    if nominal_change > 0 and breakeven_abs >= real_abs and (breakeven_change or 0.0) > 0:
+    if nominal_change > 0 and breakeven_abs >= real_abs and breakeven_change > 0:
         return "breakeven_inflation_driven"
-    if nominal_change < 0 and (real_change or 0.0) < 0:
+    if nominal_change < 0 and real_change < 0:
         return "real_yield_easing"
     if nominal_change < 0:
         return "safe_haven_or_growth_scare"
@@ -582,6 +586,12 @@ def _confirmation_status(
     if regime_label == "Tightening / risk-off":
         return "confirming" if direction == risk_off_confirming_direction else "diverging"
     return "mixed"
+
+
+def _direction_message(label: str, direction: str) -> str:
+    if direction == "unavailable":
+        return f"{label} one-month change is unavailable."
+    return f"{label} is {direction} over one month."
 
 
 def _build_quadrant_trail(series_by_id: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
@@ -676,25 +686,29 @@ def build_regime_snapshot(series_by_id: dict[str, dict[str, Any]], generated_at:
             "id": "real_yield_10y",
             "label": "10Y real yield",
             "state": tips_direction,
-            "message": f"10Y real yield is {tips_direction} over one month.",
+            "message": _direction_message("10Y real yield", tips_direction),
         },
         {
             "id": "dollar",
             "label": "Broad dollar",
             "state": dollar_direction,
-            "message": f"The broad dollar is {dollar_direction} over one month.",
+            "message": _direction_message("The broad dollar", dollar_direction),
         },
         {
             "id": "nominal_10y",
             "label": "10Y nominal yield",
             "state": nominal_direction,
-            "message": f"10Y nominal yield is {nominal_direction} over one month.",
+            "message": _direction_message("10Y nominal yield", nominal_direction),
         },
         {
             "id": "yield_driver",
             "label": "Yield driver",
             "state": yield_driver,
-            "message": f"The nominal yield move is classified as {yield_driver.replace('_', ' ')}.",
+            "message": (
+                "Nominal yield driver inputs are unavailable."
+                if yield_driver == "unavailable"
+                else f"The nominal yield move is classified as {yield_driver.replace('_', ' ')}."
+            ),
         },
         {
             "id": "vix_curve",
