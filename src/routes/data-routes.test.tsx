@@ -8,6 +8,7 @@ import App from "../App";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
+  RegimeSnapshotFile,
   ScoreSummaryFile,
   SeriesCategory,
   SeriesCatalogEntry,
@@ -38,10 +39,10 @@ function render(element: React.ReactNode) {
 
 async function waitForContent(container: HTMLElement, text: string) {
   for (let attempt = 0; attempt < 20; attempt += 1) {
-    if (container.textContent?.includes(text)) return;
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
+    if (container.textContent?.includes(text)) return;
   }
 
   expect(container.textContent).toContain(text);
@@ -697,6 +698,99 @@ const scoreSummary: ScoreSummaryFile = {
   }
 };
 
+const regimeSnapshot: RegimeSnapshotFile = {
+  date: "2026-05-01",
+  generated_at_utc: "2026-05-04T00:00:00Z",
+  method_version: "phase3-regime-snapshot-v1",
+  regime: {
+    dollar_direction: "up",
+    label: "Tightening / risk-off",
+    nominal_yield_direction: "up",
+    tips_direction: "up",
+    yield_driver: "real_yield_driven"
+  },
+  checklist: [
+    {
+      id: "vix_curve",
+      label: "VIX term-structure proxy",
+      message: "VIX remains below VIX3M, but the front of the curve is firming.",
+      state: "watch"
+    },
+    {
+      id: "credit_spreads",
+      label: "Credit spread pressure",
+      message: "High-yield spreads are wider than investment-grade spreads on the latest snapshot.",
+      state: "risk"
+    },
+    {
+      id: "liquidity",
+      label: "Liquidity impulse",
+      message: "Net liquidity remains positive but has flattened over the last month.",
+      state: "mixed"
+    }
+  ],
+  confirmations: [
+    {
+      id: "credit",
+      label: "Cross-asset confirmation",
+      message: "Credit and volatility confirm a more fragile backdrop.",
+      status: "confirming"
+    },
+    {
+      id: "dollar",
+      label: "Dollar confirmation",
+      message: "Dollar strength is consistent with tighter global financial conditions.",
+      status: "confirming"
+    }
+  ],
+  quadrant_trail: [
+    {
+      credit_change: 0.18,
+      date: "2026-04-29",
+      dollar_change: 0.2,
+      nominal_yield_change: 0.06,
+      real_yield_change: 0.04,
+      vix_percentile: 55
+    },
+    {
+      credit_change: 0.24,
+      date: "2026-04-30",
+      dollar_change: 0.35,
+      nominal_yield_change: 0.08,
+      real_yield_change: 0.06,
+      vix_percentile: 61
+    },
+    {
+      credit_change: 0.31,
+      date: "2026-05-01",
+      dollar_change: 0.48,
+      nominal_yield_change: 0.1,
+      real_yield_change: 0.09,
+      vix_percentile: 64
+    }
+  ],
+  yield_decomposition: [
+    {
+      breakeven_10y: 2.28,
+      date: "2026-04-29",
+      nominal_10y: 4.32,
+      real_yield_10y: 2.04
+    },
+    {
+      breakeven_10y: 2.27,
+      date: "2026-04-30",
+      nominal_10y: 4.37,
+      real_yield_10y: 2.1
+    },
+    {
+      breakeven_10y: 2.26,
+      date: "2026-05-01",
+      nominal_10y: 4.42,
+      real_yield_10y: 2.16
+    }
+  ]
+};
+
 afterEach(() => {
   if (root) {
     act(() => root?.unmount());
@@ -957,10 +1051,10 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Chicago Fed National Activity Index");
     expect(container.textContent).toContain("Durable goods orders");
     expect(container.textContent).toContain("Sahm Rule recession indicator");
-    expect(container.textContent).toContain("Rates & Policy");
-    expect(container.textContent).toContain("Credit & Banking");
-    expect(container.textContent).toContain("Dollar & Global");
-    expect(container.textContent).toContain("Sentiment & Positioning");
+    expect(container.textContent).toContain("Rates");
+    expect(container.textContent).toContain("Credit");
+    expect(container.textContent).toContain("Dollar");
+    expect(container.textContent).toContain("Positioning");
     expect(container.textContent).toContain("Static feed freshness");
   });
 
@@ -1222,6 +1316,60 @@ describe("data-backed routes", () => {
 
     expect(container.textContent).toContain("Active data is positioning only");
     expect(container.textContent).toContain("CFTC positioning is weekly, delayed, and futures-specific.");
+  });
+
+  it("renders tactical trading weather from active regime data", async () => {
+    mockStaticFetch(
+      routeFetchFiles({
+        "/data/derived/regime_snapshot.json": regimeSnapshot
+      })
+    );
+
+    const container = render(
+      <MemoryRouter initialEntries={["/tactical"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Tactical Trading Weather");
+    expect(container.textContent).toContain("Daily checklist");
+    expect(container.textContent).toContain("VIX term-structure proxy");
+  });
+
+  it("renders long-term macro climate from current score summary", async () => {
+    mockStaticFetch(
+      routeFetchFiles({
+        "/data/derived/regime_snapshot.json": regimeSnapshot
+      })
+    );
+
+    const container = render(
+      <MemoryRouter initialEntries={["/macro-climate"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Long-Term Macro Climate");
+    expect(container.textContent).toContain("Macro Climate");
+    expect(container.textContent).toContain("Growth cycle");
+  });
+
+  it("renders the regime map route", async () => {
+    mockStaticFetch(
+      routeFetchFiles({
+        "/data/derived/regime_snapshot.json": regimeSnapshot
+      })
+    );
+
+    const container = render(
+      <MemoryRouter initialEntries={["/regime-map"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "TIPS x Dollar Regime Map");
+    expect(container.textContent).toContain("Yield driver");
+    expect(container.textContent).toContain("Cross-asset confirmation");
   });
 
   it("growth route renders growth and labor read interpretation", async () => {

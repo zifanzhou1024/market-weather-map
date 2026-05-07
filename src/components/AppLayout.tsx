@@ -2,15 +2,18 @@ import { NavLink, Outlet } from "react-router-dom";
 
 const navItems = [
   { to: "/", label: "Overview" },
+  { to: "/tactical", label: "Tactical Trading Weather" },
+  { to: "/macro-climate", label: "Long-Term Macro Climate" },
+  { to: "/regime-map", label: "Regime Map" },
+  { to: "/volatility", label: "Volatility" },
+  { to: "/rates", label: "Rates" },
+  { to: "/liquidity", label: "Liquidity" },
+  { to: "/credit", label: "Credit" },
+  { to: "/dollar-global", label: "Dollar" },
+  { to: "/commodities", label: "Commodities" },
   { to: "/growth", label: "Growth" },
   { to: "/inflation", label: "Inflation" },
-  { to: "/rates", label: "Rates & Policy" },
-  { to: "/liquidity", label: "Liquidity" },
-  { to: "/credit", label: "Credit & Banking" },
-  { to: "/volatility", label: "Volatility" },
-  { to: "/dollar-global", label: "Dollar & Global" },
-  { to: "/commodities", label: "Commodities" },
-  { to: "/sentiment", label: "Sentiment & Positioning" },
+  { to: "/sentiment", label: "Positioning" },
   { to: "/methodology", label: "Methodology" }
 ];
 
