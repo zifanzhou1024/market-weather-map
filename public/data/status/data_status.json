@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-07T15:37:45Z",
-  "last_successful_update_utc": "2026-05-07T15:37:45Z",
+  "generated_at_utc": "2026-05-07T17:47:16Z",
+  "last_successful_update_utc": "2026-05-07T17:47:16Z",
   "overall_status": "partial",
   "series": {
     "bank_credit": {
@@ -461,7 +461,7 @@
       "max_stale_days": 7,
       "message": "Candidate source requires access or terms review before scoring.",
       "observation_period": null,
-      "source": "ICE",
+      "source": "ICE Data Indices",
       "status": "terms_review_needed"
     },
     "net_liquidity": {
@@ -657,6 +657,17 @@
       "observation_period": "2026-03",
       "source": "FRED",
       "status": "ok"
+    },
+    "skew_index": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Options Market Statistics",
+      "status": "terms_review_needed"
     },
     "sofr": {
       "expected_frequency": "daily",

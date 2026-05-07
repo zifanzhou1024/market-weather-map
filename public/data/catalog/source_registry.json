@@ -62,6 +62,15 @@
     "terms_status": "review_each_series",
     "update_cadence": "varies_by_series"
   },
+  "ice_indices": {
+    "access_status": "terms_review_needed",
+    "base_url": "https://developer.ice.com/fixed-income-data-services/",
+    "name": "ICE Data Indices",
+    "notes": "MOVE Index access and static redistribution require source review before active ingestion.",
+    "requires_secret": false,
+    "terms_status": "review_needed",
+    "update_cadence": "daily_market_data"
+  },
   "occ": {
     "access_status": "terms_review_needed",
     "base_url": "https://www.theocc.com",

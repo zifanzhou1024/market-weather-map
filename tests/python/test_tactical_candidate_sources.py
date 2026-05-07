@@ -44,6 +44,20 @@ def test_tactical_candidate_sources_are_gated():
     assert registry["economic_calendar"]["access_status"] == "terms_review_needed"
 
 
+def test_shock_risk_candidate_sources_are_gated():
+    registry = source_registry_entries()
+    entries = entries_by_id()
+
+    assert registry["ice_indices"]["access_status"] == "terms_review_needed"
+    assert entries["move_index"]["score_status"] == "candidate"
+    assert entries["move_index"]["access_status"] == "terms_review_needed"
+    assert entries["move_index"]["regime_role"] == ["bond_volatility"]
+
+    assert entries["skew_index"]["score_status"] == "candidate"
+    assert entries["skew_index"]["access_status"] == "terms_review_needed"
+    assert "tail_risk" in entries["skew_index"]["regime_role"]
+
+
 def test_put_call_candidate_catalog_rows_do_not_score():
     entries = entries_by_id()
     expected = PUT_CALL_CANDIDATE_IDS
