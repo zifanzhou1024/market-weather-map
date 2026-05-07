@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-07T14:15:14Z",
-  "last_successful_update_utc": "2026-05-07T14:15:14Z",
+  "generated_at_utc": "2026-05-07T14:23:32Z",
+  "last_successful_update_utc": "2026-05-07T14:23:32Z",
   "overall_status": "partial",
   "series": {
     "bank_credit": {
@@ -246,7 +246,7 @@
       "status": "ok"
     },
     "event_cpi": {
-      "expected_frequency": "calendar",
+      "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": null,
       "last_observation": null,
@@ -257,7 +257,7 @@
       "status": "terms_review_needed"
     },
     "event_fomc": {
-      "expected_frequency": "calendar",
+      "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": null,
       "last_observation": null,
@@ -268,7 +268,7 @@
       "status": "terms_review_needed"
     },
     "event_opex": {
-      "expected_frequency": "calendar",
+      "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": null,
       "last_observation": null,
@@ -279,7 +279,7 @@
       "status": "terms_review_needed"
     },
     "event_payrolls": {
-      "expected_frequency": "calendar",
+      "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": null,
       "last_observation": null,
@@ -290,7 +290,7 @@
       "status": "terms_review_needed"
     },
     "event_treasury_auction": {
-      "expected_frequency": "calendar",
+      "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": null,
       "last_observation": null,
