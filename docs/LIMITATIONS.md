@@ -23,6 +23,8 @@
 - VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, Treasury supply, event calendars, and similar candidates do not affect scores, labels, or checklists before access terms, automation constraints, attribution, and redistribution rules are reviewed.
 - Candidate MOVE rows describe Treasury bond-volatility source gaps only. If reviewed data later becomes active, high MOVE with low VIX would describe bond-volatility pressure that may not be visible in equity volatility.
 - Candidate SKEW rows describe tail-risk source gaps only. SKEW is a tail-risk candidate and not a replacement for VIX.
+- Housing excludes home prices, existing home sales, affordability, and mortgage applications until source handling is reviewed.
+- Event Calendar rows are descriptive source links in PR 2, not guaranteed exact alert dates for every release.
 
 ## Source Access And Review
 
@@ -31,6 +33,7 @@
 - `restricted` sources are paid, gated, license-restricted, or otherwise not suitable for static public redistribution under current terms.
 - `unavailable` sources cannot currently be fetched or redistributed by the no-secret static workflow.
 - Candidate survey, flow, volatility, and term-premium sources can create coverage gaps. Those gaps should reduce score confidence rather than be silently filled with proxies.
+- Consumer/Fiscal/Treasury candidate rows do not affect scores.
 - Public macro series can be revised after initial publication, so historical scores may change when source data is refreshed.
 - Mismatch warnings are descriptive conflicts between active inputs. They do not imply a resolved direction when volatility, credit, liquidity, rate, dollar, or positioning channels disagree.
 

@@ -191,6 +191,60 @@ def test_catalog_entries_include_phase3_active_fred_macro_series():
         assert entry["endpoint_url"].endswith(fred_id)
 
 
+def test_phase4_catalog_contains_active_housing_sources():
+    entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
+    expected_sources = {
+        "housing_starts": "HOUST",
+        "building_permits": "PERMIT",
+        "mortgage_rate_30y": "MORTGAGE30US",
+    }
+
+    for series_id, fred_id in expected_sources.items():
+        entry = entries[series_id]
+        assert entry["category"] == "housing"
+        assert entry["source"] == "FRED"
+        assert entry["source_url"] == f"https://fred.stlouisfed.org/series/{fred_id}"
+        assert entry["endpoint_url"] == f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
+        assert entry["public"] is True
+        assert entry["score_status"] == "active"
+        assert entry["access_status"] == "free_public"
+        assert entry["terms_status"] == "review_each_series"
+
+
+def test_phase4_catalog_contains_consumer_and_fiscal_candidates_only():
+    entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
+    active_ids = {entry["id"] for entry in catalog_module.available_catalog_entries()}
+    fiscaldata_url = "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/"
+    expected_candidates = {
+        "real_disposable_personal_income": (
+            "FRED",
+            "https://fred.stlouisfed.org/series/DSPIC96",
+        ),
+        "personal_saving_rate": ("FRED", "https://fred.stlouisfed.org/series/PSAVERT"),
+        "total_consumer_credit": ("FRED", "https://fred.stlouisfed.org/series/TOTALSL"),
+        "revolving_consumer_credit": ("FRED", "https://fred.stlouisfed.org/series/REVOLSL"),
+        "household_debt_service_ratio": ("FRED", "https://fred.stlouisfed.org/series/DSR"),
+        "monthly_treasury_receipts": ("FiscalData", fiscaldata_url),
+        "monthly_treasury_outlays": ("FiscalData", fiscaldata_url),
+        "monthly_treasury_deficit_surplus": ("FiscalData", fiscaldata_url),
+        "treasury_interest_expense": ("FiscalData", fiscaldata_url),
+        "treasury_auction_supply": (
+            "TreasuryDirect",
+            "https://www.treasuryauctions.gov/auctions/when-auctions-happen/",
+        ),
+    }
+
+    for series_id, (source, source_url) in expected_candidates.items():
+        entry = entries[series_id]
+        assert entry["source"] == source
+        assert entry["source_url"] == source_url
+        assert entry["score_status"] == "candidate"
+        assert entry["public"] is False
+        assert entry["access_status"] == "terms_review_needed"
+        assert entry["terms_status"] == "review_needed"
+        assert series_id not in active_ids
+
+
 def test_catalog_entries_use_dollar_category_for_phase3_dollar_series():
     entries = {str(entry["id"]): entry for entry in catalog_entries()}
 

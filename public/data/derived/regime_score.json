@@ -1,18 +1,18 @@
 {
   "buckets": {
-    "commodities_inflation_impulse": -48.18,
+    "commodities_inflation_impulse": -48.26,
     "credit_spreads": 62.3,
     "dollar_global": 76.98,
-    "liquidity_funding": 3.51,
-    "rates_real_yields": -44.44,
+    "liquidity_funding": -27.61,
+    "rates_real_yields": -33.34,
     "sentiment_positioning": -30.15,
     "volatility_tail_risk": 21.16
   },
-  "date": "2026-05-06",
-  "generated_at_utc": "2026-05-07T15:37:45Z",
+  "date": "2026-05-07",
+  "generated_at_utc": "2026-05-07T21:47:50Z",
   "label": "Mixed",
-  "method_version": "phase3-three-score-v1",
-  "overall_score": 10.71,
+  "method_version": "phase4-pr2-macro-completeness-v1",
+  "overall_score": 6.77,
   "top_risks": [
     "Commodity inflation impulse is elevated.",
     "Real yields are elevated.",

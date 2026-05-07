@@ -731,13 +731,13 @@ def test_build_score_summary_returns_three_scores_with_specific_drivers():
 
     summary = compute_regime_score.build_score_summary(series, "2026-05-04T00:00:00Z")
 
-    assert summary["method_version"] == "phase3-three-score-v1"
+    assert summary["method_version"] == "phase4-pr2-macro-completeness-v1"
     assert set(summary["scores"]) == {"market_weather", "macro_climate", "fragility"}
     assert "High-yield spreads widened over the past month." in summary["scores"]["market_weather"]["top_risks"]
     assert summary["scores"]["macro_climate"]["confidence"] < 1.0
-    assert "Housing is not active in Phase 4 PR 1." in summary["scores"]["macro_climate"]["missing_or_stale_notes"]
+    assert "Housing is not active in Phase 4 PR 1." not in summary["scores"]["macro_climate"]["missing_or_stale_notes"]
     assert summary["data_quality"]["overall_confidence"] <= 1.0
-    assert "Housing is not active in Phase 4 PR 1." in summary["data_quality"]["reasons"]
+    assert "Housing is not active in Phase 4 PR 1." not in summary["data_quality"]["reasons"]
 
 
 def test_missing_phase_3_macro_coverage_lowers_confidence_and_adds_notes():
@@ -756,11 +756,55 @@ def test_missing_phase_3_macro_coverage_lowers_confidence_and_adds_notes():
     macro = summary["scores"]["macro_climate"]
 
     assert macro["confidence"] < 0.8
-    assert "Housing is not active in Phase 4 PR 1." in macro["missing_or_stale_notes"]
+    assert "Housing is not active in Phase 4 PR 1." not in macro["missing_or_stale_notes"]
     assert any("growth" in note and "cfnai" in note for note in macro["missing_or_stale_notes"])
     assert any("labor" in note and "nonfarm_payrolls" in note for note in macro["missing_or_stale_notes"])
     assert any("inflation" in note and "headline_cpi" in note for note in macro["missing_or_stale_notes"])
     assert any("consumer/production" in note and "real_retail_sales" in note for note in macro["missing_or_stale_notes"])
+
+
+def test_macro_climate_includes_active_housing_bucket():
+    series = {
+        "housing_starts": _summary(percentile_252d=80.0),
+        "building_permits": _summary(percentile_252d=70.0),
+        "mortgage_rate_30y": _summary(percentile_252d=20.0),
+        "cfnai": _summary(percentile_252d=50.0),
+        "cfnai_3m_avg": _summary(percentile_252d=50.0),
+        "nonfarm_payrolls": _summary(percentile_252d=50.0),
+        "unemployment_rate": _summary(percentile_252d=50.0),
+        "initial_claims": _summary(percentile_252d=50.0),
+        "sahm_rule": _summary(percentile_252d=50.0),
+        "headline_cpi": _summary(percentile_252d=50.0),
+        "core_cpi": _summary(percentile_252d=50.0),
+        "core_pce": _summary(percentile_252d=50.0),
+        "ppi_final_demand": _summary(percentile_252d=50.0),
+        "real_retail_sales": _summary(percentile_252d=50.0),
+        "industrial_production": _summary(percentile_252d=50.0),
+        "durable_goods_orders": _summary(percentile_252d=50.0),
+        "real_yield_10y": _summary(percentile_252d=50.0),
+    }
+
+    summary = compute_regime_score.build_score_summary(series, "2026-05-05T00:00:00Z")
+    macro = summary["scores"]["macro_climate"]
+
+    assert "housing" in macro["bucket_scores"]
+    assert macro["bucket_weights"]["housing"] == 0.15
+    assert macro["bucket_scores"]["housing"] > 0
+    assert "Housing activity and rate sensitivity are supportive." in macro["top_supports"]
+    assert "Housing is not active" not in " ".join(macro["missing_or_stale_notes"])
+
+
+def test_missing_housing_lowers_macro_confidence_with_pr2_note():
+    series = {
+        "cfnai": _summary(percentile_252d=50.0),
+        "cfnai_3m_avg": _summary(percentile_252d=50.0),
+    }
+
+    summary = compute_regime_score.build_score_summary(series, "2026-05-05T00:00:00Z")
+    macro = summary["scores"]["macro_climate"]
+
+    assert any("housing" in note.lower() for note in macro["missing_or_stale_notes"])
+    assert macro["confidence_breakdown"]["coverage_confidence"] < 1.0
 
 
 def test_score_summary_does_not_embed_candidate_source_ids():
@@ -779,6 +823,50 @@ def test_score_summary_does_not_embed_candidate_source_ids():
     assert "ism_manufacturing_pmi" not in summary_text
     assert "move_index" not in summary_text
     assert "Treasury/bond volatility source is not active." in summary_text
+
+
+def test_candidate_scaffolding_does_not_change_score_summary():
+    active_series = {
+        "housing_starts": _summary(percentile_252d=50.0),
+        "building_permits": _summary(percentile_252d=50.0),
+        "mortgage_rate_30y": _summary(percentile_252d=50.0),
+        "cfnai": _summary(percentile_252d=50.0),
+        "cfnai_3m_avg": _summary(percentile_252d=50.0),
+        "nonfarm_payrolls": _summary(percentile_252d=50.0),
+        "unemployment_rate": _summary(percentile_252d=50.0),
+        "initial_claims": _summary(percentile_252d=50.0),
+        "sahm_rule": _summary(percentile_252d=50.0),
+        "headline_cpi": _summary(percentile_252d=50.0),
+        "core_cpi": _summary(percentile_252d=50.0),
+        "core_pce": _summary(percentile_252d=50.0),
+        "ppi_final_demand": _summary(percentile_252d=50.0),
+        "real_retail_sales": _summary(percentile_252d=50.0),
+        "industrial_production": _summary(percentile_252d=50.0),
+        "durable_goods_orders": _summary(percentile_252d=50.0),
+        "real_yield_10y": _summary(percentile_252d=50.0),
+    }
+    candidate_extremes = {
+        "real_disposable_personal_income": _summary(percentile_252d=100.0),
+        "personal_saving_rate": _summary(percentile_252d=100.0),
+        "total_consumer_credit": _summary(percentile_252d=100.0),
+        "revolving_consumer_credit": _summary(percentile_252d=100.0),
+        "household_debt_service_ratio": _summary(percentile_252d=100.0),
+        "monthly_treasury_receipts": _summary(percentile_252d=100.0),
+        "monthly_treasury_outlays": _summary(percentile_252d=100.0),
+        "monthly_treasury_deficit_surplus": _summary(percentile_252d=100.0),
+        "treasury_interest_expense": _summary(percentile_252d=100.0),
+        "treasury_auction_supply": _summary(percentile_252d=100.0),
+    }
+
+    baseline = compute_regime_score.build_score_summary(
+        active_series, "2026-05-05T00:00:00Z"
+    )
+    with_candidates = compute_regime_score.build_score_summary(
+        {**active_series, **candidate_extremes}, "2026-05-05T00:00:00Z"
+    )
+
+    assert with_candidates["scores"] == baseline["scores"]
+    assert with_candidates["data_quality"] == baseline["data_quality"]
 
 
 def test_macro_climate_uses_phase_3_catalog_ids_not_legacy_aliases():
@@ -1829,7 +1917,7 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
             "macro_climate": {
               "score": 2,
               "confidence": 0.8,
-              "top_risks": ["Housing is not active in Phase 4 PR 1."],
+              "top_risks": [],
               "top_supports": [],
               "confidence_reasons": [],
               "recent_changes": [],
@@ -2121,6 +2209,9 @@ def test_score_summary_emits_data_quality_confidence_breakdown():
         "real_retail_sales": _summary(percentile_252d=50.0),
         "industrial_production": _summary(percentile_252d=50.0),
         "durable_goods_orders": _summary(percentile_252d=50.0),
+        "housing_starts": _summary(percentile_252d=50.0),
+        "building_permits": _summary(percentile_252d=50.0),
+        "mortgage_rate_30y": _summary(percentile_252d=50.0),
     }
     statuses = {
         series_id: {"status": "ok", "message": "Fresh."}
@@ -2144,8 +2235,10 @@ def test_score_summary_emits_data_quality_confidence_breakdown():
     }
     assert data_quality["coverage_confidence"] > 0.9
     assert data_quality["freshness_confidence"] == 1.0
-    assert data_quality["overall_confidence"] < 1.0
-    assert "Housing is not active in Phase 4 PR 1." in data_quality["reasons"]
+    assert data_quality["source_confidence"] < 1.0
+    assert data_quality["reasons"]
+    assert data_quality["overall_confidence"] == 0.99
+    assert "Housing is not active in Phase 4 PR 1." not in data_quality["reasons"]
 
 
 def test_stale_status_lowers_freshness_confidence():
@@ -2168,3 +2261,151 @@ def test_stale_status_lowers_freshness_confidence():
 
     assert summary["data_quality"]["freshness_confidence"] < 1.0
     assert any("reverse_repo" in reason for reason in summary["data_quality"]["reasons"])
+
+
+def _macro_calendar_event(**overrides):
+    event = {
+        "id": "cpi",
+        "title": "CPI",
+        "category": "inflation",
+        "importance": "high",
+        "source": "BLS",
+        "source_url": "https://www.bls.gov/schedule/news_release/cpi.htm",
+        "date": None,
+        "time": "08:30",
+        "timezone": "America/New_York",
+        "status": "source_link",
+        "notes": "Monthly release calendar source.",
+    }
+    event.update(overrides)
+    return event
+
+
+def _write_macro_calendar(tmp_path, monkeypatch, payload):
+    data_root = tmp_path / "public" / "data"
+    events_dir = data_root / "events"
+    events_dir.mkdir(parents=True)
+    (events_dir / "macro_calendar.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: data_root)
+
+
+def test_macro_calendar_schema_accepts_valid_payload(tmp_path, monkeypatch):
+    _write_macro_calendar(
+        tmp_path,
+        monkeypatch,
+        {
+            "generated_at_utc": "2026-05-05T00:00:00Z",
+            "method_version": "phase4-pr2-static-event-calendar-v1",
+            "events": [_macro_calendar_event()],
+        },
+    )
+
+    validate_schema.validate_macro_calendar_file()
+
+
+def test_macro_calendar_schema_requires_method_version(tmp_path, monkeypatch):
+    _write_macro_calendar(
+        tmp_path,
+        monkeypatch,
+        {
+            "generated_at_utc": "2026-05-05T00:00:00Z",
+            "events": [_macro_calendar_event()],
+        },
+    )
+
+    with pytest.raises(ValueError, match="method_version must be a string"):
+        validate_schema.validate_macro_calendar_file()
+
+
+def test_macro_calendar_schema_rejects_invalid_importance(tmp_path, monkeypatch):
+    _write_macro_calendar(
+        tmp_path,
+        monkeypatch,
+        {
+            "generated_at_utc": "2026-05-05T00:00:00Z",
+            "method_version": "phase4-pr2-static-event-calendar-v1",
+            "events": [_macro_calendar_event(importance="urgent")],
+        },
+    )
+
+    with pytest.raises(ValueError, match="importance is invalid"):
+        validate_schema.validate_macro_calendar_file()
+
+
+def test_macro_calendar_schema_rejects_duplicate_event_ids(tmp_path, monkeypatch):
+    _write_macro_calendar(
+        tmp_path,
+        monkeypatch,
+        {
+            "generated_at_utc": "2026-05-05T00:00:00Z",
+            "method_version": "phase4-pr2-static-event-calendar-v1",
+            "events": [
+                _macro_calendar_event(),
+                _macro_calendar_event(title="Duplicate CPI"),
+            ],
+        },
+    )
+
+    with pytest.raises(ValueError, match="duplicate event id"):
+        validate_schema.validate_macro_calendar_file()
+
+
+@pytest.mark.parametrize(
+    ("payload_overrides", "event_overrides", "match"),
+    [
+        ({"generated_at_utc": "not-a-date"}, {}, "generated_at_utc must be an ISO timestamp with timezone"),
+        (
+            {"generated_at_utc": "2026-05-05T00:00:00+05:00"},
+            {},
+            "generated_at_utc must be a UTC timestamp ending in Z",
+        ),
+        ({}, {"source_url": "not a url"}, "source_url must be an https URL with hostname"),
+        ({}, {"source_url": "https://bad host/path"}, "source_url must be an https URL with valid hostname"),
+        ({}, {"date": "tomorrow"}, "date must be an ISO date"),
+        ({}, {"time": "25:99"}, "time must be HH:MM 24-hour time"),
+        ({}, {"timezone": "Mars/Olympus"}, "timezone is invalid"),
+    ],
+)
+def test_macro_calendar_schema_rejects_invalid_semantic_fields(
+    tmp_path,
+    monkeypatch,
+    payload_overrides,
+    event_overrides,
+    match,
+):
+    payload = {
+        "generated_at_utc": "2026-05-05T00:00:00Z",
+        "method_version": "phase4-pr2-static-event-calendar-v1",
+        "events": [_macro_calendar_event(**event_overrides)],
+    }
+    payload.update(payload_overrides)
+    _write_macro_calendar(tmp_path, monkeypatch, payload)
+
+    with pytest.raises(ValueError, match=match):
+        validate_schema.validate_macro_calendar_file()
+
+
+def test_macro_calendar_generator_returns_static_event_payload():
+    from scripts.generate_macro_calendar import generate_macro_calendar
+
+    payload = generate_macro_calendar()
+
+    assert payload["method_version"] == "phase4-pr2-static-event-calendar-v1"
+    assert payload["events"]
+    assert all(event["source_url"].startswith("https://") for event in payload["events"])
+    assert {event["status"] for event in payload["events"]} <= {
+        "scheduled",
+        "source_link",
+        "estimated",
+    }
+
+
+def test_macro_calendar_generator_returns_fresh_event_objects():
+    from scripts.generate_macro_calendar import generate_macro_calendar
+
+    first_payload = generate_macro_calendar()
+    first_payload["events"][0]["title"] = "Mutated"
+
+    second_payload = generate_macro_calendar()
+
+    assert second_payload["events"][0]["title"] == "CPI"

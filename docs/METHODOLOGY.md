@@ -24,14 +24,15 @@ Market Weather is the headline cross-asset read. It summarizes current market co
 
 ### Macro Climate Score
 
-Macro Climate separates slower growth, labor, inflation, and real-rate conditions from the market tape.
+Macro Climate separates slower growth, labor, inflation, housing, and real-rate conditions from the market tape.
 
 | Bucket | Weight | Scoring status |
 | --- | ---: | --- |
-| Growth (`growth`) | 25% | Active when FRED growth inputs are available |
-| Labor (`labor`) | 25% | Active when labor inputs are available |
-| Inflation (`inflation`) | 20% | Active when CPI, PCE, and PPI inputs are available |
-| Consumer and production (`consumer_production`) | 20% | Active when retail sales, production, and durable goods inputs are available |
+| Growth (`growth`) | 20% | Active when FRED growth inputs are available |
+| Labor (`labor`) | 20% | Active when labor inputs are available |
+| Inflation (`inflation`) | 18% | Active when CPI, PCE, and PPI inputs are available |
+| Consumer and production (`consumer_production`) | 17% | Active when retail sales, production, and durable goods inputs are available |
+| Housing (`housing`) | 15% | Housing starts, building permits, and 30Y mortgage-rate pressure |
 | Real yields (`real_yields`) | 10% | Active when TIPS inputs are available |
 
 ### Fragility Score
@@ -63,6 +64,7 @@ The `percentile_252d` field name is retained for compatibility, but the percenti
 - Credit uses Fed-published financial stress and financial conditions series plus public OAS inputs. Higher stress, tighter conditions, and wider spreads are treated as less supportive.
 - Growth and labor inputs describe activity breadth, jobs momentum, claims pressure, and recession-risk indicators. Stronger breadth is supportive unless it conflicts with inflation pressure.
 - Inflation inputs describe price momentum across CPI, core measures, PCE, and PPI. Higher or reaccelerating inflation pressure is treated as less supportive for Macro Climate.
+- Housing inputs describe construction activity, permit activity, and mortgage-rate pressure. Stronger starts and permits are treated as more supportive housing activity; higher 30-year mortgage rates are treated as riskier or more restrictive. Housing should be read with release-aware freshness because monthly construction data and weekly mortgage rates update on different schedules.
 - Dollar and banking inputs describe global dollar pressure, reserve balances, bank credit, loans, business lending, and deposits. Dollar strength and weaker banking trends can raise Fragility.
 - Commodities use oil and crop price percentiles as a commodity impulse. Higher energy and crop price pressure can be less supportive because it can reflect input-cost and inflation pressure; lower or easing commodity pressure can be more supportive when it does not signal demand weakness.
 - Sentiment uses CFTC E-mini S&P 500 asset manager and leveraged money net positioning as a percent of open interest. Very high positioning percentiles are treated as crowding risk; low positioning readings are descriptive underexposure context.
