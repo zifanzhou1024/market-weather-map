@@ -51,6 +51,8 @@ If a bucket's coverage is missing or stale, the score builders keep the emitted 
 
 PR 2 tactical candidates for put/call categories, VIX futures, and event calendar families are source-readiness displays only. They do not affect active scoring, regime labels, checklist states, or confidence until source review is complete, except through documented source-readiness gaps.
 
+PR 3 shock-risk candidates for MOVE and SKEW follow the same gate. Candidate MOVE and SKEW rows are source-readiness displays only before source review, so they do not affect active scoring, regime labels, checklist states, or confidence except through documented source-readiness gaps.
+
 The `percentile_252d` field name is retained for compatibility, but the percentile window is frequency-aware: daily series use 252 observations, weekly series use 52 observations, and monthly series use 12 observations.
 
 ## Bucket Logic
@@ -114,6 +116,14 @@ Checklist items summarize whether important descriptive conditions are aligned, 
 When VIX futures data is not active, the tactical page uses VIX9D, VIX, VIX3M, VIX9D/VIX, and VIX/VIX3M as a proxy for near-term event pressure and contango/backwardation-like stress. This proxy is not the same as a tradable VIX futures curve.
 
 Put/call categories, VX futures readiness, and event calendar families remain candidate source gates until terms, access, cadence, attribution, automation, and redistribution review is complete. They do not enter active scoring before that review.
+
+### Fragility / Shock Risk View
+
+PR 3 adds a dedicated Fragility / Shock Risk view and a generated shock-risk snapshot. The snapshot is built from active no-secret inputs plus source-readiness gaps for candidate inputs whose terms are not yet reviewed.
+
+The view is descriptive. It separates active volatility, credit, liquidity, rate, dollar, and positioning inputs from candidate MOVE and SKEW rows. MOVE is treated as candidate Treasury bond-volatility context until source review is complete. SKEW is treated as a candidate tail-risk input, not as a replacement for VIX.
+
+Mismatch warnings describe conflicts between active inputs. For example, low VIX with tighter credit, weaker liquidity, firmer dollar, or restrictive rate pressure can show that equity volatility is not confirming other stress channels. If reviewed MOVE data later becomes active, high MOVE with low VIX would describe bond-volatility pressure that may not be visible in equity volatility.
 
 ### Confirmation Matrix
 
