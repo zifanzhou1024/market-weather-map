@@ -1,6 +1,6 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import ConfidenceBreakdown from "./ConfidenceBreakdown";
 import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
 import CrossAssetConfirmationMatrix from "./CrossAssetConfirmationMatrix";
@@ -10,22 +10,26 @@ import EventRiskPanel from "./EventRiskPanel";
 import HowToReadPanel from "./HowToReadPanel";
 import InterpretationPanel from "./InterpretationPanel";
 import MetricCard from "./MetricCard";
+import MismatchWarningPanel from "./MismatchWarningPanel";
 import MultiSeriesChart from "./MultiSeriesChart";
 import OptionsSentimentPanel from "./OptionsSentimentPanel";
 import PercentileBandChart from "./PercentileBandChart";
 import RegimeQuadrantChart, { domainIncludingZero } from "./RegimeQuadrantChart";
 import RegimeBadge from "./RegimeBadge";
 import ScoreCard from "./ScoreCard";
+import ShockRiskDashboard from "./ShockRiskDashboard";
 import SignalChecklist from "./SignalChecklist";
 import SignalList from "./SignalList";
 import SourceNote from "./SourceNote";
 import SourceAccessBadge from "./SourceAccessBadge";
+import TailRiskPanel from "./TailRiskPanel";
 import VixFuturesReadinessPanel from "./VixFuturesReadinessPanel";
 import YieldDecompositionChart from "./YieldDecompositionChart";
 import type {
   ConfidenceBreakdownData,
   DataStatusFile,
   ScoreBlock,
+  ShockRiskSnapshotFile,
   SeriesCatalogEntry,
   TimeSeriesFile
 } from "../lib/types";
@@ -171,6 +175,90 @@ const activeOptionsSeries: TimeSeriesFile = {
   units: "ratio"
 };
 
+const shockRiskSnapshot: ShockRiskSnapshotFile = {
+  active_signals: [
+    {
+      change: -8.39,
+      id: "vix",
+      label: "VIX",
+      message: "VIX percentile is included in active shock-risk pressure.",
+      score: -5.56,
+      value: 17.39
+    }
+  ],
+  date: "2026-05-06",
+  generated_at_utc: "2026-05-07T17:57:48Z",
+  label: "Contained shock risk",
+  method_version: "phase5-shock-risk-v1",
+  mismatch_warnings: [
+    {
+      id: "tightening_confirmation",
+      label: "Tightening confirmation",
+      message: "Dollar and real-yield pressure confirm tighter financial conditions."
+    }
+  ],
+  score: 21.98,
+  source_gaps: [
+    {
+      id: "move_index",
+      label: "MOVE Index",
+      message: "Candidate source requires access or terms review before scoring.",
+      status: "terms_review_needed"
+    },
+    {
+      id: "skew_index",
+      label: "SKEW Index",
+      message: "Candidate source requires access or terms review before scoring.",
+      status: "terms_review_needed"
+    }
+  ]
+};
+
+const tailRiskCatalog: SeriesCatalogEntry[] = [
+  {
+    ...catalogEntry,
+    access_status: "terms_review_needed",
+    id: "move_index",
+    name: "MOVE Index",
+    notes: "Bond-volatility readiness source pending terms review.",
+    score_status: "candidate"
+  },
+  {
+    ...catalogEntry,
+    access_status: "terms_review_needed",
+    id: "skew_index",
+    name: "SKEW Index",
+    notes: "Equity tail-risk readiness source pending terms review.",
+    score_status: "candidate"
+  }
+];
+
+const tailRiskStatus: DataStatusFile = {
+  generated_at_utc: "2026-05-07T17:57:48Z",
+  last_successful_update_utc: "2026-05-07T17:57:48Z",
+  overall_status: "partial",
+  series: {
+    move_index: {
+      expected_frequency: "daily",
+      freshness_days: null,
+      last_observation: null,
+      max_stale_days: 30,
+      message: "MOVE Index source remains under terms review.",
+      source: "Candidate registry",
+      status: "terms_review_needed"
+    },
+    skew_index: {
+      expected_frequency: "daily",
+      freshness_days: null,
+      last_observation: null,
+      max_stale_days: 30,
+      message: "SKEW Index source remains under terms review.",
+      source: "Candidate registry",
+      status: "terms_review_needed"
+    }
+  }
+};
+
 describe("data-driven components", () => {
   it("renders a regime badge with score-based tone", () => {
     const container = render(<RegimeBadge label="Fragile" score={-25} />);
@@ -245,6 +333,22 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Sentiment is limited to CFTC positioning.");
     expect(container.textContent).toContain("High-yield spreads widened over the past month.");
     expect(container.textContent).toContain("Reserve balances improved over the past month.");
+  });
+
+  it("renders duplicate score messages without React key warnings", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const duplicateScore = {
+      ...scoreBlock,
+      recent_changes: ["Credit spread pressure is contained.", "Credit spread pressure is contained."],
+      top_risks: ["Real yields are elevated.", "Real yields are elevated."],
+      top_supports: ["Credit spread pressure is contained.", "Credit spread pressure is contained."]
+    };
+
+    render(<ScoreCard title="Duplicate Score" score={duplicateScore} />);
+
+    const messages = consoleError.mock.calls.map((call) => String(call[0])).join("\n");
+    expect(messages).not.toContain("Encountered two children with the same key");
+    consoleError.mockRestore();
   });
 
   it("renders score card fallbacks for stale partial score payloads", () => {
@@ -454,6 +558,75 @@ describe("data-driven components", () => {
     expect(text).toContain("Fallback proxy");
   });
 
+  it("renders shock risk label score source gap and active VIX signal", () => {
+    const container = render(<ShockRiskDashboard snapshot={shockRiskSnapshot} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Contained shock risk");
+    expect(text).toContain("21.98");
+    expect(text).toContain("MOVE Index");
+    expect(text).toContain("VIX");
+    expect(text).toContain("17.39");
+    expect(text).toContain("-8.39");
+  });
+
+  it("renders shock risk empty states when snapshot arrays are malformed", () => {
+    const malformedSnapshot = {
+      ...shockRiskSnapshot,
+      active_signals: "not an array",
+      source_gaps: undefined
+    } as unknown as ShockRiskSnapshotFile;
+
+    const container = render(<ShockRiskDashboard snapshot={malformedSnapshot} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Contained shock risk");
+    expect(text).toContain("0 active shock-risk signal rows.");
+    expect(text).toContain("0 gated or unavailable source rows.");
+    expect(text).toContain("No active shock-risk signals in the current snapshot.");
+    expect(text).toContain("No shock-risk source gaps in the current snapshot.");
+  });
+
+  it("renders MOVE and SKEW source gaps with terms-review readiness copy", () => {
+    const container = render(
+      <TailRiskPanel catalog={tailRiskCatalog} snapshot={shockRiskSnapshot} status={tailRiskStatus} />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("MOVE Index");
+    expect(text).toContain("SKEW Index");
+    expect(text).toContain("Terms Review Needed");
+    expect(text).toContain("Bond volatility");
+    expect(text).toContain("distinct from VIX");
+    expect(text).toContain("Candidate source requires access or terms review before scoring.");
+  });
+
+  it("renders mismatch warning rows and an explicit empty state", () => {
+    const warningContainer = render(
+      <MismatchWarningPanel warnings={shockRiskSnapshot.mismatch_warnings} />
+    );
+
+    expect(warningContainer.textContent).toContain("Mismatch warnings");
+    expect(warningContainer.textContent).toContain("tightening_confirmation");
+    expect(warningContainer.textContent).toContain("Tightening confirmation");
+
+    act(() => root?.unmount());
+    document.body.replaceChildren();
+    root = undefined;
+
+    const emptyContainer = render(<MismatchWarningPanel warnings={[]} />);
+
+    expect(emptyContainer.textContent).toContain("Mismatch warnings");
+    expect(emptyContainer.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
+  });
+
+  it("renders mismatch warning empty state when warnings are malformed", () => {
+    const container = render(<MismatchWarningPanel warnings={"not an array" as never} />);
+
+    expect(container.textContent).toContain("Mismatch warnings");
+    expect(container.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
+  });
+
   it("filters data status rows by selected series ids", () => {
     const status: DataStatusFile = {
       generated_at_utc: "2026-05-03T18:32:54Z",
@@ -541,6 +714,22 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Credit spreads narrowed.");
     expect(container.textContent).not.toContain("No support signals.");
     expect(container.querySelector(".score-list")).not.toBeNull();
+  });
+
+  it("renders duplicate signal list messages without React key warnings", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    render(
+      <SignalList
+        emptyText="No signals."
+        items={["Real yields are elevated.", "Real yields are elevated."]}
+        title="Risks"
+      />
+    );
+
+    const messages = consoleError.mock.calls.map((call) => String(call[0])).join("\n");
+    expect(messages).not.toContain("Encountered two children with the same key");
+    consoleError.mockRestore();
   });
 
   it("renders data gap notes for stale candidate and expected-release-window rows", () => {

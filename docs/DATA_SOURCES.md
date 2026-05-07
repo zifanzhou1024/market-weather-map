@@ -133,6 +133,17 @@ These candidate rows are displayed as source gaps. They do not affect active sco
 | VIX futures curve | VX1, VX2, VX3, VX4, VX5, VX6, VX7, VX8 | Cboe Futures Exchange or licensed redistributors | `terms_review_needed` | VX futures readiness and volatility term-structure source gaps. | Confirm delayed-data constraints, contract roll handling, access terms, attribution, and static redistribution rules. |
 | Event calendar families | CPI, FOMC, payrolls, Treasury auctions, OPEX | BLS, Federal Reserve, Treasury, OCC, exchanges, or official calendars | `terms_review_needed` | Event-risk source gaps and calendar-readiness context. | Confirm official machine-readable endpoints, update cadence, historical coverage, attribution, and redistribution expectations. |
 
+## PR 3 Shock-Risk Source Gates
+
+PR 3 shock-risk panels expose source-readiness gaps for MOVE and SKEW while source access is reviewed. Each row remains `terms_review_needed` until source terms, automation constraints, attribution, cadence, historical coverage, and static redistribution rules are documented.
+
+These candidate rows are displayed as source gaps. They do not affect active scores, regime labels, checklist states, or confidence except as documented source-readiness gaps.
+
+| Candidate family | Candidate rows | Provider candidates | Access status | Source-readiness use | Review notes |
+| --- | --- | --- | --- | --- | --- |
+| Treasury bond volatility | MOVE | ICE Data Indices or licensed redistributors | `terms_review_needed` | Rates-volatility and fragility source gaps; high MOVE with low VIX would describe bond-volatility pressure that may not be visible in equity volatility after source review. | Confirm licensed-index terms, historical access, attribution, automated ingestion permissions, and static redistribution rules. |
+| Equity tail-risk candidate | SKEW | Cboe or licensed redistributors | `terms_review_needed` | Tail-risk source gaps and options-market confirmation context; SKEW is a candidate complement to VIX, not a replacement for VIX. | Confirm index terms, historical access, attribution, automated ingestion permissions, and static redistribution rules. |
+
 ## Source Handling
 
 - Cboe and FRED data are fetched by Python scripts, then normalized into static JSON.

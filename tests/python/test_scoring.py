@@ -1824,6 +1824,73 @@ def test_generated_file_validation_requires_active_derived_files():
     assert validate_schema.data_dir() / "derived" / "vix_vix3m_ratio.json" in required_paths
 
 
+def _valid_shock_snapshot():
+    return {
+        "generated_at_utc": "2026-05-07T00:00:00Z",
+        "date": "2026-05-06",
+        "method_version": "phase5-shock-risk-v1",
+        "score": -42.0,
+        "label": "Elevated shock risk",
+        "active_signals": [
+            {
+                "id": "vix",
+                "label": "VIX",
+                "score": -60.0,
+                "value": 22.0,
+                "change": 4.0,
+                "message": "VIX pressure is elevated.",
+            }
+        ],
+        "source_gaps": [
+            {
+                "id": "move_index",
+                "label": "MOVE Index",
+                "status": "terms_review_needed",
+                "message": "Candidate source requires access or terms review before scoring.",
+            }
+        ],
+        "mismatch_warnings": [
+            {
+                "id": "tightening_confirmation",
+                "label": "Tightening confirmation",
+                "message": "Real yields, dollar, and credit spreads rose over one month.",
+            }
+        ],
+    }
+
+
+def _write_shock_snapshot(tmp_path, payload):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    (derived / "shock_risk_snapshot.json").write_text(json.dumps(payload), encoding="utf-8")
+
+
+@pytest.mark.parametrize(
+    ("mutation", "match"),
+    [
+        (lambda payload: payload.update({"label": "Severe shock risk"}), "label has invalid value"),
+        (lambda payload: payload.update({"active_signals": [{}]}), "active_signals.id must be a string"),
+        (lambda payload: payload["active_signals"][0].pop("value"), "active_signals.value must be numeric or null"),
+        (lambda payload: payload["active_signals"][0].pop("change"), "active_signals.change must be numeric or null"),
+        (lambda payload: payload["active_signals"][0].update({"value": "22"}), "active_signals.value must be numeric or null"),
+        (lambda payload: payload["source_gaps"][0].update({"status": "paused"}), "source_gaps.status has invalid value"),
+        (lambda payload: payload.update({"mismatch_warnings": [42]}), "mismatch_warnings items must be objects"),
+        (lambda payload: payload["mismatch_warnings"][0].update({"id": 42}), "mismatch_warnings.id must be a string"),
+        (lambda payload: payload["mismatch_warnings"][0].update({"severity": 3}), "mismatch_warnings.severity must be a string"),
+    ],
+)
+def test_validate_shock_risk_snapshot_rejects_malformed_nested_schema(
+    tmp_path, monkeypatch, mutation, match
+):
+    payload = _valid_shock_snapshot()
+    mutation(payload)
+    _write_shock_snapshot(tmp_path, payload)
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(ValueError, match=match):
+        validate_schema.validate_shock_risk_snapshot_file()
+
+
 def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monkeypatch):
     derived = tmp_path / "derived"
     derived.mkdir()

@@ -30,6 +30,15 @@ def source_registry_entries() -> dict[str, dict[str, object]]:
             "update_cadence": "daily_market_data",
             "notes": "Put-call data requires access, automation, attribution, and redistribution review before automated publication.",
         },
+        "ice_indices": {
+            "name": "ICE Data Indices",
+            "base_url": "https://developer.ice.com/fixed-income-data-services/",
+            "requires_secret": False,
+            "access_status": "terms_review_needed",
+            "terms_status": "review_needed",
+            "update_cadence": "daily_market_data",
+            "notes": "MOVE Index access and static redistribution require source review before active ingestion.",
+        },
         "occ": {
             "name": "Options Clearing Corporation",
             "base_url": "https://www.theocc.com",

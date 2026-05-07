@@ -249,6 +249,39 @@ export interface RegimeSnapshotFile {
   }>;
 }
 
+export interface ShockRiskSignal {
+  id: string;
+  label: string;
+  score: number;
+  value: number | null;
+  change: number | null;
+  message: string;
+}
+
+export interface ShockRiskSourceGap {
+  id: string;
+  label: string;
+  status: DataStatus;
+  message: string;
+}
+
+export interface ShockRiskMismatchWarning {
+  id: string;
+  label: string;
+  message: string;
+}
+
+export interface ShockRiskSnapshotFile {
+  generated_at_utc: string;
+  date: string;
+  method_version: string;
+  score: number;
+  label: "Elevated shock risk" | "Mixed shock risk" | "Contained shock risk";
+  active_signals: ShockRiskSignal[];
+  source_gaps: ShockRiskSourceGap[];
+  mismatch_warnings: ShockRiskMismatchWarning[];
+}
+
 export interface SeriesStatus {
   status: DataStatus;
   last_observation: string | null;

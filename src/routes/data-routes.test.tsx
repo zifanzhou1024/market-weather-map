@@ -10,6 +10,7 @@ import type {
   DerivedSeriesFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
+  ShockRiskSnapshotFile,
   SeriesCategory,
   SeriesCatalogEntry,
   SeriesFrequency,
@@ -161,6 +162,7 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       units: "USD billions"
     } satisfies DerivedSeriesFile,
     "/data/derived/score_summary.json": scoreSummary,
+    "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
     "/data/derived/regime_snapshot.json": regimeSnapshot,
     "/data/derived/us10y_minus_us2y.json": {
       ...derivedFile("us10y_minus_us2y", 0.42),
@@ -519,6 +521,18 @@ const catalog: SeriesCatalogEntry[] = [
     );
   }),
   candidateCatalogEntry(
+    "move_index",
+    "volatility",
+    "MOVE Index",
+    "Bond-volatility source pending access and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "skew_index",
+    "volatility",
+    "SKEW Index",
+    "Equity tail-risk source pending access and terms readiness review."
+  ),
+  candidateCatalogEntry(
     "event_cpi",
     "inflation",
     "CPI release calendar",
@@ -822,6 +836,8 @@ const status: DataStatusFile = {
     vx6: candidateStatusRow("VX6 futures source remains under terms review."),
     vx7: candidateStatusRow("VX7 futures source remains under terms review."),
     vx8: candidateStatusRow("VX8 futures source remains under terms review."),
+    move_index: candidateStatusRow("MOVE Index source remains under terms review."),
+    skew_index: candidateStatusRow("SKEW Index source remains under terms review."),
     event_cpi: candidateStatusRow("CPI calendar source remains under review."),
     event_fomc: candidateStatusRow("FOMC calendar source remains under review."),
     event_payrolls: candidateStatusRow("Payrolls calendar source remains under review."),
@@ -975,6 +991,52 @@ const regimeSnapshot: RegimeSnapshotFile = {
     }
   ]
 };
+
+const shockRiskSnapshot: ShockRiskSnapshotFile = {
+  active_signals: [
+    {
+      change: -8.39,
+      id: "vix",
+      label: "VIX",
+      message: "VIX percentile is included in active shock-risk pressure.",
+      score: -5.56,
+      value: 17.39
+    }
+  ],
+  date: "2026-05-06",
+  generated_at_utc: "2026-05-07T17:57:48Z",
+  label: "Contained shock risk",
+  method_version: "phase5-shock-risk-v1",
+  mismatch_warnings: [
+    {
+      id: "tightening_confirmation",
+      label: "Tightening confirmation",
+      message: "Dollar and real-yield pressure confirm tighter financial conditions."
+    }
+  ],
+  score: 21.98,
+  source_gaps: [
+    {
+      id: "move_index",
+      label: "MOVE Index",
+      message: "Candidate source requires access or terms review before scoring.",
+      status: "terms_review_needed"
+    },
+    {
+      id: "skew_index",
+      label: "SKEW Index",
+      message: "Candidate source requires access or terms review before scoring.",
+      status: "terms_review_needed"
+    }
+  ]
+};
+
+const malformedShockRiskSnapshot = {
+  ...shockRiskSnapshot,
+  active_signals: "not an array",
+  source_gaps: null,
+  mismatch_warnings: { id: "not-array" }
+} as unknown as ShockRiskSnapshotFile;
 
 afterEach(() => {
   if (root) {
@@ -1656,6 +1718,57 @@ describe("data-backed routes", () => {
     expect(fragilityCard?.textContent).toContain("-4.10");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/put_call_spxw.json");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
+  });
+
+  it("renders fragility shock risk route", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/fragility"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("MOVE");
+    expect(container.textContent).toContain("SKEW");
+    expect(container.textContent).toContain("Mismatch warnings");
+  });
+
+  it("renders tactical shock-risk overlay fallback counts with malformed snapshot arrays", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": malformedShockRiskSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/tactical"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Tactical Trading Weather");
+    await waitForContent(container, "Fragility overlay");
+    expect(container.textContent).toContain("0 gated or unavailable source rows.");
+    expect(container.textContent).toContain("0 mismatch warning rows.");
+  });
+
+  it("renders fragility route empty states with malformed snapshot arrays", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": malformedShockRiskSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/fragility"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("No active shock-risk signals in the current snapshot.");
+    expect(container.textContent).toContain("No shock-risk source gaps in the current snapshot.");
+    expect(container.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
   });
 
   it("renders long-term macro climate from current score summary", async () => {
