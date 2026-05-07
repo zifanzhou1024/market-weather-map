@@ -1,7 +1,10 @@
 import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
+import { formatNumber } from "../lib/formatters";
+import type { TimeSeriesFile } from "../lib/types";
 
 interface OptionsSentimentPanelProps {
   items: CandidateSourceItem[];
+  activeSeries?: TimeSeriesFile[];
 }
 
 const orderedMatchers = [
@@ -28,12 +31,41 @@ function sortCandidateItems(items: CandidateSourceItem[]) {
   });
 }
 
-export default function OptionsSentimentPanel({ items }: OptionsSentimentPanelProps) {
+function fallbackLabel(seriesId: string) {
+  return seriesId
+    .replace(/^put_call_/, "")
+    .replace(/_/g, " ")
+    .toUpperCase();
+}
+
+function activeSeriesItem(series: TimeSeriesFile, candidatesById: Map<string, CandidateSourceItem>) {
+  const latestObservation = series.observations[series.observations.length - 1];
+  const latestValue = series.summary?.latest_value ?? latestObservation?.value;
+  const latestDate = series.summary?.latest_date ?? latestObservation?.date;
+  const units = series.units || "ratio";
+
+  return {
+    id: series.series_id,
+    label: candidatesById.get(series.series_id)?.label ?? fallbackLabel(series.series_id),
+    note: `Latest ${units} ${formatNumber(latestValue)} on ${latestDate ?? "N/A"}.`,
+    status: "active_data"
+  };
+}
+
+export default function OptionsSentimentPanel({ items, activeSeries = [] }: OptionsSentimentPanelProps) {
+  const candidatesById = new Map(items.map((item) => [item.id, item]));
+  const activeItems = activeSeries.map((series) => activeSeriesItem(series, candidatesById));
+  const activeIds = new Set(activeSeries.map((series) => series.series_id));
+  const combinedItems = sortCandidateItems([
+    ...activeItems,
+    ...items.filter((item) => !activeIds.has(item.id))
+  ]);
+
   return (
     <CandidateSourcePanel
       eyebrow="Candidate sources"
       emptyText="No active options sentiment candidate rows are configured."
-      items={sortCandidateItems(items)}
+      items={combinedItems}
       summary="Source review required before options sentiment rows can publish active signals."
       title="Options sentiment"
     />

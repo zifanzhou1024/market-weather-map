@@ -153,6 +153,24 @@ const candidateRows: CandidateSourceItem[] = [
   }
 ];
 
+const activeOptionsSeries: TimeSeriesFile = {
+  frequency: "daily",
+  generated_at_utc: "2026-05-01T21:00:00Z",
+  observations: [{ date: "2026-05-01", value: 1.23 }],
+  series_id: "put_call_spxw",
+  source: "Cboe",
+  source_url: "https://example.com/options",
+  summary: {
+    change_1d: 0.04,
+    change_1m: null,
+    change_1w: null,
+    latest_date: "2026-05-01",
+    latest_value: 1.23,
+    percentile_252d: null
+  },
+  units: "ratio"
+};
+
 describe("data-driven components", () => {
   it("renders a regime badge with score-based tone", () => {
     const container = render(<RegimeBadge label="Fragile" score={-25} />);
@@ -306,12 +324,39 @@ describe("data-driven components", () => {
   it("orders options sentiment candidates without active signal labels", () => {
     const container = render(<OptionsSentimentPanel items={[...candidateRows].reverse()} />);
     const text = container.textContent ?? "";
+    const orderedLabels = [
+      "SPX/SPXW put/call",
+      "SPX put/call",
+      "Index put/call",
+      "Equity put/call",
+      "VIX put/call",
+      "ETP put/call",
+      "Total put/call"
+    ];
 
     expect(text).toContain("Options sentiment");
     expect(text).toContain("Source review required");
-    expect(text.indexOf("SPX/SPXW put/call")).toBeLessThan(text.indexOf("Index put/call"));
-    expect(text.indexOf("Index put/call")).toBeLessThan(text.indexOf("Equity put/call"));
-    expect(text.indexOf("Equity put/call")).toBeLessThan(text.indexOf("VIX put/call"));
+    for (const label of orderedLabels) {
+      expect(text).toContain(label);
+    }
+    for (let index = 0; index < orderedLabels.length - 1; index += 1) {
+      expect(text.indexOf(orderedLabels[index])).toBeLessThan(text.indexOf(orderedLabels[index + 1]));
+    }
+    expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
+  });
+
+  it("renders active options sentiment series before candidate-only fallback rows", () => {
+    const container = render(
+      <OptionsSentimentPanel activeSeries={[activeOptionsSeries]} items={candidateRows} />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Options sentiment");
+    expect(text).toContain("SPX/SPXW put/call");
+    expect(text).toContain("Active data");
+    expect(text).toContain("Latest ratio 1.23 on 2026-05-01.");
+    expect(text.indexOf("SPX/SPXW put/call")).toBeLessThan(text.indexOf("SPX put/call"));
+    expect(text).toContain("Source review required");
     expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
   });
 
