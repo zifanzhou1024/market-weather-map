@@ -67,6 +67,13 @@ Still out of scope:
 - No live alerts, notifications, trading signals, backend service, browser-side provider calls, or paid/licensed source ingestion.
 - No full Consumer route, Fiscal/Treasury route, SLOOS, PMIs, valuation, market internals, or regime-matrix implementation in PR 2.
 
+Phase 5 direction:
+
+- Organize the primary experience by use case: Tactical Trading Weather, Long-Term Macro Climate, and Regime Map.
+- Use existing active no-secret data for PR 1.
+- Treat VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, and Treasury supply as candidate or future inputs until source terms and redistribution rules are reviewed.
+- Keep outputs descriptive and avoid trade recommendations.
+
 ## Data Access Status
 
 Source access is tracked before data is treated as production scoring input.

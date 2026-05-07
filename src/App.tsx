@@ -8,10 +8,13 @@ import Growth from "./routes/Growth";
 import Housing from "./routes/Housing";
 import Inflation from "./routes/Inflation";
 import Liquidity from "./routes/Liquidity";
+import LongTermMacroClimate from "./routes/LongTermMacroClimate";
 import Methodology from "./routes/Methodology";
 import Overview from "./routes/Overview";
 import Rates from "./routes/Rates";
+import RegimeMap from "./routes/RegimeMap";
 import Sentiment from "./routes/Sentiment";
+import TacticalTradingWeather from "./routes/TacticalTradingWeather";
 import Volatility from "./routes/Volatility";
 
 export default function App() {
@@ -19,6 +22,9 @@ export default function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Overview />} />
+        <Route path="/tactical" element={<TacticalTradingWeather />} />
+        <Route path="/macro-climate" element={<LongTermMacroClimate />} />
+        <Route path="/regime-map" element={<RegimeMap />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/growth" element={<Growth />} />
         <Route path="/housing" element={<Housing />} />

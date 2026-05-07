@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/MultiSeriesChart";
 import PercentileBandChart from "../components/PercentileBandChart";
 import SourceNote from "../components/SourceNote";
 import TimeSeriesChart from "../components/TimeSeriesChart";
@@ -12,6 +13,12 @@ import { loadRouteDerivedSeries } from "./routeSeries";
 const volatilitySeriesIds = ["vix", "vvix", "vix9d", "vix3m"];
 const volatilityDerivedIds = ["vix9d_vix_ratio", "vix_vix3m_ratio"];
 const volatilityStatusIds = [...volatilitySeriesIds, ...volatilityDerivedIds];
+const volatilityChartLines = [
+  { id: "vix9d", name: "VIX9D", color: "#b76f2b" },
+  { id: "vix", name: "VIX", color: "#2f6f73" },
+  { id: "vix3m", name: "VIX3M", color: "#31516b" },
+  { id: "vvix", name: "VVIX", color: "#7a4f9a" }
+] as const;
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
@@ -34,6 +41,53 @@ function volatilityDerivedEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
     source_url: series.source_url,
     units: series.units
   };
+}
+
+function toChartSeries(series: TimeSeriesFile[]): MultiSeriesChartSeries[] {
+  return volatilityChartLines.reduce<MultiSeriesChartSeries[]>((chartSeries, line) => {
+    const item = series.find((candidate) => candidate.series_id === line.id);
+    if (!item?.observations.length) return chartSeries;
+
+    chartSeries.push({
+      ...line,
+      data: item.observations.map((observation) => ({
+        date: observation.date,
+        value: observation.value
+      }))
+    });
+    return chartSeries;
+  }, []);
+}
+
+function latestValue(series: TimeSeriesFile[], seriesId: string) {
+  const item = series.find((candidate) => candidate.series_id === seriesId);
+  const latestObservation = item?.observations[item.observations.length - 1];
+  return item?.summary?.latest_value ?? latestObservation?.value ?? null;
+}
+
+function termStructureNotes(series: TimeSeriesFile[]) {
+  const vix9d = latestValue(series, "vix9d");
+  const vix = latestValue(series, "vix");
+  const vix3m = latestValue(series, "vix3m");
+  const notes = [
+    "VIX3M > VIX: normal / contango-like proxy.",
+    "VIX > VIX3M: stress / backwardation-like proxy.",
+    "VIX9D > VIX: near-term event-risk pressure."
+  ];
+
+  if (typeof vix === "number" && typeof vix3m === "number") {
+    notes.push(
+      vix3m > vix
+        ? "Current read: VIX3M is above VIX."
+        : "Current read: VIX is at or above VIX3M."
+    );
+  }
+
+  if (typeof vix9d === "number" && typeof vix === "number" && vix9d > vix) {
+    notes.push("Current read: VIX9D is above VIX.");
+  }
+
+  return notes;
 }
 
 export default function Volatility() {
@@ -88,6 +142,11 @@ export default function Volatility() {
             risks={["Elevated front-end volatility or an inverted VIX curve can indicate near-term stress."]}
             notes={["Ratios are derived from matched public Cboe volatility observations."]}
           />
+          <InterpretationPanel
+            label="VIX term-structure proxy"
+            notes={termStructureNotes(data.series)}
+            summary="VIX9D, VIX, VIX3M, and VVIX show near-term pressure, spot implied volatility, three-month implied volatility, and volatility-of-volatility."
+          />
           <section className="metric-grid" aria-label="Volatility metrics">
             {data.series.map((series) => (
               <MetricCard
@@ -109,6 +168,7 @@ export default function Volatility() {
               <TimeSeriesChart catalogEntry={data.catalog.find((entry) => entry.id === "vix")} series={vix} />
             </>
           ) : null}
+          <MultiSeriesChart series={toChartSeries(data.series)} title="VIX term-structure proxy" units="index" />
           <DataStatusTable seriesIds={volatilityStatusIds} status={data.status} />
         </div>
       ) : null}

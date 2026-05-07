@@ -479,6 +479,310 @@ def _latest_dates(series_by_id: dict[str, dict[str, Any]]) -> list[str]:
     ]
 
 
+def _direction_from_change(change: object, threshold: float = 0.05) -> str:
+    if not _finite_number(change):
+        return "unavailable"
+    value = float(change)
+    if value >= threshold:
+        return "up"
+    if value <= -threshold:
+        return "down"
+    return "flat"
+
+
+def _summary_change(
+    series_by_id: dict[str, dict[str, Any]],
+    series_id: str,
+    key: str = "change_1m",
+) -> float | None:
+    if series_id not in series_by_id:
+        return None
+    value = latest_summary(series_by_id[series_id]).get(key)
+    return float(value) if _finite_number(value) else None
+
+
+def _regime_label(tips_direction: str, dollar_direction: str) -> str:
+    if "unavailable" in {tips_direction, dollar_direction}:
+        return "Unavailable"
+    if tips_direction == "down" and dollar_direction == "down":
+        return "Strong risk-on"
+    if tips_direction == "up" and dollar_direction == "down":
+        return "Reallocation / rotation"
+    if tips_direction == "up" and dollar_direction == "up":
+        return "Tightening / risk-off"
+    if tips_direction == "down" and dollar_direction == "up":
+        return "Bonds-first / safe haven"
+    return "Mixed"
+
+
+def _yield_driver(
+    nominal_change: float | None,
+    real_change: float | None,
+    breakeven_change: float | None,
+) -> str:
+    if nominal_change is None or real_change is None or breakeven_change is None:
+        return "unavailable"
+    if abs(nominal_change) < 0.05:
+        return "mixed"
+    real_abs = abs(real_change)
+    breakeven_abs = abs(breakeven_change)
+    if nominal_change > 0 and real_abs > breakeven_abs and real_change > 0:
+        return "real_yield_driven"
+    if nominal_change > 0 and breakeven_abs >= real_abs and breakeven_change > 0:
+        return "breakeven_inflation_driven"
+    if nominal_change < 0 and real_change < 0:
+        return "real_yield_easing"
+    if nominal_change < 0:
+        return "safe_haven_or_growth_scare"
+    return "mixed"
+
+
+def _summary_value(
+    series_by_id: dict[str, dict[str, Any]],
+    series_id: str,
+    key: str = "latest_value",
+) -> float | None:
+    if series_id not in series_by_id:
+        return None
+    value = latest_summary(series_by_id[series_id]).get(key)
+    return float(value) if _finite_number(value) else None
+
+
+def _series_values_by_date(series: dict[str, Any]) -> dict[str, float]:
+    values = {}
+    for observation in series.get("observations", []):
+        date = observation.get("date")
+        value = observation.get("value")
+        if isinstance(date, str) and _finite_number(value):
+            values[date] = float(value)
+    return values
+
+
+def _matched_observation_dates(
+    series_by_id: dict[str, dict[str, Any]],
+    series_ids: list[str],
+) -> list[str]:
+    date_sets = []
+    for series_id in series_ids:
+        if series_id not in series_by_id:
+            return []
+        date_sets.append(set(_series_values_by_date(series_by_id[series_id])))
+    if not date_sets:
+        return []
+    return sorted(set.intersection(*date_sets))
+
+
+def _confirmation_status(
+    change: float | None,
+    risk_on_confirming_direction: str,
+    risk_off_confirming_direction: str,
+    regime_label: str,
+) -> str:
+    if change is None:
+        return "unavailable"
+    direction = _direction_from_change(change)
+    if direction == "flat":
+        return "mixed"
+    if regime_label == "Strong risk-on":
+        return "confirming" if direction == risk_on_confirming_direction else "diverging"
+    if regime_label == "Tightening / risk-off":
+        return "confirming" if direction == risk_off_confirming_direction else "diverging"
+    return "mixed"
+
+
+def _direction_message(label: str, direction: str) -> str:
+    if direction == "unavailable":
+        return f"{label} one-month change is unavailable."
+    return f"{label} is {direction} over one month."
+
+
+def _build_quadrant_trail(series_by_id: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    dates = _matched_observation_dates(series_by_id, ["broad_dollar", "real_yield_10y", "us10y"])[-20:]
+    if not dates:
+        return []
+    dollar = _series_values_by_date(series_by_id["broad_dollar"])
+    real_yield = _series_values_by_date(series_by_id["real_yield_10y"])
+    nominal = _series_values_by_date(series_by_id["us10y"])
+    vix_percentiles = {
+        observation.get("date"): observation.get("percentile_252d")
+        for observation in series_by_id.get("vix", {}).get("observations", [])
+    }
+    credit_series_id = "hy_minus_ig_oas" if "hy_minus_ig_oas" in series_by_id else "high_yield_oas"
+    credit = _series_values_by_date(series_by_id.get(credit_series_id, {}))
+
+    trail = []
+    previous_date = None
+    for date in dates:
+        row = {
+            "date": date,
+            "dollar_change": round(dollar[date] - dollar[previous_date], 4) if previous_date else 0.0,
+            "real_yield_change": round(real_yield[date] - real_yield[previous_date], 4) if previous_date else 0.0,
+            "nominal_yield_change": round(nominal[date] - nominal[previous_date], 4) if previous_date else 0.0,
+        }
+        percentile = vix_percentiles.get(date)
+        row["vix_percentile"] = float(percentile) if _finite_number(percentile) else None
+        row["credit_change"] = (
+            round(credit[date] - credit[previous_date], 4)
+            if previous_date and date in credit and previous_date in credit
+            else None
+        )
+        trail.append(row)
+        previous_date = date
+    return trail
+
+
+def _build_yield_decomposition(series_by_id: dict[str, dict[str, Any]]) -> list[dict[str, float | str]]:
+    dates = _matched_observation_dates(series_by_id, ["us10y", "real_yield_10y", "breakeven_10y"])[-260:]
+    if not dates:
+        return []
+    nominal = _series_values_by_date(series_by_id["us10y"])
+    real_yield = _series_values_by_date(series_by_id["real_yield_10y"])
+    breakeven = _series_values_by_date(series_by_id["breakeven_10y"])
+    return [
+        {
+            "date": date,
+            "nominal_10y": nominal[date],
+            "real_yield_10y": real_yield[date],
+            "breakeven_10y": breakeven[date],
+        }
+        for date in dates
+    ]
+
+
+def build_regime_snapshot(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> dict[str, Any]:
+    real_change = _summary_change(series_by_id, "real_yield_10y")
+    dollar_change = _summary_change(series_by_id, "broad_dollar")
+    nominal_change = _summary_change(series_by_id, "us10y")
+    breakeven_change = _summary_change(series_by_id, "breakeven_10y")
+    credit_change = _summary_change(series_by_id, "hy_minus_ig_oas")
+    if credit_change is None:
+        credit_change = _summary_change(series_by_id, "high_yield_oas")
+    liquidity_change = _summary_change(series_by_id, "net_liquidity")
+    vix_change = _summary_change(series_by_id, "vix")
+
+    tips_direction = _direction_from_change(real_change)
+    dollar_direction = _direction_from_change(dollar_change)
+    nominal_direction = _direction_from_change(nominal_change)
+    yield_driver = _yield_driver(nominal_change, real_change, breakeven_change)
+    label = _regime_label(tips_direction, dollar_direction)
+
+    vix_value = _summary_value(series_by_id, "vix")
+    vix3m_value = _summary_value(series_by_id, "vix3m")
+    if vix_value is None or vix3m_value is None or vix3m_value == 0:
+        vix_curve_state = "unavailable"
+    elif vix_value > vix3m_value or (vix_value / vix3m_value) > 1:
+        vix_curve_state = "backwardation_proxy"
+    else:
+        vix_curve_state = "contango_proxy"
+
+    credit_status = _confirmation_status(credit_change, "down", "up", label)
+    liquidity_status = _confirmation_status(liquidity_change, "up", "down", label)
+    vix_status = _confirmation_status(vix_change, "down", "up", label)
+    rates_status = _confirmation_status(real_change, "down", "up", label)
+
+    latest_dates = _latest_dates(series_by_id)
+    latest_date = max(latest_dates) if latest_dates else generated_at[:10]
+
+    checklist = [
+        {
+            "id": "real_yield_10y",
+            "label": "10Y real yield",
+            "state": tips_direction,
+            "message": _direction_message("10Y real yield", tips_direction),
+        },
+        {
+            "id": "dollar",
+            "label": "Broad dollar",
+            "state": dollar_direction,
+            "message": _direction_message("The broad dollar", dollar_direction),
+        },
+        {
+            "id": "nominal_10y",
+            "label": "10Y nominal yield",
+            "state": nominal_direction,
+            "message": _direction_message("10Y nominal yield", nominal_direction),
+        },
+        {
+            "id": "yield_driver",
+            "label": "Yield driver",
+            "state": yield_driver,
+            "message": (
+                "Nominal yield driver inputs are unavailable."
+                if yield_driver == "unavailable"
+                else f"The nominal yield move is classified as {yield_driver.replace('_', ' ')}."
+            ),
+        },
+        {
+            "id": "vix_curve",
+            "label": "VIX curve",
+            "state": vix_curve_state,
+            "message": f"VIX curve state is {vix_curve_state.replace('_', ' ')}.",
+        },
+        {
+            "id": "credit",
+            "label": "Credit spreads",
+            "state": _direction_from_change(credit_change),
+            "message": "Credit spread pressure is based on HY minus IG OAS when available.",
+        },
+        {
+            "id": "liquidity",
+            "label": "Net liquidity",
+            "state": _direction_from_change(liquidity_change),
+            "message": "Net liquidity confirmation uses the one-month change.",
+        },
+        {
+            "id": "overall_regime",
+            "label": "Overall regime",
+            "state": label,
+            "message": f"Active data classifies the backdrop as {label}.",
+        },
+    ]
+
+    confirmations = [
+        {
+            "id": "credit",
+            "label": "Credit",
+            "status": credit_status,
+            "message": f"Credit spreads are {credit_status} for the active regime.",
+        },
+        {
+            "id": "vix_curve",
+            "label": "VIX curve",
+            "status": "unavailable" if vix_curve_state == "unavailable" else vix_status,
+            "message": f"Volatility is {vix_status} and the curve is {vix_curve_state.replace('_', ' ')}.",
+        },
+        {
+            "id": "liquidity",
+            "label": "Liquidity",
+            "status": liquidity_status,
+            "message": f"Net liquidity is {liquidity_status} for the active regime.",
+        },
+        {
+            "id": "rates",
+            "label": "Rates",
+            "status": rates_status,
+            "message": f"Real yield momentum is {rates_status} for the active regime.",
+        },
+    ]
+
+    return {
+        "generated_at_utc": generated_at,
+        "date": latest_date,
+        "method_version": "phase5-horizon-regime-v1",
+        "regime": {
+            "label": label,
+            "tips_direction": tips_direction,
+            "dollar_direction": dollar_direction,
+            "nominal_yield_direction": nominal_direction,
+            "yield_driver": yield_driver,
+        },
+        "checklist": checklist,
+        "confirmations": confirmations,
+        "quadrant_trail": _build_quadrant_trail(series_by_id),
+        "yield_decomposition": _build_yield_decomposition(series_by_id),
+    }
+
+
 def _title(name: str) -> str:
     return name.replace("_", " ").title()
 
@@ -1437,6 +1741,8 @@ def main() -> None:
     status = build_status(series_by_id, generated_at)
     score_summary = build_score_summary(series_by_id, generated_at, status["series"])
     write_json(data_dir() / "derived" / "score_summary.json", score_summary)
+    regime_snapshot = build_regime_snapshot(series_by_id, generated_at)
+    write_json(data_dir() / "derived" / "regime_snapshot.json", regime_snapshot)
 
     market_weather = score_summary["scores"]["market_weather"]
     buckets = dict(market_weather["bucket_scores"])

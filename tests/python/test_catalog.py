@@ -38,6 +38,25 @@ PHASE3_FRED_SERIES = {
 }
 
 
+ALLOWED_REGIME_ROLES = {
+    "real_yield",
+    "nominal_yield",
+    "inflation_expectation",
+    "dollar",
+    "credit",
+    "volatility",
+    "liquidity",
+    "growth",
+    "labor",
+    "housing",
+    "commodity",
+    "sentiment",
+    "tail_risk",
+    "bond_volatility",
+    "banking",
+}
+
+
 def test_phase2_catalog_contains_no_secret_commodity_sources():
     entries = {str(entry["id"]): entry for entry in catalog_entries()}
 
@@ -132,6 +151,33 @@ def test_catalog_entries_include_phase3_governance_fields():
     assert vix["terms_status"] == "ok"
     assert vix["score_status"] == "active"
     assert isinstance(vix["citation_notes"], str)
+
+
+def test_catalog_entries_include_horizon_regime_metadata():
+    entries = {str(entry["id"]): entry for entry in catalog_entries()}
+
+    assert entries["vix"]["horizon"] == "tactical"
+    assert entries["vix"]["regime_role"] == ["volatility"]
+    assert entries["vix"]["preferred_chart"] == "curve"
+
+    assert entries["real_yield_10y"]["horizon"] == "both"
+    assert entries["real_yield_10y"]["regime_role"] == ["real_yield"]
+    assert entries["real_yield_10y"]["preferred_chart"] == "decomposition"
+
+    assert entries["cfnai"]["horizon"] == "strategic"
+    assert entries["cfnai"]["regime_role"] == ["growth"]
+    assert entries["cfnai"]["preferred_chart"] == "line"
+
+
+def test_catalog_regime_roles_match_frontend_contract():
+    unexpected_roles = {
+        role
+        for entry in catalog_entries()
+        for role in entry.get("regime_role", [])
+        if role not in ALLOWED_REGIME_ROLES
+    }
+
+    assert unexpected_roles == set()
 
 
 def test_catalog_entries_include_phase3_active_fred_macro_series():

@@ -4,6 +4,7 @@ import type {
   DerivedSeriesFile,
   MacroCalendarFile,
   RegimeScoreFile,
+  RegimeSnapshotFile,
   ScoreSummaryFile,
   SeriesCatalogEntry,
   SourceRegistryFile,
@@ -64,6 +65,10 @@ export async function loadDerivedSeries(seriesId: string): Promise<DerivedSeries
 
 export function loadRegimeScore(): Promise<RegimeScoreFile> {
   return loadJson<RegimeScoreFile>("/data/derived/regime_score.json");
+}
+
+export function loadRegimeSnapshot(): Promise<RegimeSnapshotFile> {
+  return loadJson<RegimeSnapshotFile>("/data/derived/regime_snapshot.json");
 }
 
 export function loadBucketScores(): Promise<BucketScoresFile> {

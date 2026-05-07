@@ -67,6 +67,60 @@ The `percentile_252d` field name is retained for compatibility, but the percenti
 
 Each score is a weighted average of emitted bucket scores, including neutral fallbacks when coverage is missing, clamped to the `-100` to `+100` range.
 
+## Phase 5 Horizon Regime Definitions
+
+Phase 5 PR 1 organizes the descriptive outputs by horizon using existing active no-secret data. Labels are descriptive historical and current-state summaries. They are not forecasts, causal claims, trading signals, or trade recommendations.
+
+### TIPS x Dollar Quadrants
+
+The TIPS x dollar view compares real-yield pressure with broad dollar pressure to describe cross-asset regime context.
+
+| Quadrant | Real-yield pressure | Dollar pressure | Description |
+| --- | --- | --- | --- |
+| Easier real yields, softer dollar | Lower or easing | Lower or easing | Conditions are less restrictive through real rates and global dollar pressure. |
+| Easier real yields, firmer dollar | Lower or easing | Higher or firming | Domestic real-rate pressure is easing while global dollar pressure remains a constraint. |
+| Tighter real yields, softer dollar | Higher or firming | Lower or easing | Real-rate pressure is restrictive while dollar pressure is less restrictive. |
+| Tighter real yields, firmer dollar | Higher or firming | Higher or firming | Real-rate and dollar channels both describe tighter financial conditions. |
+
+### Yield Drivers
+
+Yield driver labels summarize whether the observed rate move is primarily associated with nominal Treasury yields, real yields, inflation compensation, or curve shape.
+
+| Driver | Definition |
+| --- | --- |
+| Nominal rate pressure | Treasury yield levels or recent Treasury yield changes are the dominant observed rate input. |
+| Real-yield pressure | TIPS real-yield levels or recent real-yield changes are the dominant observed restrictive input. |
+| Inflation-compensation pressure | Breakeven or forward inflation-compensation inputs are the dominant observed rate-context input. |
+| Curve pressure | 2-year, 10-year, 20-year, or 30-year curve relationships are the dominant observed rate-context input. |
+| Mixed yield drivers | No single active rate input dominates the observed rate context. |
+
+### Checklist Items
+
+Checklist items summarize whether important descriptive conditions are aligned, mixed, missing, or candidate-only.
+
+| Checklist item | Definition |
+| --- | --- |
+| Volatility pressure | Active volatility inputs describe calm, neutral, or stressed market volatility context. |
+| Credit pressure | Active credit spread and financial-conditions inputs describe easing, neutral, or tightening credit context. |
+| Liquidity pressure | Active balance-sheet, reverse-repo, Treasury-account, and funding inputs describe supportive, neutral, or restrictive liquidity context. |
+| Rate pressure | Active nominal-rate, real-yield, breakeven, and curve inputs describe easing, neutral, or restrictive rate context. |
+| Dollar pressure | Active broad-dollar and currency inputs describe softer, neutral, or firmer dollar context. |
+| Commodity impulse | Active commodity inputs describe easing, neutral, or firming inflation-impulse context. |
+| Positioning crowding | Active CFTC positioning inputs describe underexposure, neutral exposure, or crowding context. |
+| Source readiness | Candidate-only inputs are separated from active inputs until source review is complete. |
+
+### Confirmation Matrix
+
+The confirmation matrix groups active inputs by whether they confirm, conflict with, or do not materially affect the current descriptive label.
+
+| Matrix state | Definition |
+| --- | --- |
+| Confirming | The input's current percentile, change, or bucket score points in the same direction as the displayed regime label. |
+| Diverging | The input's current percentile, change, or bucket score points against the displayed regime label. |
+| Neutral | The input is near its neutral band or contributes little directional pressure. |
+| Missing or stale | The expected active input is unavailable, too stale for its cadence, or emitted as a neutral fallback. |
+| Candidate-only | The input is useful for future context but does not affect scores, labels, or checklist states before source review. |
+
 Market Weather and Macro Climate use these broad displayed labels:
 
 | Score range | Interpretation |
