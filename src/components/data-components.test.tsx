@@ -2,17 +2,22 @@ import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it } from "vitest";
 import ConfidenceBreakdown from "./ConfidenceBreakdown";
+import CrossAssetConfirmationMatrix from "./CrossAssetConfirmationMatrix";
 import DataGapPanel from "./DataGapPanel";
 import DataStatusTable from "./DataStatusTable";
 import HowToReadPanel from "./HowToReadPanel";
 import InterpretationPanel from "./InterpretationPanel";
 import MetricCard from "./MetricCard";
+import MultiSeriesChart from "./MultiSeriesChart";
 import PercentileBandChart from "./PercentileBandChart";
+import RegimeQuadrantChart from "./RegimeQuadrantChart";
 import RegimeBadge from "./RegimeBadge";
 import ScoreCard from "./ScoreCard";
+import SignalChecklist from "./SignalChecklist";
 import SignalList from "./SignalList";
 import SourceNote from "./SourceNote";
 import SourceAccessBadge from "./SourceAccessBadge";
+import YieldDecompositionChart from "./YieldDecompositionChart";
 import type {
   ConfidenceBreakdownData,
   DataStatusFile,
@@ -390,5 +395,101 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Credit spreads widened.");
     expect(container.textContent).toContain("Dollar strength conflicts with easier liquidity.");
     expect(container.textContent).toContain("Housing is not active in Phase 4 PR 1.");
+  });
+
+  it("renders signal checklist rows from fixture items", () => {
+    const container = render(
+      <SignalChecklist
+        items={[
+          { id: "real_yield", label: "Real yield", state: "confirming", message: "Real yields eased." },
+          { id: "dollar", label: "Dollar", state: "diverging", message: "Dollar strengthened." },
+          { id: "overall", label: "Overall regime", state: "mixed", message: "Signals are mixed." }
+        ]}
+      />
+    );
+
+    expect(container.textContent).toContain("Real yield");
+    expect(container.textContent).toContain("Dollar");
+    expect(container.textContent).toContain("Overall regime");
+  });
+
+  it("renders cross-asset confirmation states without advice terms", () => {
+    const container = render(
+      <CrossAssetConfirmationMatrix
+        items={[
+          { id: "credit", label: "Credit", status: "confirming", message: "Spreads narrowed." },
+          { id: "dollar", label: "Dollar", status: "diverging", message: "Dollar rose." },
+          { id: "growth", label: "Growth", status: "unavailable", message: "Awaiting source." }
+        ]}
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Confirming");
+    expect(text).toContain("Diverging");
+    expect(text).toContain("Unavailable");
+    expect(text.toLowerCase()).not.toMatch(/\b(buy|sell|short|long|entry|target|stop)\b/);
+  });
+
+  it("renders regime quadrant labels as DOM text", () => {
+    const container = render(
+      <RegimeQuadrantChart
+        trail={[
+          {
+            date: "2026-05-01",
+            dollar_change: -0.4,
+            real_yield_change: -0.2,
+            nominal_yield_change: -0.1,
+            vix_percentile: 40,
+            credit_change: -3
+          }
+        ]}
+      />
+    );
+
+    expect(container.textContent).toContain("Strong risk-on");
+    expect(container.textContent).toContain("Reallocation / rotation");
+    expect(container.textContent).toContain("Tightening / risk-off");
+    expect(container.textContent).toContain("Bonds-first / safe haven");
+  });
+
+  it("renders yield decomposition legend labels", () => {
+    const container = render(
+      <YieldDecompositionChart
+        data={[
+          {
+            date: "2026-05-01",
+            nominal_10y: 4.2,
+            real_yield_10y: 1.8,
+            breakeven_10y: 2.4
+          }
+        ]}
+      />
+    );
+
+    expect(container.textContent).toContain("10Y nominal");
+    expect(container.textContent).toContain("10Y real yield");
+    expect(container.textContent).toContain("10Y breakeven");
+  });
+
+  it("renders each configured multi-series line name", () => {
+    const container = render(
+      <MultiSeriesChart
+        title="Cross asset history"
+        units="index"
+        series={[
+          { id: "vix", name: "VIX", color: "#2f6f73", data: [{ date: "2026-05-01", value: 18 }] },
+          {
+            id: "credit",
+            name: "High yield spread",
+            color: "#b76f2b",
+            data: [{ date: "2026-05-01", value: 3.4 }]
+          }
+        ]}
+      />
+    );
+
+    expect(container.textContent).toContain("VIX");
+    expect(container.textContent).toContain("High yield spread");
   });
 });
