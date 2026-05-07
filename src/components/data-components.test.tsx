@@ -10,7 +10,7 @@ import InterpretationPanel from "./InterpretationPanel";
 import MetricCard from "./MetricCard";
 import MultiSeriesChart from "./MultiSeriesChart";
 import PercentileBandChart from "./PercentileBandChart";
-import RegimeQuadrantChart from "./RegimeQuadrantChart";
+import RegimeQuadrantChart, { domainIncludingZero } from "./RegimeQuadrantChart";
 import RegimeBadge from "./RegimeBadge";
 import ScoreCard from "./ScoreCard";
 import SignalChecklist from "./SignalChecklist";
@@ -451,6 +451,12 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Reallocation / rotation");
     expect(container.textContent).toContain("Tightening / risk-off");
     expect(container.textContent).toContain("Bonds-first / safe haven");
+  });
+
+  it("configures regime quadrant numeric domains to include zero", () => {
+    expect(domainIncludingZero([0.2, 0.5, 1.1])).toEqual([0, 1.1]);
+    expect(domainIncludingZero([-1.1, -0.5, -0.2])).toEqual([-1.1, 0]);
+    expect(domainIncludingZero([-0.7, 0.4, 1.2])).toEqual([-0.7, 1.2]);
   });
 
   it("renders yield decomposition legend labels", () => {
