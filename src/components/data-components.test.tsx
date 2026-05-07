@@ -12,6 +12,7 @@ import InterpretationPanel from "./InterpretationPanel";
 import MetricCard from "./MetricCard";
 import MismatchWarningPanel from "./MismatchWarningPanel";
 import MacroCyclePanel from "./MacroCyclePanel";
+import ChartResponsiveContainer, { INITIAL_CHART_DIMENSION } from "./ChartResponsiveContainer";
 import MultiSeriesChart from "./MultiSeriesChart";
 import OptionsSentimentPanel from "./OptionsSentimentPanel";
 import PercentileBandChart from "./PercentileBandChart";
@@ -899,6 +900,20 @@ describe("data-driven components", () => {
     expect(domainIncludingZero([0.2, 0.5, 1.1])).toEqual([0, 1.1]);
     expect(domainIncludingZero([-1.1, -0.5, -0.2])).toEqual([-1.1, 0]);
     expect(domainIncludingZero([-0.7, 0.4, 1.2])).toEqual([-0.7, 1.2]);
+  });
+
+  it("starts responsive charts with positive dimensions", () => {
+    const container = render(
+      <div className="chart-frame">
+        <ChartResponsiveContainer>
+          <div>chart payload</div>
+        </ChartResponsiveContainer>
+      </div>
+    );
+
+    expect(INITIAL_CHART_DIMENSION.width).toBeGreaterThan(0);
+    expect(INITIAL_CHART_DIMENSION.height).toBeGreaterThan(0);
+    expect(container.textContent).toContain("chart payload");
   });
 
   it("renders yield decomposition legend labels", () => {
