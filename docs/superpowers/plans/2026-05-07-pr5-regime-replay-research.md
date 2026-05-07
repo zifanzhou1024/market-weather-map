@@ -378,4 +378,3 @@ git status --short
 ```
 
 Expected: all tests pass; replay and score-history artifacts exist; `/replay` renders descriptive regime research.
-

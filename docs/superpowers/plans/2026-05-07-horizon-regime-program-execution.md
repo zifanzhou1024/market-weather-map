@@ -14,17 +14,17 @@
 
 Execute in this order:
 
-1. [PR 1: Horizon IA + Active-Data Regime Map](./2026-05-07-horizon-regime-decision-system.md)  
+1. [PR 1: Horizon IA + Active-Data Regime Map](./2026-05-07-horizon-regime-decision-system.md)
    Builds the core decision architecture from existing active data.
-2. [PR 2: Tactical Options + Event Risk Depth](./2026-05-07-pr2-tactical-options-event-risk.md)  
+2. [PR 2: Tactical Options + Event Risk Depth](./2026-05-07-pr2-tactical-options-event-risk.md)
    Adds source-gated options sentiment, VIX futures readiness, and event-risk UI without assuming redistribution rights.
-3. [PR 3: Fragility Shock Risk](./2026-05-07-pr3-fragility-shock-risk.md)  
+3. [PR 3: Fragility Shock Risk](./2026-05-07-pr3-fragility-shock-risk.md)
    Adds MOVE/SKEW source gates, shock-risk panels, and mismatch warnings.
-4. [PR 4: Strategic Macro Completeness](./2026-05-07-pr4-strategic-macro-completeness.md)  
+4. [PR 4: Strategic Macro Completeness](./2026-05-07-pr4-strategic-macro-completeness.md)
    Adds active public housing and consumer-cycle data, plus candidate gates for valuation, PMIs/SLOOS, term premium, and Treasury supply.
-5. [PR 5: Historical Regime Replay](./2026-05-07-pr5-regime-replay-research.md)  
+5. [PR 5: Historical Regime Replay](./2026-05-07-pr5-regime-replay-research.md)
    Adds descriptive historical regime replay, score history, and research caveats.
-6. [PR 6: Watchlist + Threshold System](./2026-05-07-pr6-watchlist-thresholds.md)  
+6. [PR 6: Watchlist + Threshold System](./2026-05-07-pr6-watchlist-thresholds.md)
    Adds browser-local watchlists and threshold monitoring without backend notifications.
 
 ---
@@ -85,4 +85,3 @@ Expected:
 - Data workflow succeeds.
 - User-facing copy contains no trade advice language introduced by these PRs.
 - `.idea/` remains untracked and unstaged unless the user explicitly asks otherwise.
-

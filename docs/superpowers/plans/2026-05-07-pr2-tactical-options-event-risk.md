@@ -397,4 +397,3 @@ git status --short
 ```
 
 Expected: all tests pass; candidate tactical rows are visible but inactive; no unreviewed source is fetched or scored.
-

@@ -30,15 +30,15 @@ The audit describes multiple independent subsystems. Do not implement them as on
 
 Build order:
 
-1. **PR 1: Horizon IA + Active-Data Regime Map**  
+1. **PR 1: Horizon IA + Active-Data Regime Map**
    Add route/navigation structure, series metadata, derived active-data regime JSON, tactical checklist, TIPS x dollar quadrant, yield decomposition, and active-data VIX proxy view. No new external source families.
-2. **PR 2: Tactical Trading Weather Depth**  
+2. **PR 2: Tactical Trading Weather Depth**
    Add options sentiment, put/call dashboard, SKEW, and event-risk cards only after source terms are resolved or explicitly displayed as candidate-only.
-3. **PR 3: Fragility Shock Risk**  
+3. **PR 3: Fragility Shock Risk**
    Add MOVE, MOVE/VIX, bond-volatility interpretation, tail-risk panels, and fragility mismatch warnings after terms review.
-4. **PR 4: Long-Term Macro Climate Depth**  
+4. **PR 4: Long-Term Macro Climate Depth**
    Add valuation, term premium, Treasury supply, PMIs/SLOOS, consumer balance sheet, and housing/fiscal expansion as source-governed workstreams.
-5. **PR 5: Historical Regime Replay**  
+5. **PR 5: Historical Regime Replay**
    Add descriptive forward-return replay for selected historical regimes with clear non-predictive caveats.
 
 This plan details PR 1 because it is the highest-value slice that can ship with the current repository and active no-secret data.

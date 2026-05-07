@@ -402,4 +402,3 @@ git status --short
 ```
 
 Expected: all tests pass; active FRED housing/consumer data appear; candidate strategic rows are visible but inactive.
-

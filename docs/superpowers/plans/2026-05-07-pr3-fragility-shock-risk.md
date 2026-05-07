@@ -355,4 +355,3 @@ git status --short
 ```
 
 Expected: all tests pass; `/fragility` renders; MOVE/SKEW are visible as gated unless reviewed active sources exist.
-

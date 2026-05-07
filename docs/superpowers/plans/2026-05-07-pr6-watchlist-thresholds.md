@@ -353,4 +353,3 @@ git status --short
 ```
 
 Expected: all tests pass; `/watchlist` works from static data and localStorage only.
-
