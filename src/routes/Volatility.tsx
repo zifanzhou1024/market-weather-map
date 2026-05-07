@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CandidateSourcePanel, { type CandidateSourceItem } from "../components/CandidateSourcePanel";
+import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
@@ -7,6 +7,7 @@ import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/Mul
 import PercentileBandChart from "../components/PercentileBandChart";
 import SourceNote from "../components/SourceNote";
 import TimeSeriesChart from "../components/TimeSeriesChart";
+import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
 import { loadCatalog, loadDataStatus, loadSeries } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 import { loadRouteDerivedSeries } from "./routeSeries";
@@ -114,18 +115,6 @@ function candidateItems(
   });
 }
 
-function vixFuturesFooter() {
-  return (
-    <div className="fallback-proxy-note">
-      <span className="status-pill status-partial">Fallback proxy</span>
-      <p>
-        VIX9D/VIX and VIX/VIX3M can provide fallback proxy context while VX data is inactive. This is not
-        a tradable futures curve.
-      </p>
-    </div>
-  );
-}
-
 export default function Volatility() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -205,11 +194,8 @@ export default function Volatility() {
             </>
           ) : null}
           <MultiSeriesChart series={toChartSeries(data.series)} title="VIX term-structure proxy" units="index" />
-          <CandidateSourcePanel
-            eyebrow="Candidate sources"
-            footer={vixFuturesFooter()}
+          <VixFuturesReadinessPanel
             items={candidateItems(data.catalog, data.status, vxCandidateIds)}
-            summary="VX candidate rows remain gated until active futures data is approved for publication."
             title="VX futures curve"
           />
           <DataStatusTable seriesIds={volatilityStatusIds} status={data.status} />

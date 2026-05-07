@@ -410,6 +410,28 @@ describe("data-driven components", () => {
     expect(text).toContain("VIX3M");
   });
 
+  it("renders route-provided VIX futures candidate rows", () => {
+    const container = render(
+      <VixFuturesReadinessPanel
+        items={[
+          {
+            id: "vx1",
+            label: "Distinct VX1 route candidate",
+            note: "Route-provided VX1 readiness note.",
+            status: "partial"
+          }
+        ]}
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("VIX futures readiness");
+    expect(text).toContain("Distinct VX1 route candidate");
+    expect(text).toContain("Route-provided VX1 readiness note.");
+    expect(text).toContain("Partial");
+    expect(text).toContain("Fallback proxy");
+  });
+
   it("filters data status rows by selected series ids", () => {
     const status: DataStatusFile = {
       generated_at_utc: "2026-05-03T18:32:54Z",

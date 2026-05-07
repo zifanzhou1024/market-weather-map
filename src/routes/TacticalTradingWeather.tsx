@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CandidateSourcePanel, { type CandidateSourceItem } from "../components/CandidateSourcePanel";
+import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
@@ -10,6 +10,7 @@ import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/Mul
 import OptionsSentimentPanel from "../components/OptionsSentimentPanel";
 import ScoreCard from "../components/ScoreCard";
 import SignalChecklist from "../components/SignalChecklist";
+import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
 import {
   loadCatalog,
   loadDataStatus,
@@ -134,18 +135,6 @@ function candidateItems(
   });
 }
 
-function vixFuturesFooter() {
-  return (
-    <div className="fallback-proxy-note">
-      <span className="status-pill status-partial">Fallback proxy</span>
-      <p>
-        VIX9D/VIX and VIX/VIX3M can provide fallback proxy context while VX data is inactive. This is not
-        a tradable futures curve.
-      </p>
-    </div>
-  );
-}
-
 export default function TacticalTradingWeather() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -232,13 +221,7 @@ export default function TacticalTradingWeather() {
             title="VIX term-structure proxy"
             units="index"
           />
-          <CandidateSourcePanel
-            eyebrow="Candidate sources"
-            footer={vixFuturesFooter()}
-            items={candidateItems(data.catalog, data.status, vxCandidateIds)}
-            summary="VX candidate rows remain gated until active futures data is approved for publication."
-            title="VIX futures readiness"
-          />
+          <VixFuturesReadinessPanel items={candidateItems(data.catalog, data.status, vxCandidateIds)} />
           <DataGapPanel seriesIds={tacticalStatusIds} status={data.status} />
           <DataStatusTable seriesIds={tacticalStatusIds} status={data.status} />
         </div>

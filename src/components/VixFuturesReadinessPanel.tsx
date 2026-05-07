@@ -10,7 +10,15 @@ const vxItems: CandidateSourceItem[] = Array.from({ length: 8 }, (_, index) => {
   };
 });
 
-export default function VixFuturesReadinessPanel() {
+interface VixFuturesReadinessPanelProps {
+  items?: CandidateSourceItem[];
+  title?: string;
+}
+
+export default function VixFuturesReadinessPanel({
+  items = vxItems,
+  title = "VIX futures readiness"
+}: VixFuturesReadinessPanelProps) {
   return (
     <CandidateSourcePanel
       eyebrow="Candidate sources"
@@ -23,9 +31,9 @@ export default function VixFuturesReadinessPanel() {
           </p>
         </div>
       }
-      items={vxItems}
+      items={items}
       summary="VX candidate rows remain gated until active futures data is approved for publication."
-      title="VIX futures readiness"
+      title={title}
     />
   );
 }
