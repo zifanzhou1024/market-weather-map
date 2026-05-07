@@ -2,6 +2,7 @@ import type {
   BucketScoresFile,
   DataStatusFile,
   DerivedSeriesFile,
+  MacroCalendarFile,
   RegimeScoreFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
@@ -84,4 +85,8 @@ export function loadSourceRegistry(): Promise<SourceRegistryFile> {
 
 export function loadScoreSummary(): Promise<ScoreSummaryFile> {
   return loadJson<ScoreSummaryFile>("/data/derived/score_summary.json");
+}
+
+export function loadMacroCalendar(): Promise<MacroCalendarFile> {
+  return loadJson<MacroCalendarFile>("/data/events/macro_calendar.json");
 }

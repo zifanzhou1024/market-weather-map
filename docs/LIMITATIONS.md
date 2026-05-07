@@ -19,6 +19,8 @@
 - Crop prices come from monthly FRED series, not live futures curves.
 - VIX9D, VIX, and VIX3M ratios are public volatility-term proxies. They are not a tradable VIX futures curve.
 - VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, Treasury supply, and similar candidates do not affect scores, labels, or checklists before access terms, automation constraints, attribution, and redistribution rules are reviewed.
+- Housing excludes home prices, existing home sales, affordability, and mortgage applications until source handling is reviewed.
+- Event Calendar rows are descriptive source links in PR 2, not guaranteed exact alert dates for every release.
 
 ## Source Access And Review
 
@@ -27,6 +29,7 @@
 - `restricted` sources are paid, gated, license-restricted, or otherwise not suitable for static public redistribution under current terms.
 - `unavailable` sources cannot currently be fetched or redistributed by the no-secret static workflow.
 - Candidate survey, flow, volatility, and term-premium sources can create coverage gaps. Those gaps should reduce score confidence rather than be silently filled with proxies.
+- Consumer/Fiscal/Treasury candidate rows do not affect scores.
 - Public macro series can be revised after initial publication, so historical scores may change when source data is refreshed.
 
 ## Score Confidence Limitations

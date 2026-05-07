@@ -416,6 +416,77 @@ select {
   font-size: 0.88rem;
 }
 
+.calendar-list {
+  display: grid;
+  gap: 12px;
+}
+
+.calendar-event {
+  border-top: 1px solid #e5e8df;
+  padding-top: 14px;
+}
+
+.calendar-event:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.calendar-event h4 {
+  margin: 0;
+  color: #233029;
+  font-size: 1rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.calendar-event p {
+  margin: 10px 0 0;
+  color: #536157;
+}
+
+.calendar-event__summary {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.calendar-event__summary > div {
+  min-width: 0;
+}
+
+.calendar-event dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 0;
+}
+
+.calendar-event dt {
+  color: #607066;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.calendar-event dd {
+  margin: 3px 0 0;
+  color: #24332a;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.calendar-event .status-pill {
+  flex-shrink: 0;
+  color: #31516b;
+  background: #e1edf6;
+}
+
+.calendar-event .metric-source,
+.calendar-event a {
+  overflow-wrap: anywhere;
+}
+
 .regime-badge,
 .status-pill {
   display: inline-flex;
@@ -717,12 +788,14 @@ code {
 
   .score-card__header,
   .score-card__lists,
-  .signal-checklist__row {
+  .signal-checklist__row,
+  .calendar-event__summary {
     display: grid;
     grid-template-columns: 1fr;
   }
 
-  .confirmation-matrix {
+  .confirmation-matrix,
+  .calendar-event dl {
     grid-template-columns: 1fr;
   }
 

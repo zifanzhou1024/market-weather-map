@@ -5,6 +5,7 @@ const navItems = [
   { to: "/tactical", label: "Tactical Trading Weather" },
   { to: "/macro-climate", label: "Long-Term Macro Climate" },
   { to: "/regime-map", label: "Regime Map" },
+  { to: "/calendar", label: "Calendar" },
   { to: "/volatility", label: "Volatility" },
   { to: "/rates", label: "Rates" },
   { to: "/liquidity", label: "Liquidity" },
@@ -12,6 +13,7 @@ const navItems = [
   { to: "/dollar-global", label: "Dollar" },
   { to: "/commodities", label: "Commodities" },
   { to: "/growth", label: "Growth" },
+  { to: "/housing", label: "Housing" },
   { to: "/inflation", label: "Inflation" },
   { to: "/sentiment", label: "Positioning" },
   { to: "/methodology", label: "Methodology" }

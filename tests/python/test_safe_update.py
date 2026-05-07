@@ -14,6 +14,13 @@ def test_update_runner_modules_are_importable():
         importlib.import_module(module)
 
 
+def test_update_runner_generates_macro_calendar_before_schema_validation():
+    assert "scripts.generate_macro_calendar" in update_data.MODULES
+    assert update_data.MODULES.index("scripts.generate_macro_calendar") < update_data.MODULES.index(
+        "scripts.validate.validate_schema"
+    )
+
+
 def test_restore_snapshot_preserves_prior_good_json(tmp_path):
     data_dir = tmp_path / "public" / "data"
     series_dir = data_dir / "series"

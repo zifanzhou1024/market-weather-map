@@ -5,20 +5,19 @@
     "model_confidence": 1.0,
     "overall_confidence": 0.99,
     "reasons": [
-      "Housing is not active in Phase 4 PR 1.",
       "Treasury/bond volatility source is not active."
     ],
-    "source_confidence": 0.95
+    "source_confidence": 0.97
   },
-  "date": "2026-05-06",
-  "generated_at_utc": "2026-05-07T09:33:41Z",
-  "method_version": "phase3-three-score-v1",
+  "date": "2026-05-07",
+  "generated_at_utc": "2026-05-07T21:41:07Z",
+  "method_version": "phase4-pr2-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 82.54,
+        "credit_spread_widening": 86.5,
         "dollar_spike": 76.98,
-        "liquidity_drain": -34.62,
+        "liquidity_drain": 19.24,
         "positioning_crowding": -30.15,
         "treasury_bond_volatility": 0.0,
         "volatility_term_structure": 39.68
@@ -47,11 +46,10 @@
         "Treasury/bond volatility source is not active."
       ],
       "recent_changes": [
-        "Liquidity drains are visible.",
         "Credit spread pressure is contained.",
         "The dollar backdrop is easing."
       ],
-      "score": 30.4,
+      "score": 39.47,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -144,9 +142,7 @@
         },
         "missing": []
       },
-      "top_risks": [
-        "Liquidity drains are visible."
-      ],
+      "top_risks": [],
       "top_supports": [
         "Credit spread pressure is contained.",
         "The dollar backdrop is easing.",
@@ -157,39 +153,37 @@
       "bucket_scores": {
         "consumer_production": 66.67,
         "growth": 41.66,
+        "housing": -0.96,
         "inflation": -100.0,
-        "labor": 66.03,
-        "real_yields": -44.44
+        "labor": 65.39,
+        "real_yields": -33.34
       },
       "bucket_weights": {
-        "consumer_production": 0.2,
-        "growth": 0.25,
-        "inflation": 0.2,
-        "labor": 0.25,
+        "consumer_production": 0.17,
+        "growth": 0.2,
+        "housing": 0.15,
+        "inflation": 0.18,
+        "labor": 0.2,
         "real_yields": 0.1
       },
-      "confidence": 0.99,
+      "confidence": 1.0,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
         "freshness_confidence": 1.0,
         "model_confidence": 1.0,
-        "overall_confidence": 0.99,
-        "source_confidence": 0.92
+        "overall_confidence": 1.0,
+        "source_confidence": 1.0
       },
-      "confidence_reasons": [
-        "Housing is not active in Phase 4 PR 1."
-      ],
+      "confidence_reasons": [],
       "label": "Mixed",
-      "missing_or_stale_notes": [
-        "Housing is not active in Phase 4 PR 1."
-      ],
+      "missing_or_stale_notes": [],
       "recent_changes": [
         "Inflation pressure remains elevated.",
         "Real yields are elevated.",
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
-      "score": 15.81,
+      "score": 11.27,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -205,6 +199,9 @@
           "real_retail_sales",
           "industrial_production",
           "durable_goods_orders",
+          "housing_starts",
+          "building_permits",
+          "mortgage_rate_30y",
           "real_yield_10y"
         ],
         "coverage_ratio": 1.0,
@@ -222,6 +219,9 @@
           "real_retail_sales",
           "industrial_production",
           "durable_goods_orders",
+          "housing_starts",
+          "building_permits",
+          "mortgage_rate_30y",
           "real_yield_10y"
         ],
         "groups": {
@@ -248,6 +248,20 @@
             "expected": [
               "cfnai",
               "cfnai_3m_avg"
+            ],
+            "missing": []
+          },
+          "housing": {
+            "available": [
+              "housing_starts",
+              "building_permits",
+              "mortgage_rate_30y"
+            ],
+            "coverage_ratio": 1.0,
+            "expected": [
+              "housing_starts",
+              "building_permits",
+              "mortgage_rate_30y"
             ],
             "missing": []
           },
@@ -307,11 +321,11 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -48.18,
-        "credit_spreads": 54.56,
+        "commodities_inflation_impulse": -48.26,
+        "credit_spreads": 62.3,
         "dollar_global": 76.98,
-        "liquidity_funding": 2.92,
-        "rates_real_yields": -44.44,
+        "liquidity_funding": -27.61,
+        "rates_real_yields": -33.34,
         "sentiment_positioning": -30.15,
         "volatility_tail_risk": 21.16
       },
@@ -341,7 +355,7 @@
         "The broad dollar backdrop is easing.",
         "Credit spread pressure is contained."
       ],
-      "score": 8.9,
+      "score": 6.77,
       "source_coverage": {
         "available": [
           "high_yield_oas",
