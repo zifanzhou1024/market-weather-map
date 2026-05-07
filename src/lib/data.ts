@@ -5,6 +5,7 @@ import type {
   RegimeScoreFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
+  ShockRiskSnapshotFile,
   SeriesCatalogEntry,
   SourceRegistryFile,
   TimeSeriesFile
@@ -68,6 +69,10 @@ export function loadRegimeScore(): Promise<RegimeScoreFile> {
 
 export function loadRegimeSnapshot(): Promise<RegimeSnapshotFile> {
   return loadJson<RegimeSnapshotFile>("/data/derived/regime_snapshot.json");
+}
+
+export function loadShockRiskSnapshot(): Promise<ShockRiskSnapshotFile> {
+  return loadJson<ShockRiskSnapshotFile>("/data/derived/shock_risk_snapshot.json");
 }
 
 export function loadBucketScores(): Promise<BucketScoresFile> {

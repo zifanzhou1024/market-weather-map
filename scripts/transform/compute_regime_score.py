@@ -781,6 +781,152 @@ def build_regime_snapshot(series_by_id: dict[str, dict[str, Any]], generated_at:
     }
 
 
+def _shock_label(score: float) -> str:
+    if score <= -35:
+        return "Elevated shock risk"
+    if score < 20:
+        return "Mixed shock risk"
+    return "Contained shock risk"
+
+
+def _shock_signal(
+    series_by_id: dict[str, dict[str, Any]],
+    series_id: str,
+    label: str,
+    score: float,
+    message: str,
+) -> dict[str, Any]:
+    summary = latest_summary(series_by_id[series_id])
+    return {
+        "id": series_id,
+        "label": label,
+        "score": score,
+        "value": _number_from_summary(summary, "latest_value"),
+        "change": _number_from_summary(summary, "change_1m"),
+        "message": message,
+    }
+
+
+def build_shock_risk_snapshot(
+    series_by_id: dict[str, dict[str, Any]],
+    status_by_id: dict[str, dict[str, Any]],
+    generated_at: str,
+) -> dict[str, Any]:
+    vix_score = _score_inverse_percentile_for_first(series_by_id, ["vix"])
+    vix_curve_score = _score_inverse_percentile_for_first(series_by_id, ["vix_vix3m_ratio"])
+    credit_score = _score_inverse_percentile_for_first(series_by_id, ["hy_minus_ig_oas", "high_yield_oas"])
+    dollar_change = _summary_change(series_by_id, "broad_dollar") or 0.0
+    real_yield_change = _summary_change(series_by_id, "real_yield_10y") or 0.0
+    liquidity_change = _summary_change(series_by_id, "net_liquidity") or 0.0
+    active_pressure = weighted_score(
+        {
+            "vix": vix_score or 0.0,
+            "curve": vix_curve_score or 0.0,
+            "credit": credit_score or 0.0,
+            "dollar": clamp(-dollar_change * 15),
+            "real_yield": clamp(-real_yield_change * 120),
+            "liquidity": clamp(liquidity_change / 25),
+        },
+        {
+            "vix": 0.2,
+            "curve": 0.2,
+            "credit": 0.25,
+            "dollar": 0.1,
+            "real_yield": 0.15,
+            "liquidity": 0.1,
+        },
+    )
+
+    active_signals = []
+    signal_specs = [
+        ("vix", "VIX", vix_score, "VIX percentile is included in active shock-risk pressure."),
+        (
+            "vix_vix3m_ratio",
+            "VIX/VIX3M ratio",
+            vix_curve_score,
+            "VIX curve pressure is included in active shock-risk pressure.",
+        ),
+        (
+            "broad_dollar",
+            "Broad dollar",
+            clamp(-dollar_change * 15),
+            "Broad dollar one-month change is included in active shock-risk pressure.",
+        ),
+        (
+            "real_yield_10y",
+            "10Y real yield",
+            clamp(-real_yield_change * 120),
+            "Real yield one-month change is included in active shock-risk pressure.",
+        ),
+        (
+            "net_liquidity",
+            "Net liquidity",
+            clamp(liquidity_change / 25),
+            "Net liquidity one-month change is included in active shock-risk pressure.",
+        ),
+    ]
+    credit_series_id, _ = _summary_for_first(series_by_id, ["hy_minus_ig_oas", "high_yield_oas"])
+    if credit_series_id is not None:
+        signal_specs.insert(
+            2,
+            (
+                credit_series_id,
+                "Credit spreads",
+                credit_score,
+                "Credit spread percentile is included in active shock-risk pressure.",
+            ),
+        )
+    for series_id, label, score, message in signal_specs:
+        if series_id in series_by_id and score is not None:
+            active_signals.append(_shock_signal(series_by_id, series_id, label, score, message))
+
+    source_labels = {
+        "move_index": "MOVE Index",
+        "skew_index": "SKEW Index",
+    }
+    source_gaps = []
+    for series_id, label in source_labels.items():
+        row = status_by_id.get(series_id)
+        if row is not None and row.get("status") != "ok":
+            source_gaps.append(
+                {
+                    "id": series_id,
+                    "label": label,
+                    "status": str(row.get("status", "unavailable")),
+                    "message": str(row.get("message") or "Candidate source is not active for scoring."),
+                }
+            )
+
+    credit_change = _summary_change(series_by_id, "hy_minus_ig_oas")
+    if credit_change is None:
+        credit_change = _summary_change(series_by_id, "high_yield_oas")
+    mismatch_warnings = []
+    if real_yield_change > 0 and dollar_change > 0 and (credit_change or 0.0) > 0:
+        mismatch_warnings.append(
+            {
+                "id": "tightening_confirmation",
+                "label": "Tightening confirmation",
+                "message": (
+                    "Real yields, the broad dollar, and credit spreads all rose over one month, "
+                    "confirming tighter active financial conditions."
+                ),
+            }
+        )
+
+    latest_dates = _latest_dates(series_by_id)
+    latest_date = max(latest_dates) if latest_dates else generated_at[:10]
+    return {
+        "generated_at_utc": generated_at,
+        "date": latest_date,
+        "method_version": "phase5-shock-risk-v1",
+        "score": active_pressure,
+        "label": _shock_label(active_pressure),
+        "active_signals": active_signals,
+        "source_gaps": source_gaps,
+        "mismatch_warnings": mismatch_warnings,
+    }
+
+
 def _title(name: str) -> str:
     return name.replace("_", " ").title()
 
@@ -1698,6 +1844,8 @@ def main() -> None:
     write_json(data_dir() / "derived" / "score_summary.json", score_summary)
     regime_snapshot = build_regime_snapshot(series_by_id, generated_at)
     write_json(data_dir() / "derived" / "regime_snapshot.json", regime_snapshot)
+    shock_risk_snapshot = build_shock_risk_snapshot(series_by_id, status["series"], generated_at)
+    write_json(data_dir() / "derived" / "shock_risk_snapshot.json", shock_risk_snapshot)
 
     market_weather = score_summary["scores"]["market_weather"]
     buckets = dict(market_weather["bucket_scores"])

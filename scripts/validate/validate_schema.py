@@ -33,6 +33,7 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "derived" / "bucket_scores.json",
     data_dir() / "derived" / "regime_score.json",
     data_dir() / "derived" / "regime_snapshot.json",
+    data_dir() / "derived" / "shock_risk_snapshot.json",
     data_dir() / "status" / "data_status.json",
 ]
 ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
@@ -257,6 +258,18 @@ def validate_regime_snapshot_file() -> None:
         raise ValueError(f"{path} yield_decomposition must be a list")
 
 
+def validate_shock_risk_snapshot_file() -> None:
+    path = data_dir() / "derived" / "shock_risk_snapshot.json"
+    payload = _load_json(path)
+    for field in ["generated_at_utc", "date", "method_version", "label"]:
+        if not isinstance(payload.get(field), str):
+            raise ValueError(f"{path} {field} must be a string")
+    _validate_finite_number(payload.get("score"), path, "score")
+    for field in ["active_signals", "source_gaps", "mismatch_warnings"]:
+        if not isinstance(payload.get(field), list):
+            raise ValueError(f"{path} {field} must be a list")
+
+
 def validate_status_file() -> None:
     path = data_dir() / "status" / "data_status.json"
     payload = _load_json(path)
@@ -293,6 +306,7 @@ def main() -> None:
     validate_generated_files()
     validate_score_summary_file()
     validate_regime_snapshot_file()
+    validate_shock_risk_snapshot_file()
     validate_status_file()
 
 
