@@ -38,6 +38,7 @@ REQUIRED_GENERATED_FILES = [
 ]
 ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
 SERIES_STATUSES = {"ok", "stale", "failed", "terms_review_needed", "unavailable"}
+DATA_STATUSES = ROOT_STATUSES | {"terms_review_needed", "unavailable"}
 STATUSES_WITH_PAYLOAD_OBSERVATIONS = {"ok", "stale", "partial"}
 REQUIRED_SCORE_ARRAY_FIELDS = (
     "top_risks",
@@ -127,6 +128,29 @@ def _validate_confidence_value(value: Any, path: Path, field_name: str) -> None:
     _validate_finite_number(value, path, field_name)
     if not 0 <= float(value) <= 1:
         raise ValueError(f"{path} {field_name} must be between 0 and 1")
+
+
+def _validate_string_field(
+    payload: dict[str, Any],
+    path: Path,
+    field_name: str,
+    display_name: str | None = None,
+) -> None:
+    if not isinstance(payload.get(field_name), str):
+        raise ValueError(f"{path} {display_name or field_name} must be a string")
+
+
+def _validate_optional_number_or_null(
+    payload: dict[str, Any],
+    path: Path,
+    field_name: str,
+    display_name: str | None = None,
+) -> None:
+    if field_name not in payload or payload[field_name] is None:
+        return
+    value = payload[field_name]
+    if not isinstance(value, int | float) or isinstance(value, bool) or not math.isfinite(float(value)):
+        raise ValueError(f"{path} {display_name or field_name} must be numeric or null")
 
 
 def _payload_path_for_status_series(series_id: str) -> Path | None:
@@ -262,12 +286,38 @@ def validate_shock_risk_snapshot_file() -> None:
     path = data_dir() / "derived" / "shock_risk_snapshot.json"
     payload = _load_json(path)
     for field in ["generated_at_utc", "date", "method_version", "label"]:
-        if not isinstance(payload.get(field), str):
-            raise ValueError(f"{path} {field} must be a string")
+        _validate_string_field(payload, path, field)
+    if payload["label"] not in {"Elevated shock risk", "Mixed shock risk", "Contained shock risk"}:
+        raise ValueError(f"{path} label has invalid value")
     _validate_finite_number(payload.get("score"), path, "score")
     for field in ["active_signals", "source_gaps", "mismatch_warnings"]:
         if not isinstance(payload.get(field), list):
             raise ValueError(f"{path} {field} must be a list")
+
+    for item in payload["active_signals"]:
+        if not isinstance(item, dict):
+            raise ValueError(f"{path} active_signals items must be objects")
+        for field in ["id", "label", "message"]:
+            _validate_string_field(item, path, field, f"active_signals.{field}")
+        _validate_finite_number(item.get("score"), path, "active_signals.score")
+        for field in ["value", "change"]:
+            _validate_optional_number_or_null(item, path, field, f"active_signals.{field}")
+
+    for item in payload["source_gaps"]:
+        if not isinstance(item, dict):
+            raise ValueError(f"{path} source_gaps items must be objects")
+        for field in ["id", "label", "status", "message"]:
+            _validate_string_field(item, path, field, f"source_gaps.{field}")
+        if item["status"] not in DATA_STATUSES:
+            raise ValueError(f"{path} source_gaps.status has invalid value")
+
+    for item in payload["mismatch_warnings"]:
+        if not isinstance(item, dict):
+            raise ValueError(f"{path} mismatch_warnings items must be objects")
+        for field in ["id", "label", "message"]:
+            _validate_string_field(item, path, field, f"mismatch_warnings.{field}")
+        if "severity" in item and not isinstance(item["severity"], str):
+            raise ValueError(f"{path} mismatch_warnings.severity must be a string")
 
 
 def validate_status_file() -> None:
