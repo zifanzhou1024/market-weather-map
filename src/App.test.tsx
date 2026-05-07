@@ -44,11 +44,14 @@ describe("App routing", () => {
     expect(container.querySelector('a[href="/credit"]')?.className).toContain("active");
   });
 
-  it("primary navigation exposes commodities and sentiment", () => {
+  it("primary navigation exposes commodities, positioning, and decision views", () => {
     const container = renderAt("/methodology");
 
     expect(container.querySelector('a[href="/commodities"]')?.textContent).toBe("Commodities");
-    expect(container.querySelector('a[href="/sentiment"]')?.textContent).toBe("Sentiment & Positioning");
+    expect(container.querySelector('a[href="/sentiment"]')?.textContent).toBe("Positioning");
+    expect(container.querySelector('a[href="/tactical"]')?.textContent).toBe("Tactical Trading Weather");
+    expect(container.querySelector('a[href="/macro-climate"]')?.textContent).toBe("Long-Term Macro Climate");
+    expect(container.querySelector('a[href="/regime-map"]')?.textContent).toBe("Regime Map");
   });
 
   it("redirects unknown routes to the overview", async () => {
