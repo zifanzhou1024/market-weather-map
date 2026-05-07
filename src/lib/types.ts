@@ -7,6 +7,8 @@ export type DataStatus =
   | "unavailable";
 export type SeriesFrequency = "daily" | "weekly" | "monthly" | "quarterly";
 export type UpdateStatus = "ok" | "failed";
+export type MacroEventImportance = "high" | "medium" | "low";
+export type MacroEventStatus = "scheduled" | "source_link" | "estimated";
 
 export type SeriesCategory =
   | "volatility"
@@ -16,6 +18,7 @@ export type SeriesCategory =
   | "commodities"
   | "sentiment"
   | "growth"
+  | "housing"
   | "labor"
   | "inflation"
   | "dollar"
@@ -269,4 +272,24 @@ export interface DataStatusFile {
   update_status?: UpdateStatus;
   update_message?: string;
   series: Record<string, SeriesStatus>;
+}
+
+export interface MacroCalendarEvent {
+  id: string;
+  title: string;
+  category: string;
+  importance: MacroEventImportance;
+  date: string | null;
+  time: string | null;
+  timezone: string | null;
+  source: string;
+  source_url: string;
+  notes: string;
+  status: MacroEventStatus;
+}
+
+export interface MacroCalendarFile {
+  generated_at_utc: string;
+  method_version: string;
+  events: MacroCalendarEvent[];
 }

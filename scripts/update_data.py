@@ -15,6 +15,7 @@ MODULES = [
     "scripts.transform.normalize_series",
     "scripts.transform.compute_percentiles",
     "scripts.transform.compute_regime_score",
+    "scripts.generate_macro_calendar",
     "scripts.validate.validate_schema",
     "scripts.validate.validate_freshness",
 ]

@@ -24,11 +24,11 @@ export default function Methodology() {
           <h3>Macro Climate Score</h3>
           <p>
             The macro climate score separates slower economic inputs from the market tape. Growth, labor,
-            inflation, consumer and production activity, and 10Y real yield are read as context for whether the
-            backdrop is improving, mixed, overheating, or slowing.
+            inflation, consumer and production activity, housing, and 10Y real yield are read as context for
+            whether the backdrop is improving, mixed, overheating, or slowing.
           </p>
           <p>
-            The emitted macro buckets are growth, labor, inflation, consumer_production, and real_yields.
+            The emitted macro buckets are growth, labor, inflation, consumer_production, housing, and real_yields.
           </p>
         </section>
         <section className="panel">

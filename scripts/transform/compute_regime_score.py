@@ -25,7 +25,7 @@ WEIGHTS = {
     "commodities": 0.10,
     "sentiment": 0.15,
 }
-METHOD_VERSION = "phase3-three-score-v1"
+METHOD_VERSION = "phase4-pr2-macro-completeness-v1"
 MARKET_WEIGHTS = {
     "credit_spreads": 0.22,
     "liquidity_funding": 0.18,
@@ -36,10 +36,11 @@ MARKET_WEIGHTS = {
     "sentiment_positioning": 0.10,
 }
 MACRO_WEIGHTS = {
-    "growth": 0.25,
-    "labor": 0.25,
-    "inflation": 0.20,
-    "consumer_production": 0.20,
+    "growth": 0.20,
+    "labor": 0.20,
+    "inflation": 0.18,
+    "consumer_production": 0.17,
+    "housing": 0.15,
     "real_yields": 0.10,
 }
 FRAGILITY_WEIGHTS = {
@@ -64,6 +65,7 @@ MACRO_COVERAGE_GROUPS = {
     "labor": ["nonfarm_payrolls", "unemployment_rate", "initial_claims", "sahm_rule"],
     "inflation": ["headline_cpi", "core_cpi", "core_pce", "ppi_final_demand"],
     "consumer/production": ["real_retail_sales", "industrial_production", "durable_goods_orders"],
+    "housing": ["housing_starts", "building_permits", "mortgage_rate_30y"],
     "real_yields": ["real_yield_10y"],
 }
 FRAGILITY_COVERAGE_GROUPS = {
@@ -993,6 +995,25 @@ def _confidence_breakdown(
     return breakdown, reasons
 
 
+def _weighted_confidence_with_caveat_cap(
+    components: dict[str, float],
+    weights: dict[str, float],
+    reasons: list[str],
+) -> float:
+    total_weight = sum(weight for key, weight in weights.items() if key in components)
+    if total_weight == 0:
+        return 0.0
+    raw_confidence = (
+        sum(components[key] * weights[key] for key in weights if key in components)
+        / total_weight
+    )
+    confidence = round(raw_confidence, 2)
+    has_caveats = bool(reasons) or any(value < 1.0 for value in components.values())
+    if has_caveats and confidence >= 1.0:
+        return 0.99
+    return confidence
+
+
 def _series_driver(
     bucket: str,
     direction: str,
@@ -1226,6 +1247,13 @@ def _market_weather_drivers(
     return drivers
 
 
+def _score_housing(series_by_id: dict[str, dict[str, Any]]) -> float:
+    return _score_average([
+        _score_percentile_average(series_by_id, ["housing_starts", "building_permits"], inverse=False),
+        _score_percentile_average(series_by_id, ["mortgage_rate_30y"], inverse=True),
+    ]) or 0.0
+
+
 def _macro_climate_scores(series_by_id: dict[str, dict[str, Any]]) -> dict[str, float]:
     return {
         "growth": _score_percentile_average(series_by_id, ["cfnai", "cfnai_3m_avg"], inverse=False)
@@ -1247,6 +1275,7 @@ def _macro_climate_scores(series_by_id: dict[str, dict[str, Any]]) -> dict[str, 
             inverse=False,
         )
         or 0.0,
+        "housing": _score_housing(series_by_id),
         "real_yields": _score_percentile_average(series_by_id, ["real_yield_10y"], inverse=True)
         or 0.0,
     }
@@ -1282,6 +1311,19 @@ def _macro_climate_drivers(series_by_id: dict[str, dict[str, Any]]) -> list[Scor
         series_id, summary = _summary_for_first(series_by_id, series_ids)
         score = _score_percentile_average(series_by_id, series_ids, inverse=inverse)
         _append_driver_for_score(drivers, bucket, score, series_id, summary, support_text, risk_text)
+    housing_series_id, housing_summary = _summary_for_first(
+        series_by_id,
+        ["housing_starts", "building_permits", "mortgage_rate_30y"],
+    )
+    _append_driver_for_score(
+        drivers,
+        "housing",
+        _score_housing(series_by_id),
+        housing_series_id,
+        housing_summary,
+        "Housing activity and rate sensitivity are supportive.",
+        "Housing activity or mortgage-rate pressure is restrictive.",
+    )
     return drivers
 
 
@@ -1356,7 +1398,6 @@ def build_score_summary(
     macro_score = weighted_three_score(macro_buckets, MACRO_WEIGHTS)
     fragility_score = weighted_three_score(fragility_buckets, FRAGILITY_WEIGHTS)
 
-    macro_notes.append("Housing is not active in Phase 4 PR 1.")
     if "Missing fragility treasury_bond_volatility coverage: move_index." in fragility_notes:
         fragility_notes.remove("Missing fragility treasury_bond_volatility coverage: move_index.")
     fragility_notes.append("Treasury/bond volatility source is not active.")
@@ -1413,7 +1454,7 @@ def build_score_summary(
     quality_reasons = sorted(
         set(market_confidence_reasons + macro_confidence_reasons + fragility_confidence_reasons)
     )
-    data_quality = {
+    data_quality_components = {
         "coverage_confidence": round(
             (
                 market_confidence["coverage_confidence"]
@@ -1450,14 +1491,18 @@ def build_score_summary(
             / 3,
             2,
         ),
-        "overall_confidence": round(
-            (
-                float(market_block["confidence"])
-                + float(macro_block["confidence"])
-                + float(fragility_block["confidence"])
-            )
-            / 3,
-            2,
+    }
+    data_quality = {
+        **data_quality_components,
+        "overall_confidence": _weighted_confidence_with_caveat_cap(
+            data_quality_components,
+            {
+                "coverage_confidence": 0.4,
+                "freshness_confidence": 0.3,
+                "model_confidence": 0.2,
+                "source_confidence": 0.1,
+            },
+            quality_reasons,
         ),
         "reasons": quality_reasons,
     }
