@@ -9,13 +9,13 @@
     ],
     "source_confidence": 0.97
   },
-  "date": "2026-05-05",
-  "generated_at_utc": "2026-05-06T02:53:55Z",
+  "date": "2026-05-06",
+  "generated_at_utc": "2026-05-07T00:10:17Z",
   "method_version": "phase4-pr2-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 83.34,
+        "credit_spread_widening": 82.54,
         "dollar_spike": 76.98,
         "liquidity_drain": -34.62,
         "positioning_crowding": -30.15,
@@ -50,7 +50,7 @@
         "Credit spread pressure is contained.",
         "The dollar backdrop is easing."
       ],
-      "score": 34.57,
+      "score": 34.37,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -159,7 +159,7 @@
         "housing": 6.73,
         "inflation": -100.0,
         "labor": 66.03,
-        "real_yields": -38.1
+        "real_yields": -44.44
       },
       "bucket_weights": {
         "consumer_production": 0.17,
@@ -186,7 +186,7 @@
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
-      "score": 12.07,
+      "score": 11.44,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -325,13 +325,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -42.39,
-        "credit_spreads": 37.7,
+        "commodities_inflation_impulse": -48.18,
+        "credit_spreads": 54.56,
         "dollar_global": 76.98,
-        "liquidity_funding": -28.15,
-        "rates_real_yields": -38.1,
+        "liquidity_funding": 2.92,
+        "rates_real_yields": -44.44,
         "sentiment_positioning": -30.15,
-        "volatility_tail_risk": 23.28
+        "volatility_tail_risk": 25.66
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -359,7 +359,7 @@
         "The broad dollar backdrop is easing.",
         "Credit spread pressure is contained."
       ],
-      "score": 1.45,
+      "score": 9.58,
       "source_coverage": {
         "available": [
           "high_yield_oas",
