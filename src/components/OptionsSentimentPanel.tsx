@@ -32,6 +32,7 @@ export default function OptionsSentimentPanel({ items }: OptionsSentimentPanelPr
   return (
     <CandidateSourcePanel
       eyebrow="Candidate sources"
+      emptyText="No active options sentiment candidate rows are configured."
       items={sortCandidateItems(items)}
       summary="Source review required before options sentiment rows can publish active signals."
       title="Options sentiment"

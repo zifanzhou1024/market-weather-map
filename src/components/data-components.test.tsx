@@ -296,6 +296,13 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Candidate options source pending review.");
   });
 
+  it("renders an explicit candidate source empty state", () => {
+    const container = render(<CandidateSourcePanel items={[]} title="Candidate inputs" />);
+
+    expect(container.textContent).toContain("Candidate inputs");
+    expect(container.textContent).toContain("No candidate source rows are configured for this view.");
+  });
+
   it("orders options sentiment candidates without active signal labels", () => {
     const container = render(<OptionsSentimentPanel items={[...candidateRows].reverse()} />);
     const text = container.textContent ?? "";
@@ -305,6 +312,16 @@ describe("data-driven components", () => {
     expect(text.indexOf("SPX/SPXW put/call")).toBeLessThan(text.indexOf("Index put/call"));
     expect(text.indexOf("Index put/call")).toBeLessThan(text.indexOf("Equity put/call"));
     expect(text.indexOf("Equity put/call")).toBeLessThan(text.indexOf("VIX put/call"));
+    expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
+  });
+
+  it("renders options sentiment source-review empty state without active signal labels", () => {
+    const container = render(<OptionsSentimentPanel items={[]} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Options sentiment");
+    expect(text).toContain("Source review required");
+    expect(text).toContain("No active options sentiment candidate rows are configured.");
     expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
   });
 
