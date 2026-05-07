@@ -636,6 +636,52 @@ select {
   font-size: 0.9rem;
 }
 
+.candidate-source-list {
+  display: grid;
+  gap: 10px;
+}
+
+.candidate-source-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  border-top: 1px solid #e4e8df;
+  padding: 12px 0 0;
+}
+
+.candidate-source-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.candidate-source-row h4 {
+  margin: 0 0 4px;
+  color: #24332a;
+  font-size: 0.98rem;
+}
+
+.candidate-source-row p,
+.fallback-proxy-note p {
+  margin: 0;
+  color: #536157;
+  font-size: 0.9rem;
+}
+
+.fallback-proxy-note {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  margin-top: 16px;
+  border-top: 1px solid #e4e8df;
+  padding-top: 14px;
+}
+
+.status-source_review_required {
+  color: #31516b;
+  background: #e1edf6;
+}
+
 .detail-list {
   display: grid;
   gap: 12px;
@@ -717,9 +763,14 @@ code {
 
   .score-card__header,
   .score-card__lists,
+  .candidate-source-row,
   .signal-checklist__row {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .fallback-proxy-note {
+    display: grid;
   }
 
   .confirmation-matrix {
