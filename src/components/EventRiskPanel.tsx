@@ -33,11 +33,15 @@ const eventRiskItems: CandidateSourceItem[] = [
   }
 ];
 
-export default function EventRiskPanel() {
+interface EventRiskPanelProps {
+  items?: CandidateSourceItem[];
+}
+
+export default function EventRiskPanel({ items = eventRiskItems }: EventRiskPanelProps) {
   return (
     <CandidateSourcePanel
       eyebrow="Candidate sources"
-      items={eventRiskItems}
+      items={items}
       summary="Source-gated calendar rows only; this panel does not publish event predictions."
       title="Event risk"
     />

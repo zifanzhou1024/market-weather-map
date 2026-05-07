@@ -203,7 +203,7 @@ export default function TacticalTradingWeather() {
           <SignalChecklist items={data.snapshot.checklist} />
           <CrossAssetConfirmationMatrix items={data.snapshot.confirmations} />
           <OptionsSentimentPanel items={candidateItems(data.catalog, data.status, optionCandidateIds)} />
-          <EventRiskPanel />
+          <EventRiskPanel items={candidateItems(data.catalog, data.status, eventCandidateIds)} />
           <section className="metric-grid" aria-label="Tactical metrics">
             {data.series.map((series) => (
               <MetricCard

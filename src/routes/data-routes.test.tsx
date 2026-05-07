@@ -1476,7 +1476,8 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("SPXW put/call ratio");
     expect(container.textContent).toContain("SPXW options source remains under terms review.");
     expect(container.textContent).toContain("VX1 futures");
-    expect(container.textContent).toContain("CPI");
+    expect(container.textContent).toContain("CPI release calendar");
+    expect(container.textContent).toContain("CPI calendar source remains under review.");
 
     const scoreCards = Array.from(container.querySelectorAll(".score-card"));
     const marketWeatherCard = scoreCards.find((card) => card.textContent?.includes("Market Weather"));

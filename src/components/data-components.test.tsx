@@ -395,6 +395,28 @@ describe("data-driven components", () => {
     expect(text).toContain("OPEX");
   });
 
+  it("renders route-provided event risk candidate rows", () => {
+    const container = render(
+      <EventRiskPanel
+        items={[
+          {
+            id: "event_cpi",
+            label: "Distinct CPI route event",
+            note: "Route-provided CPI calendar readiness note.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Event risk");
+    expect(text).toContain("does not publish event predictions");
+    expect(text).toContain("Distinct CPI route event");
+    expect(text).toContain("Route-provided CPI calendar readiness note.");
+    expect(text).toContain("Terms review needed");
+  });
+
   it("renders VIX futures candidates and fallback proxy text when VX data is inactive", () => {
     const container = render(<VixFuturesReadinessPanel />);
     const text = container.textContent ?? "";
