@@ -327,23 +327,27 @@ describe("data-driven components", () => {
 
   it("renders event risk source-gated candidate rows", () => {
     const container = render(<EventRiskPanel />);
+    const text = container.textContent ?? "";
 
-    expect(container.textContent).toContain("Event risk");
-    expect(container.textContent).toContain("CPI");
-    expect(container.textContent).toContain("FOMC");
-    expect(container.textContent).toContain("payrolls");
-    expect(container.textContent).toContain("Treasury auctions");
-    expect(container.textContent).toContain("OPEX");
+    expect(text).toContain("Event risk");
+    expect(text).toContain("does not publish event predictions");
+    expect(text).toContain("CPI");
+    expect(text).toContain("FOMC");
+    expect(text).toContain("payrolls");
+    expect(text).toContain("Treasury auctions");
+    expect(text).toContain("OPEX");
   });
 
   it("renders VIX futures candidates and fallback proxy text when VX data is inactive", () => {
     const container = render(<VixFuturesReadinessPanel />);
     const text = container.textContent ?? "";
 
+    expect(text).toContain("VIX futures readiness");
     for (let month = 1; month <= 8; month += 1) {
       expect(text).toContain(`VX${month}`);
     }
     expect(text).toContain("Fallback proxy");
+    expect(text).toContain("not a tradable futures curve");
     expect(text).toContain("VIX9D");
     expect(text).toContain("VIX");
     expect(text).toContain("VIX3M");
