@@ -10,6 +10,7 @@ import type {
   DerivedSeriesFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
+  ShockRiskSnapshotFile,
   SeriesCategory,
   SeriesCatalogEntry,
   SeriesFrequency,
@@ -161,6 +162,7 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       units: "USD billions"
     } satisfies DerivedSeriesFile,
     "/data/derived/score_summary.json": scoreSummary,
+    "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
     "/data/derived/regime_snapshot.json": regimeSnapshot,
     "/data/derived/us10y_minus_us2y.json": {
       ...derivedFile("us10y_minus_us2y", 0.42),
@@ -195,6 +197,9 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       "high_yield_oas",
       "investment_grade_oas",
       "building_permits",
+      "household_debt_service_ratio",
+      "consumer_debt_service_ratio",
+      "credit_card_delinquency_rate",
       "loans_and_leases",
       "bank_deposits",
       "mortgage_rate_30y",
@@ -238,6 +243,22 @@ function catalogEntry(
     source: "FRED",
     source_url: `https://example.com/${id}`,
     units
+  };
+}
+
+function candidateCatalogEntry(
+  id: string,
+  category: SeriesCategory,
+  name: string,
+  notes: string
+): SeriesCatalogEntry {
+  return {
+    ...catalogEntry(id, category, name, "candidate"),
+    access_status: "terms_review_needed",
+    notes,
+    score_status: "candidate",
+    source: "Candidate registry",
+    source_url: `https://example.com/${id}`
   };
 }
 
@@ -426,6 +447,9 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("housing_starts", "housing", "Housing Starts", "thousands_saar", "monthly"),
   catalogEntry("building_permits", "housing", "Building Permits", "thousands_saar", "monthly"),
   catalogEntry("mortgage_rate_30y", "housing", "30-Year Fixed Mortgage Rate", "percent", "weekly"),
+  catalogEntry("household_debt_service_ratio", "credit", "Household debt service ratio", "percent", "quarterly"),
+  catalogEntry("consumer_debt_service_ratio", "credit", "Consumer debt service ratio", "percent", "quarterly"),
+  catalogEntry("credit_card_delinquency_rate", "credit", "Credit card delinquency rate", "percent", "quarterly"),
   catalogEntry("headline_cpi", "inflation", "Headline CPI", "percent", "monthly"),
   catalogEntry("core_cpi", "inflation", "Core CPI", "percent", "monthly"),
   catalogEntry("core_pce", "inflation", "Core PCE", "percent", "monthly"),
@@ -450,7 +474,100 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("bank_deposits", "credit", "Bank deposits", "USD billions", "weekly"),
   catalogEntry("broad_dollar", "dollar", "Nominal Broad U.S. Dollar Index", "index"),
   catalogEntry("usdjpy", "dollar", "USD/JPY", "exchange rate"),
-  catalogEntry("eurusd", "dollar", "EUR/USD", "exchange rate")
+  catalogEntry("eurusd", "dollar", "EUR/USD", "exchange rate"),
+  candidateCatalogEntry(
+    "put_call_spxw",
+    "sentiment",
+    "SPXW put/call ratio",
+    "SPXW option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_spx",
+    "sentiment",
+    "SPX put/call ratio",
+    "SPX option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_index",
+    "sentiment",
+    "Index put/call ratio",
+    "Index option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_equity",
+    "sentiment",
+    "Equity put/call ratio",
+    "Equity option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_vix",
+    "sentiment",
+    "VIX put/call ratio",
+    "VIX option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_etp",
+    "sentiment",
+    "ETP put/call ratio",
+    "ETP option sentiment candidate pending source and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "put_call_total",
+    "sentiment",
+    "Total put/call ratio",
+    "Total option sentiment candidate pending source and terms readiness review."
+  ),
+  ...Array.from({ length: 8 }, (_, index) => {
+    const month = index + 1;
+    return candidateCatalogEntry(
+      `vx${month}`,
+      "volatility",
+      `VX${month} futures`,
+      `VX${month} futures candidate month pending source and terms readiness review.`
+    );
+  }),
+  candidateCatalogEntry(
+    "move_index",
+    "volatility",
+    "MOVE Index",
+    "Bond-volatility source pending access and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "skew_index",
+    "volatility",
+    "SKEW Index",
+    "Equity tail-risk source pending access and terms readiness review."
+  ),
+  candidateCatalogEntry(
+    "event_cpi",
+    "inflation",
+    "CPI release calendar",
+    "Release-calendar candidate pending source readiness review."
+  ),
+  candidateCatalogEntry(
+    "event_fomc",
+    "rates",
+    "FOMC meeting calendar",
+    "Meeting-calendar candidate pending source readiness review."
+  ),
+  candidateCatalogEntry(
+    "event_payrolls",
+    "labor",
+    "Payrolls release calendar",
+    "Labor-release candidate pending source readiness review."
+  ),
+  candidateCatalogEntry(
+    "event_treasury_auction",
+    "rates",
+    "Treasury auction calendar",
+    "Auction-calendar candidate pending source readiness review."
+  ),
+  candidateCatalogEntry(
+    "event_opex",
+    "sentiment",
+    "OPEX calendar",
+    "Options-expiration calendar candidate pending source readiness review."
+  )
 ];
 
 const macroCalendar = {
@@ -536,6 +653,17 @@ function statusRow(
     max_stale_days: frequency === "weekly" ? 14 : 7,
     source: "FRED",
     status: statusValue
+  };
+}
+
+function candidateStatusRow(message: string): DataStatusFile["series"][string] {
+  return {
+    ...statusRow("terms_review_needed"),
+    freshness_days: null,
+    last_observation: null,
+    max_stale_days: 30,
+    message,
+    source: "Candidate registry"
   };
 }
 
@@ -678,6 +806,9 @@ const status: DataStatusFile = {
     housing_starts: statusRow("ok", "monthly"),
     building_permits: statusRow("ok", "monthly"),
     mortgage_rate_30y: statusRow("ok", "weekly"),
+    household_debt_service_ratio: statusRow("ok", "quarterly"),
+    consumer_debt_service_ratio: statusRow("ok", "quarterly"),
+    credit_card_delinquency_rate: statusRow("ok", "quarterly"),
     headline_cpi: statusRow("unavailable", "monthly"),
     core_cpi: statusRow("unavailable", "monthly"),
     core_pce: statusRow("unavailable", "monthly"),
@@ -698,7 +829,29 @@ const status: DataStatusFile = {
     bank_deposits: statusRow("unavailable", "weekly"),
     broad_dollar: statusRow("unavailable"),
     usdjpy: statusRow("unavailable"),
-    eurusd: statusRow("unavailable")
+    eurusd: statusRow("unavailable"),
+    put_call_spxw: candidateStatusRow("SPXW options source remains under terms review."),
+    put_call_spx: candidateStatusRow("SPX options source remains under terms review."),
+    put_call_index: candidateStatusRow("Index options source remains under terms review."),
+    put_call_equity: candidateStatusRow("Equity options source remains under terms review."),
+    put_call_vix: candidateStatusRow("VIX options source remains under terms review."),
+    put_call_etp: candidateStatusRow("ETP options source remains under terms review."),
+    put_call_total: candidateStatusRow("Total options source remains under terms review."),
+    vx1: candidateStatusRow("VX1 futures source remains under terms review."),
+    vx2: candidateStatusRow("VX2 futures source remains under terms review."),
+    vx3: candidateStatusRow("VX3 futures source remains under terms review."),
+    vx4: candidateStatusRow("VX4 futures source remains under terms review."),
+    vx5: candidateStatusRow("VX5 futures source remains under terms review."),
+    vx6: candidateStatusRow("VX6 futures source remains under terms review."),
+    vx7: candidateStatusRow("VX7 futures source remains under terms review."),
+    vx8: candidateStatusRow("VX8 futures source remains under terms review."),
+    move_index: candidateStatusRow("MOVE Index source remains under terms review."),
+    skew_index: candidateStatusRow("SKEW Index source remains under terms review."),
+    event_cpi: candidateStatusRow("CPI calendar source remains under review."),
+    event_fomc: candidateStatusRow("FOMC calendar source remains under review."),
+    event_payrolls: candidateStatusRow("Payrolls calendar source remains under review."),
+    event_treasury_auction: candidateStatusRow("Treasury auction calendar source remains under review."),
+    event_opex: candidateStatusRow("OPEX calendar source remains under review.")
   }
 };
 
@@ -720,8 +873,24 @@ const scoreSummary: ScoreSummaryFile = {
       top_supports: ["Rates"]
     },
     macro_climate: {
-      bucket_scores: { growth: 6, inflation: -3 },
-      bucket_weights: { growth: 0.5, inflation: 0.5 },
+      bucket_scores: {
+        consumer_balance_sheet: -2,
+        consumer_production: 5,
+        growth: 6,
+        housing: 4,
+        inflation: -3,
+        labor: 2,
+        real_yields: -4
+      },
+      bucket_weights: {
+        consumer_balance_sheet: 0.1,
+        consumer_production: 0.16,
+        growth: 0.18,
+        housing: 0.12,
+        inflation: 0.16,
+        labor: 0.18,
+        real_yields: 0.1
+      },
       confidence: 0.74,
       confidence_reasons: ["Macro inputs are mostly current."],
       label: "Goldilocks",
@@ -847,6 +1016,52 @@ const regimeSnapshot: RegimeSnapshotFile = {
     }
   ]
 };
+
+const shockRiskSnapshot: ShockRiskSnapshotFile = {
+  active_signals: [
+    {
+      change: -8.39,
+      id: "vix",
+      label: "VIX",
+      message: "VIX percentile is included in active shock-risk pressure.",
+      score: -5.56,
+      value: 17.39
+    }
+  ],
+  date: "2026-05-06",
+  generated_at_utc: "2026-05-07T17:57:48Z",
+  label: "Contained shock risk",
+  method_version: "phase5-shock-risk-v1",
+  mismatch_warnings: [
+    {
+      id: "tightening_confirmation",
+      label: "Tightening confirmation",
+      message: "Dollar and real-yield pressure confirm tighter financial conditions."
+    }
+  ],
+  score: 21.98,
+  source_gaps: [
+    {
+      id: "move_index",
+      label: "MOVE Index",
+      message: "Candidate source requires access or terms review before scoring.",
+      status: "terms_review_needed"
+    },
+    {
+      id: "skew_index",
+      label: "SKEW Index",
+      message: "Candidate source requires access or terms review before scoring.",
+      status: "terms_review_needed"
+    }
+  ]
+};
+
+const malformedShockRiskSnapshot = {
+  ...shockRiskSnapshot,
+  active_signals: "not an array",
+  source_gaps: null,
+  mismatch_warnings: { id: "not-array" }
+} as unknown as ShockRiskSnapshotFile;
 
 afterEach(() => {
   if (root) {
@@ -1432,6 +1647,11 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Cboe 3-Month Volatility Index");
     expect(container.textContent).toContain("VIX9D / VIX");
     expect(container.textContent).toContain("VIX / VIX3M");
+    expect(container.textContent).toContain("VX futures curve");
+    expect(container.textContent).toContain("Fallback proxy");
+    expect(container.textContent).toContain("VX1 futures");
+    expect(container.textContent).toContain("VX1 futures source remains under terms review.");
+    expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
   });
 
   it("surfaces net liquidity and reserve balances on liquidity", async () => {
@@ -1504,6 +1724,76 @@ describe("data-backed routes", () => {
     await waitForContent(container, "Tactical Trading Weather");
     expect(container.textContent).toContain("Daily checklist");
     expect(container.textContent).toContain("VIX term-structure proxy");
+    expect(container.textContent).toContain("Options sentiment");
+    expect(container.textContent).toContain("Event risk");
+    expect(container.textContent).toContain("VIX futures readiness");
+    expect(container.textContent).toContain("SPXW put/call ratio");
+    expect(container.textContent).toContain("SPXW options source remains under terms review.");
+    expect(container.textContent).toContain("VX1 futures");
+    expect(container.textContent).toContain("CPI release calendar");
+    expect(container.textContent).toContain("CPI calendar source remains under review.");
+
+    const scoreCards = Array.from(container.querySelectorAll(".score-card"));
+    const marketWeatherCard = scoreCards.find((card) => card.textContent?.includes("Market Weather"));
+    const fragilityCard = scoreCards.find((card) => card.textContent?.includes("Fragility"));
+
+    expect(marketWeatherCard?.textContent).toContain("Mixed");
+    expect(marketWeatherCard?.textContent).toContain("19.17");
+    expect(fragilityCard?.textContent).toContain("Moderate");
+    expect(fragilityCard?.textContent).toContain("-4.10");
+    expect(fetch).not.toHaveBeenCalledWith("/data/series/put_call_spxw.json");
+    expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
+  });
+
+  it("renders fragility shock risk route", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/fragility"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("MOVE");
+    expect(container.textContent).toContain("SKEW");
+    expect(container.textContent).toContain("Mismatch warnings");
+  });
+
+  it("renders tactical shock-risk overlay fallback counts with malformed snapshot arrays", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": malformedShockRiskSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/tactical"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Tactical Trading Weather");
+    await waitForContent(container, "Fragility overlay");
+    expect(container.textContent).toContain("0 gated or unavailable source rows.");
+    expect(container.textContent).toContain("0 mismatch warning rows.");
+  });
+
+  it("renders fragility route empty states with malformed snapshot arrays", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": malformedShockRiskSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/fragility"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("No active shock-risk signals in the current snapshot.");
+    expect(container.textContent).toContain("No shock-risk source gaps in the current snapshot.");
+    expect(container.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
   });
 
   it("renders long-term macro climate from current score summary", async () => {
@@ -1522,6 +1812,12 @@ describe("data-backed routes", () => {
     await waitForContent(container, "Long-Term Macro Climate");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
+    expect(container.textContent).toContain("Consumer and production");
+    expect(container.textContent).toContain("Housing cycle");
+    expect(container.textContent).toContain("Consumer balance sheet");
+    expect(container.textContent).toContain("Credit cycle");
+    expect(container.textContent).toContain("Liquidity cycle");
+    expect(container.textContent).not.toContain("Not scored");
   });
 
   it("renders the regime map route", async () => {

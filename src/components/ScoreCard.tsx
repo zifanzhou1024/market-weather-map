@@ -26,8 +26,8 @@ function ScoreList({ items, title }: { items: string[]; title: string }) {
       <h4>{title}</h4>
       {items.length ? (
         <ul className="score-list">
-          {items.map((item) => (
-            <li key={item}>{item}</li>
+          {items.map((item, index) => (
+            <li key={`${title}-${index}-${item}`}>{item}</li>
           ))}
         </ul>
       ) : (
@@ -67,8 +67,8 @@ export default function ScoreCard({ title, score }: ScoreCardProps) {
         <section className="score-notes">
           <h4>Recent changes</h4>
           <ul className="score-list">
-            {recentChanges.map((item) => (
-              <li key={item}>{item}</li>
+            {recentChanges.map((item, index) => (
+              <li key={`recent-${index}-${item}`}>{item}</li>
             ))}
           </ul>
         </section>
@@ -78,8 +78,8 @@ export default function ScoreCard({ title, score }: ScoreCardProps) {
         <section className="score-notes">
           <h4>Confidence notes</h4>
           <ul className="score-list">
-            {confidenceReasons.map((item) => (
-              <li key={item}>{item}</li>
+            {confidenceReasons.map((item, index) => (
+              <li key={`confidence-${index}-${item}`}>{item}</li>
             ))}
           </ul>
         </section>
@@ -89,8 +89,8 @@ export default function ScoreCard({ title, score }: ScoreCardProps) {
         <section className="score-notes">
           <h4>Data notes</h4>
           <ul className="score-list">
-            {missingOrStaleNotes.map((item) => (
-              <li key={item}>{item}</li>
+            {missingOrStaleNotes.map((item, index) => (
+              <li key={`data-note-${index}-${item}`}>{item}</li>
             ))}
           </ul>
         </section>

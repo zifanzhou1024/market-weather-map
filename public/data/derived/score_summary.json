@@ -1,17 +1,20 @@
 {
   "data_quality": {
     "coverage_confidence": 1.0,
-    "freshness_confidence": 1.0,
+    "freshness_confidence": 0.99,
     "model_confidence": 1.0,
     "overall_confidence": 0.99,
     "reasons": [
-      "Treasury/bond volatility source is not active."
+      "Treasury/bond volatility source is not active.",
+      "consumer_debt_service_ratio is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
+      "credit_card_delinquency_rate is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
+      "household_debt_service_ratio is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01."
     ],
     "source_confidence": 0.97
   },
   "date": "2026-05-07",
-  "generated_at_utc": "2026-05-07T21:41:07Z",
-  "method_version": "phase4-pr2-macro-completeness-v1",
+  "generated_at_utc": "2026-05-07T21:59:02Z",
+  "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
@@ -151,6 +154,7 @@
     },
     "macro_climate": {
       "bucket_scores": {
+        "consumer_balance_sheet": 39.53,
         "consumer_production": 66.67,
         "growth": 41.66,
         "housing": -0.96,
@@ -159,22 +163,27 @@
         "real_yields": -33.34
       },
       "bucket_weights": {
-        "consumer_production": 0.17,
-        "growth": 0.2,
-        "housing": 0.15,
-        "inflation": 0.18,
-        "labor": 0.2,
+        "consumer_balance_sheet": 0.1,
+        "consumer_production": 0.16,
+        "growth": 0.18,
+        "housing": 0.12,
+        "inflation": 0.16,
+        "labor": 0.18,
         "real_yields": 0.1
       },
-      "confidence": 1.0,
+      "confidence": 0.99,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 1.0,
+        "freshness_confidence": 0.96,
         "model_confidence": 1.0,
-        "overall_confidence": 1.0,
+        "overall_confidence": 0.99,
         "source_confidence": 1.0
       },
-      "confidence_reasons": [],
+      "confidence_reasons": [
+        "consumer_debt_service_ratio is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
+        "credit_card_delinquency_rate is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
+        "household_debt_service_ratio is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01."
+      ],
       "label": "Mixed",
       "missing_or_stale_notes": [],
       "recent_changes": [
@@ -183,7 +192,7 @@
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
-      "score": 11.27,
+      "score": 14.44,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -202,6 +211,9 @@
           "housing_starts",
           "building_permits",
           "mortgage_rate_30y",
+          "household_debt_service_ratio",
+          "consumer_debt_service_ratio",
+          "credit_card_delinquency_rate",
           "real_yield_10y"
         ],
         "coverage_ratio": 1.0,
@@ -222,9 +234,26 @@
           "housing_starts",
           "building_permits",
           "mortgage_rate_30y",
+          "household_debt_service_ratio",
+          "consumer_debt_service_ratio",
+          "credit_card_delinquency_rate",
           "real_yield_10y"
         ],
         "groups": {
+          "consumer balance sheet": {
+            "available": [
+              "household_debt_service_ratio",
+              "consumer_debt_service_ratio",
+              "credit_card_delinquency_rate"
+            ],
+            "coverage_ratio": 1.0,
+            "expected": [
+              "household_debt_service_ratio",
+              "consumer_debt_service_ratio",
+              "credit_card_delinquency_rate"
+            ],
+            "missing": []
+          },
           "consumer/production": {
             "available": [
               "real_retail_sales",
@@ -316,7 +345,8 @@
       ],
       "top_supports": [
         "Consumer and production inputs are firm.",
-        "Growth inputs are supportive."
+        "Growth inputs are supportive.",
+        "Consumer balance-sheet stress is contained."
       ]
     },
     "market_weather": {

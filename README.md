@@ -13,6 +13,8 @@ The current project includes:
 - A GitHub Pages deployment workflow.
 - Source notes, freshness status, and descriptive scoring metadata in the generated data and UI.
 - Phase 2 commodity, liquidity, and sentiment extensions.
+- Phase 5 PR 2 tactical source gates for options sentiment, VX futures readiness, and event risk.
+- Phase 5 PR 3 Fragility / Shock Risk view with a generated shock-risk snapshot from active inputs and source-readiness gaps.
 
 The current project does not include:
 
@@ -71,7 +73,10 @@ Phase 5 direction:
 
 - Organize the primary experience by use case: Tactical Trading Weather, Long-Term Macro Climate, and Regime Map.
 - Use existing active no-secret data for PR 1.
-- Treat VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, and Treasury supply as candidate or future inputs until source terms and redistribution rules are reviewed.
+- Treat options sentiment, VX futures readiness, event risk, SKEW, MOVE, valuation, PMIs/SLOOS, and Treasury supply as candidate or future inputs until source terms and redistribution rules are reviewed.
+- Keep PR 2 tactical source gates descriptive: put/call categories, VX futures readiness, and event calendar families expose source gaps before any backend, credentials, or paid data are added.
+- Add PR 3 shock-risk source gates for MOVE and SKEW using the same candidate-row pattern: display source-readiness gaps before those inputs can affect scores, labels, or checklist states.
+- Use the Fragility / Shock Risk view to describe conflicts between active inputs, including cases where high candidate MOVE context with low VIX would indicate bond-volatility pressure that may not be visible in equity volatility.
 - Keep outputs descriptive and avoid trade recommendations.
 
 ## Data Access Status

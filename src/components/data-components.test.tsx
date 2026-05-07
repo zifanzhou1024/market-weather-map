@@ -1,27 +1,36 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import ConfidenceBreakdown from "./ConfidenceBreakdown";
+import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
 import CrossAssetConfirmationMatrix from "./CrossAssetConfirmationMatrix";
 import DataGapPanel from "./DataGapPanel";
 import DataStatusTable from "./DataStatusTable";
+import EventRiskPanel from "./EventRiskPanel";
 import HowToReadPanel from "./HowToReadPanel";
 import InterpretationPanel from "./InterpretationPanel";
 import MetricCard from "./MetricCard";
+import MismatchWarningPanel from "./MismatchWarningPanel";
+import MacroCyclePanel from "./MacroCyclePanel";
 import MultiSeriesChart from "./MultiSeriesChart";
+import OptionsSentimentPanel from "./OptionsSentimentPanel";
 import PercentileBandChart from "./PercentileBandChart";
 import RegimeQuadrantChart, { domainIncludingZero } from "./RegimeQuadrantChart";
 import RegimeBadge from "./RegimeBadge";
 import ScoreCard from "./ScoreCard";
+import ShockRiskDashboard from "./ShockRiskDashboard";
 import SignalChecklist from "./SignalChecklist";
 import SignalList from "./SignalList";
 import SourceNote from "./SourceNote";
 import SourceAccessBadge from "./SourceAccessBadge";
+import TailRiskPanel from "./TailRiskPanel";
+import VixFuturesReadinessPanel from "./VixFuturesReadinessPanel";
 import YieldDecompositionChart from "./YieldDecompositionChart";
 import type {
   ConfidenceBreakdownData,
   DataStatusFile,
   ScoreBlock,
+  ShockRiskSnapshotFile,
   SeriesCatalogEntry,
   TimeSeriesFile
 } from "../lib/types";
@@ -104,6 +113,153 @@ const scoreBlock: ScoreBlock = {
   top_supports: ["Reserve balances improved over the past month."]
 };
 
+const candidateRows: CandidateSourceItem[] = [
+  {
+    id: "put_call_spxw",
+    label: "SPX/SPXW put/call",
+    note: "Candidate SPX and weekly SPX options source.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "put_call_spx",
+    label: "SPX put/call",
+    note: "Candidate SPX options source.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "put_call_index",
+    label: "Index put/call",
+    note: "Candidate index options source.",
+    status: "source_review_required"
+  },
+  {
+    id: "put_call_equity",
+    label: "Equity put/call",
+    note: "Candidate equity options source.",
+    status: "source_review_required"
+  },
+  {
+    id: "put_call_vix",
+    label: "VIX put/call",
+    note: "Candidate VIX options source.",
+    status: "source_review_required"
+  },
+  {
+    id: "put_call_etp",
+    label: "ETP put/call",
+    note: "Candidate ETP options source.",
+    status: "source_review_required"
+  },
+  {
+    id: "put_call_total",
+    label: "Total put/call",
+    note: "Candidate aggregate options source.",
+    status: "source_review_required"
+  }
+];
+
+const activeOptionsSeries: TimeSeriesFile = {
+  frequency: "daily",
+  generated_at_utc: "2026-05-01T21:00:00Z",
+  observations: [{ date: "2026-05-01", value: 1.23 }],
+  series_id: "put_call_spxw",
+  source: "Cboe",
+  source_url: "https://example.com/options",
+  summary: {
+    change_1d: 0.04,
+    change_1m: null,
+    change_1w: null,
+    latest_date: "2026-05-01",
+    latest_value: 1.23,
+    percentile_252d: null
+  },
+  units: "ratio"
+};
+
+const shockRiskSnapshot: ShockRiskSnapshotFile = {
+  active_signals: [
+    {
+      change: -8.39,
+      id: "vix",
+      label: "VIX",
+      message: "VIX percentile is included in active shock-risk pressure.",
+      score: -5.56,
+      value: 17.39
+    }
+  ],
+  date: "2026-05-06",
+  generated_at_utc: "2026-05-07T17:57:48Z",
+  label: "Contained shock risk",
+  method_version: "phase5-shock-risk-v1",
+  mismatch_warnings: [
+    {
+      id: "tightening_confirmation",
+      label: "Tightening confirmation",
+      message: "Dollar and real-yield pressure confirm tighter financial conditions."
+    }
+  ],
+  score: 21.98,
+  source_gaps: [
+    {
+      id: "move_index",
+      label: "MOVE Index",
+      message: "Candidate source requires access or terms review before scoring.",
+      status: "terms_review_needed"
+    },
+    {
+      id: "skew_index",
+      label: "SKEW Index",
+      message: "Candidate source requires access or terms review before scoring.",
+      status: "terms_review_needed"
+    }
+  ]
+};
+
+const tailRiskCatalog: SeriesCatalogEntry[] = [
+  {
+    ...catalogEntry,
+    access_status: "terms_review_needed",
+    id: "move_index",
+    name: "MOVE Index",
+    notes: "Bond-volatility readiness source pending terms review.",
+    score_status: "candidate"
+  },
+  {
+    ...catalogEntry,
+    access_status: "terms_review_needed",
+    id: "skew_index",
+    name: "SKEW Index",
+    notes: "Equity tail-risk readiness source pending terms review.",
+    score_status: "candidate"
+  }
+];
+
+const tailRiskStatus: DataStatusFile = {
+  generated_at_utc: "2026-05-07T17:57:48Z",
+  last_successful_update_utc: "2026-05-07T17:57:48Z",
+  overall_status: "partial",
+  series: {
+    move_index: {
+      expected_frequency: "daily",
+      freshness_days: null,
+      last_observation: null,
+      max_stale_days: 30,
+      message: "MOVE Index source remains under terms review.",
+      source: "Candidate registry",
+      status: "terms_review_needed"
+    },
+    skew_index: {
+      expected_frequency: "daily",
+      freshness_days: null,
+      last_observation: null,
+      max_stale_days: 30,
+      message: "SKEW Index source remains under terms review.",
+      source: "Candidate registry",
+      status: "terms_review_needed"
+    }
+  }
+};
+
 describe("data-driven components", () => {
   it("renders a regime badge with score-based tone", () => {
     const container = render(<RegimeBadge label="Fragile" score={-25} />);
@@ -180,6 +336,22 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Reserve balances improved over the past month.");
   });
 
+  it("renders duplicate score messages without React key warnings", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const duplicateScore = {
+      ...scoreBlock,
+      recent_changes: ["Credit spread pressure is contained.", "Credit spread pressure is contained."],
+      top_risks: ["Real yields are elevated.", "Real yields are elevated."],
+      top_supports: ["Credit spread pressure is contained.", "Credit spread pressure is contained."]
+    };
+
+    render(<ScoreCard title="Duplicate Score" score={duplicateScore} />);
+
+    const messages = consoleError.mock.calls.map((call) => String(call[0])).join("\n");
+    expect(messages).not.toContain("Encountered two children with the same key");
+    consoleError.mockRestore();
+  });
+
   it("renders score card fallbacks for stale partial score payloads", () => {
     const partialScore = {
       confidence: 1.5,
@@ -193,6 +365,30 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("0.00");
     expect(container.textContent).toContain("100%");
     expect(container.textContent).toContain("N/A");
+  });
+
+  it("renders macro cycle score label signals and source caveat", () => {
+    const container = render(
+      <MacroCyclePanel
+        caveat="Active public data only; candidate PMI and SLOOS rows remain source-gated."
+        label="Mixed"
+        risks={["Mortgage rates remain elevated."]}
+        score={12.34}
+        supports={["Housing starts improved."]}
+        title="Housing cycle"
+      />
+    );
+
+    expect(container.textContent).toContain("Housing cycle");
+    expect(container.textContent).toContain("12.34");
+    expect(container.textContent).toContain("Mixed");
+    expect(container.textContent).toContain("Supports");
+    expect(container.textContent).toContain("Housing starts improved.");
+    expect(container.textContent).toContain("Risks");
+    expect(container.textContent).toContain("Mortgage rates remain elevated.");
+    expect(container.textContent).toContain(
+      "Active public data only; candidate PMI and SLOOS rows remain source-gated."
+    );
   });
 
   it("renders how-to-read panel without exposing advice language", () => {
@@ -224,6 +420,236 @@ describe("data-driven components", () => {
 
     expect(container.textContent).toContain("Pending license");
     expect(container.textContent).toContain("Needs counsel");
+  });
+
+  it("renders candidate source names and normalized review status", () => {
+    const container = render(
+      <CandidateSourcePanel
+        items={[
+          {
+            id: "put_call_index",
+            label: "Index put/call",
+            note: "Candidate options source pending review.",
+            status: "terms_review_needed"
+          }
+        ]}
+        title="Candidate inputs"
+      />
+    );
+
+    expect(container.textContent).toContain("Candidate inputs");
+    expect(container.textContent).toContain("Index put/call");
+    expect(container.textContent).toContain("Terms review needed");
+    expect(container.textContent).toContain("Candidate options source pending review.");
+  });
+
+  it("renders an explicit candidate source empty state", () => {
+    const container = render(<CandidateSourcePanel items={[]} title="Candidate inputs" />);
+
+    expect(container.textContent).toContain("Candidate inputs");
+    expect(container.textContent).toContain("No candidate source rows are configured for this view.");
+  });
+
+  it("orders options sentiment candidates without active signal labels", () => {
+    const container = render(<OptionsSentimentPanel items={[...candidateRows].reverse()} />);
+    const text = container.textContent ?? "";
+    const orderedLabels = [
+      "SPX/SPXW put/call",
+      "SPX put/call",
+      "Index put/call",
+      "Equity put/call",
+      "VIX put/call",
+      "ETP put/call",
+      "Total put/call"
+    ];
+
+    expect(text).toContain("Options sentiment");
+    expect(text).toContain("Source review required");
+    for (const label of orderedLabels) {
+      expect(text).toContain(label);
+    }
+    for (let index = 0; index < orderedLabels.length - 1; index += 1) {
+      expect(text.indexOf(orderedLabels[index])).toBeLessThan(text.indexOf(orderedLabels[index + 1]));
+    }
+    expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
+  });
+
+  it("renders active options sentiment series before candidate-only fallback rows", () => {
+    const container = render(
+      <OptionsSentimentPanel activeSeries={[activeOptionsSeries]} items={candidateRows} />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Options sentiment");
+    expect(text).toContain("SPX/SPXW put/call");
+    expect(text).toContain("Active data");
+    expect(text).toContain("Latest ratio 1.23 on 2026-05-01.");
+    expect(text.indexOf("SPX/SPXW put/call")).toBeLessThan(text.indexOf("SPX put/call"));
+    expect(text).toContain("Source review required");
+    expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
+  });
+
+  it("deduplicates duplicate active options sentiment series ids", () => {
+    const container = render(
+      <OptionsSentimentPanel activeSeries={[activeOptionsSeries, activeOptionsSeries]} items={candidateRows} />
+    );
+    const activeRows = Array.from(container.querySelectorAll(".candidate-source-row")).filter((row) =>
+      row.textContent?.includes("Active data")
+    );
+
+    expect(activeRows).toHaveLength(1);
+    expect(activeRows[0]?.textContent).toContain("SPX/SPXW put/call");
+  });
+
+  it("renders options sentiment source-review empty state without active signal labels", () => {
+    const container = render(<OptionsSentimentPanel items={[]} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Options sentiment");
+    expect(text).toContain("Source review required");
+    expect(text).toContain("No active options sentiment candidate rows are configured.");
+    expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
+  });
+
+  it("renders event risk source-gated candidate rows", () => {
+    const container = render(<EventRiskPanel />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Event risk");
+    expect(text).toContain("does not publish event predictions");
+    expect(text).toContain("CPI");
+    expect(text).toContain("FOMC");
+    expect(text).toContain("payrolls");
+    expect(text).toContain("Treasury auctions");
+    expect(text).toContain("OPEX");
+  });
+
+  it("renders route-provided event risk candidate rows", () => {
+    const container = render(
+      <EventRiskPanel
+        items={[
+          {
+            id: "event_cpi",
+            label: "Distinct CPI route event",
+            note: "Route-provided CPI calendar readiness note.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Event risk");
+    expect(text).toContain("does not publish event predictions");
+    expect(text).toContain("Distinct CPI route event");
+    expect(text).toContain("Route-provided CPI calendar readiness note.");
+    expect(text).toContain("Terms review needed");
+  });
+
+  it("renders VIX futures candidates and fallback proxy text when VX data is inactive", () => {
+    const container = render(<VixFuturesReadinessPanel />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("VIX futures readiness");
+    for (let month = 1; month <= 8; month += 1) {
+      expect(text).toContain(`VX${month}`);
+    }
+    expect(text).toContain("Fallback proxy");
+    expect(text).toContain("not a tradable futures curve");
+    expect(text).toContain("VIX9D");
+    expect(text).toContain("VIX");
+    expect(text).toContain("VIX3M");
+  });
+
+  it("renders route-provided VIX futures candidate rows", () => {
+    const container = render(
+      <VixFuturesReadinessPanel
+        items={[
+          {
+            id: "vx1",
+            label: "Distinct VX1 route candidate",
+            note: "Route-provided VX1 readiness note.",
+            status: "partial"
+          }
+        ]}
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("VIX futures readiness");
+    expect(text).toContain("Distinct VX1 route candidate");
+    expect(text).toContain("Route-provided VX1 readiness note.");
+    expect(text).toContain("Partial");
+    expect(text).toContain("Fallback proxy");
+  });
+
+  it("renders shock risk label score source gap and active VIX signal", () => {
+    const container = render(<ShockRiskDashboard snapshot={shockRiskSnapshot} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Contained shock risk");
+    expect(text).toContain("21.98");
+    expect(text).toContain("MOVE Index");
+    expect(text).toContain("VIX");
+    expect(text).toContain("17.39");
+    expect(text).toContain("-8.39");
+  });
+
+  it("renders shock risk empty states when snapshot arrays are malformed", () => {
+    const malformedSnapshot = {
+      ...shockRiskSnapshot,
+      active_signals: "not an array",
+      source_gaps: undefined
+    } as unknown as ShockRiskSnapshotFile;
+
+    const container = render(<ShockRiskDashboard snapshot={malformedSnapshot} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Contained shock risk");
+    expect(text).toContain("0 active shock-risk signal rows.");
+    expect(text).toContain("0 gated or unavailable source rows.");
+    expect(text).toContain("No active shock-risk signals in the current snapshot.");
+    expect(text).toContain("No shock-risk source gaps in the current snapshot.");
+  });
+
+  it("renders MOVE and SKEW source gaps with terms-review readiness copy", () => {
+    const container = render(
+      <TailRiskPanel catalog={tailRiskCatalog} snapshot={shockRiskSnapshot} status={tailRiskStatus} />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("MOVE Index");
+    expect(text).toContain("SKEW Index");
+    expect(text).toContain("Terms Review Needed");
+    expect(text).toContain("Bond volatility");
+    expect(text).toContain("distinct from VIX");
+    expect(text).toContain("Candidate source requires access or terms review before scoring.");
+  });
+
+  it("renders mismatch warning rows and an explicit empty state", () => {
+    const warningContainer = render(
+      <MismatchWarningPanel warnings={shockRiskSnapshot.mismatch_warnings} />
+    );
+
+    expect(warningContainer.textContent).toContain("Mismatch warnings");
+    expect(warningContainer.textContent).toContain("tightening_confirmation");
+    expect(warningContainer.textContent).toContain("Tightening confirmation");
+
+    act(() => root?.unmount());
+    document.body.replaceChildren();
+    root = undefined;
+
+    const emptyContainer = render(<MismatchWarningPanel warnings={[]} />);
+
+    expect(emptyContainer.textContent).toContain("Mismatch warnings");
+    expect(emptyContainer.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
+  });
+
+  it("renders mismatch warning empty state when warnings are malformed", () => {
+    const container = render(<MismatchWarningPanel warnings={"not an array" as never} />);
+
+    expect(container.textContent).toContain("Mismatch warnings");
+    expect(container.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
   });
 
   it("filters data status rows by selected series ids", () => {
@@ -313,6 +739,22 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Credit spreads narrowed.");
     expect(container.textContent).not.toContain("No support signals.");
     expect(container.querySelector(".score-list")).not.toBeNull();
+  });
+
+  it("renders duplicate signal list messages without React key warnings", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    render(
+      <SignalList
+        emptyText="No signals."
+        items={["Real yields are elevated.", "Real yields are elevated."]}
+        title="Risks"
+      />
+    );
+
+    const messages = consoleError.mock.calls.map((call) => String(call[0])).join("\n");
+    expect(messages).not.toContain("Encountered two children with the same key");
+    consoleError.mockRestore();
   });
 
   it("renders data gap notes for stale candidate and expected-release-window rows", () => {

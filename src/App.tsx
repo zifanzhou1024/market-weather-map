@@ -4,6 +4,7 @@ import Calendar from "./routes/Calendar";
 import Commodities from "./routes/Commodities";
 import Credit from "./routes/Credit";
 import DollarGlobal from "./routes/DollarGlobal";
+import FragilityShockRisk from "./routes/FragilityShockRisk";
 import Growth from "./routes/Growth";
 import Housing from "./routes/Housing";
 import Inflation from "./routes/Inflation";
@@ -23,6 +24,7 @@ export default function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<Overview />} />
         <Route path="/tactical" element={<TacticalTradingWeather />} />
+        <Route path="/fragility" element={<FragilityShockRisk />} />
         <Route path="/macro-climate" element={<LongTermMacroClimate />} />
         <Route path="/regime-map" element={<RegimeMap />} />
         <Route path="/calendar" element={<Calendar />} />

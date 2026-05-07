@@ -11,6 +11,8 @@
 - The dashboard is not financial advice, does not provide trade recommendations, and should not be used as the basis for investment, trading, or risk decisions.
 - PR 1 horizon-regime labels use active no-secret generated data only.
 - Active labels, scores, and checklists do not include candidate sources before source review is complete.
+- PR 3 shock-risk output is descriptive. It summarizes active inputs and source-readiness gaps; it does not provide forecasts, instructions, or decision guidance.
+- PR 4 consumer balance-sheet output uses lagged quarterly FRED data, so it can miss fast changes between releases.
 
 ## Source Limitations
 
@@ -18,7 +20,10 @@
 - CFTC positioning is weekly, delayed, and futures-specific. It should be read as positioning context, not a complete sentiment model.
 - Crop prices come from monthly FRED series, not live futures curves.
 - VIX9D, VIX, and VIX3M ratios are public volatility-term proxies. They are not a tradable VIX futures curve.
-- VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, Treasury supply, and similar candidates do not affect scores, labels, or checklists before access terms, automation constraints, attribution, and redistribution rules are reviewed.
+- Put/call categories, VIX futures, and event calendar panels are source-readiness displays only until terms, access, cadence, automation, attribution, and redistribution rules are reviewed.
+- VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, Treasury supply, event calendars, and similar candidates do not affect scores, labels, or checklists before access terms, automation constraints, attribution, and redistribution rules are reviewed.
+- Candidate MOVE rows describe Treasury bond-volatility source gaps only. If reviewed data later becomes active, high MOVE with low VIX would describe bond-volatility pressure that may not be visible in equity volatility.
+- Candidate SKEW rows describe tail-risk source gaps only. SKEW is a tail-risk candidate and not a replacement for VIX.
 - Housing excludes home prices, existing home sales, affordability, and mortgage applications until source handling is reviewed.
 - Event Calendar rows are descriptive source links in PR 2, not guaranteed exact alert dates for every release.
 
@@ -29,8 +34,9 @@
 - `restricted` sources are paid, gated, license-restricted, or otherwise not suitable for static public redistribution under current terms.
 - `unavailable` sources cannot currently be fetched or redistributed by the no-secret static workflow.
 - Candidate survey, flow, volatility, and term-premium sources can create coverage gaps. Those gaps should reduce score confidence rather than be silently filled with proxies.
-- Consumer/Fiscal/Treasury candidate rows do not affect scores.
+- Fiscal/Treasury, valuation, PMI/SLOOS, earnings-revision, and remaining candidate consumer rows do not affect scores.
 - Public macro series can be revised after initial publication, so historical scores may change when source data is refreshed.
+- Mismatch warnings are descriptive conflicts between active inputs. They do not imply a resolved direction when volatility, credit, liquidity, rate, dollar, or positioning channels disagree.
 
 ## Score Confidence Limitations
 

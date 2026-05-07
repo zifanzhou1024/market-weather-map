@@ -1,23 +1,30 @@
 import { useEffect, useState } from "react";
+import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import EventRiskPanel from "../components/EventRiskPanel";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/MultiSeriesChart";
+import OptionsSentimentPanel from "../components/OptionsSentimentPanel";
 import ScoreCard from "../components/ScoreCard";
 import SignalChecklist from "../components/SignalChecklist";
+import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
+import { formatNumber } from "../lib/formatters";
 import {
   loadCatalog,
   loadDataStatus,
   loadRegimeSnapshot,
-  loadScoreSummary
+  loadScoreSummary,
+  loadShockRiskSnapshot
 } from "../lib/data";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
+  ShockRiskSnapshotFile,
   SeriesCatalogEntry,
   TimeSeriesFile
 } from "../lib/types";
@@ -33,13 +40,37 @@ const tacticalSeriesIds = [
   "real_yield_10y"
 ];
 const tacticalDerivedIds = ["vix9d_vix_ratio", "vix_vix3m_ratio", "hy_minus_ig_oas", "net_liquidity"];
-const tacticalStatusIds = [...tacticalSeriesIds, ...tacticalDerivedIds];
+const optionCandidateIds = [
+  "put_call_spxw",
+  "put_call_spx",
+  "put_call_index",
+  "put_call_equity",
+  "put_call_vix",
+  "put_call_etp",
+  "put_call_total"
+];
+const vxCandidateIds = ["vx1", "vx2", "vx3", "vx4", "vx5", "vx6", "vx7", "vx8"];
+const eventCandidateIds = [
+  "event_cpi",
+  "event_fomc",
+  "event_payrolls",
+  "event_treasury_auction",
+  "event_opex"
+];
+const tacticalStatusIds = [
+  ...tacticalSeriesIds,
+  ...tacticalDerivedIds,
+  ...optionCandidateIds,
+  ...eventCandidateIds,
+  ...vxCandidateIds
+];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
   derived: DerivedSeriesFile[];
   scoreSummary: ScoreSummaryFile;
   series: TimeSeriesFile[];
+  shockSnapshot: ShockRiskSnapshotFile;
   snapshot: RegimeSnapshotFile;
   status: DataStatusFile;
 }
@@ -86,6 +117,32 @@ function toChartSeries(series: TimeSeriesFile[]): MultiSeriesChartSeries[] {
     }));
 }
 
+function fallbackCandidateStatus(entry?: SeriesCatalogEntry) {
+  return entry?.access_status ?? entry?.score_status ?? "source_review_required";
+}
+
+function candidateItems(
+  catalog: SeriesCatalogEntry[],
+  status: DataStatusFile,
+  ids: string[]
+): CandidateSourceItem[] {
+  return ids.map((id) => {
+    const entry = catalog.find((candidate) => candidate.id === id);
+    const statusRow = status.series[id];
+
+    return {
+      id,
+      label: entry?.name ?? id,
+      note: statusRow?.message ?? entry?.notes ?? "Source review required.",
+      status: statusRow?.status ?? fallbackCandidateStatus(entry)
+    };
+  });
+}
+
+function safeArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
 export default function TacticalTradingWeather() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -95,11 +152,12 @@ export default function TacticalTradingWeather() {
 
     async function loadTacticalTradingWeather() {
       try {
-        const [catalog, status, scoreSummary, snapshot] = await Promise.all([
+        const [catalog, status, scoreSummary, snapshot, shockSnapshot] = await Promise.all([
           loadCatalog(),
           loadDataStatus(),
           loadScoreSummary(),
-          loadRegimeSnapshot()
+          loadRegimeSnapshot(),
+          loadShockRiskSnapshot()
         ]);
         const [series, derived] = await Promise.all([
           loadRouteSeries(tacticalSeriesIds, catalog, status),
@@ -107,7 +165,7 @@ export default function TacticalTradingWeather() {
             allowMissing: new Set(tacticalDerivedIds)
           })
         ]);
-        if (active) setData({ catalog, derived, scoreSummary, series, snapshot, status });
+        if (active) setData({ catalog, derived, scoreSummary, series, shockSnapshot, snapshot, status });
       } catch (loadError) {
         if (active) {
           setError(loadError instanceof Error ? loadError.message : "Unable to load tactical trading weather.");
@@ -121,6 +179,13 @@ export default function TacticalTradingWeather() {
       active = false;
     };
   }, []);
+
+  const shockSourceGaps = data
+    ? safeArray<ShockRiskSnapshotFile["source_gaps"][number]>(data.shockSnapshot.source_gaps)
+    : [];
+  const shockMismatchWarnings = data
+    ? safeArray<ShockRiskSnapshotFile["mismatch_warnings"][number]>(data.shockSnapshot.mismatch_warnings)
+    : [];
 
   return (
     <main className="page-shell">
@@ -148,11 +213,37 @@ export default function TacticalTradingWeather() {
             <ScoreCard score={data.scoreSummary.scores.market_weather} title="Market Weather" />
             <ScoreCard score={data.scoreSummary.scores.fragility} title="Fragility" />
           </section>
+          <section className="panel" aria-label="Fragility shock-risk overlay">
+            <div className="section-header">
+              <div>
+                <p className="eyebrow">Fragility overlay</p>
+                <h3>{data.shockSnapshot.label}</h3>
+                <p>Dedicated shock-risk detail is available on the Fragility page.</p>
+              </div>
+              <strong className="score-card__value">{formatNumber(data.shockSnapshot.score)}</strong>
+            </div>
+            <div className="metric-grid">
+              <article className="candidate-source-row">
+                <div>
+                  <h4>Source gaps</h4>
+                  <p>{shockSourceGaps.length} gated or unavailable source rows.</p>
+                </div>
+              </article>
+              <article className="candidate-source-row">
+                <div>
+                  <h4>Mismatch warnings</h4>
+                  <p>{shockMismatchWarnings.length} mismatch warning rows.</p>
+                </div>
+              </article>
+            </div>
+          </section>
           <div className="section-heading">
             <h3>Daily checklist</h3>
           </div>
           <SignalChecklist items={data.snapshot.checklist} />
           <CrossAssetConfirmationMatrix items={data.snapshot.confirmations} />
+          <OptionsSentimentPanel items={candidateItems(data.catalog, data.status, optionCandidateIds)} />
+          <EventRiskPanel items={candidateItems(data.catalog, data.status, eventCandidateIds)} />
           <section className="metric-grid" aria-label="Tactical metrics">
             {data.series.map((series) => (
               <MetricCard
@@ -170,6 +261,7 @@ export default function TacticalTradingWeather() {
             title="VIX term-structure proxy"
             units="index"
           />
+          <VixFuturesReadinessPanel items={candidateItems(data.catalog, data.status, vxCandidateIds)} />
           <DataGapPanel seriesIds={tacticalStatusIds} status={data.status} />
           <DataStatusTable seriesIds={tacticalStatusIds} status={data.status} />
         </div>

@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-07T21:41:07Z",
-  "last_successful_update_utc": "2026-05-07T21:41:07Z",
+  "generated_at_utc": "2026-05-07T21:59:02Z",
+  "last_successful_update_utc": "2026-05-07T21:59:02Z",
   "overall_status": "partial",
   "series": {
     "bank_credit": {
@@ -125,6 +125,17 @@
       "source": "FRED",
       "status": "stale"
     },
+    "cape_ratio": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Valuation Provider",
+      "status": "terms_review_needed"
+    },
     "cfnai": {
       "expected_frequency": "monthly",
       "expected_next_release_window": {
@@ -192,6 +203,20 @@
       "source": "Derived",
       "status": "ok"
     },
+    "consumer_debt_service_ratio": {
+      "expected_frequency": "quarterly",
+      "expected_next_release_window": {
+        "end": "2026-05-01",
+        "start": "2026-01-01"
+      },
+      "freshness_days": 218,
+      "last_observation": "2025-10-01",
+      "max_stale_days": 120,
+      "message": "Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
+      "observation_period": "2025-Q4",
+      "source": "FRED",
+      "status": "stale"
+    },
     "core_cpi": {
       "expected_frequency": "monthly",
       "expected_next_release_window": {
@@ -234,6 +259,20 @@
       "source": "FRED",
       "status": "ok"
     },
+    "credit_card_delinquency_rate": {
+      "expected_frequency": "quarterly",
+      "expected_next_release_window": {
+        "end": "2026-05-01",
+        "start": "2026-01-01"
+      },
+      "freshness_days": 218,
+      "last_observation": "2025-10-01",
+      "max_stale_days": 120,
+      "message": "Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
+      "observation_period": "2025-Q4",
+      "source": "FRED",
+      "status": "stale"
+    },
     "durable_goods_orders": {
       "expected_frequency": "monthly",
       "expected_next_release_window": {
@@ -248,6 +287,28 @@
       "source": "FRED",
       "status": "ok"
     },
+    "earnings_revision_breadth": {
+      "expected_frequency": "weekly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 14,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Earnings Data Provider",
+      "status": "terms_review_needed"
+    },
+    "equity_risk_premium": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Valuation Provider",
+      "status": "terms_review_needed"
+    },
     "eurusd": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
@@ -258,6 +319,61 @@
       "observation_period": "2026-05-01",
       "source": "FRED",
       "status": "ok"
+    },
+    "event_cpi": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Economic Release Calendar",
+      "status": "terms_review_needed"
+    },
+    "event_fomc": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Economic Release Calendar",
+      "status": "terms_review_needed"
+    },
+    "event_opex": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Economic Release Calendar",
+      "status": "terms_review_needed"
+    },
+    "event_payrolls": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Economic Release Calendar",
+      "status": "terms_review_needed"
+    },
+    "event_treasury_auction": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Treasury Auction Calendar",
+      "status": "terms_review_needed"
     },
     "fed_assets": {
       "expected_frequency": "weekly",
@@ -312,6 +428,17 @@
       "source": "FRED",
       "status": "ok"
     },
+    "forward_pe": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Valuation Provider",
+      "status": "terms_review_needed"
+    },
     "headline_cpi": {
       "expected_frequency": "monthly",
       "expected_next_release_window": {
@@ -339,14 +466,17 @@
     },
     "household_debt_service_ratio": {
       "expected_frequency": "quarterly",
-      "expected_next_release_window": null,
-      "freshness_days": null,
-      "last_observation": null,
-      "max_stale_days": 75,
-      "message": "Candidate source requires access or terms review before scoring.",
-      "observation_period": null,
+      "expected_next_release_window": {
+        "end": "2026-05-01",
+        "start": "2026-01-01"
+      },
+      "freshness_days": 218,
+      "last_observation": "2025-10-01",
+      "max_stale_days": 120,
+      "message": "Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
+      "observation_period": "2025-Q4",
       "source": "FRED",
-      "status": "terms_review_needed"
+      "status": "stale"
     },
     "housing_starts": {
       "expected_frequency": "monthly",
@@ -413,6 +543,17 @@
       "status": "ok"
     },
     "ism_manufacturing_pmi": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "ISM",
+      "status": "terms_review_needed"
+    },
+    "ism_services_pmi": {
       "expected_frequency": "monthly",
       "expected_next_release_window": null,
       "freshness_days": null,
@@ -492,7 +633,7 @@
       "max_stale_days": 7,
       "message": "Candidate source requires access or terms review before scoring.",
       "observation_period": null,
-      "source": "ICE",
+      "source": "ICE Data Indices",
       "status": "terms_review_needed"
     },
     "net_liquidity": {
@@ -547,6 +688,83 @@
       "observation_period": "2026-03",
       "source": "FRED",
       "status": "ok"
+    },
+    "put_call_equity": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Options Market Statistics",
+      "status": "terms_review_needed"
+    },
+    "put_call_etp": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Options Market Statistics",
+      "status": "terms_review_needed"
+    },
+    "put_call_index": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Options Market Statistics",
+      "status": "terms_review_needed"
+    },
+    "put_call_spx": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Options Market Statistics",
+      "status": "terms_review_needed"
+    },
+    "put_call_spxw": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Options Market Statistics",
+      "status": "terms_review_needed"
+    },
+    "put_call_total": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Options Market Statistics",
+      "status": "terms_review_needed"
+    },
+    "put_call_vix": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Options Market Statistics",
+      "status": "terms_review_needed"
     },
     "real_disposable_personal_income": {
       "expected_frequency": "monthly",
@@ -645,6 +863,28 @@
       "source": "FRED",
       "status": "ok"
     },
+    "skew_index": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Options Market Statistics",
+      "status": "terms_review_needed"
+    },
+    "sloos_lending_standards": {
+      "expected_frequency": "quarterly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 120,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Federal Reserve",
+      "status": "terms_review_needed"
+    },
     "sofr": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
@@ -670,6 +910,17 @@
       "source": "FRED",
       "status": "ok"
     },
+    "term_premium_acm_10y": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 14,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "New York Fed",
+      "status": "terms_review_needed"
+    },
     "total_consumer_credit": {
       "expected_frequency": "monthly",
       "expected_next_release_window": null,
@@ -690,6 +941,28 @@
       "message": "Candidate source requires access or terms review before scoring.",
       "observation_period": null,
       "source": "TreasuryDirect",
+      "status": "terms_review_needed"
+    },
+    "treasury_auction_tail": {
+      "expected_frequency": "weekly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 14,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "U.S. Treasury",
+      "status": "terms_review_needed"
+    },
+    "treasury_bid_to_cover": {
+      "expected_frequency": "weekly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 14,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "U.S. Treasury",
       "status": "terms_review_needed"
     },
     "treasury_general_account": {
@@ -715,6 +988,17 @@
       "message": "Candidate source requires access or terms review before scoring.",
       "observation_period": null,
       "source": "FiscalData",
+      "status": "terms_review_needed"
+    },
+    "treasury_net_issuance": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 45,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "U.S. Treasury",
       "status": "terms_review_needed"
     },
     "unemployment_rate": {
@@ -862,6 +1146,94 @@
       "observation_period": "2026-05-06",
       "source": "Cboe",
       "status": "ok"
+    },
+    "vx1": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Futures Exchange",
+      "status": "terms_review_needed"
+    },
+    "vx2": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Futures Exchange",
+      "status": "terms_review_needed"
+    },
+    "vx3": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Futures Exchange",
+      "status": "terms_review_needed"
+    },
+    "vx4": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Futures Exchange",
+      "status": "terms_review_needed"
+    },
+    "vx5": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Futures Exchange",
+      "status": "terms_review_needed"
+    },
+    "vx6": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Futures Exchange",
+      "status": "terms_review_needed"
+    },
+    "vx7": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Futures Exchange",
+      "status": "terms_review_needed"
+    },
+    "vx8": {
+      "expected_frequency": "daily",
+      "expected_next_release_window": null,
+      "freshness_days": null,
+      "last_observation": null,
+      "max_stale_days": 7,
+      "message": "Candidate source requires access or terms review before scoring.",
+      "observation_period": null,
+      "source": "Cboe Futures Exchange",
+      "status": "terms_review_needed"
     },
     "wheat_price": {
       "expected_frequency": "monthly",

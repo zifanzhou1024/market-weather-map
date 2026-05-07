@@ -8,6 +8,24 @@
     "terms_status": "ok",
     "update_cadence": "daily_market_data"
   },
+  "cboe_futures": {
+    "access_status": "terms_review_needed",
+    "base_url": "https://www.cboe.com/us/futures/",
+    "name": "Cboe Futures Exchange",
+    "notes": "VIX futures curve data requires access and redistribution review before automated publication.",
+    "requires_secret": false,
+    "terms_status": "review_needed",
+    "update_cadence": "daily_market_data"
+  },
+  "cboe_options": {
+    "access_status": "terms_review_needed",
+    "base_url": "https://www.cboe.com/markets/us/options/market_statistics/",
+    "name": "Cboe Options Market Statistics",
+    "notes": "Put-call data requires access, automation, attribution, and redistribution review before automated publication.",
+    "requires_secret": false,
+    "terms_status": "review_needed",
+    "update_cadence": "daily_market_data"
+  },
   "cftc": {
     "access_status": "free_public",
     "base_url": "https://www.cftc.gov",
@@ -26,6 +44,15 @@
     "terms_status": "ok",
     "update_cadence": "after_source_updates"
   },
+  "economic_calendar": {
+    "access_status": "terms_review_needed",
+    "base_url": "",
+    "name": "Economic Release Calendar",
+    "notes": "Economic calendar sources require access, attribution, automation, and redistribution review before automated publication.",
+    "requires_secret": false,
+    "terms_status": "review_needed",
+    "update_cadence": "calendar"
+  },
   "fred": {
     "access_status": "free_public",
     "base_url": "https://fred.stlouisfed.org",
@@ -35,6 +62,24 @@
     "terms_status": "review_each_series",
     "update_cadence": "varies_by_series"
   },
+  "ice_indices": {
+    "access_status": "terms_review_needed",
+    "base_url": "https://developer.ice.com/fixed-income-data-services/",
+    "name": "ICE Data Indices",
+    "notes": "MOVE Index access and static redistribution require source review before active ingestion.",
+    "requires_secret": false,
+    "terms_status": "review_needed",
+    "update_cadence": "daily_market_data"
+  },
+  "occ": {
+    "access_status": "terms_review_needed",
+    "base_url": "https://www.theocc.com",
+    "name": "Options Clearing Corporation",
+    "notes": "Options statistics require source-specific access, citation, and redistribution review before automated publication.",
+    "requires_secret": false,
+    "terms_status": "review_needed",
+    "update_cadence": "daily_market_data"
+  },
   "terms_review": {
     "access_status": "terms_review_needed",
     "base_url": "",
@@ -43,6 +88,15 @@
     "requires_secret": false,
     "terms_status": "review_needed",
     "update_cadence": "not_active"
+  },
+  "treasury_calendar": {
+    "access_status": "terms_review_needed",
+    "base_url": "",
+    "name": "Treasury Auction Calendar",
+    "notes": "Treasury auction schedules require source-specific access, attribution, and redistribution review before automated publication.",
+    "requires_secret": false,
+    "terms_status": "review_needed",
+    "update_cadence": "calendar"
   },
   "unavailable": {
     "access_status": "unavailable",
