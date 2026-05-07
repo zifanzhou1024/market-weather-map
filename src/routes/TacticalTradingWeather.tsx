@@ -11,17 +11,20 @@ import OptionsSentimentPanel from "../components/OptionsSentimentPanel";
 import ScoreCard from "../components/ScoreCard";
 import SignalChecklist from "../components/SignalChecklist";
 import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
+import { formatNumber } from "../lib/formatters";
 import {
   loadCatalog,
   loadDataStatus,
   loadRegimeSnapshot,
-  loadScoreSummary
+  loadScoreSummary,
+  loadShockRiskSnapshot
 } from "../lib/data";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
+  ShockRiskSnapshotFile,
   SeriesCatalogEntry,
   TimeSeriesFile
 } from "../lib/types";
@@ -67,6 +70,7 @@ interface RouteState {
   derived: DerivedSeriesFile[];
   scoreSummary: ScoreSummaryFile;
   series: TimeSeriesFile[];
+  shockSnapshot: ShockRiskSnapshotFile;
   snapshot: RegimeSnapshotFile;
   status: DataStatusFile;
 }
@@ -144,11 +148,12 @@ export default function TacticalTradingWeather() {
 
     async function loadTacticalTradingWeather() {
       try {
-        const [catalog, status, scoreSummary, snapshot] = await Promise.all([
+        const [catalog, status, scoreSummary, snapshot, shockSnapshot] = await Promise.all([
           loadCatalog(),
           loadDataStatus(),
           loadScoreSummary(),
-          loadRegimeSnapshot()
+          loadRegimeSnapshot(),
+          loadShockRiskSnapshot()
         ]);
         const [series, derived] = await Promise.all([
           loadRouteSeries(tacticalSeriesIds, catalog, status),
@@ -156,7 +161,7 @@ export default function TacticalTradingWeather() {
             allowMissing: new Set(tacticalDerivedIds)
           })
         ]);
-        if (active) setData({ catalog, derived, scoreSummary, series, snapshot, status });
+        if (active) setData({ catalog, derived, scoreSummary, series, shockSnapshot, snapshot, status });
       } catch (loadError) {
         if (active) {
           setError(loadError instanceof Error ? loadError.message : "Unable to load tactical trading weather.");
@@ -196,6 +201,30 @@ export default function TacticalTradingWeather() {
           <section className="score-grid" aria-label="Tactical scores">
             <ScoreCard score={data.scoreSummary.scores.market_weather} title="Market Weather" />
             <ScoreCard score={data.scoreSummary.scores.fragility} title="Fragility" />
+          </section>
+          <section className="panel" aria-label="Fragility shock-risk overlay">
+            <div className="section-header">
+              <div>
+                <p className="eyebrow">Fragility overlay</p>
+                <h3>{data.shockSnapshot.label}</h3>
+                <p>Dedicated shock-risk detail is available on the Fragility page.</p>
+              </div>
+              <strong className="score-card__value">{formatNumber(data.shockSnapshot.score)}</strong>
+            </div>
+            <div className="metric-grid">
+              <article className="candidate-source-row">
+                <div>
+                  <h4>Source gaps</h4>
+                  <p>{data.shockSnapshot.source_gaps.length} gated or unavailable source rows.</p>
+                </div>
+              </article>
+              <article className="candidate-source-row">
+                <div>
+                  <h4>Mismatch warnings</h4>
+                  <p>{data.shockSnapshot.mismatch_warnings.length} mismatch warning rows.</p>
+                </div>
+              </article>
+            </div>
           </section>
           <div className="section-heading">
             <h3>Daily checklist</h3>

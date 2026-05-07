@@ -3,6 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 const navItems = [
   { to: "/", label: "Overview" },
   { to: "/tactical", label: "Tactical Trading Weather" },
+  { to: "/fragility", label: "Fragility" },
   { to: "/macro-climate", label: "Long-Term Macro Climate" },
   { to: "/regime-map", label: "Regime Map" },
   { to: "/volatility", label: "Volatility" },

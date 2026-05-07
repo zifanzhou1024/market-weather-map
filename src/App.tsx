@@ -3,6 +3,7 @@ import AppLayout from "./components/AppLayout";
 import Commodities from "./routes/Commodities";
 import Credit from "./routes/Credit";
 import DollarGlobal from "./routes/DollarGlobal";
+import FragilityShockRisk from "./routes/FragilityShockRisk";
 import Growth from "./routes/Growth";
 import Inflation from "./routes/Inflation";
 import Liquidity from "./routes/Liquidity";
@@ -21,6 +22,7 @@ export default function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<Overview />} />
         <Route path="/tactical" element={<TacticalTradingWeather />} />
+        <Route path="/fragility" element={<FragilityShockRisk />} />
         <Route path="/macro-climate" element={<LongTermMacroClimate />} />
         <Route path="/regime-map" element={<RegimeMap />} />
         <Route path="/growth" element={<Growth />} />
