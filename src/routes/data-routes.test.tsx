@@ -160,6 +160,7 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       units: "USD billions"
     } satisfies DerivedSeriesFile,
     "/data/derived/score_summary.json": scoreSummary,
+    "/data/derived/regime_snapshot.json": regimeSnapshot,
     "/data/derived/us10y_minus_us2y.json": {
       ...derivedFile("us10y_minus_us2y", 0.42),
       depends_on: ["us10y", "us2y"],
@@ -1008,6 +1009,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
+      "/data/derived/regime_snapshot.json": regimeSnapshot,
       "/data/derived/us10y_minus_us2y.json": curve,
       ...seriesFiles(["breakeven_10y", "breakeven_5y", "forward_inflation_5y5y", "real_yield_10y", "real_yield_5y"]),
       "/data/series/us10y.json": seriesFile("us10y", 4.2),
@@ -1111,6 +1113,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
+      "/data/derived/regime_snapshot.json": regimeSnapshot,
       "/data/derived/us10y_minus_us2y.json": curve,
       ...seriesFiles(["breakeven_10y", "breakeven_5y", "forward_inflation_5y5y", "real_yield_10y", "real_yield_5y"]),
       "/data/series/us20y.json": seriesFile("us20y", 4.7),
@@ -1411,6 +1414,19 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Nominal yields, real yields, breakevens, and the 10Y-2Y curve");
   });
 
+  it("rates route renders yield decomposition and current driver context", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/rates"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "10Y yield decomposition");
+    expect(container.textContent).toContain("Yield driver");
+  });
+
   it("dollar route renders dollar pressure read interpretation", async () => {
     mockStaticFetch(routeFetchFiles());
 
@@ -1439,6 +1455,21 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Cboe Volatility Index");
     expect(container.textContent).toContain("Static feed freshness");
     expect(container.querySelector(".data-error")).toBeNull();
+  });
+
+  it("volatility route renders the active VIX term-structure proxy", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/volatility"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "VIX term-structure proxy");
+    expect(container.textContent).toContain("VIX9D");
+    expect(container.textContent).toContain("VIX");
+    expect(container.textContent).toContain("VIX3M");
   });
 
   it("renders credit base data and status when HY minus IG OAS 404s", async () => {

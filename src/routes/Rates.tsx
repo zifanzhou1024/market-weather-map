@@ -4,8 +4,17 @@ import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus, loadDerivedSeries } from "../lib/data";
-import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import YieldDecompositionChart from "../components/YieldDecompositionChart";
+import { loadCatalog, loadDataStatus, loadDerivedSeries, loadRegimeSnapshot } from "../lib/data";
+import { directionLabel, yieldDriverLabel } from "../lib/regime";
+import type {
+  DataStatusFile,
+  DerivedSeriesFile,
+  DirectionState,
+  RegimeSnapshotFile,
+  SeriesCatalogEntry,
+  TimeSeriesFile
+} from "../lib/types";
 import { hasObservations, loadRouteSeries } from "./routeSeries";
 
 const ratesSeriesIds = [
@@ -23,8 +32,19 @@ const ratesSeriesIds = [
 interface RouteState {
   catalog: SeriesCatalogEntry[];
   curve: DerivedSeriesFile;
+  snapshot: RegimeSnapshotFile;
   series: TimeSeriesFile[];
   status: DataStatusFile;
+}
+
+function breakevenDirection(snapshot: RegimeSnapshotFile): DirectionState {
+  const latest = snapshot.yield_decomposition[snapshot.yield_decomposition.length - 1];
+  const previous = snapshot.yield_decomposition[snapshot.yield_decomposition.length - 2];
+  if (!latest || !previous) return "unavailable";
+
+  if (latest.breakeven_10y > previous.breakeven_10y) return "up";
+  if (latest.breakeven_10y < previous.breakeven_10y) return "down";
+  return "flat";
 }
 
 export default function Rates() {
@@ -36,12 +56,16 @@ export default function Rates() {
 
     async function loadRates() {
       try {
-        const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
+        const [catalog, status, snapshot] = await Promise.all([
+          loadCatalog(),
+          loadDataStatus(),
+          loadRegimeSnapshot()
+        ]);
         const [series, curve] = await Promise.all([
           loadRouteSeries(ratesSeriesIds, catalog, status),
           loadDerivedSeries("us10y_minus_us2y")
         ]);
-        if (active) setData({ catalog, curve, series, status });
+        if (active) setData({ catalog, curve, snapshot, series, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load rates data.");
       }
@@ -92,6 +116,15 @@ export default function Rates() {
             summary="Nominal yields, real yields, breakevens, and the 10Y-2Y curve describe policy-rate pressure, inflation compensation, and curve regime."
             supports={["Falling real yields or less inverted curves can ease market weather pressure."]}
           />
+          <InterpretationPanel
+            label="10Y yield decomposition"
+            notes={[
+              `Real yield direction: ${directionLabel(data.snapshot.regime.tips_direction)}`,
+              `Breakeven direction: ${directionLabel(breakevenDirection(data.snapshot))}`,
+              `Nominal-yield direction: ${directionLabel(data.snapshot.regime.nominal_yield_direction)}`
+            ]}
+            summary={`Yield driver: ${yieldDriverLabel(data.snapshot.regime.yield_driver)}`}
+          />
           <DataGapPanel status={data.status} seriesIds={ratesSeriesIds.concat(["us10y_minus_us2y"])} />
           <section className="metric-grid" aria-label="Rates metrics">
             {data.series.map((series) => (
@@ -120,6 +153,7 @@ export default function Rates() {
               <p>Featured chart unavailable until source data is available.</p>
             </section>
           )}
+          <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
           <DataStatusTable seriesIds={ratesSeriesIds} status={data.status} />
         </div>
       ) : null}
