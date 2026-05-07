@@ -892,11 +892,11 @@
     "max_stale_days": 45,
     "name": "Consumer Price Index for All Urban Consumers",
     "notes": "Monthly headline CPI index from FRED graph CSV.",
-    "preferred_chart": "line",
+    "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
     "regime_role": [
-      "inflation"
+      "inflation_expectation"
     ],
     "score_status": "active",
     "source": "FRED",
@@ -916,11 +916,11 @@
     "max_stale_days": 45,
     "name": "Consumer Price Index Less Food and Energy",
     "notes": "Monthly core CPI index from FRED graph CSV.",
-    "preferred_chart": "line",
+    "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
     "regime_role": [
-      "inflation"
+      "inflation_expectation"
     ],
     "score_status": "active",
     "source": "FRED",
@@ -940,11 +940,11 @@
     "max_stale_days": 45,
     "name": "Core Personal Consumption Expenditures Price Index",
     "notes": "Monthly core PCE price index from FRED graph CSV.",
-    "preferred_chart": "line",
+    "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
     "regime_role": [
-      "inflation"
+      "inflation_expectation"
     ],
     "score_status": "active",
     "source": "FRED",
@@ -964,11 +964,11 @@
     "max_stale_days": 45,
     "name": "Producer Price Index by Commodity: Final Demand",
     "notes": "Monthly PPI final demand index from FRED graph CSV.",
-    "preferred_chart": "line",
+    "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
     "regime_role": [
-      "inflation"
+      "inflation_expectation"
     ],
     "score_status": "active",
     "source": "FRED",
