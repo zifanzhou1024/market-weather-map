@@ -49,6 +49,8 @@ Fragility focuses on channels that can amplify market moves or expose stress ben
 
 If a bucket's coverage is missing or stale, the score builders keep the emitted weighted bucket keys and lower confidence. Missing inputs may contribute `0.0` neutral fallback values rather than being reweighted out. Candidate-only inputs do not enter active scoring until source access is reviewed.
 
+PR 2 tactical candidates for put/call categories, VIX futures, and event calendar families are source-readiness displays only. They do not affect active scoring, regime labels, checklist states, or confidence until source review is complete, except through documented source-readiness gaps.
+
 The `percentile_252d` field name is retained for compatibility, but the percentile window is frequency-aware: daily series use 252 observations, weekly series use 52 observations, and monthly series use 12 observations.
 
 ## Bucket Logic
@@ -106,6 +108,12 @@ Checklist items summarize whether important descriptive conditions are aligned, 
 | Commodity impulse | Active commodity inputs describe easing, neutral, or firming inflation-impulse context. |
 | Positioning crowding | Active CFTC positioning inputs describe underexposure, neutral exposure, or crowding context. |
 | Source readiness | Candidate-only inputs are separated from active inputs until source review is complete. |
+
+### Tactical VIX Proxy Caveat
+
+When VIX futures data is not active, the tactical page uses VIX9D, VIX, VIX3M, VIX9D/VIX, and VIX/VIX3M as a proxy for near-term event pressure and contango/backwardation-like stress. This proxy is not the same as a tradable VIX futures curve.
+
+Put/call categories, VX futures readiness, and event calendar families remain candidate source gates until terms, access, cadence, attribution, automation, and redistribution review is complete. They do not enter active scoring before that review.
 
 ### Confirmation Matrix
 
