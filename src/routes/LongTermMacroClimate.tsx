@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
+import MacroCyclePanel from "../components/MacroCyclePanel";
 import MetricCard from "../components/MetricCard";
 import ScoreCard from "../components/ScoreCard";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
@@ -38,6 +39,16 @@ const macroGroups = [
     summary: "Inflation and breakeven inputs describe price-pressure context."
   },
   {
+    ids: ["housing_starts", "building_permits", "mortgage_rate_30y"],
+    label: "Housing cycle",
+    summary: "Starts, permits, and mortgage rates describe the housing portion of the strategic backdrop."
+  },
+  {
+    ids: ["household_debt_service_ratio", "consumer_debt_service_ratio", "credit_card_delinquency_rate"],
+    label: "Consumer balance sheet",
+    summary: "Debt-service ratios and credit-card delinquencies describe household balance-sheet pressure."
+  },
+  {
     ids: ["high_yield_oas", "bbb_oas", "financial_conditions"],
     label: "Credit cycle",
     summary: "Credit spreads and financial conditions describe private-market stress."
@@ -53,6 +64,65 @@ const ratesIds = ["real_yield_10y"];
 const macroSeriesIds = [...macroGroups.flatMap((group) => group.ids), ...ratesIds];
 const macroDerivedIds = ["net_liquidity"];
 const macroStatusIds = [...macroSeriesIds, ...macroDerivedIds];
+
+const macroCyclePanels = [
+  {
+    bucket: "growth",
+    caveat: "Active public activity data only; PMI breadth remains source-gated until governance promotes a public endpoint.",
+    risks: ["Weak activity breadth or production deterioration would pressure this panel."],
+    supports: ["CFNAI and industrial production provide public growth-cycle context."],
+    title: "Growth cycle"
+  },
+  {
+    bucket: "labor",
+    caveat: "Labor series update on mixed weekly and monthly schedules, so stale-release windows can affect the read.",
+    risks: ["Rising unemployment or claims would add labor-cycle pressure."],
+    supports: ["Unemployment and claims inputs provide public labor-cycle context."],
+    title: "Labor cycle"
+  },
+  {
+    bucket: "inflation",
+    caveat: "Inflation data is release-lagged; breakevens provide market context but not a forecast.",
+    risks: ["Sticky realized inflation or rising breakevens would pressure this panel."],
+    supports: ["CPI, PCE, and breakevens describe active inflation trend context."],
+    title: "Inflation trend"
+  },
+  {
+    bucket: "housing",
+    caveat: "Active public FRED housing data only; private housing-credit and affordability sources are not scored.",
+    risks: ["Elevated mortgage rates can offset starts and permits strength."],
+    supports: ["Housing starts and building permits describe active housing-cycle momentum."],
+    title: "Housing cycle"
+  },
+  {
+    bucket: "consumer_balance_sheet",
+    caveat: "Quarterly debt-service and delinquency data can lag turning points in consumer stress.",
+    risks: ["Higher debt-service ratios or credit-card delinquencies would pressure this panel."],
+    supports: ["Household and consumer debt-service ratios describe public balance-sheet context."],
+    title: "Consumer balance sheet"
+  },
+  {
+    bucket: "credit",
+    caveat: "SLOOS lending standards remain candidate-only until a governed public endpoint is promoted.",
+    risks: ["Wider spreads or tighter financial conditions would pressure this panel."],
+    supports: ["High-yield, BBB, and financial-condition inputs describe active credit-cycle context."],
+    title: "Credit cycle"
+  },
+  {
+    bucket: "liquidity",
+    caveat: "Treasury supply and auction metrics remain source-gated candidate rows outside this active read.",
+    risks: ["Falling reserve balances or weaker net liquidity would pressure this panel."],
+    supports: ["Fed assets, reserves, and net liquidity provide public liquidity-cycle context."],
+    title: "Liquidity cycle"
+  },
+  {
+    bucket: "real_yields",
+    caveat: "Valuation, earnings revisions, and term-premium inputs remain candidate-only source gates.",
+    risks: ["Higher real yields can add valuation pressure to the strategic backdrop."],
+    supports: ["Real-yield easing would reduce valuation pressure in this panel."],
+    title: "Real-rate valuation pressure"
+  }
+] as const;
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
@@ -143,6 +213,19 @@ export default function LongTermMacroClimate() {
             )}.`}
             supports={data.scoreSummary.scores.macro_climate.top_supports}
           />
+          <section className="macro-cycle-grid" aria-label="Strategic macro cycle panels">
+            {macroCyclePanels.map((panel) => (
+              <MacroCyclePanel
+                caveat={panel.caveat}
+                key={panel.title}
+                label={cycleLabel(bucketScoreValue(data.scoreSummary, panel.bucket))}
+                risks={panel.risks}
+                score={bucketScoreValue(data.scoreSummary, panel.bucket)}
+                supports={panel.supports}
+                title={panel.title}
+              />
+            ))}
+          </section>
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
           {macroGroups.map((group) => (
             <section className="route-stack" key={group.label}>
@@ -190,6 +273,17 @@ export default function LongTermMacroClimate() {
 }
 
 function bucketScore(scoreSummary: ScoreSummaryFile, bucket: string) {
-  const score = scoreSummary.scores.macro_climate.bucket_scores[bucket];
+  const score = bucketScoreValue(scoreSummary, bucket);
   return typeof score === "number" && Number.isFinite(score) ? score.toFixed(1) : "N/A";
+}
+
+function bucketScoreValue(scoreSummary: ScoreSummaryFile, bucket: string) {
+  return scoreSummary.scores.macro_climate.bucket_scores[bucket];
+}
+
+function cycleLabel(score: number | undefined) {
+  if (typeof score !== "number" || !Number.isFinite(score)) return "Not scored";
+  if (score >= 15) return "Supportive";
+  if (score <= -15) return "Pressure";
+  return "Mixed";
 }

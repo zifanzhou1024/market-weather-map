@@ -11,6 +11,7 @@ import HowToReadPanel from "./HowToReadPanel";
 import InterpretationPanel from "./InterpretationPanel";
 import MetricCard from "./MetricCard";
 import MismatchWarningPanel from "./MismatchWarningPanel";
+import MacroCyclePanel from "./MacroCyclePanel";
 import MultiSeriesChart from "./MultiSeriesChart";
 import OptionsSentimentPanel from "./OptionsSentimentPanel";
 import PercentileBandChart from "./PercentileBandChart";
@@ -364,6 +365,30 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("0.00");
     expect(container.textContent).toContain("100%");
     expect(container.textContent).toContain("N/A");
+  });
+
+  it("renders macro cycle score label signals and source caveat", () => {
+    const container = render(
+      <MacroCyclePanel
+        caveat="Active public data only; candidate PMI and SLOOS rows remain source-gated."
+        label="Mixed"
+        risks={["Mortgage rates remain elevated."]}
+        score={12.34}
+        supports={["Housing starts improved."]}
+        title="Housing cycle"
+      />
+    );
+
+    expect(container.textContent).toContain("Housing cycle");
+    expect(container.textContent).toContain("12.34");
+    expect(container.textContent).toContain("Mixed");
+    expect(container.textContent).toContain("Supports");
+    expect(container.textContent).toContain("Housing starts improved.");
+    expect(container.textContent).toContain("Risks");
+    expect(container.textContent).toContain("Mortgage rates remain elevated.");
+    expect(container.textContent).toContain(
+      "Active public data only; candidate PMI and SLOOS rows remain source-gated."
+    );
   });
 
   it("renders how-to-read panel without exposing advice language", () => {

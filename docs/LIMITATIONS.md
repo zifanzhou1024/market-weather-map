@@ -12,6 +12,7 @@
 - PR 1 horizon-regime labels use active no-secret generated data only.
 - Active labels, scores, and checklists do not include candidate sources before source review is complete.
 - PR 3 shock-risk output is descriptive. It summarizes active inputs and source-readiness gaps; it does not provide forecasts, instructions, or decision guidance.
+- PR 4 consumer balance-sheet output uses lagged quarterly FRED data, so it can miss fast changes between releases.
 
 ## Source Limitations
 
@@ -33,7 +34,7 @@
 - `restricted` sources are paid, gated, license-restricted, or otherwise not suitable for static public redistribution under current terms.
 - `unavailable` sources cannot currently be fetched or redistributed by the no-secret static workflow.
 - Candidate survey, flow, volatility, and term-premium sources can create coverage gaps. Those gaps should reduce score confidence rather than be silently filled with proxies.
-- Consumer/Fiscal/Treasury candidate rows do not affect scores.
+- Fiscal/Treasury, valuation, PMI/SLOOS, earnings-revision, and remaining candidate consumer rows do not affect scores.
 - Public macro series can be revised after initial publication, so historical scores may change when source data is refreshed.
 - Mismatch warnings are descriptive conflicts between active inputs. They do not imply a resolved direction when volatility, credit, liquidity, rate, dollar, or positioning channels disagree.
 
