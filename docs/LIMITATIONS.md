@@ -8,13 +8,17 @@
 - The weather score is explanatory and descriptive, not predictive.
 - Phase 3 scores are descriptive summaries of observed data, not causal models.
 - Score confidence reflects data freshness and coverage. It does not measure forecast accuracy.
-- The dashboard is not financial advice and should not be used as the sole basis for investment, trading, or risk decisions.
+- The dashboard is not financial advice, does not provide trade recommendations, and should not be used as the basis for investment, trading, or risk decisions.
+- PR 1 horizon-regime labels use active no-secret generated data only.
+- Active labels, scores, and checklists do not include candidate sources before source review is complete.
 
 ## Source Limitations
 
 - AAII and NAAIM are deferred terms-reviewed candidates, not active Phase 2 inputs.
 - CFTC positioning is weekly, delayed, and futures-specific. It should be read as positioning context, not a complete sentiment model.
 - Crop prices come from monthly FRED series, not live futures curves.
+- VIX9D, VIX, and VIX3M ratios are public volatility-term proxies. They are not a tradable VIX futures curve.
+- VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, Treasury supply, and similar candidates do not affect scores, labels, or checklists before access terms, automation constraints, attribution, and redistribution rules are reviewed.
 
 ## Source Access And Review
 
@@ -34,3 +38,4 @@
 - Release-aware freshness reduces false stale flags for monthly and quarterly data, but it still depends on configured cadence assumptions.
 - Expected release-window notes mean the source may be behaving normally; they do not mean the latest economic observation is current in a real-time sense.
 - Confidence decomposition makes stale, missing, candidate, and thin-model inputs visible, but it does not turn descriptive scores into forecasts.
+- Historical replay, valuation features, and watchlists are later-phase work and are not part of PR 1 horizon-regime scoring.

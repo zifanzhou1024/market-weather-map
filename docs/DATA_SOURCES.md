@@ -65,6 +65,16 @@ Candidate sources are not active scoring inputs until legal, terms, cadence, and
 | MOVE Index | ICE Data Indices or licensed redistributors | `terms_review_needed` | Rates volatility and fragility. | Review source access and redistribution terms before scoring. |
 | Equity put-call ratios | OCC, Cboe, or other exchanges | `terms_review_needed` | Options positioning and sentiment. | Confirm source-specific terms and whether historical files can be redistributed. |
 | NY Fed ACM term premium | Federal Reserve Bank of New York | `terms_review_needed` | Term premium and real-rate decomposition. | Review download format, attribution, and static redistribution expectations. |
+| Cboe put/call ratios | Cboe | `terms_review_needed` | Options activity and sentiment context. | Candidate score status until exchange terms, historical access, and redistribution rules are reviewed. |
+| Cboe SKEW | Cboe | `terms_review_needed` | Tail-risk and options-market confirmation. | Candidate score status until index terms and redistribution rules are reviewed. |
+| VIX futures curve | Cboe Futures Exchange or licensed redistributors | `terms_review_needed` | Tradable volatility term-structure context. | Candidate score status until futures data terms, redistribution rules, and delayed-data constraints are reviewed. |
+| MOVE | ICE Data Indices or licensed redistributors | `terms_review_needed` | Treasury volatility confirmation and fragility context. | Candidate score status until licensed-index terms and redistribution rules are reviewed. |
+| Gold/XAU confirmation | FRED, LBMA, exchange data, or licensed redistributors | `terms_review_needed` | Cross-asset confirmation for real-rate, dollar, and stress regimes. | Candidate score status until source choice, cadence, and redistribution rules are reviewed. |
+| Equity breadth | Exchange, index-provider, or licensed market-data sources | `terms_review_needed` | Internal equity-market confirmation and risk breadth. | Candidate score status until source terms, calculation method, and redistribution rules are reviewed. |
+| Term premium | Federal Reserve Bank of New York or other model providers | `terms_review_needed` | Yield-driver decomposition and rate-regime context. | Candidate score status until source terms, model attribution, and static redistribution rules are reviewed. |
+| Valuation | S&P, MSCI, FactSet, Robert Shiller dataset, or other providers | `terms_review_needed` | Long-term macro climate and expected-return context. | Candidate score status until source coverage, calculation method, and redistribution rules are reviewed. |
+| Treasury supply | U.S. Treasury, TreasuryDirect, or fiscal-data APIs | `terms_review_needed` | Issuance, auction, and duration-supply pressure. | Candidate score status until source endpoints, transformation rules, and redistribution expectations are reviewed. |
+| PMIs/SLOOS | ISM, S&P Global, Federal Reserve, or FRED mirrors | `terms_review_needed` | Business-cycle breadth and lending-standards confirmation. | Candidate score status until survey terms, redistribution rules, and permitted derived publication are reviewed. |
 
 ## Source Handling
 

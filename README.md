@@ -46,6 +46,13 @@ Phase 4 direction:
 - Surface active Phase 3 data more fully before adding many new source families.
 - Keep Housing, GDP/final demand, consumer balance sheet, fiscal/Treasury supply, Event Calendar, PMIs, SLOOS, survey sentiment, valuation, and market internals as staged follow-up work unless their source status is reviewed and documented.
 
+Phase 5 direction:
+
+- Organize the primary experience by use case: Tactical Trading Weather, Long-Term Macro Climate, and Regime Map.
+- Use existing active no-secret data for PR 1.
+- Treat VIX futures, put/call ratios, SKEW, MOVE, valuation, PMIs/SLOOS, and Treasury supply as candidate or future inputs until source terms and redistribution rules are reviewed.
+- Keep outputs descriptive and avoid trade recommendations.
+
 ## Data Access Status
 
 Source access is tracked before data is treated as production scoring input.
