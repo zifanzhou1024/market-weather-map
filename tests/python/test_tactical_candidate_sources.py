@@ -32,6 +32,19 @@ TACTICAL_CANDIDATE_IDS = (
     *EVENT_CANDIDATE_IDS,
 )
 
+STRATEGIC_CANDIDATE_IDS = (
+    "ism_services_pmi",
+    "sloos_lending_standards",
+    "term_premium_acm_10y",
+    "treasury_net_issuance",
+    "treasury_auction_tail",
+    "treasury_bid_to_cover",
+    "cape_ratio",
+    "forward_pe",
+    "equity_risk_premium",
+    "earnings_revision_breadth",
+)
+
 SUPPORTED_FRONTEND_FREQUENCIES = {"daily", "weekly", "monthly", "quarterly"}
 
 
@@ -91,3 +104,16 @@ def test_tactical_candidate_frequencies_match_frontend_contract():
 
     for series_id in TACTICAL_CANDIDATE_IDS:
         assert entries[series_id]["frequency"] in SUPPORTED_FRONTEND_FREQUENCIES
+
+
+def test_strategic_candidate_source_gates_are_inactive():
+    entries = entries_by_id()
+
+    for series_id in STRATEGIC_CANDIDATE_IDS:
+        entry = entries[series_id]
+        assert entry["score_status"] == "candidate"
+        assert entry["access_status"] == "terms_review_needed"
+        assert entry["terms_status"] == "review_needed"
+        assert entry["public"] is False
+        assert entry["horizon"] == "strategic"
+        assert entry["frequency"] in SUPPORTED_FRONTEND_FREQUENCIES

@@ -28,11 +28,12 @@ Macro Climate separates slower growth, labor, inflation, housing, and real-rate 
 
 | Bucket | Weight | Scoring status |
 | --- | ---: | --- |
-| Growth (`growth`) | 20% | Active when FRED growth inputs are available |
-| Labor (`labor`) | 20% | Active when labor inputs are available |
-| Inflation (`inflation`) | 18% | Active when CPI, PCE, and PPI inputs are available |
-| Consumer and production (`consumer_production`) | 17% | Active when retail sales, production, and durable goods inputs are available |
-| Housing (`housing`) | 15% | Housing starts, building permits, and 30Y mortgage-rate pressure |
+| Growth (`growth`) | 18% | Active when FRED growth inputs are available |
+| Labor (`labor`) | 18% | Active when labor inputs are available |
+| Inflation (`inflation`) | 16% | Active when CPI, PCE, and PPI inputs are available |
+| Consumer and production (`consumer_production`) | 16% | Active when retail sales, production, and durable goods inputs are available |
+| Housing (`housing`) | 12% | Housing starts, building permits, and 30Y mortgage-rate pressure |
+| Consumer balance sheet (`consumer_balance_sheet`) | 10% | Active when household debt service, consumer debt service, and credit-card delinquency inputs are available |
 | Real yields (`real_yields`) | 10% | Active when TIPS inputs are available |
 
 ### Fragility Score
@@ -54,6 +55,8 @@ PR 2 tactical candidates for put/call categories, VIX futures, and event calenda
 
 PR 3 shock-risk candidates for MOVE and SKEW follow the same gate. Candidate MOVE and SKEW rows are source-readiness displays only before source review, so they do not affect active scoring, regime labels, checklist states, or confidence except through documented source-readiness gaps.
 
+PR 4 strategic candidates for PMIs, SLOOS, term premium, Treasury supply, valuation, and earnings revisions follow the same gate. Active PR 4 consumer balance-sheet inputs come from FRED-hosted public series; strategic candidates remain source-readiness rows only until governance review promotes a specific endpoint.
+
 The `percentile_252d` field name is retained for compatibility, but the percentile window is frequency-aware: daily series use 252 observations, weekly series use 52 observations, and monthly series use 12 observations.
 
 ## Bucket Logic
@@ -65,6 +68,7 @@ The `percentile_252d` field name is retained for compatibility, but the percenti
 - Growth and labor inputs describe activity breadth, jobs momentum, claims pressure, and recession-risk indicators. Stronger breadth is supportive unless it conflicts with inflation pressure.
 - Inflation inputs describe price momentum across CPI, core measures, PCE, and PPI. Higher or reaccelerating inflation pressure is treated as less supportive for Macro Climate.
 - Housing inputs describe construction activity, permit activity, and mortgage-rate pressure. Stronger starts and permits are treated as more supportive housing activity; higher 30-year mortgage rates are treated as riskier or more restrictive. Housing should be read with release-aware freshness because monthly construction data and weekly mortgage rates update on different schedules.
+- Consumer balance-sheet inputs describe debt-service burdens and credit-card delinquency pressure. Higher debt-service ratios or higher credit-card delinquencies are treated as less supportive for Macro Climate.
 - Dollar and banking inputs describe global dollar pressure, reserve balances, bank credit, loans, business lending, and deposits. Dollar strength and weaker banking trends can raise Fragility.
 - Commodities use oil and crop price percentiles as a commodity impulse. Higher energy and crop price pressure can be less supportive because it can reflect input-cost and inflation pressure; lower or easing commodity pressure can be more supportive when it does not signal demand weakness.
 - Sentiment uses CFTC E-mini S&P 500 asset manager and leveraged money net positioning as a percent of open interest. Very high positioning percentiles are treated as crowding risk; low positioning readings are descriptive underexposure context.
@@ -117,7 +121,7 @@ Checklist items summarize whether important descriptive conditions are aligned, 
 
 When VIX futures data is not active, the tactical page uses VIX9D, VIX, VIX3M, VIX9D/VIX, and VIX/VIX3M as a proxy for near-term event pressure and contango/backwardation-like stress. This proxy is not the same as a tradable VIX futures curve.
 
-Put/call categories, VX futures readiness, and event calendar families remain candidate source gates until terms, access, cadence, attribution, automation, and redistribution review is complete. They do not enter active scoring before that review.
+Put/call categories, VX futures readiness, event calendar families, PMIs, SLOOS, term premium, Treasury supply, valuation, and earnings-revision families remain candidate source gates until terms, access, cadence, attribution, automation, and redistribution review is complete. They do not enter active scoring before that review.
 
 ### Fragility / Shock Risk View
 

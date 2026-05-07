@@ -731,7 +731,7 @@ def test_build_score_summary_returns_three_scores_with_specific_drivers():
 
     summary = compute_regime_score.build_score_summary(series, "2026-05-04T00:00:00Z")
 
-    assert summary["method_version"] == "phase4-pr2-macro-completeness-v1"
+    assert summary["method_version"] == "phase5-pr4-strategic-macro-completeness-v1"
     assert set(summary["scores"]) == {"market_weather", "macro_climate", "fragility"}
     assert "High-yield spreads widened over the past month." in summary["scores"]["market_weather"]["top_risks"]
     assert summary["scores"]["macro_climate"]["confidence"] < 1.0
@@ -788,10 +788,45 @@ def test_macro_climate_includes_active_housing_bucket():
     macro = summary["scores"]["macro_climate"]
 
     assert "housing" in macro["bucket_scores"]
-    assert macro["bucket_weights"]["housing"] == 0.15
+    assert macro["bucket_weights"]["housing"] == 0.12
     assert macro["bucket_scores"]["housing"] > 0
     assert "Housing activity and rate sensitivity are supportive." in macro["top_supports"]
     assert "Housing is not active" not in " ".join(macro["missing_or_stale_notes"])
+
+
+def test_macro_climate_includes_consumer_balance_sheet_bucket():
+    series = {
+        "household_debt_service_ratio": _summary(percentile_252d=70.0),
+        "consumer_debt_service_ratio": _summary(percentile_252d=65.0),
+        "credit_card_delinquency_rate": _summary(percentile_252d=75.0),
+        "housing_starts": _summary(percentile_252d=50.0),
+        "building_permits": _summary(percentile_252d=50.0),
+        "mortgage_rate_30y": _summary(percentile_252d=50.0),
+        "cfnai": _summary(percentile_252d=50.0),
+        "cfnai_3m_avg": _summary(percentile_252d=50.0),
+        "nonfarm_payrolls": _summary(percentile_252d=50.0),
+        "unemployment_rate": _summary(percentile_252d=50.0),
+        "initial_claims": _summary(percentile_252d=50.0),
+        "sahm_rule": _summary(percentile_252d=50.0),
+        "headline_cpi": _summary(percentile_252d=50.0),
+        "core_cpi": _summary(percentile_252d=50.0),
+        "core_pce": _summary(percentile_252d=50.0),
+        "ppi_final_demand": _summary(percentile_252d=50.0),
+        "real_retail_sales": _summary(percentile_252d=50.0),
+        "industrial_production": _summary(percentile_252d=50.0),
+        "durable_goods_orders": _summary(percentile_252d=50.0),
+        "real_yield_10y": _summary(percentile_252d=50.0),
+    }
+
+    consumer = compute_regime_score._score_consumer_balance_sheet(series)
+    summary = compute_regime_score.build_score_summary(series, "2026-05-05T00:00:00Z")
+    macro = summary["scores"]["macro_climate"]
+
+    assert consumer < 0
+    assert "consumer_balance_sheet" in macro["bucket_scores"]
+    assert macro["bucket_weights"]["consumer_balance_sheet"] == 0.10
+    assert macro["bucket_scores"]["consumer_balance_sheet"] < 0
+    assert "Consumer balance-sheet stress is elevated." in macro["top_risks"]
 
 
 def test_missing_housing_lowers_macro_confidence_with_pr2_note():
@@ -830,6 +865,9 @@ def test_candidate_scaffolding_does_not_change_score_summary():
         "housing_starts": _summary(percentile_252d=50.0),
         "building_permits": _summary(percentile_252d=50.0),
         "mortgage_rate_30y": _summary(percentile_252d=50.0),
+        "household_debt_service_ratio": _summary(percentile_252d=50.0),
+        "consumer_debt_service_ratio": _summary(percentile_252d=50.0),
+        "credit_card_delinquency_rate": _summary(percentile_252d=50.0),
         "cfnai": _summary(percentile_252d=50.0),
         "cfnai_3m_avg": _summary(percentile_252d=50.0),
         "nonfarm_payrolls": _summary(percentile_252d=50.0),
@@ -850,7 +888,6 @@ def test_candidate_scaffolding_does_not_change_score_summary():
         "personal_saving_rate": _summary(percentile_252d=100.0),
         "total_consumer_credit": _summary(percentile_252d=100.0),
         "revolving_consumer_credit": _summary(percentile_252d=100.0),
-        "household_debt_service_ratio": _summary(percentile_252d=100.0),
         "monthly_treasury_receipts": _summary(percentile_252d=100.0),
         "monthly_treasury_outlays": _summary(percentile_252d=100.0),
         "monthly_treasury_deficit_surplus": _summary(percentile_252d=100.0),
@@ -2212,6 +2249,9 @@ def test_score_summary_emits_data_quality_confidence_breakdown():
         "housing_starts": _summary(percentile_252d=50.0),
         "building_permits": _summary(percentile_252d=50.0),
         "mortgage_rate_30y": _summary(percentile_252d=50.0),
+        "household_debt_service_ratio": _summary(percentile_252d=50.0),
+        "consumer_debt_service_ratio": _summary(percentile_252d=50.0),
+        "credit_card_delinquency_rate": _summary(percentile_252d=50.0),
     }
     statuses = {
         series_id: {"status": "ok", "message": "Fresh."}

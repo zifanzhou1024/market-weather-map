@@ -25,7 +25,7 @@ WEIGHTS = {
     "commodities": 0.10,
     "sentiment": 0.15,
 }
-METHOD_VERSION = "phase4-pr2-macro-completeness-v1"
+METHOD_VERSION = "phase5-pr4-strategic-macro-completeness-v1"
 MARKET_WEIGHTS = {
     "credit_spreads": 0.22,
     "liquidity_funding": 0.18,
@@ -36,11 +36,12 @@ MARKET_WEIGHTS = {
     "sentiment_positioning": 0.10,
 }
 MACRO_WEIGHTS = {
-    "growth": 0.20,
-    "labor": 0.20,
-    "inflation": 0.18,
-    "consumer_production": 0.17,
-    "housing": 0.15,
+    "growth": 0.18,
+    "labor": 0.18,
+    "inflation": 0.16,
+    "consumer_production": 0.16,
+    "housing": 0.12,
+    "consumer_balance_sheet": 0.10,
     "real_yields": 0.10,
 }
 FRAGILITY_WEIGHTS = {
@@ -66,6 +67,11 @@ MACRO_COVERAGE_GROUPS = {
     "inflation": ["headline_cpi", "core_cpi", "core_pce", "ppi_final_demand"],
     "consumer/production": ["real_retail_sales", "industrial_production", "durable_goods_orders"],
     "housing": ["housing_starts", "building_permits", "mortgage_rate_30y"],
+    "consumer balance sheet": [
+        "household_debt_service_ratio",
+        "consumer_debt_service_ratio",
+        "credit_card_delinquency_rate",
+    ],
     "real_yields": ["real_yield_10y"],
 }
 FRAGILITY_COVERAGE_GROUPS = {
@@ -1433,6 +1439,18 @@ def _score_housing(series_by_id: dict[str, dict[str, Any]]) -> float:
     ]) or 0.0
 
 
+def _score_consumer_balance_sheet(series_by_id: dict[str, dict[str, Any]]) -> float:
+    return _score_percentile_average(
+        series_by_id,
+        [
+            "household_debt_service_ratio",
+            "consumer_debt_service_ratio",
+            "credit_card_delinquency_rate",
+        ],
+        inverse=True,
+    ) or 0.0
+
+
 def _macro_climate_scores(series_by_id: dict[str, dict[str, Any]]) -> dict[str, float]:
     return {
         "growth": _score_percentile_average(series_by_id, ["cfnai", "cfnai_3m_avg"], inverse=False)
@@ -1455,6 +1473,7 @@ def _macro_climate_scores(series_by_id: dict[str, dict[str, Any]]) -> dict[str, 
         )
         or 0.0,
         "housing": _score_housing(series_by_id),
+        "consumer_balance_sheet": _score_consumer_balance_sheet(series_by_id),
         "real_yields": _score_percentile_average(series_by_id, ["real_yield_10y"], inverse=True)
         or 0.0,
     }
@@ -1502,6 +1521,23 @@ def _macro_climate_drivers(series_by_id: dict[str, dict[str, Any]]) -> list[Scor
         housing_summary,
         "Housing activity and rate sensitivity are supportive.",
         "Housing activity or mortgage-rate pressure is restrictive.",
+    )
+    consumer_series_id, consumer_summary = _summary_for_first(
+        series_by_id,
+        [
+            "household_debt_service_ratio",
+            "consumer_debt_service_ratio",
+            "credit_card_delinquency_rate",
+        ],
+    )
+    _append_driver_for_score(
+        drivers,
+        "consumer_balance_sheet",
+        _score_consumer_balance_sheet(series_by_id),
+        consumer_series_id,
+        consumer_summary,
+        "Consumer balance-sheet stress is contained.",
+        "Consumer balance-sheet stress is elevated.",
     )
     return drivers
 

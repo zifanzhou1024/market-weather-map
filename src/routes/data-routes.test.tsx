@@ -197,6 +197,9 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       "high_yield_oas",
       "investment_grade_oas",
       "building_permits",
+      "household_debt_service_ratio",
+      "consumer_debt_service_ratio",
+      "credit_card_delinquency_rate",
       "loans_and_leases",
       "bank_deposits",
       "mortgage_rate_30y",
@@ -444,6 +447,9 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("housing_starts", "housing", "Housing Starts", "thousands_saar", "monthly"),
   catalogEntry("building_permits", "housing", "Building Permits", "thousands_saar", "monthly"),
   catalogEntry("mortgage_rate_30y", "housing", "30-Year Fixed Mortgage Rate", "percent", "weekly"),
+  catalogEntry("household_debt_service_ratio", "credit", "Household debt service ratio", "percent", "quarterly"),
+  catalogEntry("consumer_debt_service_ratio", "credit", "Consumer debt service ratio", "percent", "quarterly"),
+  catalogEntry("credit_card_delinquency_rate", "credit", "Credit card delinquency rate", "percent", "quarterly"),
   catalogEntry("headline_cpi", "inflation", "Headline CPI", "percent", "monthly"),
   catalogEntry("core_cpi", "inflation", "Core CPI", "percent", "monthly"),
   catalogEntry("core_pce", "inflation", "Core PCE", "percent", "monthly"),
@@ -800,6 +806,9 @@ const status: DataStatusFile = {
     housing_starts: statusRow("ok", "monthly"),
     building_permits: statusRow("ok", "monthly"),
     mortgage_rate_30y: statusRow("ok", "weekly"),
+    household_debt_service_ratio: statusRow("ok", "quarterly"),
+    consumer_debt_service_ratio: statusRow("ok", "quarterly"),
+    credit_card_delinquency_rate: statusRow("ok", "quarterly"),
     headline_cpi: statusRow("unavailable", "monthly"),
     core_cpi: statusRow("unavailable", "monthly"),
     core_pce: statusRow("unavailable", "monthly"),
@@ -864,8 +873,24 @@ const scoreSummary: ScoreSummaryFile = {
       top_supports: ["Rates"]
     },
     macro_climate: {
-      bucket_scores: { growth: 6, inflation: -3 },
-      bucket_weights: { growth: 0.5, inflation: 0.5 },
+      bucket_scores: {
+        consumer_balance_sheet: -2,
+        consumer_production: 5,
+        growth: 6,
+        housing: 4,
+        inflation: -3,
+        labor: 2,
+        real_yields: -4
+      },
+      bucket_weights: {
+        consumer_balance_sheet: 0.1,
+        consumer_production: 0.16,
+        growth: 0.18,
+        housing: 0.12,
+        inflation: 0.16,
+        labor: 0.18,
+        real_yields: 0.1
+      },
       confidence: 0.74,
       confidence_reasons: ["Macro inputs are mostly current."],
       label: "Goldilocks",
@@ -1787,6 +1812,12 @@ describe("data-backed routes", () => {
     await waitForContent(container, "Long-Term Macro Climate");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
+    expect(container.textContent).toContain("Consumer and production");
+    expect(container.textContent).toContain("Housing cycle");
+    expect(container.textContent).toContain("Consumer balance sheet");
+    expect(container.textContent).toContain("Credit cycle");
+    expect(container.textContent).toContain("Liquidity cycle");
+    expect(container.textContent).not.toContain("Not scored");
   });
 
   it("renders the regime map route", async () => {

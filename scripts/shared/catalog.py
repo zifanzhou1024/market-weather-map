@@ -48,7 +48,12 @@ STRATEGIC_IDS = {
     "nonfarm_payrolls", "initial_claims", "sahm_rule", "headline_cpi",
     "core_cpi", "core_pce", "ppi_final_demand", "bank_credit",
     "loans_and_leases", "business_loans", "bank_deposits", "fed_assets",
-    "reserve_balances", "move_index",
+    "reserve_balances", "move_index", "housing_starts", "building_permits",
+    "mortgage_rate_30y", "household_debt_service_ratio",
+    "consumer_debt_service_ratio", "credit_card_delinquency_rate",
+    "ism_services_pmi", "sloos_lending_standards", "term_premium_acm_10y",
+    "treasury_net_issuance", "treasury_auction_tail", "treasury_bid_to_cover",
+    "cape_ratio", "forward_pe", "equity_risk_premium", "earnings_revision_breadth",
 }
 
 REGIME_ROLES_BY_ID = {
@@ -125,6 +130,9 @@ REGIME_ROLES_BY_ID = {
     "loans_and_leases": ["banking", "credit"],
     "business_loans": ["banking", "credit"],
     "bank_deposits": ["banking", "liquidity"],
+    "household_debt_service_ratio": ["credit"],
+    "consumer_debt_service_ratio": ["credit"],
+    "credit_card_delinquency_rate": ["credit"],
 }
 
 PREFERRED_CHART_BY_ROLE = {
@@ -582,6 +590,39 @@ FRED_SERIES = [
         "notes": "Weekly 30-year fixed mortgage rate from FRED graph CSV.",
     },
     {
+        "id": "household_debt_service_ratio",
+        "fred_id": "TDSP",
+        "name": "Household Debt Service Payments as Percent of Disposable Personal Income",
+        "category": "credit",
+        "frequency": "quarterly",
+        "units": "percent",
+        "higher_is": "riskier",
+        "max_stale_days": 120,
+        "notes": "Quarterly household debt service ratio from FRED graph CSV.",
+    },
+    {
+        "id": "consumer_debt_service_ratio",
+        "fred_id": "CDSP",
+        "name": "Consumer Debt Service Payments as Percent of Disposable Personal Income",
+        "category": "credit",
+        "frequency": "quarterly",
+        "units": "percent",
+        "higher_is": "riskier",
+        "max_stale_days": 120,
+        "notes": "Quarterly consumer debt service ratio from FRED graph CSV.",
+    },
+    {
+        "id": "credit_card_delinquency_rate",
+        "fred_id": "DRCCLACBS",
+        "name": "Delinquency Rate on Credit Card Loans",
+        "category": "credit",
+        "frequency": "quarterly",
+        "units": "percent",
+        "higher_is": "riskier",
+        "max_stale_days": 120,
+        "notes": "Quarterly credit-card delinquency rate at all commercial banks from FRED graph CSV.",
+    },
+    {
         "id": "unemployment_rate",
         "fred_id": "UNRATE",
         "name": "Unemployment Rate",
@@ -818,6 +859,12 @@ def tactical_candidate_series(
 
 PUT_CALL_SOURCE_URL = "https://www.cboe.com/markets/us/options/market_statistics/"
 VIX_FUTURES_SOURCE_URL = "https://www.cboe.com/us/futures/"
+ISM_SOURCE_URL = "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/"
+SLOOS_SOURCE_URL = "https://www.federalreserve.gov/data/sloos.htm"
+NY_FED_ACM_SOURCE_URL = "https://www.newyorkfed.org/research/data_indicators/term-premia-tabs"
+TREASURY_SUPPLY_SOURCE_URL = "https://www.treasurydirect.gov/auctions/announcements-data-results/"
+VALUATION_SOURCE_URL = "https://www.multpl.com/"
+EARNINGS_REVISIONS_SOURCE_URL = "https://www.spglobal.com/spdji/en/"
 
 
 PUT_CALL_CANDIDATE_SERIES = [
@@ -989,6 +1036,139 @@ EVENT_RISK_CANDIDATE_SERIES = [
 ]
 
 
+STRATEGIC_SOURCE_GATE_SERIES = [
+    tactical_candidate_series(
+        "ism_services_pmi",
+        "ISM Services PMI",
+        "growth",
+        "ISM",
+        ISM_SOURCE_URL,
+        "monthly",
+        "index",
+        45,
+        "Candidate services PMI input; requires survey terms, automation, and redistribution review before ingestion.",
+        "terms_review",
+    ),
+    tactical_candidate_series(
+        "sloos_lending_standards",
+        "SLOOS Lending Standards",
+        "credit",
+        "Federal Reserve",
+        SLOOS_SOURCE_URL,
+        "quarterly",
+        "net_percent",
+        120,
+        "Candidate lending-standards input; requires transformation, attribution, and static redistribution review before ingestion.",
+        "terms_review",
+        higher_is="riskier",
+    ),
+    tactical_candidate_series(
+        "term_premium_acm_10y",
+        "10-Year ACM Term Premium",
+        "rates",
+        "New York Fed",
+        NY_FED_ACM_SOURCE_URL,
+        "daily",
+        "percent",
+        14,
+        "Candidate term-premium input; requires model attribution and static redistribution review before ingestion.",
+        "terms_review",
+        higher_is="riskier",
+    ),
+    tactical_candidate_series(
+        "treasury_net_issuance",
+        "Treasury Net Issuance",
+        "rates",
+        "U.S. Treasury",
+        TREASURY_SUPPLY_SOURCE_URL,
+        "monthly",
+        "millions_usd",
+        45,
+        "Candidate Treasury supply input; requires endpoint selection, calculation method, and redistribution review before ingestion.",
+        "terms_review",
+        higher_is="riskier",
+    ),
+    tactical_candidate_series(
+        "treasury_auction_tail",
+        "Treasury Auction Tail",
+        "rates",
+        "U.S. Treasury",
+        TREASURY_SUPPLY_SOURCE_URL,
+        "weekly",
+        "basis_points",
+        14,
+        "Candidate auction stress input; requires auction-level calculation rules and redistribution review before ingestion.",
+        "terms_review",
+        higher_is="riskier",
+    ),
+    tactical_candidate_series(
+        "treasury_bid_to_cover",
+        "Treasury Auction Bid-to-Cover",
+        "rates",
+        "U.S. Treasury",
+        TREASURY_SUPPLY_SOURCE_URL,
+        "weekly",
+        "ratio",
+        14,
+        "Candidate auction demand input; requires auction-level calculation rules and redistribution review before ingestion.",
+        "terms_review",
+        higher_is="supportive",
+    ),
+    tactical_candidate_series(
+        "cape_ratio",
+        "CAPE Ratio",
+        "sentiment",
+        "Valuation Provider",
+        VALUATION_SOURCE_URL,
+        "monthly",
+        "ratio",
+        45,
+        "Candidate valuation input; requires source choice, methodology, and redistribution review before ingestion.",
+        "terms_review",
+        higher_is="riskier",
+    ),
+    tactical_candidate_series(
+        "forward_pe",
+        "Forward P/E",
+        "sentiment",
+        "Valuation Provider",
+        VALUATION_SOURCE_URL,
+        "monthly",
+        "ratio",
+        45,
+        "Candidate forward valuation input; requires provider access and redistribution review before ingestion.",
+        "terms_review",
+        higher_is="riskier",
+    ),
+    tactical_candidate_series(
+        "equity_risk_premium",
+        "Equity Risk Premium",
+        "sentiment",
+        "Valuation Provider",
+        VALUATION_SOURCE_URL,
+        "monthly",
+        "percent",
+        45,
+        "Candidate equity risk premium input; requires calculation method, source selection, and redistribution review before ingestion.",
+        "terms_review",
+        higher_is="supportive",
+    ),
+    tactical_candidate_series(
+        "earnings_revision_breadth",
+        "Earnings Revision Breadth",
+        "sentiment",
+        "Earnings Data Provider",
+        EARNINGS_REVISIONS_SOURCE_URL,
+        "weekly",
+        "percent",
+        14,
+        "Candidate earnings revisions input; requires provider terms and redistribution review before ingestion.",
+        "terms_review",
+        higher_is="supportive",
+    ),
+]
+
+
 CANDIDATE_SERIES = [
     {
         "id": "ism_manufacturing_pmi",
@@ -1038,6 +1218,7 @@ CANDIDATE_SERIES = [
     *PUT_CALL_CANDIDATE_SERIES,
     *VIX_FUTURES_CANDIDATE_SERIES,
     *EVENT_RISK_CANDIDATE_SERIES,
+    *STRATEGIC_SOURCE_GATE_SERIES,
     {
         "id": "real_disposable_personal_income",
         "name": "Real Disposable Personal Income",
@@ -1096,21 +1277,6 @@ CANDIDATE_SERIES = [
         "public": False,
         "max_stale_days": 45,
         "notes": "Candidate revolving-credit input; source treatment and scoring design deferred.",
-        **governance("terms_review", score_status="candidate"),
-    },
-    {
-        "id": "household_debt_service_ratio",
-        "name": "Household Debt Service Ratio",
-        "category": "credit",
-        "source": "FRED",
-        "source_url": "https://fred.stlouisfed.org/series/DSR",
-        "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSR",
-        "frequency": "quarterly",
-        "units": "percent",
-        "higher_is": "riskier",
-        "public": False,
-        "max_stale_days": 75,
-        "notes": "Candidate household balance-sheet stress input; source treatment and scoring design deferred.",
         **governance("terms_review", score_status="candidate"),
     },
     {
