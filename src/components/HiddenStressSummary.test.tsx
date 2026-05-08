@@ -114,4 +114,84 @@ describe("HiddenStressSummary", () => {
     expect(container.textContent).not.toContain("Duplicate SKEW source-gap message.");
     expect(container.textContent).toContain("MOVE Index");
   });
+
+  it("guards malformed rows and dedupes valid active, gated, and warning rows", () => {
+    const malformedSnapshot = {
+      ...shockSnapshot,
+      active_signals: [
+        null,
+        {
+          id: "valid_active",
+          label: "Valid active stress",
+          message: "First active signal message."
+        },
+        {
+          id: "valid_active",
+          label: "Duplicate active stress",
+          message: "Duplicate active signal message."
+        },
+        { id: "blank_active", label: "", message: "Blank label active message." }
+      ],
+      mismatch_warnings: [
+        undefined,
+        {
+          id: "valid_warning",
+          label: "Valid warning",
+          message: "Liquidity warning message."
+        },
+        {
+          id: "valid_warning",
+          label: "Duplicate warning",
+          message: "Duplicate warning message."
+        },
+        { id: "missing_message", label: "Missing message" }
+      ],
+      source_gaps: [
+        null,
+        {
+          id: "valid_gap",
+          label: "Valid gated stress",
+          message: "First gated stress message.",
+          status: "restricted"
+        },
+        {
+          id: "valid_gap",
+          label: "Duplicate gated stress",
+          message: "Duplicate gated stress message.",
+          status: "unavailable"
+        },
+        {
+          id: "invalid_status_gap",
+          label: "Invalid status gated stress",
+          message: "Invalid status gated stress message.",
+          status: "unknown"
+        },
+        { id: "missing_label", message: "Missing label gated stress message.", status: "restricted" }
+      ]
+    } as unknown as ShockRiskSnapshotFile;
+
+    const container = render(<HiddenStressSummary shockSnapshot={malformedSnapshot} />);
+
+    expect(container.textContent).toContain("Valid active stress");
+    expect(container.textContent).toContain("First active signal message.");
+    expect(container.textContent).not.toContain("Duplicate active stress");
+    expect(container.textContent).not.toContain("Duplicate active signal message.");
+    expect(container.textContent).not.toContain("Blank label active message.");
+
+    expect(container.textContent).toContain("Valid gated stress");
+    expect(container.textContent).toContain("First gated stress message.");
+    expect(container.textContent).not.toContain("Duplicate gated stress");
+    expect(container.textContent).not.toContain("Duplicate gated stress message.");
+    expect(container.textContent).not.toContain("Invalid status gated stress");
+    expect(container.textContent).not.toContain("Invalid status gated stress message.");
+    expect(container.textContent).not.toContain("Missing label gated stress message.");
+    expect(container.textContent).toContain("MOVE Index");
+    expect(container.textContent).toContain("VIX futures curve");
+
+    expect(container.textContent).toContain("Valid warning");
+    expect(container.textContent).toContain("Liquidity warning message.");
+    expect(container.textContent).not.toContain("Duplicate warning");
+    expect(container.textContent).not.toContain("Duplicate warning message.");
+    expect(container.textContent).not.toContain("Missing message");
+  });
 });
