@@ -24,7 +24,23 @@ function formatConfirmationStatus(value: string) {
   return value === "terms_review_needed" ? "Terms review needed" : formatStateLabel(value);
 }
 
-function statusClassName(item: ConfirmationItem & { candidateOnly?: boolean }) {
+type DisplayConfirmationItem = ConfirmationItem & { candidateOnly?: boolean };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function isConfirmationItem(value: unknown): value is ConfirmationItem {
+  return (
+    isRecord(value) &&
+    typeof value.id === "string" &&
+    typeof value.label === "string" &&
+    typeof value.message === "string" &&
+    typeof value.status === "string"
+  );
+}
+
+function statusClassName(item: DisplayConfirmationItem) {
   return item.candidateOnly ? `status-${normalizeConfirmationKey(item.status)}` : "status-partial";
 }
 
@@ -35,15 +51,16 @@ export default function CrossAssetConfirmationMatrix({
   candidateItems?: CandidateConfirmationItem[];
   items: RegimeSnapshotFile["confirmations"];
 }) {
-  const activeIds = new Set(items.map((item) => normalizeConfirmationKey(item.id)));
-  const activeLabels = new Set(items.map((item) => normalizeConfirmationKey(item.label)));
-  const dedupedCandidates = candidateItems.filter((item) => {
+  const activeItems = items.filter(isConfirmationItem);
+  const activeIds = new Set(activeItems.map((item) => normalizeConfirmationKey(item.id)));
+  const activeLabels = new Set(activeItems.map((item) => normalizeConfirmationKey(item.label)));
+  const dedupedCandidates = candidateItems.filter(isConfirmationItem).filter((item) => {
     const id = normalizeConfirmationKey(item.id);
     const label = normalizeConfirmationKey(item.label);
     return !activeIds.has(id) && !activeLabels.has(label);
   });
-  const displayItems: Array<ConfirmationItem & { candidateOnly?: boolean }> = [
-    ...items,
+  const displayItems: DisplayConfirmationItem[] = [
+    ...activeItems,
     ...dedupedCandidates.map((item) => ({ ...item, candidateOnly: true }))
   ];
 
@@ -68,7 +85,7 @@ export default function CrossAssetConfirmationMatrix({
           <p className="eyebrow">Cross asset</p>
           <h3>Confirmation matrix</h3>
         </div>
-        <p>{items.length} markets</p>
+        <p>{activeItems.length} markets</p>
       </div>
       <div className="confirmation-matrix">
         {displayItems.map((item) => (

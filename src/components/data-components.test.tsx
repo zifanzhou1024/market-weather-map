@@ -1086,6 +1086,57 @@ describe("data-driven components", () => {
     expect(container.textContent).not.toContain("Duplicate by label.");
   });
 
+  it("ignores malformed active confirmation rows before deduplicating candidates", () => {
+    const malformedItems = [
+      {
+        id: "credit",
+        label: "Credit",
+        message: "Credit confirms the current regime.",
+        status: "confirming"
+      },
+      {
+        id: null,
+        label: "Malformed active",
+        message: "This malformed active row should not render.",
+        status: "confirming"
+      },
+      {
+        id: "bad_label",
+        label: 42,
+        message: "This malformed label should not render.",
+        status: "diverging"
+      }
+    ] as unknown as RegimeSnapshotFile["confirmations"];
+
+    const container = render(
+      <CrossAssetConfirmationMatrix
+        items={malformedItems}
+        candidateItems={[
+          {
+            id: "Credit",
+            label: "Credit candidate",
+            message: "Duplicate by valid active id.",
+            status: "terms_review_needed"
+          },
+          {
+            id: "move_index",
+            label: "MOVE",
+            message: "Candidate-only row remains visible.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const rows = Array.from(container.querySelectorAll(".confirmation-matrix__item"));
+
+    expect(rows).toHaveLength(2);
+    expect(rows[0]?.textContent).toContain("Credit");
+    expect(rows[1]?.textContent).toContain("MOVE");
+    expect(container.textContent).not.toContain("Malformed active");
+    expect(container.textContent).not.toContain("malformed label");
+    expect(container.textContent).not.toContain("Credit candidate");
+  });
+
   it("renders regime quadrant labels as DOM text", () => {
     const container = render(
       <RegimeQuadrantChart
