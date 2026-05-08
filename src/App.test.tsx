@@ -47,16 +47,21 @@ describe("App routing", () => {
   it("primary navigation exposes commodities, positioning, and decision views", () => {
     const container = renderAt("/methodology");
 
+    expect(container.textContent).toContain("Primary Views");
+    expect(container.textContent).toContain("Data Library");
+    expect(container.textContent).toContain("Reference");
     expect(container.querySelector('a[href="/commodities"]')?.textContent).toBe("Commodities");
     expect(container.querySelector('a[href="/sentiment"]')?.textContent).toBe("Positioning");
-    expect(container.querySelector('a[href="/tactical"]')?.textContent).toBe("Tactical");
-    expect(container.querySelector('a[href="/tactical"]')?.getAttribute("aria-label")).toBe(
-      "Tactical Trading Weather"
+    expect(container.querySelector('a[href="/short-term"]')?.textContent).toBe("Short-Term");
+    expect(container.querySelector('a[href="/short-term"]')?.getAttribute("aria-label")).toBe(
+      "Short-Term Market Reaction"
     );
-    expect(container.querySelector('a[href="/macro-climate"]')?.textContent).toBe("Macro Climate");
-    expect(container.querySelector('a[href="/macro-climate"]')?.getAttribute("aria-label")).toBe(
-      "Long-Term Macro Climate"
+    expect(container.querySelector('a[href="/long-term"]')?.textContent).toBe("Long-Term");
+    expect(container.querySelector('a[href="/long-term"]')?.getAttribute("aria-label")).toBe(
+      "Long-Term Macro / Allocation Climate"
     );
+    expect(container.querySelector('a[href="/tactical"]')).toBeNull();
+    expect(container.querySelector('a[href="/macro-climate"]')).toBeNull();
     expect(container.querySelector('a[href="/regime-map"]')?.textContent).toBe("Regime Map");
     expect(container.querySelector('a[href="/replay"]')?.textContent).toBe("Replay");
     expect(container.querySelector('a[href="/replay"]')?.getAttribute("aria-label")).toBe(
