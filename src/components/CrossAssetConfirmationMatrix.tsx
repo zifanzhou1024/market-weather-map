@@ -7,12 +7,43 @@ function removeAdviceTerms(value: string) {
   return value.replace(adviceTerms, "signal");
 }
 
+type ConfirmationItem = RegimeSnapshotFile["confirmations"][number];
+
+interface CandidateConfirmationItem {
+  id: string;
+  label: string;
+  message: string;
+  status: string;
+}
+
+function normalizeConfirmationKey(value: string) {
+  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+}
+
+function formatConfirmationStatus(value: string) {
+  return value === "terms_review_needed" ? "Terms review needed" : formatStateLabel(value);
+}
+
 export default function CrossAssetConfirmationMatrix({
+  candidateItems = [],
   items
 }: {
+  candidateItems?: CandidateConfirmationItem[];
   items: RegimeSnapshotFile["confirmations"];
 }) {
-  if (!items.length) {
+  const activeIds = new Set(items.map((item) => normalizeConfirmationKey(item.id)));
+  const activeLabels = new Set(items.map((item) => normalizeConfirmationKey(item.label)));
+  const dedupedCandidates = candidateItems.filter((item) => {
+    const id = normalizeConfirmationKey(item.id);
+    const label = normalizeConfirmationKey(item.label);
+    return !activeIds.has(id) && !activeLabels.has(label);
+  });
+  const displayItems: Array<ConfirmationItem & { candidateOnly?: boolean }> = [
+    ...items,
+    ...dedupedCandidates.map((item) => ({ ...item, candidateOnly: true }))
+  ];
+
+  if (!displayItems.length) {
     return (
       <section className="panel">
         <div className="section-header">
@@ -36,13 +67,16 @@ export default function CrossAssetConfirmationMatrix({
         <p>{items.length} markets</p>
       </div>
       <div className="confirmation-matrix">
-        {items.map((item) => (
-          <article className="confirmation-matrix__item" key={item.id}>
+        {displayItems.map((item) => (
+          <article
+            className={`confirmation-matrix__item${item.candidateOnly ? " candidate-only" : ""}`}
+            key={item.id}
+          >
             <div>
               <h4>{item.label}</h4>
               <p>{removeAdviceTerms(item.message)}</p>
             </div>
-            <span className="status-pill status-partial">{formatStateLabel(item.status)}</span>
+            <span className="status-pill status-partial">{formatConfirmationStatus(item.status)}</span>
           </article>
         ))}
       </div>

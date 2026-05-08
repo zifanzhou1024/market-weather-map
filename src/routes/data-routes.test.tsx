@@ -2106,13 +2106,13 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("PMIs");
     expect(container.textContent).toContain("SLOOS");
     expect(container.textContent).toContain("term premium");
-    expect(container.textContent).toContain("Treasury supply");
+    expect(container.textContent).toContain("Treasury net issuance");
     expect(container.textContent).toContain("valuation");
     expect(container.textContent).toContain("earnings revisions");
     const strategicRows = Array.from(container.querySelectorAll(".candidate-source-row"));
-    expect(strategicRows).toHaveLength(6);
+    expect(strategicRows).toHaveLength(11);
     expect(strategicRows.every((row) => row.getAttribute("role") === "listitem")).toBe(true);
-    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(6);
+    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(11);
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
     expect(container.textContent).toContain("Consumer and production");
@@ -2190,6 +2190,9 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(container.textContent).toContain("Yield driver");
     expect(container.textContent).toContain("Cross-asset confirmation");
+    expect(container.textContent).toContain("Gold / XAU");
+    expect(container.textContent).toContain("MOVE");
+    expect(container.textContent).toContain("Terms review needed");
   });
 
   it("renders regime interpretation and conflict context", async () => {

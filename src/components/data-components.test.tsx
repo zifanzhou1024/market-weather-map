@@ -1006,6 +1006,85 @@ describe("data-driven components", () => {
     expect(text.toLowerCase()).not.toMatch(/\b(buy|sell|short|long|entry|target|stop)\b/);
   });
 
+  it("renders candidate-only cross-asset rows after active confirmations", () => {
+    const container = render(
+      <CrossAssetConfirmationMatrix
+        items={[
+          {
+            id: "credit",
+            label: "Credit",
+            message: "Credit confirms the current regime.",
+            status: "confirming"
+          }
+        ]}
+        candidateItems={[
+          {
+            id: "move_index",
+            label: "MOVE",
+            message: "Bond-volatility confirmation remains source-gated.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const rows = Array.from(container.querySelectorAll(".confirmation-matrix__item"));
+    const text = container.textContent ?? "";
+
+    expect(rows).toHaveLength(2);
+    expect(rows[0]?.textContent).toContain("Credit");
+    expect(rows[1]?.textContent).toContain("MOVE");
+    expect(rows[1]?.classList.contains("candidate-only")).toBe(true);
+    expect(text.indexOf("Credit")).toBeLessThan(text.indexOf("MOVE"));
+    expect(text).toContain("Terms review needed");
+  });
+
+  it("deduplicates candidate-only cross-asset rows against active rows by normalized id or label", () => {
+    const container = render(
+      <CrossAssetConfirmationMatrix
+        items={[
+          {
+            id: "credit",
+            label: "Credit",
+            message: "Credit confirms the current regime.",
+            status: "confirming"
+          },
+          {
+            id: "liquidity",
+            label: "Liquidity",
+            message: "Liquidity confirms the current regime.",
+            status: "confirming"
+          }
+        ]}
+        candidateItems={[
+          {
+            id: "Credit",
+            label: "Credit candidate",
+            message: "Duplicate by id.",
+            status: "terms_review_needed"
+          },
+          {
+            id: "liquidity_candidate",
+            label: "liquidity",
+            message: "Duplicate by label.",
+            status: "terms_review_needed"
+          },
+          {
+            id: "move_index",
+            label: "MOVE",
+            message: "Bond-volatility confirmation remains source-gated.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const rows = Array.from(container.querySelectorAll(".confirmation-matrix__item"));
+
+    expect(rows).toHaveLength(3);
+    expect(container.textContent).toContain("MOVE");
+    expect(container.textContent).not.toContain("Credit candidate");
+    expect(container.textContent).not.toContain("Duplicate by label.");
+  });
+
   it("renders regime quadrant labels as DOM text", () => {
     const container = render(
       <RegimeQuadrantChart
