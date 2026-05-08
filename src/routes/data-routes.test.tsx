@@ -1997,6 +1997,22 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Mismatch warnings");
   });
 
+  it("renders fragility active and candidate stress channel read", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/fragility"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Current Shock-Risk Read");
+    expect(container.textContent).toContain("Active stress channels");
+    expect(container.textContent).toContain("Candidate stress channels");
+    expect(container.textContent).toContain("MOVE");
+    expect(container.textContent).toContain("SKEW");
+  });
+
   it("renders fragility route empty states with malformed snapshot arrays", async () => {
     mockStaticFetch(routeFetchFiles({
       "/data/derived/shock_risk_snapshot.json": malformedShockRiskSnapshot
@@ -2116,6 +2132,21 @@ describe("data-backed routes", () => {
     await waitForContent(container, "TIPS x Dollar Regime Map");
     expect(container.textContent).toContain("Yield driver");
     expect(container.textContent).toContain("Cross-asset confirmation");
+  });
+
+  it("renders regime interpretation and conflict context", async () => {
+    mockStaticFetch(routeFetchFiles({ "/data/derived/regime_snapshot.json": regimeSnapshot }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/regime-map"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "TIPS x Dollar Regime Map");
+    expect(container.textContent).toContain("What confirms it");
+    expect(container.textContent).toContain("What conflicts with it");
+    expect(container.textContent).toContain("What weakens confidence");
   });
 
   it("renders the historical regime replay route with attribution", async () => {

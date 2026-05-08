@@ -5,6 +5,7 @@ import InterpretationPanel from "../components/InterpretationPanel";
 import MismatchWarningPanel from "../components/MismatchWarningPanel";
 import ScoreCard from "../components/ScoreCard";
 import ShockRiskDashboard from "../components/ShockRiskDashboard";
+import ShockRiskReadHeader from "../components/ShockRiskReadHeader";
 import TailRiskPanel from "../components/TailRiskPanel";
 import {
   loadCatalog,
@@ -85,6 +86,12 @@ export default function FragilityShockRisk() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <ShockRiskReadHeader
+            catalog={data.catalog}
+            scoreSummary={data.scoreSummary}
+            shockSnapshot={data.shockSnapshot}
+            status={data.status}
+          />
           <InterpretationPanel
             caveats={data.scoreSummary.scores.fragility.missing_or_stale_notes}
             label={data.snapshot.regime.label}
