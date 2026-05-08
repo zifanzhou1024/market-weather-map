@@ -1193,6 +1193,13 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
     await waitForContent(shortTerm, "Short-Term Market Reaction");
+    expect(shortTerm.textContent).toContain("Current Tactical Read");
+    expect(shortTerm.textContent).toContain("Volatility term-structure");
+    expect(shortTerm.textContent).toContain("Credit pulse");
+    expect(shortTerm.textContent).toContain("Dollar + real-yield pressure");
+    expect(shortTerm.textContent).toContain("Liquidity pulse");
+    expect(shortTerm.textContent).toContain("Options sentiment");
+    expect(shortTerm.textContent).toContain("Event risk");
 
     unmountRendered(shortTerm);
 
@@ -1943,14 +1950,12 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("CPI release calendar");
     expect(container.textContent).toContain("CPI calendar source remains under review.");
 
-    const scoreCards = Array.from(container.querySelectorAll(".score-card"));
-    const marketWeatherCard = scoreCards.find((card) => card.textContent?.includes("Market Weather"));
-    const fragilityCard = scoreCards.find((card) => card.textContent?.includes("Fragility"));
-
-    expect(marketWeatherCard?.textContent).toContain("Mixed");
-    expect(marketWeatherCard?.textContent).toContain("19.17");
-    expect(fragilityCard?.textContent).toContain("Moderate");
-    expect(fragilityCard?.textContent).toContain("-4.10");
+    expect(container.textContent).toContain("Market weather");
+    expect(container.textContent).toContain("Mixed");
+    expect(container.textContent).toContain("19.17");
+    expect(container.textContent).toContain("Fragility");
+    expect(container.textContent).toContain("Moderate");
+    expect(container.textContent).toContain("-4.10");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/put_call_spxw.json");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
   });
@@ -1970,23 +1975,6 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("MOVE");
     expect(container.textContent).toContain("SKEW");
     expect(container.textContent).toContain("Mismatch warnings");
-  });
-
-  it("renders tactical shock-risk overlay fallback counts with malformed snapshot arrays", async () => {
-    mockStaticFetch(routeFetchFiles({
-      "/data/derived/shock_risk_snapshot.json": malformedShockRiskSnapshot
-    }));
-
-    const container = render(
-      <MemoryRouter initialEntries={["/tactical"]}>
-        <App />
-      </MemoryRouter>
-    );
-
-    await waitForContent(container, "Short-Term Market Reaction");
-    await waitForContent(container, "Fragility overlay");
-    expect(container.textContent).toContain("0 gated or unavailable source rows.");
-    expect(container.textContent).toContain("0 mismatch warning rows.");
   });
 
   it("renders fragility route empty states with malformed snapshot arrays", async () => {
