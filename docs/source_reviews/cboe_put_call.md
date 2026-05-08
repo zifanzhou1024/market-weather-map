@@ -17,4 +17,4 @@ Display source-gated options sentiment rows for SPX, SPXW, index, equity, VIX, E
 
 ## Decision
 
-Keep Cboe put/call rows candidate-only. They may appear in readiness/source-gap UI but must not affect active scores, regime labels, checklist states, or confidence.
+Keep Cboe put/call rows candidate-only until review is complete. The source cannot be scored until review is complete. Rows may appear in readiness/source-gap UI but must not affect active scores, regime labels, checklist states, or confidence.
