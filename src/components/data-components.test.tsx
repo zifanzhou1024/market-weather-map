@@ -28,6 +28,7 @@ import SignalChecklist from "./SignalChecklist";
 import SignalList from "./SignalList";
 import SourceNote from "./SourceNote";
 import SourceAccessBadge from "./SourceAccessBadge";
+import StrategicSourceGapsPanel from "./StrategicSourceGapsPanel";
 import TailRiskPanel from "./TailRiskPanel";
 import VixFuturesReadinessPanel from "./VixFuturesReadinessPanel";
 import YieldDecompositionChart from "./YieldDecompositionChart";
@@ -551,6 +552,13 @@ describe("data-driven components", () => {
     ];
 
     expect(text).toContain("Options sentiment");
+    expect(text).toContain("Useful short-term sentiment context");
+    expect(text).toContain("automated historical access");
+    expect(text).toContain("static JSON redistribution");
+    expect(text).toContain(
+      "cannot affect scores, regime labels, checklist states, or confidence"
+    );
+    expect(text).toContain("SPX/SPXW, index, equity, VIX, ETP, and total put/call");
     expect(text).toContain("Source review required");
     for (const label of orderedLabels) {
       expect(text).toContain(label);
@@ -562,16 +570,24 @@ describe("data-driven components", () => {
   });
 
   it("renders active options sentiment series before candidate-only fallback rows", () => {
+    const activeEquitySeries: TimeSeriesFile = {
+      ...activeOptionsSeries,
+      series_id: "put_call_equity",
+      summary: {
+        ...activeOptionsSeries.summary,
+        latest_value: 0.81
+      }
+    };
     const container = render(
-      <OptionsSentimentPanel activeSeries={[activeOptionsSeries]} items={candidateRows} />
+      <OptionsSentimentPanel activeSeries={[activeEquitySeries]} items={candidateRows} />
     );
     const text = container.textContent ?? "";
 
     expect(text).toContain("Options sentiment");
-    expect(text).toContain("SPX/SPXW put/call");
+    expect(text).toContain("Equity put/call");
     expect(text).toContain("Active data");
-    expect(text).toContain("Latest ratio 1.23 on 2026-05-01.");
-    expect(text.indexOf("SPX/SPXW put/call")).toBeLessThan(text.indexOf("SPX put/call"));
+    expect(text).toContain("Latest ratio 0.81 on 2026-05-01.");
+    expect(text.indexOf("Equity put/call")).toBeLessThan(text.indexOf("SPX/SPXW put/call"));
     expect(text).toContain("Source review required");
     expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
   });
@@ -596,6 +612,32 @@ describe("data-driven components", () => {
     expect(text).toContain("Source review required");
     expect(text).toContain("No active options sentiment candidate rows are configured.");
     expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
+  });
+
+  it("renders strategic source gaps with source-review governance copy", () => {
+    const container = render(<StrategicSourceGapsPanel />);
+    const text = container.textContent ?? "";
+    const labels = [
+      "PMIs",
+      "SLOOS",
+      "10Y term premium",
+      "Treasury net issuance",
+      "Auction tail",
+      "Bid-to-cover",
+      "CAPE",
+      "Forward P/E",
+      "Equity risk premium",
+      "Earnings revision breadth",
+      "Fiscal deficit / interest expense"
+    ];
+
+    expect(text).toContain("Strategic source gaps");
+    for (const label of labels) {
+      expect(text).toContain(label);
+    }
+    expect(text).toContain("cannot affect scores until source review promotes it");
+    expect(container.querySelectorAll(".candidate-source-row")).toHaveLength(labels.length);
+    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(labels.length);
   });
 
   it("renders event risk source-gated candidate rows", () => {
