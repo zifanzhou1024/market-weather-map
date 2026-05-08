@@ -20,6 +20,7 @@ function render(element: React.ReactNode) {
   });
 
   return {
+    container,
     getByText(text: string) {
       const match = Array.from(container.querySelectorAll("*")).find((element) => element.textContent === text);
       if (!match) throw new Error(`Unable to find text: ${text}`);
@@ -54,6 +55,25 @@ describe("horizon display components", () => {
 
     expect(container.getByText("Short-Term Market Reaction")).toBeTruthy();
     expect(container.getByText("3 source gaps or candidate rows visible.")).toBeTruthy();
+    expect(container.container.querySelector('a[aria-label="Open Short-Term Market Reaction view"]')).toBeTruthy();
+  });
+
+  it("renders singular source gap copy", () => {
+    const container = render(
+      <MemoryRouter>
+        <OverviewDecisionCard
+          horizon="1 day to 4 weeks"
+          label="Mixed"
+          risk="Credit widening"
+          sourceGapCount={1}
+          support="VIX contained"
+          title="Short-Term Market Reaction"
+          to="/short-term"
+        />
+      </MemoryRouter>
+    );
+
+    expect(container.getByText("1 source gap or candidate row visible.")).toBeTruthy();
   });
 
   it("renders horizon impact matrix rows", () => {

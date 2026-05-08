@@ -6,12 +6,16 @@ export interface Classification {
   ratio: number | null;
 }
 
-function finiteNumber(value: number | null | undefined): value is number {
+function finiteNumber(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
+function positiveNumber(value: unknown): value is number {
+  return finiteNumber(value) && value > 0;
+}
+
 export function classifyVixProxy(vix: number | null | undefined, vix3m: number | null | undefined): Classification {
-  if (!finiteNumber(vix) || !finiteNumber(vix3m) || vix3m === 0) {
+  if (!positiveNumber(vix) || !positiveNumber(vix3m)) {
     return { label: "Unavailable", tone: "unavailable", ratio: null };
   }
 
@@ -25,7 +29,7 @@ export function classifyNearTermEventVol(
   vix9d: number | null | undefined,
   vix: number | null | undefined
 ): Classification {
-  if (!finiteNumber(vix9d) || !finiteNumber(vix) || vix === 0) {
+  if (!positiveNumber(vix9d) || !positiveNumber(vix)) {
     return { label: "Unavailable", tone: "unavailable", ratio: null };
   }
 
@@ -35,13 +39,20 @@ export function classifyNearTermEventVol(
   return { label: "Balanced near-term vol", tone: "neutral", ratio };
 }
 
-export function firstText(items: string[] | undefined, fallback: string) {
-  const first = Array.isArray(items) ? items.map((item) => item.trim()).find((item) => item.length > 0) : undefined;
+export function firstText(items: unknown[] | undefined, fallback: string) {
+  const first = Array.isArray(items)
+    ? items
+        .filter((item): item is string => typeof item === "string")
+        .map((item) => item.trim())
+        .find((item) => item.length > 0)
+    : undefined;
   return first ?? fallback;
 }
 
-export function scoreLabel(score: Pick<ScoreBlock, "score" | "label">) {
-  return `${score.label} ${score.score.toFixed(1)}`;
+export function scoreLabel(score: Partial<Pick<ScoreBlock, "score" | "label">>) {
+  const label = typeof score.label === "string" && score.label.trim().length > 0 ? score.label : "Unknown";
+  const value = finiteNumber(score.score) ? score.score.toFixed(1) : "N/A";
+  return `${label} ${value}`;
 }
 
 export function countSourceGaps(rows: Array<{ status?: DataStatus | string }> | undefined) {

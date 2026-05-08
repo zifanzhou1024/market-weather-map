@@ -19,6 +19,9 @@ export default function OverviewDecisionCard({
   title,
   to
 }: OverviewDecisionCardProps) {
+  const sourceGapText =
+    sourceGapCount === 1 ? "1 source gap or candidate row visible." : `${sourceGapCount} source gaps or candidate rows visible.`;
+
   return (
     <article className="decision-card">
       <div>
@@ -28,8 +31,8 @@ export default function OverviewDecisionCard({
       </div>
       <p>Support: {support}</p>
       <p>Risk: {risk}</p>
-      <p>{sourceGapCount} source gaps or candidate rows visible.</p>
-      <Link className="decision-card__link" to={to}>
+      <p>{sourceGapText}</p>
+      <Link aria-label={`Open ${title} view`} className="decision-card__link" to={to}>
         Open view
       </Link>
     </article>
