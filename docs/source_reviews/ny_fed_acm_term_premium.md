@@ -17,4 +17,4 @@ Display source-gated strategic term-premium decomposition rows using the NY Fed 
 
 ## Decision
 
-Keep NY Fed ACM term premium rows candidate-only until review is complete. They may appear in readiness/source-gap UI but must not affect active scores, regime labels, checklist states, or confidence.
+Keep NY Fed ACM term premium rows candidate-only until review is complete. The source cannot be scored until review is complete. They may appear in readiness/source-gap UI but must not affect active scores, regime labels, checklist states, or confidence.

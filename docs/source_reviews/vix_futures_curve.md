@@ -17,4 +17,4 @@ Display source-gated true VX term structure rows after terms review.
 
 ## Decision
 
-Keep VIX futures curve rows candidate-only until review is complete. They may appear in readiness/source-gap UI but must not affect active scores, regime labels, checklist states, or confidence.
+Keep VIX futures curve rows candidate-only until review is complete. The source cannot be scored until review is complete. They may appear in readiness/source-gap UI but must not affect active scores, regime labels, checklist states, or confidence.

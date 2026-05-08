@@ -17,4 +17,4 @@ Display source-gated equity tail-risk confirmation rows using Cboe SKEW after te
 
 ## Decision
 
-Keep Cboe SKEW rows candidate-only until review is complete. They may appear in readiness/source-gap UI but must not affect active scores, regime labels, checklist states, or confidence.
+Keep Cboe SKEW rows candidate-only until review is complete. The source cannot be scored until review is complete. They may appear in readiness/source-gap UI but must not affect active scores, regime labels, checklist states, or confidence.

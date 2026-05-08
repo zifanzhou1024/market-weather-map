@@ -17,4 +17,4 @@ Display source-gated bond-volatility fragility rows using ICE MOVE after terms r
 
 ## Decision
 
-Keep ICE MOVE rows candidate-only until review is complete. They may appear in readiness/source-gap UI but must not affect active scores, regime labels, checklist states, or confidence.
+Keep ICE MOVE rows candidate-only until review is complete. The source cannot be scored until review is complete. They may appear in readiness/source-gap UI but must not affect active scores, regime labels, checklist states, or confidence.
