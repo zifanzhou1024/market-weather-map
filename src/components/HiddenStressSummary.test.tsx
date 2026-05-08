@@ -85,4 +85,33 @@ describe("HiddenStressSummary", () => {
 
     expect(container.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
   });
+
+  it("dedupes duplicate source-gap ids while preserving the first row", () => {
+    const container = render(
+      <HiddenStressSummary
+        shockSnapshot={{
+          ...shockSnapshot,
+          source_gaps: [
+            {
+              id: "skew_index",
+              label: "SKEW Index",
+              message: "First SKEW source-gap message.",
+              status: "terms_review_needed"
+            },
+            {
+              id: "skew_index",
+              label: "Duplicate SKEW Index",
+              message: "Duplicate SKEW source-gap message.",
+              status: "unavailable"
+            }
+          ]
+        }}
+      />
+    );
+
+    expect(container.textContent).toContain("First SKEW source-gap message.");
+    expect(container.textContent).not.toContain("Duplicate SKEW Index");
+    expect(container.textContent).not.toContain("Duplicate SKEW source-gap message.");
+    expect(container.textContent).toContain("MOVE Index");
+  });
 });

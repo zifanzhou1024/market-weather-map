@@ -44,13 +44,19 @@ function safeArray<T>(value: unknown): T[] {
 }
 
 function gatedRows(sourceGaps: ShockRiskSourceGap[]) {
-  const rows = sourceGaps.map((gap) => ({
-    id: gap.id,
-    label: gap.label,
-    message: gap.message,
-    status: gap.status
-  }));
-  const seenIds = new Set(rows.map((row) => row.id));
+  const rows: GatedStressRow[] = [];
+  const seenIds = new Set<string>();
+
+  for (const gap of sourceGaps) {
+    if (seenIds.has(gap.id)) continue;
+    rows.push({
+      id: gap.id,
+      label: gap.label,
+      message: gap.message,
+      status: gap.status
+    });
+    seenIds.add(gap.id);
+  }
 
   for (const row of defaultGatedRows) {
     if (!seenIds.has(row.id)) {
