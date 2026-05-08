@@ -27,6 +27,7 @@ describe("horizon helpers", () => {
 
   it("summarizes text and source gaps defensively", () => {
     expect(firstText(["A", "B"], "Fallback")).toBe("A");
+    expect(firstText(["   ", "  Trimmed value  "], "Fallback")).toBe("Trimmed value");
     expect(firstText([], "Fallback")).toBe("Fallback");
     expect(scoreLabel({ score: 12.3, label: "Mixed" })).toBe("Mixed 12.3");
     expect(countSourceGaps([{ status: "terms_review_needed" }, { status: "ok" }])).toBe(1);

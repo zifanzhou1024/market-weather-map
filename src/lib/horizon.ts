@@ -36,7 +36,7 @@ export function classifyNearTermEventVol(
 }
 
 export function firstText(items: string[] | undefined, fallback: string) {
-  const first = Array.isArray(items) ? items.find((item) => item.trim().length > 0) : undefined;
+  const first = Array.isArray(items) ? items.map((item) => item.trim()).find((item) => item.length > 0) : undefined;
   return first ?? fallback;
 }
 
