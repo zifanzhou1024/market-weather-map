@@ -2037,6 +2037,10 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Treasury supply");
     expect(container.textContent).toContain("valuation");
     expect(container.textContent).toContain("earnings revisions");
+    const strategicRows = Array.from(container.querySelectorAll(".candidate-source-row"));
+    expect(strategicRows).toHaveLength(6);
+    expect(strategicRows.every((row) => row.getAttribute("role") === "listitem")).toBe(true);
+    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(6);
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
     expect(container.textContent).toContain("Consumer and production");
@@ -2045,6 +2049,55 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Credit cycle");
     expect(container.textContent).toContain("Liquidity cycle");
     expect(container.textContent).not.toContain("Not scored");
+  });
+
+  it("renders long-term read when strategic bucket scores are missing", async () => {
+    const scoreSummaryWithoutStrategicBuckets: ScoreSummaryFile = {
+      ...scoreSummary,
+      scores: {
+        ...scoreSummary.scores,
+        macro_climate: {
+          ...scoreSummary.scores.macro_climate,
+          bucket_scores: {
+            consumer_balance_sheet: -2,
+            consumer_production: 5,
+            growth: 6,
+            housing: 4,
+            inflation: -3,
+            labor: 2
+          },
+          bucket_weights: {
+            consumer_balance_sheet: 0.1,
+            consumer_production: 0.16,
+            growth: 0.18,
+            housing: 0.12,
+            inflation: 0.16,
+            labor: 0.18
+          }
+        }
+      }
+    };
+
+    mockStaticFetch(
+      routeFetchFiles({
+        "/data/derived/regime_snapshot.json": regimeSnapshot,
+        "/data/derived/score_summary.json": scoreSummaryWithoutStrategicBuckets
+      })
+    );
+
+    const container = render(
+      <MemoryRouter initialEntries={["/long-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Long-Term Macro / Allocation Climate");
+    expect(container.querySelector(".data-error")).toBeNull();
+    expect(container.textContent).toContain("Current Long-Term Read");
+
+    const factCards = Array.from(container.querySelectorAll(".horizon-header__facts .metric-card"));
+    const realYieldsFact = factCards.find((card) => card.textContent?.includes("Real yields"));
+    expect(realYieldsFact?.textContent).toContain("N/A");
   });
 
   it("renders the regime map route", async () => {
