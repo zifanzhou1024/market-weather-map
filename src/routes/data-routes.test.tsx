@@ -1960,6 +1960,26 @@ describe("data-backed routes", () => {
     expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
   });
 
+  it("renders short-term credit pulse unavailable state when HY minus IG OAS is missing", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/hy_minus_ig_oas.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/short-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Credit pulse");
+
+    const creditPanel = Array.from(container.querySelectorAll("section.panel")).find((panel) =>
+      panel.textContent?.includes("Credit pulse")
+    );
+    expect(creditPanel?.textContent).toContain("HY minus IG OAS");
+    expect(creditPanel?.textContent).toContain("Unavailable");
+  });
+
   it("renders fragility shock risk route", async () => {
     mockStaticFetch(routeFetchFiles({
       "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot
