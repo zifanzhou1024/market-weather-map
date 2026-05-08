@@ -952,8 +952,8 @@ const scoreSummary: ScoreSummaryFile = {
     freshness_confidence: 0.7,
     model_confidence: 0.75,
     source_confidence: 0.68,
-    overall_confidence: 0.73,
-    reasons: ["Sentiment coverage is limited to public CFTC positioning."]
+    overall_confidence: 0.92,
+    reasons: ["Treasury/bond volatility source is not active."]
   }
 };
 
@@ -1174,6 +1174,80 @@ const malformedShockRiskSnapshot = {
   mismatch_warnings: { id: "not-array" }
 } as unknown as ShockRiskSnapshotFile;
 
+const malformedShockRiskRowSnapshot = {
+  ...shockRiskSnapshot,
+  active_signals: [
+    null,
+    {
+      change: "not-a-number",
+      id: "valid_active",
+      label: "Valid active stress",
+      message: "First active signal message.",
+      score: undefined,
+      value: Number.NaN
+    },
+    {
+      change: 2.1,
+      id: "valid_active",
+      label: "Duplicate active stress",
+      message: "Duplicate active signal message.",
+      score: -1,
+      value: 20
+    },
+    {
+      change: 1.2,
+      id: "missing_message",
+      label: "Missing active message",
+      score: -2,
+      value: 21
+    }
+  ],
+  mismatch_warnings: [
+    null,
+    {
+      id: "valid_warning",
+      label: "Valid warning",
+      message: "First warning message."
+    },
+    {
+      id: "valid_warning",
+      label: "Duplicate warning",
+      message: "Duplicate warning message."
+    },
+    {
+      id: "missing_warning_message",
+      label: "Missing warning message"
+    }
+  ],
+  source_gaps: [
+    null,
+    {
+      id: "valid_partial_gap",
+      label: "Valid partial gated stress",
+      message: "Partial source gap should remain visible.",
+      status: "partial"
+    },
+    {
+      id: "valid_partial_gap",
+      label: "Duplicate partial gated stress",
+      message: "Duplicate partial source gap message.",
+      status: "unavailable"
+    },
+    {
+      id: "restricted_gap",
+      label: "Restricted gated stress",
+      message: "Restricted source gap should be dropped.",
+      status: "restricted"
+    },
+    {
+      id: "release_window_gap",
+      label: "Release-window gated stress",
+      message: "Release-window source gap should be dropped.",
+      status: "release_window_ok"
+    }
+  ]
+} as unknown as ShockRiskSnapshotFile;
+
 afterEach(() => {
   if (root) {
     act(() => root?.unmount());
@@ -1193,6 +1267,8 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
     await waitForContent(shortTerm, "Short-Term Market Reaction");
+    expect(shortTerm.textContent).toContain("High data quality");
+    expect(shortTerm.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(shortTerm.textContent).toContain("Current Tactical Read");
     expect(shortTerm.textContent).toContain("Volatility term-structure");
     expect(shortTerm.textContent).toContain("Credit pulse");
@@ -1209,6 +1285,8 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
     await waitForContent(longTerm, "Long-Term Macro / Allocation Climate");
+    expect(longTerm.textContent).toContain("High data quality");
+    expect(longTerm.textContent).toContain("Treasury/bond volatility source is not active.");
   });
 
   it("keeps tactical and macro-climate deep links compatible", async () => {
@@ -1258,6 +1336,54 @@ describe("data-backed routes", () => {
     expect(text).toContain("Long-Term");
   });
 
+  it("routes every grouped navigation link to its page heading", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Overview");
+
+    const navExpectations = [
+      { label: "Overview", heading: "Overview" },
+      { label: "Short-Term", heading: "Short-Term Market Reaction" },
+      { label: "Long-Term", heading: "Long-Term Macro / Allocation Climate" },
+      { label: "Fragility", heading: "Fragility / Shock Risk" },
+      { label: "Regime Map", heading: "TIPS x Dollar Regime Map" },
+      { label: "Replay", heading: "Historical Regime Replay" },
+      { label: "Volatility", heading: "VIX state" },
+      { label: "Rates", heading: "Rates & Policy" },
+      { label: "Liquidity", heading: "Funding and balance sheet" },
+      { label: "Credit", heading: "Credit & Banking" },
+      { label: "Dollar", heading: "Dollar & Global" },
+      { label: "Commodities", heading: "Energy and grains" },
+      { label: "Growth", heading: "Growth" },
+      { label: "Housing", heading: "Housing" },
+      { label: "Inflation", heading: "Inflation" },
+      { label: "Positioning", heading: "Sentiment & Positioning" },
+      { label: "Calendar", heading: "Macro Calendar" },
+      { label: "Methodology", heading: "How the map works" }
+    ];
+
+    for (const expectation of navExpectations) {
+      const link = Array.from(container.querySelectorAll("nav a")).find(
+        (anchor) => anchor.textContent === expectation.label
+      );
+      expect(link, `Missing nav link ${expectation.label}`).toBeTruthy();
+
+      await act(async () => {
+        link?.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      await waitForContent(container, expectation.heading);
+      expect(container.querySelector("h2")?.textContent).toBe(expectation.heading);
+    }
+  });
+
   it("renders overview as a horizon decision hub", async () => {
     mockStaticFetch(routeFetchFiles());
 
@@ -1299,6 +1425,8 @@ describe("data-backed routes", () => {
 
     await waitForContent(container, "Macro Climate");
 
+    expect(container.textContent).toContain("High data quality");
+    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Fragility");
     expect(container.textContent).toContain("Data confidence");
@@ -1992,6 +2120,11 @@ describe("data-backed routes", () => {
     );
 
     await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("High data quality");
+    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
+    expect(container.textContent).toContain("Visible vs gated stress");
+    expect(container.textContent).toContain("Gated stress");
+    expect(container.textContent).toContain("Mismatch severity");
     expect(container.textContent).toContain("MOVE");
     expect(container.textContent).toContain("SKEW");
     expect(container.textContent).toContain("Mismatch warnings");
@@ -2030,6 +2163,40 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
   });
 
+  it("sanitizes malformed fragility shock-risk rows before rendering children", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": malformedShockRiskRowSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/fragility"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("Valid active stress");
+    expect(container.textContent).toContain("First active signal message.");
+    expect(container.textContent).toContain("Score N/A");
+    expect(container.textContent).not.toContain("Duplicate active stress");
+    expect(container.textContent).not.toContain("Duplicate active signal message.");
+    expect(container.textContent).not.toContain("Missing active message");
+
+    expect(container.textContent).toContain("Valid partial gated stress");
+    expect(container.textContent).toContain("Partial source gap should remain visible.");
+    expect(container.textContent).toContain("Partial");
+    expect(container.textContent).not.toContain("Duplicate partial gated stress");
+    expect(container.textContent).not.toContain("Duplicate partial source gap message.");
+    expect(container.textContent).not.toContain("Restricted gated stress");
+    expect(container.textContent).not.toContain("Release-window gated stress");
+
+    expect(container.textContent).toContain("Valid warning");
+    expect(container.textContent).toContain("First warning message.");
+    expect(container.textContent).not.toContain("Duplicate warning");
+    expect(container.textContent).not.toContain("Duplicate warning message.");
+    expect(container.textContent).not.toContain("Missing warning message");
+  });
+
   it("renders long-term macro climate from current score summary", async () => {
     mockStaticFetch(
       routeFetchFiles({
@@ -2050,13 +2217,13 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("PMIs");
     expect(container.textContent).toContain("SLOOS");
     expect(container.textContent).toContain("term premium");
-    expect(container.textContent).toContain("Treasury supply");
+    expect(container.textContent).toContain("Treasury net issuance");
     expect(container.textContent).toContain("valuation");
     expect(container.textContent).toContain("earnings revisions");
     const strategicRows = Array.from(container.querySelectorAll(".candidate-source-row"));
-    expect(strategicRows).toHaveLength(6);
+    expect(strategicRows).toHaveLength(11);
     expect(strategicRows.every((row) => row.getAttribute("role") === "listitem")).toBe(true);
-    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(6);
+    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(11);
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
     expect(container.textContent).toContain("Consumer and production");
@@ -2130,8 +2297,16 @@ describe("data-backed routes", () => {
     );
 
     await waitForContent(container, "TIPS x Dollar Regime Map");
+    expect(container.textContent).toContain("High data quality");
+    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(container.textContent).toContain("Yield driver");
     expect(container.textContent).toContain("Cross-asset confirmation");
+    expect(container.textContent).toContain("Gold / XAU");
+    expect(container.textContent).toContain("MOVE");
+    expect(container.textContent).toContain("Terms review needed");
+    expect(container.textContent).toContain("Duration-bond confirmation");
+    expect(container.textContent).not.toContain("signal-duration");
+    expect(container.textContent).not.toContain("signal-bond");
   });
 
   it("renders regime interpretation and conflict context", async () => {

@@ -301,7 +301,7 @@ export interface ScoreHistoryFile {
 export interface ShockRiskSignal {
   id: string;
   label: string;
-  score: number;
+  score: number | null;
   value: number | null;
   change: number | null;
   message: string;

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ConfidenceBreakdown from "../components/ConfidenceBreakdown";
 import DataGapPanel from "../components/DataGapPanel";
+import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
 import DriverAttributionPanel from "../components/DriverAttributionPanel";
 import HorizonImpactMatrix from "../components/HorizonImpactMatrix";
@@ -190,6 +191,7 @@ export default function Overview() {
             return (
               <>
                 <HowToReadPanel description="Market Weather, Macro Climate, and Fragility are separate descriptive scores for observed conditions. They summarize public-data context for comparing current market and macro inputs." />
+                <DataQualityBanner dataQuality={scoreSummary.data_quality} />
                 <section className="decision-grid" aria-label="Decision views">
                   <OverviewDecisionCard
                     horizon="1 day to 4 weeks"
@@ -259,7 +261,6 @@ export default function Overview() {
                   />
                 </section>
                 <ConfidenceBreakdown dataQuality={dataQuality} />
-                <p className="eyebrow overview-data-quality-label">Data quality</p>
                 <DataGapPanel status={data.status} />
               </>
             );

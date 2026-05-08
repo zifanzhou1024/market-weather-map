@@ -248,14 +248,32 @@ select {
   margin: 1rem 0 0.5rem;
 }
 
-.overview-data-quality-label {
-  margin: 0 0 0.5rem;
-}
-
 .macro-cycle-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
+}
+
+.data-quality-banner {
+  align-items: start;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(210px, 0.35fr) minmax(0, 1fr);
+  margin-bottom: 20px;
+}
+
+.data-quality-banner h3,
+.data-quality-banner p {
+  margin: 0;
+}
+
+.data-quality-banner__summary {
+  display: grid;
+  gap: 6px;
+}
+
+.data-quality-banner__reasons {
+  margin: 0;
 }
 
 .overview-detail-grid {
@@ -472,6 +490,11 @@ select {
 
 .score-list li + li {
   margin-top: 6px;
+}
+
+.hidden-stress-summary ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
 }
 
 .score-notes {
@@ -1181,6 +1204,7 @@ code {
   .metric-grid,
   .metric-grid.single,
   .macro-cycle-grid,
+  .data-quality-banner,
   .score-grid,
   .driver-attribution-grid,
   .replay-scenario-tabs,

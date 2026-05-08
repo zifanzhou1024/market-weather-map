@@ -28,6 +28,7 @@ import SignalChecklist from "./SignalChecklist";
 import SignalList from "./SignalList";
 import SourceNote from "./SourceNote";
 import SourceAccessBadge from "./SourceAccessBadge";
+import StrategicSourceGapsPanel from "./StrategicSourceGapsPanel";
 import TailRiskPanel from "./TailRiskPanel";
 import VixFuturesReadinessPanel from "./VixFuturesReadinessPanel";
 import YieldDecompositionChart from "./YieldDecompositionChart";
@@ -551,6 +552,13 @@ describe("data-driven components", () => {
     ];
 
     expect(text).toContain("Options sentiment");
+    expect(text).toContain("Useful short-term sentiment context");
+    expect(text).toContain("automated historical access");
+    expect(text).toContain("static JSON redistribution");
+    expect(text).toContain(
+      "cannot affect scores, regime labels, checklist states, or confidence"
+    );
+    expect(text).toContain("SPX/SPXW, index, equity, VIX, ETP, and total put/call");
     expect(text).toContain("Source review required");
     for (const label of orderedLabels) {
       expect(text).toContain(label);
@@ -562,16 +570,28 @@ describe("data-driven components", () => {
   });
 
   it("renders active options sentiment series before candidate-only fallback rows", () => {
+    const activeEquitySeries: TimeSeriesFile = {
+      ...activeOptionsSeries,
+      series_id: "put_call_equity",
+      summary: {
+        change_1d: 0.04,
+        change_1m: null,
+        change_1w: null,
+        latest_date: "2026-05-01",
+        latest_value: 0.81,
+        percentile_252d: null
+      }
+    };
     const container = render(
-      <OptionsSentimentPanel activeSeries={[activeOptionsSeries]} items={candidateRows} />
+      <OptionsSentimentPanel activeSeries={[activeEquitySeries]} items={candidateRows} />
     );
     const text = container.textContent ?? "";
 
     expect(text).toContain("Options sentiment");
-    expect(text).toContain("SPX/SPXW put/call");
+    expect(text).toContain("Equity put/call");
     expect(text).toContain("Active data");
-    expect(text).toContain("Latest ratio 1.23 on 2026-05-01.");
-    expect(text.indexOf("SPX/SPXW put/call")).toBeLessThan(text.indexOf("SPX put/call"));
+    expect(text).toContain("Latest ratio 0.81 on 2026-05-01.");
+    expect(text.indexOf("Equity put/call")).toBeLessThan(text.indexOf("SPX/SPXW put/call"));
     expect(text).toContain("Source review required");
     expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
   });
@@ -596,6 +616,32 @@ describe("data-driven components", () => {
     expect(text).toContain("Source review required");
     expect(text).toContain("No active options sentiment candidate rows are configured.");
     expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
+  });
+
+  it("renders strategic source gaps with source-review governance copy", () => {
+    const container = render(<StrategicSourceGapsPanel />);
+    const text = container.textContent ?? "";
+    const labels = [
+      "PMIs",
+      "SLOOS",
+      "10Y term premium",
+      "Treasury net issuance",
+      "Auction tail",
+      "Bid-to-cover",
+      "CAPE",
+      "Forward P/E",
+      "Equity risk premium",
+      "Earnings revision breadth",
+      "Fiscal deficit / interest expense"
+    ];
+
+    expect(text).toContain("Strategic source gaps");
+    for (const label of labels) {
+      expect(text).toContain(label);
+    }
+    expect(text).toContain("cannot affect scores until source review promotes it");
+    expect(container.querySelectorAll(".candidate-source-row")).toHaveLength(labels.length);
+    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(labels.length);
   });
 
   it("renders event risk source-gated candidate rows", () => {
@@ -958,6 +1004,137 @@ describe("data-driven components", () => {
     expect(text).toContain("Diverging");
     expect(text).toContain("Unavailable");
     expect(text.toLowerCase()).not.toMatch(/\b(buy|sell|short|long|entry|target|stop)\b/);
+  });
+
+  it("renders candidate-only cross-asset rows after active confirmations", () => {
+    const container = render(
+      <CrossAssetConfirmationMatrix
+        items={[
+          {
+            id: "credit",
+            label: "Credit",
+            message: "Credit confirms the current regime.",
+            status: "confirming"
+          }
+        ]}
+        candidateItems={[
+          {
+            id: "move_index",
+            label: "MOVE",
+            message: "Bond-volatility confirmation remains source-gated.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const rows = Array.from(container.querySelectorAll(".confirmation-matrix__item"));
+    const text = container.textContent ?? "";
+
+    expect(rows).toHaveLength(2);
+    expect(rows[0]?.textContent).toContain("Credit");
+    expect(rows[1]?.textContent).toContain("MOVE");
+    expect(rows[1]?.classList.contains("candidate-only")).toBe(true);
+    expect(rows[1]?.querySelector(".status-pill")?.classList.contains("status-terms_review_needed")).toBe(true);
+    expect(text.indexOf("Credit")).toBeLessThan(text.indexOf("MOVE"));
+    expect(text).toContain("Terms review needed");
+  });
+
+  it("deduplicates candidate-only cross-asset rows against active rows by normalized id or label", () => {
+    const container = render(
+      <CrossAssetConfirmationMatrix
+        items={[
+          {
+            id: "credit",
+            label: "Credit",
+            message: "Credit confirms the current regime.",
+            status: "confirming"
+          },
+          {
+            id: "liquidity",
+            label: "Liquidity",
+            message: "Liquidity confirms the current regime.",
+            status: "confirming"
+          }
+        ]}
+        candidateItems={[
+          {
+            id: "Credit",
+            label: "Credit candidate",
+            message: "Duplicate by id.",
+            status: "terms_review_needed"
+          },
+          {
+            id: "liquidity_candidate",
+            label: "liquidity",
+            message: "Duplicate by label.",
+            status: "terms_review_needed"
+          },
+          {
+            id: "move_index",
+            label: "MOVE",
+            message: "Bond-volatility confirmation remains source-gated.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const rows = Array.from(container.querySelectorAll(".confirmation-matrix__item"));
+
+    expect(rows).toHaveLength(3);
+    expect(container.textContent).toContain("MOVE");
+    expect(container.textContent).not.toContain("Credit candidate");
+    expect(container.textContent).not.toContain("Duplicate by label.");
+  });
+
+  it("ignores malformed active confirmation rows before deduplicating candidates", () => {
+    const malformedItems = [
+      {
+        id: "credit",
+        label: "Credit",
+        message: "Credit confirms the current regime.",
+        status: "confirming"
+      },
+      {
+        id: null,
+        label: "Malformed active",
+        message: "This malformed active row should not render.",
+        status: "confirming"
+      },
+      {
+        id: "bad_label",
+        label: 42,
+        message: "This malformed label should not render.",
+        status: "diverging"
+      }
+    ] as unknown as RegimeSnapshotFile["confirmations"];
+
+    const container = render(
+      <CrossAssetConfirmationMatrix
+        items={malformedItems}
+        candidateItems={[
+          {
+            id: "Credit",
+            label: "Credit candidate",
+            message: "Duplicate by valid active id.",
+            status: "terms_review_needed"
+          },
+          {
+            id: "move_index",
+            label: "MOVE",
+            message: "Candidate-only row remains visible.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const rows = Array.from(container.querySelectorAll(".confirmation-matrix__item"));
+
+    expect(rows).toHaveLength(2);
+    expect(rows[0]?.textContent).toContain("Credit");
+    expect(rows[1]?.textContent).toContain("MOVE");
+    expect(container.textContent).not.toContain("Malformed active");
+    expect(container.textContent).not.toContain("malformed label");
+    expect(container.textContent).not.toContain("Credit candidate");
   });
 
   it("renders regime quadrant labels as DOM text", () => {

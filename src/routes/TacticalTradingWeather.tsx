@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import CreditPulsePanel from "../components/CreditPulsePanel";
 import DataGapPanel from "../components/DataGapPanel";
+import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
 import DollarRealYieldPressurePanel from "../components/DollarRealYieldPressurePanel";
 import EventRiskPanel from "../components/EventRiskPanel";
@@ -172,6 +173,7 @@ export default function TacticalTradingWeather() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <HorizonScoreHeader
             eyebrow="Short-term"
             facts={[

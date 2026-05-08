@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import DataGapPanel from "../components/DataGapPanel";
+import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
+import HiddenStressSummary from "../components/HiddenStressSummary";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MismatchWarningPanel from "../components/MismatchWarningPanel";
 import ScoreCard from "../components/ScoreCard";
@@ -14,6 +16,7 @@ import {
   loadScoreSummary,
   loadShockRiskSnapshot
 } from "../lib/data";
+import { sanitizeShockRiskSnapshot } from "../lib/shockRisk";
 import type {
   DataStatusFile,
   RegimeSnapshotFile,
@@ -57,7 +60,9 @@ export default function FragilityShockRisk() {
           loadDataStatus(),
           loadCatalog()
         ]);
-        if (active) setData({ catalog, scoreSummary, shockSnapshot, snapshot, status });
+        if (active) {
+          setData({ catalog, scoreSummary, shockSnapshot: sanitizeShockRiskSnapshot(shockSnapshot), snapshot, status });
+        }
       } catch (loadError) {
         if (active) {
           setError(loadError instanceof Error ? loadError.message : "Unable to load fragility shock risk.");
@@ -86,12 +91,14 @@ export default function FragilityShockRisk() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <ShockRiskReadHeader
             catalog={data.catalog}
             scoreSummary={data.scoreSummary}
             shockSnapshot={data.shockSnapshot}
             status={data.status}
           />
+          <HiddenStressSummary shockSnapshot={data.shockSnapshot} />
           <InterpretationPanel
             caveats={data.scoreSummary.scores.fragility.missing_or_stale_notes}
             label={data.snapshot.regime.label}

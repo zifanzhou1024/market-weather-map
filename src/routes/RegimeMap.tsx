@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
+import DataQualityBanner from "../components/DataQualityBanner";
 import RegimeInterpretationPanel from "../components/RegimeInterpretationPanel";
 import RegimeQuadrantChart from "../components/RegimeQuadrantChart";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
@@ -16,6 +17,57 @@ interface RouteState {
   scoreSummary: ScoreSummaryFile;
   snapshot: RegimeSnapshotFile;
 }
+
+const candidateConfirmationRows = [
+  {
+    id: "gold_xau",
+    label: "Gold / XAU",
+    message: "Precious-metal confirmation remains source-gated.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "long_duration_bonds",
+    label: "Long-duration bonds",
+    message: "Duration-bond confirmation remains display-only until source coverage is formalized.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "vix_futures_curve",
+    label: "VIX futures curve",
+    message: "VX futures confirmation remains candidate-only; the active page uses VIX9D/VIX/VIX3M proxies.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "put_call_ratios",
+    label: "Put/call ratios",
+    message: "Options sentiment remains candidate-only until Cboe source review is complete.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "move_index",
+    label: "MOVE",
+    message: "Bond-volatility confirmation remains source-gated.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "skew_index",
+    label: "SKEW",
+    message: "Equity tail-risk confirmation remains source-gated.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "equity_breadth",
+    label: "Equity breadth",
+    message: "Breadth confirmation remains candidate-only until source governance approves it.",
+    status: "terms_review_needed"
+  },
+  {
+    id: "liquidity",
+    label: "Liquidity",
+    message: "Liquidity confirmation remains visible as a candidate row only if no active liquidity confirmation exists.",
+    status: "terms_review_needed"
+  }
+];
 
 function DirectionCard({ label, direction }: DirectionCardProps) {
   return (
@@ -68,6 +120,7 @@ export default function RegimeMap() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <RegimeInterpretationPanel scoreSummary={data.scoreSummary} snapshot={data.snapshot} />
           <section className="metric-grid" aria-label="Regime direction cards">
             <DirectionCard direction={data.snapshot.regime.tips_direction} label="TIPS direction" />
@@ -76,7 +129,10 @@ export default function RegimeMap() {
           </section>
           <RegimeQuadrantChart trail={data.snapshot.quadrant_trail} />
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
-          <CrossAssetConfirmationMatrix items={data.snapshot.confirmations} />
+          <CrossAssetConfirmationMatrix
+            candidateItems={candidateConfirmationRows}
+            items={data.snapshot.confirmations}
+          />
         </div>
       ) : null}
     </main>
