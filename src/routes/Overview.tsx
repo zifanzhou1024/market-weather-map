@@ -3,26 +3,33 @@ import ConfidenceBreakdown from "../components/ConfidenceBreakdown";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import DriverAttributionPanel from "../components/DriverAttributionPanel";
+import HorizonImpactMatrix from "../components/HorizonImpactMatrix";
 import HowToReadPanel from "../components/HowToReadPanel";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import OverviewDecisionCard from "../components/OverviewDecisionCard";
 import ScoreCard from "../components/ScoreCard";
 import SignalList from "../components/SignalList";
 import {
   loadCatalog,
   loadDataStatus,
   loadDerivedSeries,
+  loadRegimeSnapshot,
   loadScoreHistory,
   loadScoreSummary,
+  loadShockRiskSnapshot,
   loadSeries
 } from "../lib/data";
+import { countSourceGaps, firstText, scoreLabel } from "../lib/horizon";
 import type {
   ConfidenceBreakdownData,
   DataStatusFile,
   DerivedSeriesFile,
+  RegimeSnapshotFile,
   ScoreHistoryFile,
   ScoreSummaryFile,
   SeriesCatalogEntry,
+  ShockRiskSnapshotFile,
   TimeSeriesFile
 } from "../lib/types";
 
@@ -37,8 +44,10 @@ const overviewSeriesIds = [
 
 interface OverviewState {
   catalog: SeriesCatalogEntry[];
+  regimeSnapshot: RegimeSnapshotFile;
   scoreHistory: ScoreHistoryFile | null;
   scoreSummary: ScoreSummaryFile;
+  shockSnapshot: ShockRiskSnapshotFile;
   status: DataStatusFile;
   series: Array<TimeSeriesFile | DerivedSeriesFile>;
 }
@@ -118,11 +127,13 @@ export default function Overview() {
 
     async function loadOverview() {
       try {
-        const [catalog, scoreSummary, scoreHistory, status, series] = await Promise.all([
+        const [catalog, scoreSummary, scoreHistory, status, regimeSnapshot, shockSnapshot, series] = await Promise.all([
           loadCatalog(),
           loadScoreSummary(),
           loadScoreHistory().catch(() => null),
           loadDataStatus(),
+          loadRegimeSnapshot(),
+          loadShockRiskSnapshot(),
           Promise.all(
             overviewSeriesIds.map((seriesId) =>
               seriesId === "net_liquidity" ? loadDerivedSeries(seriesId) : loadSeries(seriesId)
@@ -130,7 +141,7 @@ export default function Overview() {
           )
         ]);
 
-        if (active) setData({ catalog, scoreHistory, scoreSummary, status, series });
+        if (active) setData({ catalog, regimeSnapshot, scoreHistory, scoreSummary, shockSnapshot, status, series });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load market data.");
       }
@@ -179,6 +190,47 @@ export default function Overview() {
             return (
               <>
                 <HowToReadPanel description="Market Weather, Macro Climate, and Fragility are separate descriptive scores for observed conditions. They summarize public-data context for comparing current market and macro inputs." />
+                <section className="decision-grid" aria-label="Decision views">
+                  <OverviewDecisionCard
+                    horizon="1 day to 4 weeks"
+                    label={scoreLabel(market)}
+                    risk={firstText(market.top_risks, "No top short-term risk in the current summary.")}
+                    sourceGapCount={countSourceGaps(data.shockSnapshot.source_gaps)}
+                    support={firstText(market.top_supports, "No top short-term support in the current summary.")}
+                    title="Short-Term Market Reaction"
+                    to="/short-term"
+                  />
+                  <OverviewDecisionCard
+                    horizon="3 months to several years"
+                    label={scoreLabel(macro)}
+                    risk={firstText(macro.top_risks, "No top long-term risk in the current summary.")}
+                    support={firstText(macro.top_supports, "No top long-term support in the current summary.")}
+                    title="Long-Term Macro / Allocation Climate"
+                    to="/long-term"
+                  />
+                  <OverviewDecisionCard
+                    horizon="Shock-risk overlay"
+                    label={`${data.shockSnapshot.label} ${data.shockSnapshot.score.toFixed(1)}`}
+                    risk={firstText(fragility.top_risks, "No top fragility risk in the current summary.")}
+                    sourceGapCount={countSourceGaps(data.shockSnapshot.source_gaps)}
+                    support={firstText(fragility.top_supports, "No top fragility support in the current summary.")}
+                    title="Fragility / Shock Risk"
+                    to="/fragility"
+                  />
+                  <OverviewDecisionCard
+                    horizon="Cross-asset regime"
+                    label={data.regimeSnapshot.regime.label}
+                    risk={firstText(conflictingSignals, "No conflicts in the current score summary.")}
+                    support={`Yield driver: ${data.regimeSnapshot.regime.yield_driver}`}
+                    title="TIPS x Dollar Regime Map"
+                    to="/regime-map"
+                  />
+                </section>
+                <div className="decision-impact-labels" aria-label="Horizon impact labels">
+                  <span>Short-Term Impact</span>
+                  <span>Long-Term Impact</span>
+                </div>
+                <HorizonImpactMatrix />
                 <section className="score-grid" aria-label="Overview scores">
                   <ScoreCard score={scoreSummary.scores.market_weather} title="Market Weather" />
                   <ScoreCard score={scoreSummary.scores.macro_climate} title="Macro Climate" />
@@ -207,6 +259,7 @@ export default function Overview() {
                   />
                 </section>
                 <ConfidenceBreakdown dataQuality={dataQuality} />
+                <p className="eyebrow overview-data-quality-label">Data quality</p>
                 <DataGapPanel status={data.status} />
               </>
             );

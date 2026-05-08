@@ -1,4 +1,8 @@
 :root {
+  --accent: #31483a;
+  --border: #d7ded1;
+  --muted: #607066;
+  --panel: #fffef9;
   color: #17201a;
   background: #f6f7f3;
   font-family:
@@ -70,11 +74,34 @@ select {
 }
 
 .site-nav {
+  align-items: stretch;
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 0.75rem;
   justify-content: flex-end;
-  max-width: 820px;
+  max-width: 980px;
+}
+
+.nav-section {
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding-left: 0.75rem;
+}
+
+.nav-section:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.nav-section__label {
+  color: var(--muted);
+  flex-basis: 100%;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .nav-link {
@@ -203,6 +230,26 @@ select {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   margin-bottom: 20px;
+}
+
+.decision-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.decision-impact-labels {
+  color: #607066;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  font-weight: 700;
+  gap: 1rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.overview-data-quality-label {
+  margin: 0 0 0.5rem;
 }
 
 .macro-cycle-grid {
@@ -768,6 +815,41 @@ select {
   display: grid;
 }
 
+.decision-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.decision-card h3,
+.decision-card p {
+  margin-top: 0;
+}
+
+.decision-card p {
+  margin-bottom: 0;
+}
+
+.decision-card__link {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.horizon-header {
+  display: grid;
+  gap: 1rem;
+}
+
+.horizon-header__facts,
+.horizon-impact-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
 .quadrant-frame {
   position: relative;
   width: 100%;
@@ -1063,13 +1145,29 @@ code {
     margin-inline: 0;
     padding-bottom: 8px;
     overflow-x: auto;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: flex-start;
     scrollbar-gutter: stable;
   }
 
+  .nav-section {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    flex: 1 1 100%;
+    padding-left: 0;
+    padding-top: 0.65rem;
+  }
+
+  .nav-section:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
   .nav-link {
-    flex: 0 0 auto;
+    flex: 0 1 auto;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 }
 

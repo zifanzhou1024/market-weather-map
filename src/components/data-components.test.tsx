@@ -18,10 +18,12 @@ import ChartResponsiveContainer, { INITIAL_CHART_DIMENSION } from "./ChartRespon
 import MultiSeriesChart from "./MultiSeriesChart";
 import OptionsSentimentPanel from "./OptionsSentimentPanel";
 import PercentileBandChart from "./PercentileBandChart";
+import RegimeInterpretationPanel from "./RegimeInterpretationPanel";
 import RegimeQuadrantChart, { domainIncludingZero } from "./RegimeQuadrantChart";
 import RegimeBadge from "./RegimeBadge";
 import ScoreCard from "./ScoreCard";
 import ShockRiskDashboard from "./ShockRiskDashboard";
+import ShockRiskReadHeader from "./ShockRiskReadHeader";
 import SignalChecklist from "./SignalChecklist";
 import SignalList from "./SignalList";
 import SourceNote from "./SourceNote";
@@ -32,9 +34,11 @@ import YieldDecompositionChart from "./YieldDecompositionChart";
 import type {
   ConfidenceBreakdownData,
   DataStatusFile,
+  RegimeSnapshotFile,
   RegimeReplayFile,
   ScoreBlock,
   ScoreHistoryFile,
+  ScoreSummaryFile,
   ShockRiskSnapshotFile,
   SeriesCatalogEntry,
   TimeSeriesFile
@@ -1089,5 +1093,120 @@ describe("data-driven components", () => {
     expect(container.querySelector('[data-label="Real yield 20 obs"]')?.textContent).toBe("+0.22");
     expect(container.querySelector('[data-label="Dollar 20 obs"]')?.textContent).toBe("+1.35");
     expect(container.querySelector('[data-label="10Y nominal 20 obs"]')?.textContent).toBe("+0.26");
+  });
+
+  it("renders regime interpretation empty states for malformed confirmation rows", () => {
+    const malformedSnapshot = {
+      regime: {
+        dollar_direction: "up",
+        label: "Tightening / risk-off",
+        nominal_yield_direction: "up",
+        tips_direction: "up",
+        yield_driver: "real_yield_driven"
+      },
+      confirmations: [
+        null,
+        { status: "confirming" },
+        { label: "Divergence without message", status: "divergent" },
+        { message: "Confirming message without label", status: "confirming" }
+      ]
+    } as unknown as RegimeSnapshotFile;
+    const scoreSummary = {
+      conflicting_signals: []
+    } as unknown as ScoreSummaryFile;
+
+    const container = render(<RegimeInterpretationPanel scoreSummary={scoreSummary} snapshot={malformedSnapshot} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("No confirming regime signals in the current snapshot.");
+    expect(text).toContain("No conflicting regime signals in the current snapshot.");
+    expect(text).toContain("No weak-confidence regime signals in the current snapshot.");
+    expect(text).not.toContain("Divergence without message");
+    expect(text).not.toContain("Confirming message without label");
+  });
+
+  it("groups exact regime confirmation statuses and filters malformed conflicts", () => {
+    const snapshot = {
+      regime: {
+        dollar_direction: "up",
+        label: "Tightening / risk-off",
+        nominal_yield_direction: "up",
+        tips_direction: "up",
+        yield_driver: "real_yield_driven"
+      },
+      confirmations: [
+        {
+          id: "confirming-row",
+          label: "Credit confirmation",
+          message: "Credit spreads confirm tighter conditions.",
+          status: "confirming"
+        },
+        {
+          id: "diverging-row",
+          label: "Volatility divergence",
+          message: "Volatility is diverging from the regime.",
+          status: "diverging"
+        },
+        {
+          id: "mixed-row",
+          label: "Dollar mixed read",
+          message: "Dollar confirmation is mixed.",
+          status: "mixed"
+        },
+        {
+          id: "unavailable-row",
+          label: "MOVE unavailable",
+          message: "MOVE source is unavailable.",
+          status: "unavailable"
+        },
+        {
+          id: "unconfirmed-row",
+          label: "Accidental substring",
+          message: "This status should not become confirming.",
+          status: "unconfirmed"
+        }
+      ]
+    } as unknown as RegimeSnapshotFile;
+    const scoreSummary = {
+      conflicting_signals: ["Inflation conflict", 42, null]
+    } as unknown as ScoreSummaryFile;
+
+    const container = render(<RegimeInterpretationPanel scoreSummary={scoreSummary} snapshot={snapshot} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Credit confirmation: Credit spreads confirm tighter conditions.");
+    expect(text).toContain("Volatility divergence: Volatility is diverging from the regime.");
+    expect(text).toContain("Inflation conflict");
+    expect(text).toContain("Dollar mixed read: Dollar confirmation is mixed.");
+    expect(text).toContain("MOVE unavailable: MOVE source is unavailable.");
+    expect(text).not.toContain("Accidental substring");
+    expect(text).not.toContain("42");
+  });
+
+  it("renders shock risk read empty states for malformed signal and gap rows", () => {
+    const scoreSummary = {
+      scores: {
+        fragility: {
+          label: "Moderate",
+          score: -4.1
+        }
+      }
+    } as unknown as ScoreSummaryFile;
+    const malformedShockSnapshot = {
+      ...shockRiskSnapshot,
+      active_signals: [null, { id: "partial-active" }, { label: "", message: "Blank label" }],
+      source_gaps: [null, { id: "partial-gap" }, { label: "", message: "Blank gap label" }]
+    } as unknown as ShockRiskSnapshotFile;
+
+    const container = render(
+      <ShockRiskReadHeader scoreSummary={scoreSummary} shockSnapshot={malformedShockSnapshot} />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("No active stress channels in the current shock-risk snapshot.");
+    expect(text).toContain("No candidate stress channels in the current shock-risk snapshot.");
+    expect(text).toContain("0 source-gap rows.");
+    expect(text).not.toContain("Blank label");
+    expect(text).not.toContain("Blank gap label");
   });
 });

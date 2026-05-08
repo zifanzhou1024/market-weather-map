@@ -1724,6 +1724,7 @@ def build_score_summary(
     }
 
     return {
+        "conflicting_signals": [],
         "generated_at_utc": generated_at,
         "date": latest_date,
         "method_version": METHOD_VERSION,

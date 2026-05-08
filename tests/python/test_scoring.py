@@ -733,6 +733,7 @@ def test_build_score_summary_returns_three_scores_with_specific_drivers():
 
     assert summary["method_version"] == "phase5-pr4-strategic-macro-completeness-v1"
     assert set(summary["scores"]) == {"market_weather", "macro_climate", "fragility"}
+    assert summary["conflicting_signals"] == []
     assert "High-yield spreads widened over the past month." in summary["scores"]["market_weather"]["top_risks"]
     assert summary["scores"]["macro_climate"]["confidence"] < 1.0
     assert "Housing is not active in Phase 4 PR 1." not in summary["scores"]["macro_climate"]["missing_or_stale_notes"]
@@ -1233,6 +1234,7 @@ def test_validate_score_summary_file_rejects_missing_score_confidence_breakdown(
         "confidence_breakdown": confidence_breakdown,
     }
     payload = {
+        "conflicting_signals": [],
         "scores": {
             "market_weather": {
                 key: value
@@ -1934,6 +1936,7 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
     (derived / "score_summary.json").write_text(
         """
         {
+          "conflicting_signals": [],
           "scores": {
             "market_weather": {
               "score": -1,
@@ -2001,12 +2004,51 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
     validate_schema.validate_score_summary_file()
 
 
+def test_validate_score_summary_requires_conflicting_signals_list(tmp_path, monkeypatch):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    payload = {
+        "conflicting_signals": "not a list",
+        "scores": {
+            "market_weather": {},
+            "macro_climate": {},
+            "fragility": {},
+        },
+        "data_quality": {},
+    }
+    (derived / "score_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(ValueError, match="conflicting_signals must be a list"):
+        validate_schema.validate_score_summary_file()
+
+
+def test_validate_score_summary_rejects_non_string_conflicting_signals(tmp_path, monkeypatch):
+    derived = tmp_path / "derived"
+    derived.mkdir()
+    payload = {
+        "conflicting_signals": ["Credit is calm.", 42],
+        "scores": {
+            "market_weather": {},
+            "macro_climate": {},
+            "fragility": {},
+        },
+        "data_quality": {},
+    }
+    (derived / "score_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(validate_schema, "data_dir", lambda: tmp_path)
+
+    with pytest.raises(ValueError, match="conflicting_signals items must be strings"):
+        validate_schema.validate_score_summary_file()
+
+
 def test_validate_score_summary_requires_ui_score_block_arrays(tmp_path, monkeypatch):
     derived = tmp_path / "derived"
     derived.mkdir()
     (derived / "score_summary.json").write_text(
         """
         {
+          "conflicting_signals": [],
           "scores": {
             "market_weather": {
               "score": -1,
@@ -2049,6 +2091,7 @@ def test_validate_score_summary_rejects_non_finite_score_values(tmp_path, monkey
     derived = tmp_path / "derived"
     derived.mkdir()
     payload = {
+        "conflicting_signals": [],
         "scores": {
             "market_weather": {
                 "score": float("nan"),
@@ -2099,6 +2142,7 @@ def test_validate_score_summary_rejects_out_of_range_data_quality_confidence(
         "overall_confidence": 1.0,
     }
     payload = {
+        "conflicting_signals": [],
         "scores": {
             "market_weather": {
                 "score": -1,
@@ -2156,6 +2200,7 @@ def test_validate_score_summary_rejects_out_of_range_score_confidence_breakdown(
     derived = tmp_path / "derived"
     derived.mkdir()
     payload = {
+        "conflicting_signals": [],
         "scores": {
             "market_weather": {
                 "score": -1,

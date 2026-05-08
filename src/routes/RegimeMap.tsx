@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
+import RegimeInterpretationPanel from "../components/RegimeInterpretationPanel";
 import RegimeQuadrantChart from "../components/RegimeQuadrantChart";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
-import { loadRegimeSnapshot } from "../lib/data";
-import { directionLabel, yieldDriverLabel } from "../lib/regime";
-import type { DirectionState, RegimeSnapshotFile } from "../lib/types";
+import { loadRegimeSnapshot, loadScoreSummary } from "../lib/data";
+import { directionLabel } from "../lib/regime";
+import type { DirectionState, RegimeSnapshotFile, ScoreSummaryFile } from "../lib/types";
 
 interface DirectionCardProps {
   label: string;
   direction: DirectionState;
+}
+
+interface RouteState {
+  scoreSummary: ScoreSummaryFile;
+  snapshot: RegimeSnapshotFile;
 }
 
 function DirectionCard({ label, direction }: DirectionCardProps) {
@@ -26,7 +32,7 @@ function DirectionCard({ label, direction }: DirectionCardProps) {
 }
 
 export default function RegimeMap() {
-  const [snapshot, setSnapshot] = useState<RegimeSnapshotFile | null>(null);
+  const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,8 +40,8 @@ export default function RegimeMap() {
 
     async function loadRegimeMap() {
       try {
-        const regimeSnapshot = await loadRegimeSnapshot();
-        if (active) setSnapshot(regimeSnapshot);
+        const [snapshot, scoreSummary] = await Promise.all([loadRegimeSnapshot(), loadScoreSummary()]);
+        if (active) setData({ scoreSummary, snapshot });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load regime map.");
       }
@@ -60,21 +66,17 @@ export default function RegimeMap() {
           Data error: {error}
         </p>
       ) : null}
-      {snapshot ? (
+      {data ? (
         <div className="route-stack">
-          <section className="panel interpretation-panel">
-            <p className="eyebrow">Current quadrant</p>
-            <h3>{snapshot.regime.label}</h3>
-            <p>Yield driver: {yieldDriverLabel(snapshot.regime.yield_driver)}</p>
-          </section>
+          <RegimeInterpretationPanel scoreSummary={data.scoreSummary} snapshot={data.snapshot} />
           <section className="metric-grid" aria-label="Regime direction cards">
-            <DirectionCard direction={snapshot.regime.tips_direction} label="TIPS direction" />
-            <DirectionCard direction={snapshot.regime.dollar_direction} label="Dollar direction" />
-            <DirectionCard direction={snapshot.regime.nominal_yield_direction} label="Nominal-yield direction" />
+            <DirectionCard direction={data.snapshot.regime.tips_direction} label="TIPS direction" />
+            <DirectionCard direction={data.snapshot.regime.dollar_direction} label="Dollar direction" />
+            <DirectionCard direction={data.snapshot.regime.nominal_yield_direction} label="Nominal-yield direction" />
           </section>
-          <RegimeQuadrantChart trail={snapshot.quadrant_trail} />
-          <YieldDecompositionChart data={snapshot.yield_decomposition} />
-          <CrossAssetConfirmationMatrix items={snapshot.confirmations} />
+          <RegimeQuadrantChart trail={data.snapshot.quadrant_trail} />
+          <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
+          <CrossAssetConfirmationMatrix items={data.snapshot.confirmations} />
         </div>
       ) : null}
     </main>

@@ -1,6 +1,6 @@
-import { act } from "react";
+import { act, useEffect } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import Overview from "./Overview";
 import Rates from "./Rates";
@@ -38,6 +38,32 @@ function render(element: React.ReactNode) {
   });
 
   return container;
+}
+
+function renderOverview() {
+  return render(
+    <MemoryRouter initialEntries={["/"]}>
+      <Overview />
+    </MemoryRouter>
+  );
+}
+
+function unmountRendered(container: HTMLElement) {
+  if (root) {
+    act(() => root?.unmount());
+    root = undefined;
+  }
+  container.remove();
+}
+
+function LocationObserver({ onPathChange }: { onPathChange: (pathname: string) => void }) {
+  const location = useLocation();
+
+  useEffect(() => {
+    onPathChange(location.pathname);
+  }, [location.pathname, onPathChange]);
+
+  return null;
 }
 
 async function waitForContent(container: HTMLElement, text: string) {
@@ -102,8 +128,10 @@ function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
       },
       units: "USD billions"
     } satisfies DerivedSeriesFile,
+    "/data/derived/regime_snapshot.json": regimeSnapshot,
     "/data/derived/score_history.json": scoreHistory,
     "/data/derived/score_summary.json": scoreSummaryFile,
+    "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
     "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
     "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
     "/data/series/us10y.json": seriesFile("us10y", 4.2),
@@ -1156,6 +1184,110 @@ afterEach(() => {
 });
 
 describe("data-backed routes", () => {
+  it("renders canonical short-term and long-term horizon routes", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const shortTerm = render(
+      <MemoryRouter initialEntries={["/short-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(shortTerm, "Short-Term Market Reaction");
+    expect(shortTerm.textContent).toContain("Current Tactical Read");
+    expect(shortTerm.textContent).toContain("Volatility term-structure");
+    expect(shortTerm.textContent).toContain("Credit pulse");
+    expect(shortTerm.textContent).toContain("Dollar + real-yield pressure");
+    expect(shortTerm.textContent).toContain("Liquidity pulse");
+    expect(shortTerm.textContent).toContain("Options sentiment");
+    expect(shortTerm.textContent).toContain("Event risk");
+
+    unmountRendered(shortTerm);
+
+    const longTerm = render(
+      <MemoryRouter initialEntries={["/long-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(longTerm, "Long-Term Macro / Allocation Climate");
+  });
+
+  it("keeps tactical and macro-climate deep links compatible", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    let tacticalPath = "";
+    const tactical = render(
+      <MemoryRouter initialEntries={["/tactical"]}>
+        <App />
+        <LocationObserver onPathChange={(pathname) => {
+          tacticalPath = pathname;
+        }} />
+      </MemoryRouter>
+    );
+    await waitForContent(tactical, "Short-Term Market Reaction");
+    expect(tacticalPath).toBe("/short-term");
+
+    unmountRendered(tactical);
+
+    let macroPath = "";
+    const macro = render(
+      <MemoryRouter initialEntries={["/macro-climate"]}>
+        <App />
+        <LocationObserver onPathChange={(pathname) => {
+          macroPath = pathname;
+        }} />
+      </MemoryRouter>
+    );
+    await waitForContent(macro, "Long-Term Macro / Allocation Climate");
+    expect(macroPath).toBe("/long-term");
+  });
+
+  it("renders grouped navigation with primary views before the data library", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Primary Views");
+    const text = container.textContent ?? "";
+    expect(text.indexOf("Primary Views")).toBeLessThan(text.indexOf("Data Library"));
+    expect(text.indexOf("Data Library")).toBeLessThan(text.indexOf("Reference"));
+    expect(text).toContain("Short-Term");
+    expect(text).toContain("Long-Term");
+  });
+
+  it("renders overview as a horizon decision hub", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Short-Term Market Reaction");
+    expect(container.textContent).toContain("Long-Term Macro / Allocation Climate");
+    expect(container.textContent).toContain("Fragility / Shock Risk");
+    expect(container.textContent).toContain("TIPS x Dollar Regime Map");
+    expect(container.textContent).toContain("Short-Term Impact");
+    expect(container.textContent).toContain("Long-Term Impact");
+  });
+
+  it("renders overview when score history is unavailable", async () => {
+    mockStaticFetch(routeFetchFiles({ "/data/derived/score_history.json": undefined }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Short-Term Market Reaction");
+    expect(container.textContent).toContain("Data quality");
+  });
+
   it("renders the three-score overview without legacy weather score duplication", async () => {
     mockStaticFetch(overviewFetchFiles());
 
@@ -1206,7 +1338,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Recent changes");
 
     expect(container.textContent).toContain("No recent changes in the current score summary.");
@@ -1223,7 +1355,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Data confidence");
 
     expect(container.textContent).toContain("0% overall");
@@ -1236,7 +1368,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Data confidence");
 
     expect(container.textContent).toContain("0% overall");
@@ -1261,7 +1393,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Current regime read");
 
     expect(container.textContent).toContain("unknown market weather");
@@ -1282,7 +1414,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch(overviewFetchFiles(lowFragilityScoreSummary));
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Current regime read");
 
     expect(container.textContent).toContain("low fragility");
@@ -1294,7 +1426,7 @@ describe("data-backed routes", () => {
     delete files["/data/derived/score_summary.json"];
     mockStaticFetch(files);
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Data error:");
 
     expect(container.querySelector(".data-error")?.getAttribute("role")).toBe("alert");
@@ -1324,7 +1456,9 @@ describe("data-backed routes", () => {
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
       "/data/derived/net_liquidity.json": netLiquidity,
+      "/data/derived/regime_snapshot.json": regimeSnapshot,
       "/data/derived/score_summary.json": scoreSummary,
+      "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
       "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
       "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
       "/data/series/us10y.json": seriesFile("us10y", 4.2),
@@ -1333,7 +1467,7 @@ describe("data-backed routes", () => {
       "/data/status/data_status.json": status
     });
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Net liquidity proxy");
 
     expect(container.textContent).toContain("Net liquidity proxy");
@@ -1804,7 +1938,7 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
 
-    await waitForContent(container, "Tactical Trading Weather");
+    await waitForContent(container, "Short-Term Market Reaction");
     expect(container.textContent).toContain("Daily checklist");
     expect(container.textContent).toContain("VIX term-structure proxy");
     expect(container.textContent).toContain("Options sentiment");
@@ -1816,16 +1950,34 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("CPI release calendar");
     expect(container.textContent).toContain("CPI calendar source remains under review.");
 
-    const scoreCards = Array.from(container.querySelectorAll(".score-card"));
-    const marketWeatherCard = scoreCards.find((card) => card.textContent?.includes("Market Weather"));
-    const fragilityCard = scoreCards.find((card) => card.textContent?.includes("Fragility"));
-
-    expect(marketWeatherCard?.textContent).toContain("Mixed");
-    expect(marketWeatherCard?.textContent).toContain("19.17");
-    expect(fragilityCard?.textContent).toContain("Moderate");
-    expect(fragilityCard?.textContent).toContain("-4.10");
+    expect(container.textContent).toContain("Market weather");
+    expect(container.textContent).toContain("Mixed");
+    expect(container.textContent).toContain("19.17");
+    expect(container.textContent).toContain("Fragility");
+    expect(container.textContent).toContain("Moderate");
+    expect(container.textContent).toContain("-4.10");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/put_call_spxw.json");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
+  });
+
+  it("renders short-term credit pulse unavailable state when HY minus IG OAS is missing", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/hy_minus_ig_oas.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/short-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Credit pulse");
+
+    const creditPanel = Array.from(container.querySelectorAll("section.panel")).find((panel) =>
+      panel.textContent?.includes("Credit pulse")
+    );
+    expect(creditPanel?.textContent).toContain("HY minus IG OAS");
+    expect(creditPanel?.textContent).toContain("Unavailable");
   });
 
   it("renders fragility shock risk route", async () => {
@@ -1845,21 +1997,20 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Mismatch warnings");
   });
 
-  it("renders tactical shock-risk overlay fallback counts with malformed snapshot arrays", async () => {
-    mockStaticFetch(routeFetchFiles({
-      "/data/derived/shock_risk_snapshot.json": malformedShockRiskSnapshot
-    }));
+  it("renders fragility active and candidate stress channel read", async () => {
+    mockStaticFetch(routeFetchFiles());
 
     const container = render(
-      <MemoryRouter initialEntries={["/tactical"]}>
+      <MemoryRouter initialEntries={["/fragility"]}>
         <App />
       </MemoryRouter>
     );
 
-    await waitForContent(container, "Tactical Trading Weather");
-    await waitForContent(container, "Fragility overlay");
-    expect(container.textContent).toContain("0 gated or unavailable source rows.");
-    expect(container.textContent).toContain("0 mismatch warning rows.");
+    await waitForContent(container, "Current Shock-Risk Read");
+    expect(container.textContent).toContain("Active stress channels");
+    expect(container.textContent).toContain("Candidate stress channels");
+    expect(container.textContent).toContain("MOVE");
+    expect(container.textContent).toContain("SKEW");
   });
 
   it("renders fragility route empty states with malformed snapshot arrays", async () => {
@@ -1892,7 +2043,20 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
 
-    await waitForContent(container, "Long-Term Macro Climate");
+    await waitForContent(container, "Long-Term Macro / Allocation Climate");
+    expect(container.textContent).toContain("Current Long-Term Read");
+    expect(container.textContent).toContain("Macro bucket grid");
+    expect(container.textContent).toContain("Strategic source gaps");
+    expect(container.textContent).toContain("PMIs");
+    expect(container.textContent).toContain("SLOOS");
+    expect(container.textContent).toContain("term premium");
+    expect(container.textContent).toContain("Treasury supply");
+    expect(container.textContent).toContain("valuation");
+    expect(container.textContent).toContain("earnings revisions");
+    const strategicRows = Array.from(container.querySelectorAll(".candidate-source-row"));
+    expect(strategicRows).toHaveLength(6);
+    expect(strategicRows.every((row) => row.getAttribute("role") === "listitem")).toBe(true);
+    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(6);
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
     expect(container.textContent).toContain("Consumer and production");
@@ -1901,6 +2065,55 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Credit cycle");
     expect(container.textContent).toContain("Liquidity cycle");
     expect(container.textContent).not.toContain("Not scored");
+  });
+
+  it("renders long-term read when strategic bucket scores are missing", async () => {
+    const scoreSummaryWithoutStrategicBuckets: ScoreSummaryFile = {
+      ...scoreSummary,
+      scores: {
+        ...scoreSummary.scores,
+        macro_climate: {
+          ...scoreSummary.scores.macro_climate,
+          bucket_scores: {
+            consumer_balance_sheet: -2,
+            consumer_production: 5,
+            growth: 6,
+            housing: 4,
+            inflation: -3,
+            labor: 2
+          },
+          bucket_weights: {
+            consumer_balance_sheet: 0.1,
+            consumer_production: 0.16,
+            growth: 0.18,
+            housing: 0.12,
+            inflation: 0.16,
+            labor: 0.18
+          }
+        }
+      }
+    };
+
+    mockStaticFetch(
+      routeFetchFiles({
+        "/data/derived/regime_snapshot.json": regimeSnapshot,
+        "/data/derived/score_summary.json": scoreSummaryWithoutStrategicBuckets
+      })
+    );
+
+    const container = render(
+      <MemoryRouter initialEntries={["/long-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Long-Term Macro / Allocation Climate");
+    expect(container.querySelector(".data-error")).toBeNull();
+    expect(container.textContent).toContain("Current Long-Term Read");
+
+    const factCards = Array.from(container.querySelectorAll(".horizon-header__facts .metric-card"));
+    const realYieldsFact = factCards.find((card) => card.textContent?.includes("Real yields"));
+    expect(realYieldsFact?.textContent).toContain("N/A");
   });
 
   it("renders the regime map route", async () => {
@@ -1919,6 +2132,21 @@ describe("data-backed routes", () => {
     await waitForContent(container, "TIPS x Dollar Regime Map");
     expect(container.textContent).toContain("Yield driver");
     expect(container.textContent).toContain("Cross-asset confirmation");
+  });
+
+  it("renders regime interpretation and conflict context", async () => {
+    mockStaticFetch(routeFetchFiles({ "/data/derived/regime_snapshot.json": regimeSnapshot }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/regime-map"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "TIPS x Dollar Regime Map");
+    expect(container.textContent).toContain("What confirms it");
+    expect(container.textContent).toContain("What conflicts with it");
+    expect(container.textContent).toContain("What weakens confidence");
   });
 
   it("renders the historical regime replay route with attribution", async () => {
