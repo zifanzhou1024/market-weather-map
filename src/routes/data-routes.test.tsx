@@ -2028,6 +2028,15 @@ describe("data-backed routes", () => {
     );
 
     await waitForContent(container, "Long-Term Macro / Allocation Climate");
+    expect(container.textContent).toContain("Current Long-Term Read");
+    expect(container.textContent).toContain("Macro bucket grid");
+    expect(container.textContent).toContain("Strategic source gaps");
+    expect(container.textContent).toContain("PMIs");
+    expect(container.textContent).toContain("SLOOS");
+    expect(container.textContent).toContain("term premium");
+    expect(container.textContent).toContain("Treasury supply");
+    expect(container.textContent).toContain("valuation");
+    expect(container.textContent).toContain("earnings revisions");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
     expect(container.textContent).toContain("Consumer and production");

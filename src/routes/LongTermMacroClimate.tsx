@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import HorizonScoreHeader from "../components/HorizonScoreHeader";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MacroCyclePanel from "../components/MacroCyclePanel";
 import MetricCard from "../components/MetricCard";
 import ScoreCard from "../components/ScoreCard";
+import StrategicSourceGapsPanel from "../components/StrategicSourceGapsPanel";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
 import {
   loadCatalog,
@@ -198,6 +200,15 @@ export default function LongTermMacroClimate() {
           <section className="score-grid" aria-label="Macro climate score">
             <ScoreCard score={data.scoreSummary.scores.macro_climate} title="Macro Climate" />
           </section>
+          <HorizonScoreHeader
+            eyebrow="Strategic read"
+            facts={longTermFacts(data.scoreSummary)}
+            risks={data.scoreSummary.scores.macro_climate.top_risks}
+            score={data.scoreSummary.scores.macro_climate}
+            summary="Slow macro data can influence allocation conditions over months or quarters, so this read emphasizes durable public-data pressure and support rather than trade timing."
+            supports={data.scoreSummary.scores.macro_climate.top_supports}
+            title="Current Long-Term Read"
+          />
           <InterpretationPanel
             label="Strategic regime summary"
             notes={data.scoreSummary.scores.macro_climate.missing_or_stale_notes}
@@ -211,19 +222,28 @@ export default function LongTermMacroClimate() {
             )}.`}
             supports={data.scoreSummary.scores.macro_climate.top_supports}
           />
-          <section className="macro-cycle-grid" aria-label="Strategic macro cycle panels">
-            {macroCyclePanels.map((panel) => (
-              <MacroCyclePanel
-                caveat={panel.caveat}
-                key={panel.title}
-                label={cycleLabel(bucketScoreValue(data.scoreSummary, panel.bucket))}
-                risks={panel.risks}
-                score={bucketScoreValue(data.scoreSummary, panel.bucket)}
-                supports={panel.supports}
-                title={panel.title}
-              />
-            ))}
+          <section className="route-stack" aria-labelledby="macro-bucket-grid-heading">
+            <div className="section-header">
+              <div>
+                <p className="eyebrow">Strategic buckets</p>
+                <h3 id="macro-bucket-grid-heading">Macro bucket grid</h3>
+              </div>
+            </div>
+            <section className="macro-cycle-grid" aria-label="Strategic macro cycle panels">
+              {macroCyclePanels.map((panel) => (
+                <MacroCyclePanel
+                  caveat={panel.caveat}
+                  key={panel.title}
+                  label={cycleLabel(bucketScoreValue(data.scoreSummary, panel.bucket))}
+                  risks={panel.risks}
+                  score={bucketScoreValue(data.scoreSummary, panel.bucket)}
+                  supports={panel.supports}
+                  title={panel.title}
+                />
+              ))}
+            </section>
           </section>
+          <StrategicSourceGapsPanel />
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
           {macroGroups.map((group) => (
             <section className="route-stack" key={group.label}>
@@ -277,6 +297,28 @@ function bucketScore(scoreSummary: ScoreSummaryFile, bucket: string) {
 
 function bucketScoreValue(scoreSummary: ScoreSummaryFile, bucket: string) {
   return scoreSummary.scores.macro_climate.bucket_scores[bucket];
+}
+
+function longTermFacts(scoreSummary: ScoreSummaryFile) {
+  const facts = [
+    { label: "Growth", value: bucketScore(scoreSummary, "growth") },
+    { label: "Labor", value: bucketScore(scoreSummary, "labor") },
+    { label: "Inflation", value: bucketScore(scoreSummary, "inflation") },
+    { label: "Real yields", value: bucketScore(scoreSummary, "real_yields") }
+  ];
+  const optionalBuckets = [
+    { bucket: "credit_cycle", label: "Credit cycle" },
+    { bucket: "liquidity_cycle", label: "Liquidity cycle" }
+  ];
+
+  optionalBuckets.forEach((item) => {
+    const score = bucketScoreValue(scoreSummary, item.bucket);
+    if (typeof score === "number" && Number.isFinite(score)) {
+      facts.push({ label: item.label, value: score.toFixed(1) });
+    }
+  });
+
+  return facts;
 }
 
 function cycleLabel(score: number | undefined) {
