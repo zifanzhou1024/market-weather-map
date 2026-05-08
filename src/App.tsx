@@ -6,6 +6,7 @@ import Credit from "./routes/Credit";
 import DollarGlobal from "./routes/DollarGlobal";
 import FragilityShockRisk from "./routes/FragilityShockRisk";
 import Growth from "./routes/Growth";
+import HistoricalRegimeReplay from "./routes/HistoricalRegimeReplay";
 import Housing from "./routes/Housing";
 import Inflation from "./routes/Inflation";
 import Liquidity from "./routes/Liquidity";
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/fragility" element={<FragilityShockRisk />} />
         <Route path="/macro-climate" element={<LongTermMacroClimate />} />
         <Route path="/regime-map" element={<RegimeMap />} />
+        <Route path="/replay" element={<HistoricalRegimeReplay />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/growth" element={<Growth />} />
         <Route path="/housing" element={<Housing />} />

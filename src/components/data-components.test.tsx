@@ -7,6 +7,8 @@ import CrossAssetConfirmationMatrix from "./CrossAssetConfirmationMatrix";
 import DataGapPanel from "./DataGapPanel";
 import DataStatusTable from "./DataStatusTable";
 import EventRiskPanel from "./EventRiskPanel";
+import DriverAttributionPanel from "./DriverAttributionPanel";
+import HistoricalRegimeReplayPanel from "./HistoricalRegimeReplayPanel";
 import HowToReadPanel from "./HowToReadPanel";
 import InterpretationPanel from "./InterpretationPanel";
 import MetricCard from "./MetricCard";
@@ -30,7 +32,9 @@ import YieldDecompositionChart from "./YieldDecompositionChart";
 import type {
   ConfidenceBreakdownData,
   DataStatusFile,
+  RegimeReplayFile,
   ScoreBlock,
+  ScoreHistoryFile,
   ShockRiskSnapshotFile,
   SeriesCatalogEntry,
   TimeSeriesFile
@@ -212,6 +216,84 @@ const shockRiskSnapshot: ShockRiskSnapshotFile = {
       label: "SKEW Index",
       message: "Candidate source requires access or terms review before scoring.",
       status: "terms_review_needed"
+    }
+  ]
+};
+
+const scoreHistory: ScoreHistoryFile = {
+  generated_at_utc: "2026-05-08T00:00:00Z",
+  latest_attribution: {
+    fragility: {
+      recent_changes: ["Dollar pressure increased."],
+      top_risks: ["Dollar pressure increased."],
+      top_supports: ["Liquidity remains stable."]
+    },
+    macro_climate: {
+      recent_changes: ["Growth breadth improved."],
+      top_risks: ["Inflation momentum remains sticky."],
+      top_supports: ["Growth breadth improved."]
+    },
+    market_weather: {
+      recent_changes: ["Volatility eased while rates pressure increased."],
+      top_risks: ["Rates pressure increased."],
+      top_supports: ["Volatility eased."]
+    }
+  },
+  method_version: "phase5-score-history-v1",
+  observations: [
+    {
+      date: "2026-04-30",
+      fragility: -6.1,
+      macro_climate: 7.4,
+      market_weather: 16.67
+    },
+    {
+      date: "2026-05-01",
+      fragility: -4.1,
+      macro_climate: 8.2,
+      market_weather: 19.17
+    }
+  ]
+};
+
+const regimeReplay: RegimeReplayFile = {
+  generated_at_utc: "2026-05-08T00:00:00Z",
+  method_version: "phase5-regime-replay-v1",
+  scenarios: [
+    {
+      caveat: "Historical regime occurrences are descriptive context, not forecasts.",
+      description: "Real yields rising, dollar rising, and credit or volatility pressure rising.",
+      id: "tightening_risk_off",
+      label: "Tightening / risk-off",
+      last_occurrence_date: "2026-05-01",
+      occurrence_count: 2,
+      occurrences: [
+        {
+          credit_20obs_change: 0.14,
+          date: "2026-04-30",
+          dollar_20obs_change: 1.2,
+          nominal_10y_20obs_change: 0.2,
+          real_yield_20obs_change: 0.18,
+          vix_curve_20obs_change: 0.03
+        },
+        {
+          credit_20obs_change: 0.2,
+          date: "2026-05-01",
+          dollar_20obs_change: 1.35,
+          nominal_10y_20obs_change: 0.26,
+          real_yield_20obs_change: 0.22,
+          vix_curve_20obs_change: 0.04
+        }
+      ]
+    },
+    {
+      caveat: "Historical regime occurrences are descriptive context, not forecasts.",
+      description: "Real yields falling, dollar falling, and credit or volatility pressure contained.",
+      id: "strong_risk_on",
+      label: "Strong risk-on",
+      last_occurrence_date: null,
+      occurrence_count: 0,
+      occurrences: []
     }
   ]
 };
@@ -954,5 +1036,31 @@ describe("data-driven components", () => {
 
     expect(container.textContent).toContain("VIX");
     expect(container.textContent).toContain("High yield spread");
+  });
+
+  it("renders score driver attribution with latest score changes", () => {
+    const container = render(<DriverAttributionPanel history={scoreHistory} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Why scores changed");
+    expect(text).toContain("Market Weather");
+    expect(text).toContain("+2.50");
+    expect(text).toContain("Volatility eased while rates pressure increased.");
+    expect(text).toContain("Inflation momentum remains sticky.");
+    expect(text.toLowerCase()).not.toMatch(/\b(buy|sell|short|entry|target|stop)\b/);
+  });
+
+  it("renders historical regime replay as descriptive context without forward returns", () => {
+    const container = render(<HistoricalRegimeReplayPanel replay={regimeReplay} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Historical regime replay");
+    expect(text).toContain("Tightening / risk-off");
+    expect(text).toContain("2 occurrences");
+    expect(text).toContain("2026-05-01");
+    expect(text).toContain("Real yield 20 obs");
+    expect(text).toContain("Historical regime occurrences are descriptive context, not forecasts.");
+    expect(text).not.toContain("Average SPY return");
+    expect(text).not.toContain("forward return");
   });
 });

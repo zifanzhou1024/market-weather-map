@@ -15,6 +15,7 @@ from scripts.transform.score_models import (
     score_block,
     weighted_score as weighted_three_score,
 )
+from scripts.transform.regime_replay import build_regime_replay
 
 
 WEIGHTS = {
@@ -1735,6 +1736,54 @@ def build_score_summary(
     }
 
 
+def _score_history_attribution(block: dict[str, Any]) -> dict[str, list[Any]]:
+    return {
+        "recent_changes": list(block.get("recent_changes", [])),
+        "top_risks": list(block.get("top_risks", [])),
+        "top_supports": list(block.get("top_supports", [])),
+    }
+
+
+def _existing_score_history_observations() -> list[dict[str, Any]]:
+    path = data_dir() / "derived" / "score_history.json"
+    if not path.exists():
+        return []
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return []
+    observations = payload.get("observations")
+    return list(observations) if isinstance(observations, list) else []
+
+
+def build_score_history(score_summary: dict[str, Any], generated_at: str) -> dict[str, Any]:
+    scores = score_summary.get("scores", {})
+    date = str(score_summary.get("date", generated_at[:10]))
+    current = {
+        "date": date,
+        "market_weather": float(scores["market_weather"]["score"]),
+        "macro_climate": float(scores["macro_climate"]["score"]),
+        "fragility": float(scores["fragility"]["score"]),
+    }
+    observations_by_date = {
+        str(observation.get("date")): dict(observation)
+        for observation in _existing_score_history_observations()
+        if isinstance(observation, dict) and isinstance(observation.get("date"), str)
+    }
+    observations_by_date[date] = current
+    observations = [observations_by_date[key] for key in sorted(observations_by_date)][-520:]
+    return {
+        "generated_at_utc": generated_at,
+        "method_version": "phase5-score-history-v1",
+        "observations": observations,
+        "latest_attribution": {
+            "market_weather": _score_history_attribution(scores["market_weather"]),
+            "macro_climate": _score_history_attribution(scores["macro_climate"]),
+            "fragility": _score_history_attribution(scores["fragility"]),
+        },
+    }
+
+
 def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_at: str) -> dict[str, Any]:
     if entry.get("access_status") == "unavailable" or entry.get("terms_status") == "restricted":
         return {
@@ -1956,8 +2005,12 @@ def main() -> None:
     status = build_status(series_by_id, generated_at)
     score_summary = build_score_summary(series_by_id, generated_at, status["series"])
     write_json(data_dir() / "derived" / "score_summary.json", score_summary)
+    score_history = build_score_history(score_summary, generated_at)
+    write_json(data_dir() / "derived" / "score_history.json", score_history)
     regime_snapshot = build_regime_snapshot(series_by_id, generated_at)
     write_json(data_dir() / "derived" / "regime_snapshot.json", regime_snapshot)
+    regime_replay = build_regime_replay(series_by_id, generated_at)
+    write_json(data_dir() / "derived" / "regime_replay.json", regime_replay)
     shock_risk_snapshot = build_shock_risk_snapshot(series_by_id, status["series"], generated_at)
     write_json(data_dir() / "derived" / "shock_risk_snapshot.json", shock_risk_snapshot)
 

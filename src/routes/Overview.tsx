@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ConfidenceBreakdown from "../components/ConfidenceBreakdown";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import DriverAttributionPanel from "../components/DriverAttributionPanel";
 import HowToReadPanel from "../components/HowToReadPanel";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
@@ -11,6 +12,7 @@ import {
   loadCatalog,
   loadDataStatus,
   loadDerivedSeries,
+  loadScoreHistory,
   loadScoreSummary,
   loadSeries
 } from "../lib/data";
@@ -18,6 +20,7 @@ import type {
   ConfidenceBreakdownData,
   DataStatusFile,
   DerivedSeriesFile,
+  ScoreHistoryFile,
   ScoreSummaryFile,
   SeriesCatalogEntry,
   TimeSeriesFile
@@ -34,6 +37,7 @@ const overviewSeriesIds = [
 
 interface OverviewState {
   catalog: SeriesCatalogEntry[];
+  scoreHistory: ScoreHistoryFile | null;
   scoreSummary: ScoreSummaryFile;
   status: DataStatusFile;
   series: Array<TimeSeriesFile | DerivedSeriesFile>;
@@ -114,9 +118,10 @@ export default function Overview() {
 
     async function loadOverview() {
       try {
-        const [catalog, scoreSummary, status, series] = await Promise.all([
+        const [catalog, scoreSummary, scoreHistory, status, series] = await Promise.all([
           loadCatalog(),
           loadScoreSummary(),
+          loadScoreHistory().catch(() => null),
           loadDataStatus(),
           Promise.all(
             overviewSeriesIds.map((seriesId) =>
@@ -125,7 +130,7 @@ export default function Overview() {
           )
         ]);
 
-        if (active) setData({ catalog, scoreSummary, status, series });
+        if (active) setData({ catalog, scoreHistory, scoreSummary, status, series });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load market data.");
       }
@@ -179,6 +184,7 @@ export default function Overview() {
                   <ScoreCard score={scoreSummary.scores.macro_climate} title="Macro Climate" />
                   <ScoreCard score={scoreSummary.scores.fragility} title="Fragility" />
                 </section>
+                {data.scoreHistory ? <DriverAttributionPanel history={data.scoreHistory} /> : null}
                 <InterpretationPanel
                   conflicts={conflictingSignals}
                   label={`${safeLabel(market.label)} market weather, ${safeLabel(macro.label)} macro climate, ${fragilityPhrase(fragility.label)}`}

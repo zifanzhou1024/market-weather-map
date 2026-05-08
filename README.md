@@ -15,6 +15,7 @@ The current project includes:
 - Phase 2 commodity, liquidity, and sentiment extensions.
 - Phase 5 PR 2 tactical source gates for options sentiment, VX futures readiness, and event risk.
 - Phase 5 PR 3 Fragility / Shock Risk view with a generated shock-risk snapshot from active inputs and source-readiness gaps.
+- Phase 5 PR 5 Historical Regime Replay view with descriptive prior-regime matches and score-driver attribution.
 
 The current project does not include:
 
@@ -77,6 +78,7 @@ Phase 5 direction:
 - Keep PR 2 tactical source gates descriptive: put/call categories, VX futures readiness, and event calendar families expose source gaps before any backend, credentials, or paid data are added.
 - Add PR 3 shock-risk source gates for MOVE and SKEW using the same candidate-row pattern: display source-readiness gaps before those inputs can affect scores, labels, or checklist states.
 - Use the Fragility / Shock Risk view to describe conflicts between active inputs, including cases where high candidate MOVE context with low VIX would indicate bond-volatility pressure that may not be visible in equity volatility.
+- Add PR 5 historical replay and score attribution from generated static artifacts. Replay matches prior real-yield, dollar, credit, and VIX-curve patterns; attribution explains the latest Market Weather, Macro Climate, and Fragility drivers.
 - Keep outputs descriptive and avoid trade recommendations.
 
 ## Data Access Status
