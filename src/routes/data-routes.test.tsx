@@ -1258,6 +1258,54 @@ describe("data-backed routes", () => {
     expect(text).toContain("Long-Term");
   });
 
+  it("routes every grouped navigation link to its page heading", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Overview");
+
+    const navExpectations = [
+      { label: "Overview", heading: "Overview" },
+      { label: "Short-Term", heading: "Short-Term Market Reaction" },
+      { label: "Long-Term", heading: "Long-Term Macro / Allocation Climate" },
+      { label: "Fragility", heading: "Fragility / Shock Risk" },
+      { label: "Regime Map", heading: "TIPS x Dollar Regime Map" },
+      { label: "Replay", heading: "Historical Regime Replay" },
+      { label: "Volatility", heading: "VIX state" },
+      { label: "Rates", heading: "Rates & Policy" },
+      { label: "Liquidity", heading: "Funding and balance sheet" },
+      { label: "Credit", heading: "Credit & Banking" },
+      { label: "Dollar", heading: "Dollar & Global" },
+      { label: "Commodities", heading: "Energy and grains" },
+      { label: "Growth", heading: "Growth" },
+      { label: "Housing", heading: "Housing" },
+      { label: "Inflation", heading: "Inflation" },
+      { label: "Positioning", heading: "Sentiment & Positioning" },
+      { label: "Calendar", heading: "Macro Calendar" },
+      { label: "Methodology", heading: "How the map works" }
+    ];
+
+    for (const expectation of navExpectations) {
+      const link = Array.from(container.querySelectorAll("nav a")).find(
+        (anchor) => anchor.textContent === expectation.label
+      );
+      expect(link, `Missing nav link ${expectation.label}`).toBeTruthy();
+
+      await act(async () => {
+        link?.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      await waitForContent(container, expectation.heading);
+      expect(container.querySelector("h2")?.textContent).toBe(expectation.heading);
+    }
+  });
+
   it("renders overview as a horizon decision hub", async () => {
     mockStaticFetch(routeFetchFiles());
 
