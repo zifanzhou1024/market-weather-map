@@ -49,9 +49,19 @@ describe("App routing", () => {
 
     expect(container.querySelector('a[href="/commodities"]')?.textContent).toBe("Commodities");
     expect(container.querySelector('a[href="/sentiment"]')?.textContent).toBe("Positioning");
-    expect(container.querySelector('a[href="/tactical"]')?.textContent).toBe("Tactical Trading Weather");
-    expect(container.querySelector('a[href="/macro-climate"]')?.textContent).toBe("Long-Term Macro Climate");
+    expect(container.querySelector('a[href="/tactical"]')?.textContent).toBe("Tactical");
+    expect(container.querySelector('a[href="/tactical"]')?.getAttribute("aria-label")).toBe(
+      "Tactical Trading Weather"
+    );
+    expect(container.querySelector('a[href="/macro-climate"]')?.textContent).toBe("Macro Climate");
+    expect(container.querySelector('a[href="/macro-climate"]')?.getAttribute("aria-label")).toBe(
+      "Long-Term Macro Climate"
+    );
     expect(container.querySelector('a[href="/regime-map"]')?.textContent).toBe("Regime Map");
+    expect(container.querySelector('a[href="/replay"]')?.textContent).toBe("Replay");
+    expect(container.querySelector('a[href="/replay"]')?.getAttribute("aria-label")).toBe(
+      "Historical Regime Replay"
+    );
   });
 
   it("redirects unknown routes to the overview", async () => {

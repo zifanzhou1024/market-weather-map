@@ -2,11 +2,11 @@ import { NavLink, Outlet } from "react-router-dom";
 
 const navItems = [
   { to: "/", label: "Overview" },
-  { to: "/tactical", label: "Tactical Trading Weather" },
+  { to: "/tactical", label: "Tactical", ariaLabel: "Tactical Trading Weather" },
   { to: "/fragility", label: "Fragility" },
-  { to: "/macro-climate", label: "Long-Term Macro Climate" },
+  { to: "/macro-climate", label: "Macro Climate", ariaLabel: "Long-Term Macro Climate" },
   { to: "/regime-map", label: "Regime Map" },
-  { to: "/replay", label: "Regime Replay" },
+  { to: "/replay", label: "Replay", ariaLabel: "Historical Regime Replay" },
   { to: "/calendar", label: "Calendar" },
   { to: "/volatility", label: "Volatility" },
   { to: "/rates", label: "Rates" },
@@ -34,6 +34,7 @@ export default function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
+              aria-label={item.ariaLabel}
               className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
               end={item.to === "/"}
             >

@@ -16,11 +16,11 @@ This file is PR 1 of the broader horizon/regime build. The continuous multi-PR h
 
 Subsequent plans:
 
-- [PR 2: Tactical Options + Event Risk Depth](./2026-05-07-pr2-tactical-options-event-risk.md)
-- [PR 3: Fragility Shock Risk](./2026-05-07-pr3-fragility-shock-risk.md)
-- [PR 4: Strategic Macro Completeness](./2026-05-07-pr4-strategic-macro-completeness.md)
-- [PR 5: Historical Regime Replay](./2026-05-07-pr5-regime-replay-research.md)
-- [PR 6: Watchlist + Threshold System](./2026-05-07-pr6-watchlist-thresholds.md)
+- [PR 2: Tactical Options + Event Risk Depth](./2026-05-07-pr2-tactical-options-event-risk.md) - merged.
+- [PR 3: Fragility Shock Risk](./2026-05-07-pr3-fragility-shock-risk.md) - merged.
+- [PR 4: Strategic Macro Completeness](./2026-05-07-pr4-strategic-macro-completeness.md) - merged.
+- [PR 5: Historical Regime Replay](./2026-05-07-pr5-regime-replay-research.md) - merged.
+- [PR 6: Watchlist + Threshold System](./2026-05-07-pr6-watchlist-thresholds.md) - deferred.
 
 ---
 
@@ -28,7 +28,7 @@ Subsequent plans:
 
 The audit describes multiple independent subsystems. Do not implement them as one large PR.
 
-Build order:
+Original build order:
 
 1. **PR 1: Horizon IA + Active-Data Regime Map**
    Add route/navigation structure, series metadata, derived active-data regime JSON, tactical checklist, TIPS x dollar quadrant, yield decomposition, and active-data VIX proxy view. No new external source families.
@@ -39,7 +39,9 @@ Build order:
 4. **PR 4: Long-Term Macro Climate Depth**
    Add valuation, term premium, Treasury supply, PMIs/SLOOS, consumer balance sheet, and housing/fiscal expansion as source-governed workstreams.
 5. **PR 5: Historical Regime Replay**
-   Add descriptive forward-return replay for selected historical regimes with clear non-predictive caveats.
+   Add descriptive historical replay for selected historical regimes with clear non-predictive caveats.
+
+Updated after PR 5: the next work should not default to PR 6. Prioritize UI stability, replay ergonomics, source-governed strategic data depth, and reliability hardening before browser-local threshold features.
 
 This plan details PR 1 because it is the highest-value slice that can ship with the current repository and active no-secret data.
 

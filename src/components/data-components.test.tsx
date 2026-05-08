@@ -978,6 +978,30 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Bonds-first / safe haven");
   });
 
+  it("places regime quadrant labels by dollar and real-yield sign", () => {
+    const container = render(
+      <RegimeQuadrantChart
+        trail={[
+          {
+            date: "2026-05-01",
+            dollar_change: 0.4,
+            real_yield_change: 0.2,
+            nominal_yield_change: 0.1,
+            vix_percentile: 40,
+            credit_change: 3
+          }
+        ]}
+      />
+    );
+
+    expect(container.querySelector(".quadrant-label--top-left")?.textContent).toBe("Reallocation / rotation");
+    expect(container.querySelector(".quadrant-label--top-right")?.textContent).toBe("Tightening / risk-off");
+    expect(container.querySelector(".quadrant-label--bottom-right")?.textContent).toBe(
+      "Bonds-first / safe haven"
+    );
+    expect(container.querySelector(".quadrant-label--bottom-left")?.textContent).toBe("Strong risk-on");
+  });
+
   it("configures regime quadrant numeric domains to include zero", () => {
     expect(domainIncludingZero([0.2, 0.5, 1.1])).toEqual([0, 1.1]);
     expect(domainIncludingZero([-1.1, -0.5, -0.2])).toEqual([-1.1, 0]);
@@ -1062,5 +1086,8 @@ describe("data-driven components", () => {
     expect(text).toContain("Historical regime occurrences are descriptive context, not forecasts.");
     expect(text).not.toContain("Average SPY return");
     expect(text).not.toContain("forward return");
+    expect(container.querySelector('[data-label="Real yield 20 obs"]')?.textContent).toBe("+0.22");
+    expect(container.querySelector('[data-label="Dollar 20 obs"]')?.textContent).toBe("+1.35");
+    expect(container.querySelector('[data-label="10Y nominal 20 obs"]')?.textContent).toBe("+0.26");
   });
 });

@@ -52,13 +52,13 @@ export default function RegimeQuadrantChart({
           <p className="eyebrow">Regime map</p>
           <h3>Dollar and real-yield quadrant</h3>
         </div>
-        <p>change</p>
+        <p>20-observation change</p>
       </div>
       <div className="quadrant-frame">
-        <span className="quadrant-label quadrant-label--top-left">Strong risk-on</span>
-        <span className="quadrant-label quadrant-label--top-right">Reallocation / rotation</span>
-        <span className="quadrant-label quadrant-label--bottom-right">Tightening / risk-off</span>
-        <span className="quadrant-label quadrant-label--bottom-left">Bonds-first / safe haven</span>
+        <span className="quadrant-label quadrant-label--top-left">Reallocation / rotation</span>
+        <span className="quadrant-label quadrant-label--top-right">Tightening / risk-off</span>
+        <span className="quadrant-label quadrant-label--bottom-right">Bonds-first / safe haven</span>
+        <span className="quadrant-label quadrant-label--bottom-left">Strong risk-on</span>
         {data.length ? (
           <ChartResponsiveContainer>
             <ScatterChart margin={{ bottom: 20, left: 0, right: 20, top: 20 }}>
