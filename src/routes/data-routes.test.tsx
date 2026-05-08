@@ -2048,6 +2048,9 @@ describe("data-backed routes", () => {
     await waitForContent(container, "Fragility / Shock Risk");
     expect(container.textContent).toContain("High data quality");
     expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
+    expect(container.textContent).toContain("Visible vs gated stress");
+    expect(container.textContent).toContain("Gated stress");
+    expect(container.textContent).toContain("Mismatch severity");
     expect(container.textContent).toContain("MOVE");
     expect(container.textContent).toContain("SKEW");
     expect(container.textContent).toContain("Mismatch warnings");

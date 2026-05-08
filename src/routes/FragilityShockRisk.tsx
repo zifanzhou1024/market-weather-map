@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DataGapPanel from "../components/DataGapPanel";
 import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
+import HiddenStressSummary from "../components/HiddenStressSummary";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MismatchWarningPanel from "../components/MismatchWarningPanel";
 import ScoreCard from "../components/ScoreCard";
@@ -94,6 +95,7 @@ export default function FragilityShockRisk() {
             shockSnapshot={data.shockSnapshot}
             status={data.status}
           />
+          <HiddenStressSummary shockSnapshot={data.shockSnapshot} />
           <InterpretationPanel
             caveats={data.scoreSummary.scores.fragility.missing_or_stale_notes}
             label={data.snapshot.regime.label}
