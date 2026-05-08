@@ -18,6 +18,7 @@ import ChartResponsiveContainer, { INITIAL_CHART_DIMENSION } from "./ChartRespon
 import MultiSeriesChart from "./MultiSeriesChart";
 import OptionsSentimentPanel from "./OptionsSentimentPanel";
 import PercentileBandChart from "./PercentileBandChart";
+import RegimeInterpretationPanel from "./RegimeInterpretationPanel";
 import RegimeQuadrantChart, { domainIncludingZero } from "./RegimeQuadrantChart";
 import RegimeBadge from "./RegimeBadge";
 import ScoreCard from "./ScoreCard";
@@ -32,9 +33,11 @@ import YieldDecompositionChart from "./YieldDecompositionChart";
 import type {
   ConfidenceBreakdownData,
   DataStatusFile,
+  RegimeSnapshotFile,
   RegimeReplayFile,
   ScoreBlock,
   ScoreHistoryFile,
+  ScoreSummaryFile,
   ShockRiskSnapshotFile,
   SeriesCatalogEntry,
   TimeSeriesFile
@@ -1089,5 +1092,35 @@ describe("data-driven components", () => {
     expect(container.querySelector('[data-label="Real yield 20 obs"]')?.textContent).toBe("+0.22");
     expect(container.querySelector('[data-label="Dollar 20 obs"]')?.textContent).toBe("+1.35");
     expect(container.querySelector('[data-label="10Y nominal 20 obs"]')?.textContent).toBe("+0.26");
+  });
+
+  it("renders regime interpretation empty states for malformed confirmation rows", () => {
+    const malformedSnapshot = {
+      regime: {
+        dollar_direction: "up",
+        label: "Tightening / risk-off",
+        nominal_yield_direction: "up",
+        tips_direction: "up",
+        yield_driver: "real_yield_driven"
+      },
+      confirmations: [
+        null,
+        { status: "confirming" },
+        { label: "Divergence without message", status: "divergent" },
+        { message: "Confirming message without label", status: "confirming" }
+      ]
+    } as unknown as RegimeSnapshotFile;
+    const scoreSummary = {
+      conflicting_signals: []
+    } as unknown as ScoreSummaryFile;
+
+    const container = render(<RegimeInterpretationPanel scoreSummary={scoreSummary} snapshot={malformedSnapshot} />);
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("No confirming regime signals in the current snapshot.");
+    expect(text).toContain("No conflicting regime signals in the current snapshot.");
+    expect(text).toContain("No weak-confidence regime signals in the current snapshot.");
+    expect(text).not.toContain("Divergence without message");
+    expect(text).not.toContain("Confirming message without label");
   });
 });

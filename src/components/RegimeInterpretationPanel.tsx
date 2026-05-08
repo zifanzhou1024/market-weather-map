@@ -11,6 +11,19 @@ function safeArray<T>(value: unknown): T[] {
   return Array.isArray(value) ? value : [];
 }
 
+function isUsableConfirmation(value: unknown): value is RegimeSnapshotFile["confirmations"][number] {
+  if (!value || typeof value !== "object") return false;
+  const confirmation = value as Partial<RegimeSnapshotFile["confirmations"][number]>;
+  return (
+    typeof confirmation.status === "string" &&
+    confirmation.status.trim().length > 0 &&
+    typeof confirmation.label === "string" &&
+    confirmation.label.trim().length > 0 &&
+    typeof confirmation.message === "string" &&
+    confirmation.message.trim().length > 0
+  );
+}
+
 function statusIncludes(status: unknown, terms: string[]) {
   const normalized = typeof status === "string" ? status.toLowerCase() : "";
   return terms.some((term) => normalized.includes(term));
@@ -21,7 +34,7 @@ function confirmationText(confirmation: RegimeSnapshotFile["confirmations"][numb
 }
 
 export default function RegimeInterpretationPanel({ scoreSummary, snapshot }: RegimeInterpretationPanelProps) {
-  const confirmations = safeArray<RegimeSnapshotFile["confirmations"][number]>(snapshot.confirmations);
+  const confirmations = safeArray<unknown>(snapshot.confirmations).filter(isUsableConfirmation);
   const confirmingSignals = confirmations
     .filter((confirmation) => statusIncludes(confirmation.status, ["confirm"]))
     .map(confirmationText);
