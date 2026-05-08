@@ -323,6 +323,13 @@ def validate_score_summary_file() -> None:
     if not isinstance(scores, dict) or set(scores) != {"market_weather", "macro_climate", "fragility"}:
         raise ValueError(f"{path} must contain exactly market_weather, macro_climate, and fragility scores")
 
+    conflicting_signals = payload.get("conflicting_signals")
+    if not isinstance(conflicting_signals, list):
+        raise ValueError(f"{path} conflicting_signals must be a list")
+    for signal in conflicting_signals:
+        if not isinstance(signal, str):
+            raise ValueError(f"{path} conflicting_signals items must be strings")
+
     for score_key, block in scores.items():
         if not isinstance(block, dict):
             raise ValueError(f"{path} {score_key} score block must be an object")
