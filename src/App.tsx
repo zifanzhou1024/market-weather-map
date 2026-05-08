@@ -24,9 +24,11 @@ export default function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Overview />} />
-        <Route path="/tactical" element={<TacticalTradingWeather />} />
+        <Route path="/short-term" element={<TacticalTradingWeather />} />
+        <Route path="/tactical" element={<Navigate to="/short-term" replace />} />
+        <Route path="/long-term" element={<LongTermMacroClimate />} />
+        <Route path="/macro-climate" element={<Navigate to="/long-term" replace />} />
         <Route path="/fragility" element={<FragilityShockRisk />} />
-        <Route path="/macro-climate" element={<LongTermMacroClimate />} />
         <Route path="/regime-map" element={<RegimeMap />} />
         <Route path="/replay" element={<HistoricalRegimeReplay />} />
         <Route path="/calendar" element={<Calendar />} />

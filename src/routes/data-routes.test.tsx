@@ -40,6 +40,14 @@ function render(element: React.ReactNode) {
   return container;
 }
 
+function unmountRendered(container: HTMLElement) {
+  if (root) {
+    act(() => root?.unmount());
+    root = undefined;
+  }
+  container.remove();
+}
+
 async function waitForContent(container: HTMLElement, text: string) {
   for (let attempt = 0; attempt < 20; attempt += 1) {
     await act(async () => {
@@ -1156,6 +1164,63 @@ afterEach(() => {
 });
 
 describe("data-backed routes", () => {
+  it("renders canonical short-term and long-term horizon routes", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const shortTerm = render(
+      <MemoryRouter initialEntries={["/short-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(shortTerm, "Short-Term Market Reaction");
+
+    unmountRendered(shortTerm);
+
+    const longTerm = render(
+      <MemoryRouter initialEntries={["/long-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(longTerm, "Long-Term Macro / Allocation Climate");
+  });
+
+  it("keeps tactical and macro-climate deep links compatible", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const tactical = render(
+      <MemoryRouter initialEntries={["/tactical"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(tactical, "Short-Term Market Reaction");
+
+    unmountRendered(tactical);
+
+    const macro = render(
+      <MemoryRouter initialEntries={["/macro-climate"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(macro, "Long-Term Macro / Allocation Climate");
+  });
+
+  it("renders grouped navigation with primary views before the data library", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Primary Views");
+    const text = container.textContent ?? "";
+    expect(text.indexOf("Primary Views")).toBeLessThan(text.indexOf("Data Library"));
+    expect(text.indexOf("Data Library")).toBeLessThan(text.indexOf("Reference"));
+    expect(text).toContain("Short-Term");
+    expect(text).toContain("Long-Term");
+  });
+
   it("renders the three-score overview without legacy weather score duplication", async () => {
     mockStaticFetch(overviewFetchFiles());
 
@@ -1804,7 +1869,7 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
 
-    await waitForContent(container, "Tactical Trading Weather");
+    await waitForContent(container, "Short-Term Market Reaction");
     expect(container.textContent).toContain("Daily checklist");
     expect(container.textContent).toContain("VIX term-structure proxy");
     expect(container.textContent).toContain("Options sentiment");
@@ -1856,7 +1921,7 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
 
-    await waitForContent(container, "Tactical Trading Weather");
+    await waitForContent(container, "Short-Term Market Reaction");
     await waitForContent(container, "Fragility overlay");
     expect(container.textContent).toContain("0 gated or unavailable source rows.");
     expect(container.textContent).toContain("0 mismatch warning rows.");
@@ -1892,7 +1957,7 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
 
-    await waitForContent(container, "Long-Term Macro Climate");
+    await waitForContent(container, "Long-Term Macro / Allocation Climate");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
     expect(container.textContent).toContain("Consumer and production");

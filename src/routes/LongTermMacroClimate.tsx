@@ -185,7 +185,7 @@ export default function LongTermMacroClimate() {
     <main className="page-shell">
       <section className="page-heading">
         <p className="eyebrow">Strategic</p>
-        <h2>Long-Term Macro Climate</h2>
+        <h2>Long-Term Macro / Allocation Climate</h2>
         <p>Macro Climate score, strategic bucket context, and yield-decomposition history.</p>
       </section>
       {error ? (

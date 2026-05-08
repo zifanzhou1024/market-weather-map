@@ -197,8 +197,8 @@ export default function TacticalTradingWeather() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow">Tactical</p>
-        <h2>Tactical Trading Weather</h2>
+        <p className="eyebrow">Tactical Trading Weather</p>
+        <h2>Short-Term Market Reaction</h2>
         <p>Current regime, volatility curve, credit, dollar, real-yield, and liquidity inputs.</p>
       </section>
       {error ? (
