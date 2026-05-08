@@ -40,6 +40,14 @@ function render(element: React.ReactNode) {
   return container;
 }
 
+function renderOverview() {
+  return render(
+    <MemoryRouter initialEntries={["/"]}>
+      <Overview />
+    </MemoryRouter>
+  );
+}
+
 function unmountRendered(container: HTMLElement) {
   if (root) {
     act(() => root?.unmount());
@@ -120,8 +128,10 @@ function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
       },
       units: "USD billions"
     } satisfies DerivedSeriesFile,
+    "/data/derived/regime_snapshot.json": regimeSnapshot,
     "/data/derived/score_history.json": scoreHistory,
     "/data/derived/score_summary.json": scoreSummaryFile,
+    "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
     "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
     "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
     "/data/series/us10y.json": seriesFile("us10y", 4.2),
@@ -1241,6 +1251,36 @@ describe("data-backed routes", () => {
     expect(text).toContain("Long-Term");
   });
 
+  it("renders overview as a horizon decision hub", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Short-Term Market Reaction");
+    expect(container.textContent).toContain("Long-Term Macro / Allocation Climate");
+    expect(container.textContent).toContain("Fragility / Shock Risk");
+    expect(container.textContent).toContain("TIPS x Dollar Regime Map");
+    expect(container.textContent).toContain("Short-Term Impact");
+    expect(container.textContent).toContain("Long-Term Impact");
+  });
+
+  it("renders overview when score history is unavailable", async () => {
+    mockStaticFetch(routeFetchFiles({ "/data/derived/score_history.json": undefined }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Short-Term Market Reaction");
+    expect(container.textContent).toContain("Data quality");
+  });
+
   it("renders the three-score overview without legacy weather score duplication", async () => {
     mockStaticFetch(overviewFetchFiles());
 
@@ -1291,7 +1331,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Recent changes");
 
     expect(container.textContent).toContain("No recent changes in the current score summary.");
@@ -1308,7 +1348,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Data confidence");
 
     expect(container.textContent).toContain("0% overall");
@@ -1321,7 +1361,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Data confidence");
 
     expect(container.textContent).toContain("0% overall");
@@ -1346,7 +1386,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Current regime read");
 
     expect(container.textContent).toContain("unknown market weather");
@@ -1367,7 +1407,7 @@ describe("data-backed routes", () => {
 
     mockStaticFetch(overviewFetchFiles(lowFragilityScoreSummary));
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Current regime read");
 
     expect(container.textContent).toContain("low fragility");
@@ -1379,7 +1419,7 @@ describe("data-backed routes", () => {
     delete files["/data/derived/score_summary.json"];
     mockStaticFetch(files);
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Data error:");
 
     expect(container.querySelector(".data-error")?.getAttribute("role")).toBe("alert");
@@ -1409,7 +1449,9 @@ describe("data-backed routes", () => {
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
       "/data/derived/net_liquidity.json": netLiquidity,
+      "/data/derived/regime_snapshot.json": regimeSnapshot,
       "/data/derived/score_summary.json": scoreSummary,
+      "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
       "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
       "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
       "/data/series/us10y.json": seriesFile("us10y", 4.2),
@@ -1418,7 +1460,7 @@ describe("data-backed routes", () => {
       "/data/status/data_status.json": status
     });
 
-    const container = render(<Overview />);
+    const container = renderOverview();
     await waitForContent(container, "Net liquidity proxy");
 
     expect(container.textContent).toContain("Net liquidity proxy");

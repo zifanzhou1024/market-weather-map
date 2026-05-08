@@ -232,6 +232,26 @@ select {
   margin-bottom: 20px;
 }
 
+.decision-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.decision-impact-labels {
+  color: #607066;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  font-weight: 700;
+  gap: 1rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.overview-data-quality-label {
+  margin: 0 0 0.5rem;
+}
+
 .macro-cycle-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
