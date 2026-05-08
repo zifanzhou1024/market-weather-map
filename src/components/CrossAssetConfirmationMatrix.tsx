@@ -24,6 +24,10 @@ function formatConfirmationStatus(value: string) {
   return value === "terms_review_needed" ? "Terms review needed" : formatStateLabel(value);
 }
 
+function statusClassName(item: ConfirmationItem & { candidateOnly?: boolean }) {
+  return item.candidateOnly ? `status-${normalizeConfirmationKey(item.status)}` : "status-partial";
+}
+
 export default function CrossAssetConfirmationMatrix({
   candidateItems = [],
   items
@@ -76,7 +80,7 @@ export default function CrossAssetConfirmationMatrix({
               <h4>{item.label}</h4>
               <p>{removeAdviceTerms(item.message)}</p>
             </div>
-            <span className="status-pill status-partial">{formatConfirmationStatus(item.status)}</span>
+            <span className={`status-pill ${statusClassName(item)}`}>{formatConfirmationStatus(item.status)}</span>
           </article>
         ))}
       </div>

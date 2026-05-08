@@ -1034,6 +1034,7 @@ describe("data-driven components", () => {
     expect(rows[0]?.textContent).toContain("Credit");
     expect(rows[1]?.textContent).toContain("MOVE");
     expect(rows[1]?.classList.contains("candidate-only")).toBe(true);
+    expect(rows[1]?.querySelector(".status-pill")?.classList.contains("status-terms_review_needed")).toBe(true);
     expect(text.indexOf("Credit")).toBeLessThan(text.indexOf("MOVE"));
     expect(text).toContain("Terms review needed");
   });

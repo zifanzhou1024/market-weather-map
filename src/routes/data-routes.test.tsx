@@ -2193,6 +2193,9 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Gold / XAU");
     expect(container.textContent).toContain("MOVE");
     expect(container.textContent).toContain("Terms review needed");
+    expect(container.textContent).toContain("Duration-bond confirmation");
+    expect(container.textContent).not.toContain("signal-duration");
+    expect(container.textContent).not.toContain("signal-bond");
   });
 
   it("renders regime interpretation and conflict context", async () => {

@@ -28,7 +28,7 @@ const candidateConfirmationRows = [
   {
     id: "long_duration_bonds",
     label: "Long-duration bonds",
-    message: "Long-bond confirmation remains display-only until source coverage is formalized.",
+    message: "Duration-bond confirmation remains display-only until source coverage is formalized.",
     status: "terms_review_needed"
   },
   {
