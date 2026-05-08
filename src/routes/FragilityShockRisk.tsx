@@ -16,6 +16,7 @@ import {
   loadScoreSummary,
   loadShockRiskSnapshot
 } from "../lib/data";
+import { sanitizeShockRiskSnapshot } from "../lib/shockRisk";
 import type {
   DataStatusFile,
   RegimeSnapshotFile,
@@ -59,7 +60,9 @@ export default function FragilityShockRisk() {
           loadDataStatus(),
           loadCatalog()
         ]);
-        if (active) setData({ catalog, scoreSummary, shockSnapshot, snapshot, status });
+        if (active) {
+          setData({ catalog, scoreSummary, shockSnapshot: sanitizeShockRiskSnapshot(shockSnapshot), snapshot, status });
+        }
       } catch (loadError) {
         if (active) {
           setError(loadError instanceof Error ? loadError.message : "Unable to load fragility shock risk.");

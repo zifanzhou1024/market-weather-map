@@ -1174,6 +1174,80 @@ const malformedShockRiskSnapshot = {
   mismatch_warnings: { id: "not-array" }
 } as unknown as ShockRiskSnapshotFile;
 
+const malformedShockRiskRowSnapshot = {
+  ...shockRiskSnapshot,
+  active_signals: [
+    null,
+    {
+      change: "not-a-number",
+      id: "valid_active",
+      label: "Valid active stress",
+      message: "First active signal message.",
+      score: undefined,
+      value: Number.NaN
+    },
+    {
+      change: 2.1,
+      id: "valid_active",
+      label: "Duplicate active stress",
+      message: "Duplicate active signal message.",
+      score: -1,
+      value: 20
+    },
+    {
+      change: 1.2,
+      id: "missing_message",
+      label: "Missing active message",
+      score: -2,
+      value: 21
+    }
+  ],
+  mismatch_warnings: [
+    null,
+    {
+      id: "valid_warning",
+      label: "Valid warning",
+      message: "First warning message."
+    },
+    {
+      id: "valid_warning",
+      label: "Duplicate warning",
+      message: "Duplicate warning message."
+    },
+    {
+      id: "missing_warning_message",
+      label: "Missing warning message"
+    }
+  ],
+  source_gaps: [
+    null,
+    {
+      id: "valid_partial_gap",
+      label: "Valid partial gated stress",
+      message: "Partial source gap should remain visible.",
+      status: "partial"
+    },
+    {
+      id: "valid_partial_gap",
+      label: "Duplicate partial gated stress",
+      message: "Duplicate partial source gap message.",
+      status: "unavailable"
+    },
+    {
+      id: "restricted_gap",
+      label: "Restricted gated stress",
+      message: "Restricted source gap should be dropped.",
+      status: "restricted"
+    },
+    {
+      id: "release_window_gap",
+      label: "Release-window gated stress",
+      message: "Release-window source gap should be dropped.",
+      status: "release_window_ok"
+    }
+  ]
+} as unknown as ShockRiskSnapshotFile;
+
 afterEach(() => {
   if (root) {
     act(() => root?.unmount());
@@ -2087,6 +2161,40 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("No active shock-risk signals in the current snapshot.");
     expect(container.textContent).toContain("No shock-risk source gaps in the current snapshot.");
     expect(container.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
+  });
+
+  it("sanitizes malformed fragility shock-risk rows before rendering children", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": malformedShockRiskRowSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/fragility"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("Valid active stress");
+    expect(container.textContent).toContain("First active signal message.");
+    expect(container.textContent).toContain("Score N/A");
+    expect(container.textContent).not.toContain("Duplicate active stress");
+    expect(container.textContent).not.toContain("Duplicate active signal message.");
+    expect(container.textContent).not.toContain("Missing active message");
+
+    expect(container.textContent).toContain("Valid partial gated stress");
+    expect(container.textContent).toContain("Partial source gap should remain visible.");
+    expect(container.textContent).toContain("Partial");
+    expect(container.textContent).not.toContain("Duplicate partial gated stress");
+    expect(container.textContent).not.toContain("Duplicate partial source gap message.");
+    expect(container.textContent).not.toContain("Restricted gated stress");
+    expect(container.textContent).not.toContain("Release-window gated stress");
+
+    expect(container.textContent).toContain("Valid warning");
+    expect(container.textContent).toContain("First warning message.");
+    expect(container.textContent).not.toContain("Duplicate warning");
+    expect(container.textContent).not.toContain("Duplicate warning message.");
+    expect(container.textContent).not.toContain("Missing warning message");
   });
 
   it("renders long-term macro climate from current score summary", async () => {

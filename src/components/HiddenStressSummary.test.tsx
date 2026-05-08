@@ -152,13 +152,19 @@ describe("HiddenStressSummary", () => {
           id: "valid_gap",
           label: "Valid gated stress",
           message: "First gated stress message.",
-          status: "restricted"
+          status: "partial"
         },
         {
           id: "valid_gap",
           label: "Duplicate gated stress",
           message: "Duplicate gated stress message.",
           status: "unavailable"
+        },
+        {
+          id: "restricted_gap",
+          label: "Restricted gated stress",
+          message: "Restricted gated stress message.",
+          status: "restricted"
         },
         {
           id: "invalid_status_gap",
@@ -182,6 +188,8 @@ describe("HiddenStressSummary", () => {
     expect(container.textContent).toContain("First gated stress message.");
     expect(container.textContent).not.toContain("Duplicate gated stress");
     expect(container.textContent).not.toContain("Duplicate gated stress message.");
+    expect(container.textContent).not.toContain("Restricted gated stress");
+    expect(container.textContent).not.toContain("Restricted gated stress message.");
     expect(container.textContent).not.toContain("Invalid status gated stress");
     expect(container.textContent).not.toContain("Invalid status gated stress message.");
     expect(container.textContent).not.toContain("Missing label gated stress message.");

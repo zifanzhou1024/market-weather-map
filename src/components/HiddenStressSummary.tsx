@@ -1,7 +1,10 @@
+import { statusLabel } from "../lib/formatters";
+import { sanitizeShockRiskSnapshot } from "../lib/shockRisk";
 import type {
-  ShockRiskMismatchWarning,
+  DataStatus,
   ShockRiskSignal,
   ShockRiskSnapshotFile,
+  ShockRiskMismatchWarning,
   ShockRiskSourceGap
 } from "../lib/types";
 
@@ -13,17 +16,8 @@ interface GatedStressRow {
   id: string;
   label: string;
   message: string;
-  status: SourceGapStatus;
+  status: DataStatus;
 }
-
-type SourceGapStatus =
-  | "ok"
-  | "stale"
-  | "release_window_ok"
-  | "terms_review_needed"
-  | "restricted"
-  | "unavailable"
-  | "failed";
 
 const defaultGatedRows: GatedStressRow[] = [
   {
@@ -64,75 +58,7 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-function sourceGapStatus(value: unknown): SourceGapStatus | null {
-  const validStatuses = new Set([
-    "ok",
-    "stale",
-    "release_window_ok",
-    "terms_review_needed",
-    "restricted",
-    "unavailable",
-    "failed"
-  ]);
-
-  return isNonEmptyString(value) && validStatuses.has(value) ? (value as SourceGapStatus) : null;
-}
-
-function sourceGapStatusLabel(status: SourceGapStatus) {
-  const labels: Record<SourceGapStatus, string> = {
-    ok: "OK",
-    stale: "Stale",
-    release_window_ok: "Release Window OK",
-    terms_review_needed: "Terms Review Needed",
-    restricted: "Restricted",
-    unavailable: "Unavailable",
-    failed: "Failed"
-  };
-
-  return labels[status];
-}
-
-function activeSignalRows(activeSignals: unknown[]) {
-  const rows: Pick<ShockRiskSignal, "id" | "label" | "message">[] = [];
-  const seenIds = new Set<string>();
-
-  for (const row of activeSignals) {
-    if (!isRecord(row) || !isNonEmptyString(row.id) || !isNonEmptyString(row.label) || !isNonEmptyString(row.message)) {
-      continue;
-    }
-    if (seenIds.has(row.id)) continue;
-    rows.push({
-      id: row.id,
-      label: row.label,
-      message: row.message
-    });
-    seenIds.add(row.id);
-  }
-
-  return rows;
-}
-
-function warningRows(warnings: unknown[]) {
-  const rows: ShockRiskMismatchWarning[] = [];
-  const seenIds = new Set<string>();
-
-  for (const row of warnings) {
-    if (!isRecord(row) || !isNonEmptyString(row.id) || !isNonEmptyString(row.label) || !isNonEmptyString(row.message)) {
-      continue;
-    }
-    if (seenIds.has(row.id)) continue;
-    rows.push({
-      id: row.id,
-      label: row.label,
-      message: row.message
-    });
-    seenIds.add(row.id);
-  }
-
-  return rows;
-}
-
-function gatedRows(sourceGaps: unknown[]) {
+function gatedRows(sourceGaps: ShockRiskSourceGap[]) {
   const rows: GatedStressRow[] = [];
   const seenIds = new Set<string>();
 
@@ -140,13 +66,12 @@ function gatedRows(sourceGaps: unknown[]) {
     if (!isRecord(gap) || !isNonEmptyString(gap.id) || !isNonEmptyString(gap.label) || !isNonEmptyString(gap.message)) {
       continue;
     }
-    const status = sourceGapStatus(gap.status);
-    if (!status || seenIds.has(gap.id)) continue;
+    if (seenIds.has(gap.id)) continue;
     rows.push({
       id: gap.id,
       label: gap.label,
       message: gap.message,
-      status
+      status: gap.status
     });
     seenIds.add(gap.id);
   }
@@ -174,9 +99,10 @@ function mismatchSeverity(message: string) {
 }
 
 export default function HiddenStressSummary({ shockSnapshot }: HiddenStressSummaryProps) {
-  const visibleRows = activeSignalRows(safeArray<unknown>(shockSnapshot.active_signals));
-  const sourceGaps = safeArray<ShockRiskSourceGap>(shockSnapshot.source_gaps);
-  const warnings = warningRows(safeArray<unknown>(shockSnapshot.mismatch_warnings));
+  const sanitizedSnapshot = sanitizeShockRiskSnapshot(shockSnapshot);
+  const visibleRows = safeArray<ShockRiskSignal>(sanitizedSnapshot.active_signals);
+  const sourceGaps = safeArray<ShockRiskSourceGap>(sanitizedSnapshot.source_gaps);
+  const warnings = safeArray<ShockRiskMismatchWarning>(sanitizedSnapshot.mismatch_warnings);
   const gatedStressRows = gatedRows(sourceGaps);
 
   return (
@@ -212,7 +138,7 @@ export default function HiddenStressSummary({ shockSnapshot }: HiddenStressSumma
             <ul>
               {gatedStressRows.map((row) => (
                 <li key={row.id}>
-                  <strong>{row.label}</strong>: {row.message} ({sourceGapStatusLabel(row.status)})
+                  <strong>{row.label}</strong>: {row.message} ({statusLabel(row.status)})
                 </li>
               ))}
             </ul>
