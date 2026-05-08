@@ -952,8 +952,8 @@ const scoreSummary: ScoreSummaryFile = {
     freshness_confidence: 0.7,
     model_confidence: 0.75,
     source_confidence: 0.68,
-    overall_confidence: 0.73,
-    reasons: ["Sentiment coverage is limited to public CFTC positioning."]
+    overall_confidence: 0.92,
+    reasons: ["Treasury/bond volatility source is not active."]
   }
 };
 
@@ -1193,6 +1193,8 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
     await waitForContent(shortTerm, "Short-Term Market Reaction");
+    expect(shortTerm.textContent).toContain("High data quality");
+    expect(shortTerm.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(shortTerm.textContent).toContain("Current Tactical Read");
     expect(shortTerm.textContent).toContain("Volatility term-structure");
     expect(shortTerm.textContent).toContain("Credit pulse");
@@ -1209,6 +1211,8 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
     await waitForContent(longTerm, "Long-Term Macro / Allocation Climate");
+    expect(longTerm.textContent).toContain("High data quality");
+    expect(longTerm.textContent).toContain("Treasury/bond volatility source is not active.");
   });
 
   it("keeps tactical and macro-climate deep links compatible", async () => {
@@ -1347,6 +1351,8 @@ describe("data-backed routes", () => {
 
     await waitForContent(container, "Macro Climate");
 
+    expect(container.textContent).toContain("High data quality");
+    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Fragility");
     expect(container.textContent).toContain("Data confidence");
@@ -2040,6 +2046,8 @@ describe("data-backed routes", () => {
     );
 
     await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("High data quality");
+    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(container.textContent).toContain("MOVE");
     expect(container.textContent).toContain("SKEW");
     expect(container.textContent).toContain("Mismatch warnings");
@@ -2178,6 +2186,8 @@ describe("data-backed routes", () => {
     );
 
     await waitForContent(container, "TIPS x Dollar Regime Map");
+    expect(container.textContent).toContain("High data quality");
+    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(container.textContent).toContain("Yield driver");
     expect(container.textContent).toContain("Cross-asset confirmation");
   });

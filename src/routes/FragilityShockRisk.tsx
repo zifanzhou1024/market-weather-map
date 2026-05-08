@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import DataGapPanel from "../components/DataGapPanel";
+import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MismatchWarningPanel from "../components/MismatchWarningPanel";
@@ -86,6 +87,7 @@ export default function FragilityShockRisk() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <ShockRiskReadHeader
             catalog={data.catalog}
             scoreSummary={data.scoreSummary}

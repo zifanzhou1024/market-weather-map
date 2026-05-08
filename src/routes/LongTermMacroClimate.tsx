@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import DataGapPanel from "../components/DataGapPanel";
+import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
 import HorizonScoreHeader from "../components/HorizonScoreHeader";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -197,6 +198,7 @@ export default function LongTermMacroClimate() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <section className="score-grid" aria-label="Macro climate score">
             <ScoreCard score={data.scoreSummary.scores.macro_climate} title="Macro Climate" />
           </section>

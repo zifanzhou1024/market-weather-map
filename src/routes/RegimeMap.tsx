@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
+import DataQualityBanner from "../components/DataQualityBanner";
 import RegimeInterpretationPanel from "../components/RegimeInterpretationPanel";
 import RegimeQuadrantChart from "../components/RegimeQuadrantChart";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
@@ -68,6 +69,7 @@ export default function RegimeMap() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <RegimeInterpretationPanel scoreSummary={data.scoreSummary} snapshot={data.snapshot} />
           <section className="metric-grid" aria-label="Regime direction cards">
             <DirectionCard direction={data.snapshot.regime.tips_direction} label="TIPS direction" />
