@@ -1,0 +1,61 @@
+{
+  "generated_at_utc": "2026-05-08T00:17:53Z",
+  "latest_attribution": {
+    "fragility": {
+      "recent_changes": [
+        "Credit spread pressure is contained.",
+        "The dollar backdrop is easing."
+      ],
+      "top_risks": [],
+      "top_supports": [
+        "Credit spread pressure is contained.",
+        "The dollar backdrop is easing.",
+        "Volatility term structure is calm."
+      ]
+    },
+    "macro_climate": {
+      "recent_changes": [
+        "Inflation pressure remains elevated.",
+        "Real yields are elevated.",
+        "Consumer and production inputs are firm.",
+        "Growth inputs are supportive."
+      ],
+      "top_risks": [
+        "Inflation pressure remains elevated.",
+        "Real yields are elevated."
+      ],
+      "top_supports": [
+        "Consumer and production inputs are firm.",
+        "Growth inputs are supportive.",
+        "Consumer balance-sheet stress is contained."
+      ]
+    },
+    "market_weather": {
+      "recent_changes": [
+        "Commodity inflation impulse is elevated.",
+        "Real yields are elevated.",
+        "The broad dollar backdrop is easing.",
+        "Credit spread pressure is contained."
+      ],
+      "top_risks": [
+        "Commodity inflation impulse is elevated.",
+        "Real yields are elevated.",
+        "Leveraged-money S&P 500 positioning is crowded."
+      ],
+      "top_supports": [
+        "The broad dollar backdrop is easing.",
+        "Credit spread pressure is contained.",
+        "Volatility tail risk is contained."
+      ]
+    }
+  },
+  "method_version": "phase5-score-history-v1",
+  "observations": [
+    {
+      "date": "2026-05-07",
+      "fragility": 39.47,
+      "macro_climate": 14.44,
+      "market_weather": 7.18
+    }
+  ]
+}

@@ -13,6 +13,7 @@
 - Active labels, scores, and checklists do not include candidate sources before source review is complete.
 - PR 3 shock-risk output is descriptive. It summarizes active inputs and source-readiness gaps; it does not provide forecasts, instructions, or decision guidance.
 - PR 4 consumer balance-sheet output uses lagged quarterly FRED data, so it can miss fast changes between releases.
+- PR 5 historical replay is descriptive pattern history only. It does not include performance projections, hit rates, or trade guidance.
 
 ## Source Limitations
 
@@ -47,4 +48,5 @@
 - Release-aware freshness reduces false stale flags for monthly and quarterly data, but it still depends on configured cadence assumptions.
 - Expected release-window notes mean the source may be behaving normally; they do not mean the latest economic observation is current in a real-time sense.
 - Confidence decomposition makes stale, missing, candidate, and thin-model inputs visible, but it does not turn descriptive scores into forecasts.
-- Historical replay, valuation features, and watchlists are later-phase work and are not part of PR 1 horizon-regime scoring.
+- Score attribution explains generated score drivers, but it does not prove causality or rank future market outcomes.
+- Valuation features and watchlists are later-phase work and are not part of PR 1 horizon-regime scoring.

@@ -249,6 +249,55 @@ export interface RegimeSnapshotFile {
   }>;
 }
 
+export interface RegimeReplayOccurrence {
+  date: string;
+  real_yield_20obs_change: number;
+  dollar_20obs_change: number;
+  credit_20obs_change: number;
+  vix_curve_20obs_change: number;
+  nominal_10y_20obs_change: number;
+}
+
+export interface RegimeReplayScenario {
+  id: string;
+  label: string;
+  description: string;
+  occurrence_count: number;
+  last_occurrence_date: string | null;
+  occurrences: RegimeReplayOccurrence[];
+  caveat: string;
+}
+
+export interface RegimeReplayFile {
+  generated_at_utc: string;
+  method_version: string;
+  scenarios: RegimeReplayScenario[];
+}
+
+export interface ScoreHistoryObservation {
+  date: string;
+  market_weather: number;
+  macro_climate: number;
+  fragility: number;
+}
+
+export interface ScoreHistoryAttributionBlock {
+  recent_changes: string[];
+  top_risks: string[];
+  top_supports: string[];
+}
+
+export interface ScoreHistoryFile {
+  generated_at_utc: string;
+  method_version: string;
+  observations: ScoreHistoryObservation[];
+  latest_attribution: {
+    market_weather: ScoreHistoryAttributionBlock;
+    macro_climate: ScoreHistoryAttributionBlock;
+    fragility: ScoreHistoryAttributionBlock;
+  };
+}
+
 export interface ShockRiskSignal {
   id: string;
   label: string;

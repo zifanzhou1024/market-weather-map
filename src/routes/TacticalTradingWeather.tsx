@@ -3,6 +3,7 @@ import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import DriverAttributionPanel from "../components/DriverAttributionPanel";
 import EventRiskPanel from "../components/EventRiskPanel";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
@@ -16,6 +17,7 @@ import {
   loadCatalog,
   loadDataStatus,
   loadRegimeSnapshot,
+  loadScoreHistory,
   loadScoreSummary,
   loadShockRiskSnapshot
 } from "../lib/data";
@@ -23,6 +25,7 @@ import type {
   DataStatusFile,
   DerivedSeriesFile,
   RegimeSnapshotFile,
+  ScoreHistoryFile,
   ScoreSummaryFile,
   ShockRiskSnapshotFile,
   SeriesCatalogEntry,
@@ -68,6 +71,7 @@ const tacticalStatusIds = [
 interface RouteState {
   catalog: SeriesCatalogEntry[];
   derived: DerivedSeriesFile[];
+  scoreHistory: ScoreHistoryFile | null;
   scoreSummary: ScoreSummaryFile;
   series: TimeSeriesFile[];
   shockSnapshot: ShockRiskSnapshotFile;
@@ -152,10 +156,11 @@ export default function TacticalTradingWeather() {
 
     async function loadTacticalTradingWeather() {
       try {
-        const [catalog, status, scoreSummary, snapshot, shockSnapshot] = await Promise.all([
+        const [catalog, status, scoreSummary, scoreHistory, snapshot, shockSnapshot] = await Promise.all([
           loadCatalog(),
           loadDataStatus(),
           loadScoreSummary(),
+          loadScoreHistory().catch(() => null),
           loadRegimeSnapshot(),
           loadShockRiskSnapshot()
         ]);
@@ -165,7 +170,9 @@ export default function TacticalTradingWeather() {
             allowMissing: new Set(tacticalDerivedIds)
           })
         ]);
-        if (active) setData({ catalog, derived, scoreSummary, series, shockSnapshot, snapshot, status });
+        if (active) {
+          setData({ catalog, derived, scoreHistory, scoreSummary, series, shockSnapshot, snapshot, status });
+        }
       } catch (loadError) {
         if (active) {
           setError(loadError instanceof Error ? loadError.message : "Unable to load tactical trading weather.");
@@ -213,6 +220,7 @@ export default function TacticalTradingWeather() {
             <ScoreCard score={data.scoreSummary.scores.market_weather} title="Market Weather" />
             <ScoreCard score={data.scoreSummary.scores.fragility} title="Fragility" />
           </section>
+          {data.scoreHistory ? <DriverAttributionPanel history={data.scoreHistory} /> : null}
           <section className="panel" aria-label="Fragility shock-risk overlay">
             <div className="section-header">
               <div>

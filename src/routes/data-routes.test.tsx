@@ -8,8 +8,10 @@ import App from "../App";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
+  RegimeReplayFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
+  ScoreHistoryFile,
   ShockRiskSnapshotFile,
   SeriesCategory,
   SeriesCatalogEntry,
@@ -100,6 +102,7 @@ function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
       },
       units: "USD billions"
     } satisfies DerivedSeriesFile,
+    "/data/derived/score_history.json": scoreHistory,
     "/data/derived/score_summary.json": scoreSummaryFile,
     "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
     "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
@@ -161,6 +164,8 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       method: "Fed assets less reverse repo and Treasury General Account.",
       units: "USD billions"
     } satisfies DerivedSeriesFile,
+    "/data/derived/regime_replay.json": regimeReplay,
+    "/data/derived/score_history.json": scoreHistory,
     "/data/derived/score_summary.json": scoreSummary,
     "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
     "/data/derived/regime_snapshot.json": regimeSnapshot,
@@ -922,6 +927,84 @@ const scoreSummary: ScoreSummaryFile = {
     overall_confidence: 0.73,
     reasons: ["Sentiment coverage is limited to public CFTC positioning."]
   }
+};
+
+const scoreHistory: ScoreHistoryFile = {
+  generated_at_utc: "2026-05-08T00:00:00Z",
+  latest_attribution: {
+    fragility: {
+      recent_changes: ["Dollar pressure increased."],
+      top_risks: ["Dollar pressure increased."],
+      top_supports: ["Liquidity remains stable."]
+    },
+    macro_climate: {
+      recent_changes: ["Growth breadth improved."],
+      top_risks: ["Inflation momentum remains sticky."],
+      top_supports: ["Growth breadth improved."]
+    },
+    market_weather: {
+      recent_changes: ["Volatility eased while rates pressure increased."],
+      top_risks: ["Rates pressure increased."],
+      top_supports: ["Volatility eased."]
+    }
+  },
+  method_version: "phase5-score-history-v1",
+  observations: [
+    {
+      date: "2026-04-30",
+      fragility: -6.1,
+      macro_climate: 7.4,
+      market_weather: 16.67
+    },
+    {
+      date: "2026-05-01",
+      fragility: -4.1,
+      macro_climate: 8.2,
+      market_weather: 19.17
+    }
+  ]
+};
+
+const regimeReplay: RegimeReplayFile = {
+  generated_at_utc: "2026-05-08T00:00:00Z",
+  method_version: "phase5-regime-replay-v1",
+  scenarios: [
+    {
+      caveat: "Historical regime occurrences are descriptive context, not forecasts.",
+      description: "Real yields rising, dollar rising, and credit or volatility pressure rising.",
+      id: "tightening_risk_off",
+      label: "Tightening / risk-off",
+      last_occurrence_date: "2026-05-01",
+      occurrence_count: 2,
+      occurrences: [
+        {
+          credit_20obs_change: 0.14,
+          date: "2026-04-30",
+          dollar_20obs_change: 1.2,
+          nominal_10y_20obs_change: 0.2,
+          real_yield_20obs_change: 0.18,
+          vix_curve_20obs_change: 0.03
+        },
+        {
+          credit_20obs_change: 0.2,
+          date: "2026-05-01",
+          dollar_20obs_change: 1.35,
+          nominal_10y_20obs_change: 0.26,
+          real_yield_20obs_change: 0.22,
+          vix_curve_20obs_change: 0.04
+        }
+      ]
+    },
+    {
+      caveat: "Historical regime occurrences are descriptive context, not forecasts.",
+      description: "Real yields falling, dollar falling, and credit or volatility pressure contained.",
+      id: "strong_risk_on",
+      label: "Strong risk-on",
+      last_occurrence_date: null,
+      occurrence_count: 0,
+      occurrences: []
+    }
+  ]
 };
 
 const regimeSnapshot: RegimeSnapshotFile = {
@@ -1836,6 +1919,23 @@ describe("data-backed routes", () => {
     await waitForContent(container, "TIPS x Dollar Regime Map");
     expect(container.textContent).toContain("Yield driver");
     expect(container.textContent).toContain("Cross-asset confirmation");
+  });
+
+  it("renders the historical regime replay route with attribution", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/replay"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Historical Regime Replay");
+    expect(container.textContent).toContain("Why scores changed");
+    expect(container.textContent).toContain("Tightening / risk-off");
+    expect(container.textContent).toContain("Historical regime occurrences are descriptive context, not forecasts.");
+    expect(container.textContent).not.toContain("Average SPY return");
+    expect(container.textContent).not.toContain("forward return");
   });
 
   it("growth route renders growth and labor read interpretation", async () => {

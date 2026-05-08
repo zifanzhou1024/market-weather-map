@@ -36,6 +36,8 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "derived" / "bucket_scores.json",
     data_dir() / "derived" / "regime_score.json",
     data_dir() / "derived" / "regime_snapshot.json",
+    data_dir() / "derived" / "regime_replay.json",
+    data_dir() / "derived" / "score_history.json",
     data_dir() / "derived" / "shock_risk_snapshot.json",
     data_dir() / "status" / "data_status.json",
 ]
@@ -434,6 +436,77 @@ def validate_shock_risk_snapshot_file() -> None:
             raise ValueError(f"{path} mismatch_warnings.severity must be a string")
 
 
+def validate_regime_replay_file() -> None:
+    path = data_dir() / "derived" / "regime_replay.json"
+    payload = _load_json(path)
+    _validate_timestamp_with_timezone(_require_string(payload, "generated_at_utc", path), path)
+    _require_non_empty_string(payload, "method_version", path)
+    scenarios = payload.get("scenarios")
+    if not isinstance(scenarios, list):
+        raise ValueError(f"{path} scenarios must be a list")
+    for scenario in scenarios:
+        if not isinstance(scenario, dict):
+            raise ValueError(f"{path} scenarios items must be objects")
+        if "future_return_summary" in scenario:
+            raise ValueError(f"{path} future_return_summary is not allowed until return sources are active")
+        for field in ["id", "label", "description", "caveat"]:
+            _require_non_empty_string(scenario, field, path)
+        _validate_finite_number(scenario.get("occurrence_count"), path, "occurrence_count")
+        if int(scenario["occurrence_count"]) != scenario["occurrence_count"] or scenario["occurrence_count"] < 0:
+            raise ValueError(f"{path} occurrence_count must be a non-negative integer")
+        if scenario.get("last_occurrence_date") is not None:
+            _validate_event_date(scenario.get("last_occurrence_date"), path)
+        occurrences = scenario.get("occurrences")
+        if not isinstance(occurrences, list):
+            raise ValueError(f"{path} occurrences must be a list")
+        if len(occurrences) != int(scenario["occurrence_count"]):
+            raise ValueError(f"{path} occurrence_count must match occurrences length")
+        for occurrence in occurrences:
+            if not isinstance(occurrence, dict):
+                raise ValueError(f"{path} occurrences items must be objects")
+            _require_non_empty_string(occurrence, "date", path)
+            _validate_event_date(occurrence["date"], path)
+            for field in [
+                "real_yield_20obs_change",
+                "dollar_20obs_change",
+                "credit_20obs_change",
+                "vix_curve_20obs_change",
+                "nominal_10y_20obs_change",
+            ]:
+                _validate_finite_number(occurrence.get(field), path, field)
+
+
+def validate_score_history_file() -> None:
+    path = data_dir() / "derived" / "score_history.json"
+    payload = _load_json(path)
+    _validate_timestamp_with_timezone(_require_string(payload, "generated_at_utc", path), path)
+    _require_non_empty_string(payload, "method_version", path)
+    observations = payload.get("observations")
+    if not isinstance(observations, list):
+        raise ValueError(f"{path} observations must be a list")
+    last_date = None
+    for observation in observations:
+        if not isinstance(observation, dict):
+            raise ValueError(f"{path} observations items must be objects")
+        _require_non_empty_string(observation, "date", path)
+        _validate_event_date(observation["date"], path)
+        if last_date is not None and observation["date"] < last_date:
+            raise ValueError(f"{path} observations must be sorted ascending")
+        last_date = observation["date"]
+        for field in ["market_weather", "macro_climate", "fragility"]:
+            _validate_finite_number(observation.get(field), path, field)
+    latest_attribution = payload.get("latest_attribution")
+    if not isinstance(latest_attribution, dict):
+        raise ValueError(f"{path} latest_attribution must be an object")
+    for score_key in ["market_weather", "macro_climate", "fragility"]:
+        block = latest_attribution.get(score_key)
+        if not isinstance(block, dict):
+            raise ValueError(f"{path} latest_attribution.{score_key} must be an object")
+        for field in ["recent_changes", "top_risks", "top_supports"]:
+            if not isinstance(block.get(field), list):
+                raise ValueError(f"{path} latest_attribution.{score_key}.{field} must be a list")
+
+
 def validate_status_file() -> None:
     path = data_dir() / "status" / "data_status.json"
     payload = _load_json(path)
@@ -471,6 +544,8 @@ def main() -> None:
     validate_macro_calendar_file()
     validate_score_summary_file()
     validate_regime_snapshot_file()
+    validate_regime_replay_file()
+    validate_score_history_file()
     validate_shock_risk_snapshot_file()
     validate_status_file()
 

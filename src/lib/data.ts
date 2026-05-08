@@ -3,8 +3,10 @@ import type {
   DataStatusFile,
   DerivedSeriesFile,
   MacroCalendarFile,
+  RegimeReplayFile,
   RegimeScoreFile,
   RegimeSnapshotFile,
+  ScoreHistoryFile,
   ScoreSummaryFile,
   ShockRiskSnapshotFile,
   SeriesCatalogEntry,
@@ -72,6 +74,10 @@ export function loadRegimeSnapshot(): Promise<RegimeSnapshotFile> {
   return loadJson<RegimeSnapshotFile>("/data/derived/regime_snapshot.json");
 }
 
+export function loadRegimeReplay(): Promise<RegimeReplayFile> {
+  return loadJson<RegimeReplayFile>("/data/derived/regime_replay.json");
+}
+
 export function loadShockRiskSnapshot(): Promise<ShockRiskSnapshotFile> {
   return loadJson<ShockRiskSnapshotFile>("/data/derived/shock_risk_snapshot.json");
 }
@@ -90,6 +96,10 @@ export function loadSourceRegistry(): Promise<SourceRegistryFile> {
 
 export function loadScoreSummary(): Promise<ScoreSummaryFile> {
   return loadJson<ScoreSummaryFile>("/data/derived/score_summary.json");
+}
+
+export function loadScoreHistory(): Promise<ScoreHistoryFile> {
+  return loadJson<ScoreHistoryFile>("/data/derived/score_history.json");
 }
 
 export function loadMacroCalendar(): Promise<MacroCalendarFile> {

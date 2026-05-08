@@ -57,6 +57,8 @@ PR 3 shock-risk candidates for MOVE and SKEW follow the same gate. Candidate MOV
 
 PR 4 strategic candidates for PMIs, SLOOS, term premium, Treasury supply, valuation, and earnings revisions follow the same gate. Active PR 4 consumer balance-sheet inputs come from FRED-hosted public series; strategic candidates remain source-readiness rows only until governance review promotes a specific endpoint.
 
+PR 5 historical replay and score attribution are descriptive research surfaces. Replay scenarios match prior dates where active real-yield, broad-dollar, credit, VIX-curve, and nominal-yield changes met the configured regime pattern. Score attribution stores the latest Market Weather, Macro Climate, and Fragility scores with recent changes, supports, and risks from the generated score summary.
+
 The `percentile_252d` field name is retained for compatibility, but the percentile window is frequency-aware: daily series use 252 observations, weekly series use 52 observations, and monthly series use 12 observations.
 
 ## Bucket Logic
@@ -142,6 +144,32 @@ The confirmation matrix groups active inputs by whether they confirm, conflict w
 | Neutral | The input is near its neutral band or contributes little directional pressure. |
 | Missing or stale | The expected active input is unavailable, too stale for its cadence, or emitted as a neutral fallback. |
 | Candidate-only | The input is useful for future context but does not affect scores, labels, or checklist states before source review. |
+
+### Historical Regime Replay
+
+PR 5 adds `public/data/derived/regime_replay.json`. The replay file groups historical observations into the same broad TIPS x dollar framework used elsewhere in the app:
+
+| Scenario | Matching rule |
+| --- | --- |
+| Tightening / risk-off | 10Y real yield rises, broad dollar rises, and credit or VIX-curve pressure rises over the lookback window. |
+| Strong risk-on | 10Y real yield falls, broad dollar falls, and credit and VIX-curve pressure are contained over the lookback window. |
+| Bonds-first / safe haven | 10Y real yield falls while the broad dollar rises over the lookback window. |
+| Reallocation / rotation | 10Y real yield rises while the broad dollar does not confirm broad stress over the lookback window. |
+
+The current lookback is 20 matched observations across `real_yield_10y`, `broad_dollar`, `high_yield_oas`, `vix_vix3m_ratio`, and `us10y`. Occurrence rows show the matched date and observed 20-observation changes. The replay file intentionally does not include asset forward-return summaries, hit rates, or model projections.
+
+### Score Attribution History
+
+PR 5 adds `public/data/derived/score_history.json`. The score history keeps recent generated observations for the three score families and a `latest_attribution` block copied from the current score summary:
+
+| Field | Meaning |
+| --- | --- |
+| `observations` | Stored generated score snapshots for Market Weather, Macro Climate, and Fragility. |
+| `latest_attribution.recent_changes` | Current generated explanations for what changed in that score block. |
+| `latest_attribution.top_supports` | Current generated supportive contributors. |
+| `latest_attribution.top_risks` | Current generated risk contributors. |
+
+The UI uses this file to explain why scores changed from the prior stored snapshot when one exists. The stored history is explanatory context only.
 
 Market Weather and Macro Climate use these broad displayed labels:
 

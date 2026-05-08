@@ -6,6 +6,7 @@ const navItems = [
   { to: "/fragility", label: "Fragility" },
   { to: "/macro-climate", label: "Long-Term Macro Climate" },
   { to: "/regime-map", label: "Regime Map" },
+  { to: "/replay", label: "Regime Replay" },
   { to: "/calendar", label: "Calendar" },
   { to: "/volatility", label: "Volatility" },
   { to: "/rates", label: "Rates" },
