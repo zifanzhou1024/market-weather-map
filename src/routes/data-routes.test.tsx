@@ -1,6 +1,6 @@
-import { act } from "react";
+import { act, useEffect } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import Overview from "./Overview";
 import Rates from "./Rates";
@@ -46,6 +46,16 @@ function unmountRendered(container: HTMLElement) {
     root = undefined;
   }
   container.remove();
+}
+
+function LocationObserver({ onPathChange }: { onPathChange: (pathname: string) => void }) {
+  const location = useLocation();
+
+  useEffect(() => {
+    onPathChange(location.pathname);
+  }, [location.pathname, onPathChange]);
+
+  return null;
 }
 
 async function waitForContent(container: HTMLElement, text: string) {
@@ -1187,21 +1197,31 @@ describe("data-backed routes", () => {
   it("keeps tactical and macro-climate deep links compatible", async () => {
     mockStaticFetch(routeFetchFiles());
 
+    let tacticalPath = "";
     const tactical = render(
       <MemoryRouter initialEntries={["/tactical"]}>
         <App />
+        <LocationObserver onPathChange={(pathname) => {
+          tacticalPath = pathname;
+        }} />
       </MemoryRouter>
     );
     await waitForContent(tactical, "Short-Term Market Reaction");
+    expect(tacticalPath).toBe("/short-term");
 
     unmountRendered(tactical);
 
+    let macroPath = "";
     const macro = render(
       <MemoryRouter initialEntries={["/macro-climate"]}>
         <App />
+        <LocationObserver onPathChange={(pathname) => {
+          macroPath = pathname;
+        }} />
       </MemoryRouter>
     );
     await waitForContent(macro, "Long-Term Macro / Allocation Climate");
+    expect(macroPath).toBe("/long-term");
   });
 
   it("renders grouped navigation with primary views before the data library", async () => {
