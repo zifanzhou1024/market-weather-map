@@ -574,8 +574,12 @@ describe("data-driven components", () => {
       ...activeOptionsSeries,
       series_id: "put_call_equity",
       summary: {
-        ...activeOptionsSeries.summary,
-        latest_value: 0.81
+        change_1d: 0.04,
+        change_1m: null,
+        change_1w: null,
+        latest_date: "2026-05-01",
+        latest_value: 0.81,
+        percentile_252d: null
       }
     };
     const container = render(
