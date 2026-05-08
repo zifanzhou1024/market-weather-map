@@ -149,5 +149,9 @@ vite.config.ts.timestamp-*
 # Local implementation worktrees
 .worktrees/
 
+# Local IDE and Codex backup state
+.idea/
+.codex-backups/
+
 # Superpowers brainstorming companion artifacts
 .superpowers/

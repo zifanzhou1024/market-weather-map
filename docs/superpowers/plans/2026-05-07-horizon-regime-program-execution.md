@@ -10,6 +10,20 @@
 
 ---
 
+## Current Status
+
+Completed and merged:
+
+- PR 1: Horizon IA + Active-Data Regime Map.
+- PR 2: Tactical Options + Event Risk Depth.
+- PR 3: Fragility Shock Risk.
+- PR 4: Strategic Macro Completeness.
+- PR 5: Historical Regime Replay.
+
+Deferred:
+
+- PR 6: Watchlist + Threshold System. Browser-local thresholds remain useful, but they are lower priority than post-merge UI stability and source-governed macro/research depth.
+
 ## Continuous PR Sequence
 
 Execute in this order:
@@ -25,7 +39,22 @@ Execute in this order:
 5. [PR 5: Historical Regime Replay](./2026-05-07-pr5-regime-replay-research.md)
    Adds descriptive historical regime replay, score history, and research caveats.
 6. [PR 6: Watchlist + Threshold System](./2026-05-07-pr6-watchlist-thresholds.md)
-   Adds browser-local watchlists and threshold monitoring without backend notifications.
+   Deferred. Adds browser-local watchlists and threshold monitoring without backend notifications.
+
+## Updated Roadmap Priority
+
+After PR 5, do not start PR 6 by default. Prefer this order:
+
+1. **UI stability cleanup**
+   Keep the current decision views usable as navigation and dense research tables grow.
+2. **Replay ergonomics**
+   Improve scenario filtering, table scanning, and explanatory context without adding forward-return claims.
+3. **Source-governed strategic depth**
+   Promote valuation, fiscal/Treasury supply, term premium, PMIs, or SLOOS only after access and redistribution review.
+4. **Reliability and data workflow hardening**
+   Reduce generated-data merge conflicts, strengthen failure reporting, and keep static artifacts internally consistent.
+5. **Watchlists and thresholds**
+   Revisit only after the core decision and research surfaces are stable.
 
 ---
 

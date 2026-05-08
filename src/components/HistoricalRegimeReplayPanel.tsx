@@ -97,12 +97,18 @@ export default function HistoricalRegimeReplayPanel({ replay }: HistoricalRegime
                     <tbody>
                       {recentOccurrences.map((occurrence) => (
                         <tr key={`${selectedScenario.id}-${occurrence.date}`}>
-                          <td>{occurrence.date}</td>
-                          <td>{formatSigned(occurrence.real_yield_20obs_change)}</td>
-                          <td>{formatSigned(occurrence.dollar_20obs_change)}</td>
-                          <td>{formatSigned(occurrence.credit_20obs_change)}</td>
-                          <td>{formatSigned(occurrence.vix_curve_20obs_change)}</td>
-                          <td>{formatSigned(occurrence.nominal_10y_20obs_change)}</td>
+                          <td data-label="Date">{occurrence.date}</td>
+                          <td data-label="Real yield 20 obs">
+                            {formatSigned(occurrence.real_yield_20obs_change)}
+                          </td>
+                          <td data-label="Dollar 20 obs">{formatSigned(occurrence.dollar_20obs_change)}</td>
+                          <td data-label="Credit 20 obs">{formatSigned(occurrence.credit_20obs_change)}</td>
+                          <td data-label="VIX curve 20 obs">
+                            {formatSigned(occurrence.vix_curve_20obs_change)}
+                          </td>
+                          <td data-label="10Y nominal 20 obs">
+                            {formatSigned(occurrence.nominal_10y_20obs_change)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
