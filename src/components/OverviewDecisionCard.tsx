@@ -14,13 +14,17 @@ export default function OverviewDecisionCard({
   horizon,
   label,
   risk,
-  sourceGapCount = 0,
+  sourceGapCount,
   support,
   title,
   to
 }: OverviewDecisionCardProps) {
   const sourceGapText =
-    sourceGapCount === 1 ? "1 source gap or candidate row visible." : `${sourceGapCount} source gaps or candidate rows visible.`;
+    sourceGapCount === undefined
+      ? null
+      : sourceGapCount === 1
+        ? "1 source gap or candidate row visible."
+        : `${sourceGapCount} source gaps or candidate rows visible.`;
 
   return (
     <article className="decision-card">
@@ -31,7 +35,7 @@ export default function OverviewDecisionCard({
       </div>
       <p>Support: {support}</p>
       <p>Risk: {risk}</p>
-      <p>{sourceGapText}</p>
+      {sourceGapText ? <p>{sourceGapText}</p> : null}
       <Link aria-label={`Open ${title} view`} className="decision-card__link" to={to}>
         Open view
       </Link>
