@@ -103,7 +103,7 @@ Expand `StrategicSourceGapsPanel` to include the long-term gaps from the audit:
 - Forward P/E
 - Equity risk premium
 - Earnings revision breadth
-- Fiscal deficit / interest expense, if the wording fits existing source docs without implying active coverage
+- Fiscal deficit / interest expense
 
 Each row should include:
 
@@ -113,6 +113,8 @@ Each row should include:
 - A clear statement that it cannot affect scores until source review promotes it.
 
 Keep this as a static explanatory candidate panel unless existing catalog/status data already provides equivalent candidate rows.
+
+The fiscal deficit / interest expense row is required in this panel. It must be framed as a source-gated strategic candidate, not as an active coverage claim.
 
 ### 4. Regime Map Candidate Confirmation Rows
 
@@ -133,11 +135,13 @@ Each candidate row should be visibly inactive, with status text such as `Candida
 
 Implementation may upgrade `CrossAssetConfirmationMatrix` with an optional `candidateItems` prop, or introduce a small wrapper component that combines active snapshot rows with static candidate rows. Keep the data flow explicit and testable.
 
+Candidate rows should be deduped against active snapshot confirmations by normalized id first and normalized label second. If an active row already represents liquidity, the static liquidity candidate row should be omitted; all other unmatched candidate rows should remain visible as inactive rows.
+
 ### 5. Fragility Hidden-Stress Summary
 
 Add a clearer Fragility summary separating visible stress from gated stress.
 
-Visible stress rows should come from `shockSnapshot.active_signals` and existing loaded score data. Candidate/gated stress rows should come from `shockSnapshot.source_gaps` plus the known gated stress families:
+Visible stress rows should come from `shockSnapshot.active_signals`. Candidate/gated stress rows should come from `shockSnapshot.source_gaps` plus the known gated stress families:
 
 - MOVE
 - SKEW
@@ -171,8 +175,9 @@ The test can use `MemoryRouter`, DOM clicks, and existing static fetch mocks. It
 Preferred units:
 
 - `src/components/DataQualityBanner.tsx`
-  - Input: `ScoreSummaryFile["data_quality"]`.
+  - Input: `dataQuality?: unknown`.
   - Output: a compact banner with status, confidence, and reason list.
+  - It should internally narrow valid `ConfidenceBreakdownData` fields so malformed or missing data can use the required fallback state.
   - No data fetching.
 
 - `src/components/OptionsSentimentPanel.tsx`
@@ -188,7 +193,7 @@ Preferred units:
   - Must sanitize advisory terms as it does today.
 
 - `src/components/HiddenStressSummary.tsx`
-  - Input: `ShockRiskSnapshotFile`.
+  - Input: `shockSnapshot: ShockRiskSnapshotFile`.
   - Output: visible stress rows, gated stress rows, and mismatch severity summary.
   - No generated-data mutation.
 
