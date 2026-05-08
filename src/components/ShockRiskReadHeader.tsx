@@ -18,9 +18,15 @@ function safeArray<T>(value: unknown): T[] {
   return Array.isArray(value) ? value : [];
 }
 
+function hasUsableLabel(value: unknown): value is { label: string } {
+  if (!value || typeof value !== "object") return false;
+  const row = value as { label?: unknown };
+  return typeof row.label === "string" && row.label.trim().length > 0;
+}
+
 export default function ShockRiskReadHeader({ scoreSummary, shockSnapshot }: ShockRiskReadHeaderProps) {
-  const activeSignals = safeArray<ShockRiskSnapshotFile["active_signals"][number]>(shockSnapshot.active_signals);
-  const sourceGaps = safeArray<ShockRiskSnapshotFile["source_gaps"][number]>(shockSnapshot.source_gaps);
+  const activeSignals = safeArray<unknown>(shockSnapshot.active_signals).filter(hasUsableLabel);
+  const sourceGaps = safeArray<unknown>(shockSnapshot.source_gaps).filter(hasUsableLabel);
   const mismatchWarnings = safeArray<ShockRiskSnapshotFile["mismatch_warnings"][number]>(
     shockSnapshot.mismatch_warnings
   );

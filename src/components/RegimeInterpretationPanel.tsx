@@ -11,6 +11,12 @@ function safeArray<T>(value: unknown): T[] {
   return Array.isArray(value) ? value : [];
 }
 
+function safeStringArray(value: unknown): string[] {
+  return safeArray<unknown>(value).filter(
+    (item): item is string => typeof item === "string" && item.trim().length > 0
+  );
+}
+
 function isUsableConfirmation(value: unknown): value is RegimeSnapshotFile["confirmations"][number] {
   if (!value || typeof value !== "object") return false;
   const confirmation = value as Partial<RegimeSnapshotFile["confirmations"][number]>;
@@ -24,9 +30,17 @@ function isUsableConfirmation(value: unknown): value is RegimeSnapshotFile["conf
   );
 }
 
-function statusIncludes(status: unknown, terms: string[]) {
-  const normalized = typeof status === "string" ? status.toLowerCase() : "";
-  return terms.some((term) => normalized.includes(term));
+function normalizedStatus(status: string) {
+  const normalized = status.trim().toLowerCase();
+  if (
+    normalized === "confirming" ||
+    normalized === "diverging" ||
+    normalized === "mixed" ||
+    normalized === "unavailable"
+  ) {
+    return normalized;
+  }
+  return null;
 }
 
 function confirmationText(confirmation: RegimeSnapshotFile["confirmations"][number]) {
@@ -34,20 +48,25 @@ function confirmationText(confirmation: RegimeSnapshotFile["confirmations"][numb
 }
 
 export default function RegimeInterpretationPanel({ scoreSummary, snapshot }: RegimeInterpretationPanelProps) {
-  const confirmations = safeArray<unknown>(snapshot.confirmations).filter(isUsableConfirmation);
+  const confirmations = safeArray<unknown>(snapshot.confirmations)
+    .filter(isUsableConfirmation)
+    .map((confirmation) => ({ ...confirmation, normalizedStatus: normalizedStatus(confirmation.status) }))
+    .filter((confirmation): confirmation is RegimeSnapshotFile["confirmations"][number] & {
+      normalizedStatus: "confirming" | "diverging" | "mixed" | "unavailable";
+    } => confirmation.normalizedStatus !== null);
   const confirmingSignals = confirmations
-    .filter((confirmation) => statusIncludes(confirmation.status, ["confirm"]))
+    .filter((confirmation) => confirmation.normalizedStatus === "confirming")
     .map(confirmationText);
   const divergentSignals = confirmations
-    .filter((confirmation) => statusIncludes(confirmation.status, ["diverg"]))
+    .filter((confirmation) => confirmation.normalizedStatus === "diverging")
     .map(confirmationText);
   const conflicts = [
-    ...safeArray<string>((scoreSummary as { conflicting_signals?: unknown }).conflicting_signals),
+    ...safeStringArray((scoreSummary as { conflicting_signals?: unknown }).conflicting_signals),
     ...divergentSignals
   ];
   const weakConfidenceSignals = confirmations
-    .filter((confirmation) =>
-      statusIncludes(confirmation.status, ["missing", "stale", "candidate", "unavailable"])
+    .filter(
+      (confirmation) => confirmation.normalizedStatus === "mixed" || confirmation.normalizedStatus === "unavailable"
     )
     .map(confirmationText);
 
