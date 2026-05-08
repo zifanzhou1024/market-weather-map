@@ -1,6 +1,8 @@
 :root {
+  --accent: #31483a;
   --border: #d7ded1;
   --muted: #607066;
+  --panel: #fffef9;
   color: #17201a;
   background: #f6f7f3;
   font-family:
@@ -791,6 +793,41 @@ select {
 
 .confirmation-matrix__item {
   display: grid;
+}
+
+.decision-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.decision-card h3,
+.decision-card p {
+  margin-top: 0;
+}
+
+.decision-card p {
+  margin-bottom: 0;
+}
+
+.decision-card__link {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.horizon-header {
+  display: grid;
+  gap: 1rem;
+}
+
+.horizon-header__facts,
+.horizon-impact-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
 .quadrant-frame {
