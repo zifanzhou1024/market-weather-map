@@ -295,6 +295,25 @@ function candidateCatalogEntry(
   };
 }
 
+function generatedDiagnosticCatalogEntry(
+  id: string,
+  category: SeriesCategory,
+  name: string,
+  notes: string,
+  units = "index",
+  frequency: SeriesFrequency = "daily",
+  source = "FRED"
+): SeriesCatalogEntry {
+  return {
+    ...catalogEntry(id, category, name, units, frequency),
+    access_status: "free_public",
+    notes,
+    score_status: "candidate",
+    source,
+    source_url: `https://example.com/${id}`
+  };
+}
+
 const catalog: SeriesCatalogEntry[] = [
   {
     category: "volatility",
@@ -504,6 +523,54 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("bank_credit", "credit", "Bank credit", "USD billions", "weekly"),
   catalogEntry("loans_and_leases", "credit", "Loans and leases", "USD billions", "weekly"),
   catalogEntry("business_loans", "credit", "Commercial and industrial loans", "USD billions", "weekly"),
+  generatedDiagnosticCatalogEntry(
+    "ci_loans_weekly",
+    "credit",
+    "Commercial and Industrial Loans, All Commercial Banks",
+    "Generated non-scoring weekly H.8 C&I loan diagnostic from FRED TOTCI.",
+    "USD billions",
+    "weekly"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "sloos_lending_standards",
+    "credit",
+    "SLOOS C&I Lending Standards: Large and Middle-Market Firms",
+    "Generated non-scoring SLOOS lending-standards diagnostic from FRED.",
+    "net percent",
+    "quarterly"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "sloos_small_firm_standards",
+    "credit",
+    "SLOOS C&I Lending Standards: Small Firms",
+    "Generated non-scoring SLOOS small-firm lending-standards diagnostic from FRED.",
+    "net percent",
+    "quarterly"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "sloos_large_firm_demand",
+    "credit",
+    "SLOOS C&I Loan Demand: Large and Middle-Market Firms",
+    "Generated non-scoring SLOOS loan-demand diagnostic from FRED.",
+    "net percent",
+    "quarterly"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "term_premium_kw_10y",
+    "rates",
+    "Kim-Wright 10-Year Zero-Coupon Term Premium",
+    "Generated non-scoring Kim-Wright term-premium diagnostic from FRED.",
+    "percent"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "bond_volatility_proxy",
+    "volatility",
+    "Realized 10-Year Yield Volatility Proxy",
+    "Generated non-scoring realized Treasury-yield volatility proxy derived from public 10-year Treasury yields; not ICE MOVE.",
+    "basis points",
+    "daily",
+    "Derived"
+  ),
   catalogEntry("bank_deposits", "credit", "Bank deposits", "USD billions", "weekly"),
   catalogEntry("broad_dollar", "dollar", "Nominal Broad U.S. Dollar Index", "index"),
   catalogEntry("usdjpy", "dollar", "USD/JPY", "exchange rate"),
@@ -700,6 +767,22 @@ function candidateStatusRow(message: string): DataStatusFile["series"][string] {
   };
 }
 
+function generatedDiagnosticStatusRow(
+  message: string,
+  frequency: SeriesFrequency = "daily",
+  observationPeriod = "2026-05-01",
+  source = "FRED"
+): DataStatusFile["series"][string] {
+  return {
+    ...statusRow("ok", frequency),
+    max_stale_days: frequency === "quarterly" ? 120 : frequency === "weekly" ? 14 : 7,
+    message,
+    observation_period: observationPeriod,
+    score_status: "candidate",
+    source
+  };
+}
+
 const status: DataStatusFile = {
   generated_at_utc: "2026-05-03T18:32:54Z",
   last_successful_update_utc: "2026-05-03T18:32:54Z",
@@ -859,6 +942,35 @@ const status: DataStatusFile = {
     bank_credit: statusRow("unavailable", "weekly"),
     loans_and_leases: statusRow("unavailable", "weekly"),
     business_loans: statusRow("unavailable", "weekly"),
+    ci_loans_weekly: generatedDiagnosticStatusRow(
+      "Latest weekly observation is within the expected release window. candidate diagnostic only; does not affect active scores.",
+      "weekly",
+      "week of 2026-04-29"
+    ),
+    sloos_lending_standards: generatedDiagnosticStatusRow(
+      "Latest quarterly observation covers 2026-Q2. candidate diagnostic only; does not affect active scores.",
+      "quarterly",
+      "2026-Q2"
+    ),
+    sloos_small_firm_standards: generatedDiagnosticStatusRow(
+      "Latest quarterly observation covers 2026-Q2. candidate diagnostic only; does not affect active scores.",
+      "quarterly",
+      "2026-Q2"
+    ),
+    sloos_large_firm_demand: generatedDiagnosticStatusRow(
+      "Latest quarterly observation covers 2026-Q2. candidate diagnostic only; does not affect active scores.",
+      "quarterly",
+      "2026-Q2"
+    ),
+    term_premium_kw_10y: generatedDiagnosticStatusRow(
+      "Latest daily observation is 8 days old. candidate diagnostic only; does not affect active scores."
+    ),
+    bond_volatility_proxy: generatedDiagnosticStatusRow(
+      "Latest daily observation is 2 days old. candidate diagnostic only; does not affect active scores.",
+      "daily",
+      "2026-05-01",
+      "Derived"
+    ),
     bank_deposits: statusRow("unavailable", "weekly"),
     broad_dollar: statusRow("unavailable"),
     usdjpy: statusRow("unavailable"),
@@ -2123,6 +2235,11 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("High data quality");
     expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(container.textContent).toContain("Visible vs gated stress");
+    expect(container.textContent).toContain("Public bond-volatility diagnostic");
+    expect(container.textContent).toContain("Realized 10-Year Yield Volatility Proxy");
+    expect(container.textContent).toContain("Generated candidate diagnostic");
+    expect(container.textContent).toContain("Not scored");
+    expect(container.textContent).toContain("not ICE MOVE");
     expect(container.textContent).toContain("Gated stress");
     expect(container.textContent).toContain("Mismatch severity");
     expect(container.textContent).toContain("MOVE");
@@ -2213,10 +2330,19 @@ describe("data-backed routes", () => {
     await waitForContent(container, "Long-Term Macro / Allocation Climate");
     expect(container.textContent).toContain("Current Long-Term Read");
     expect(container.textContent).toContain("Macro bucket grid");
+    expect(container.textContent).toContain("Generated official diagnostics");
+    expect(container.textContent).toContain("SLOOS C&I Lending Standards: Large and Middle-Market Firms");
+    expect(container.textContent).toContain("SLOOS C&I Lending Standards: Small Firms");
+    expect(container.textContent).toContain("SLOOS C&I Loan Demand: Large and Middle-Market Firms");
+    expect(container.textContent).toContain("Commercial and Industrial Loans, All Commercial Banks");
+    expect(container.textContent).toContain("Kim-Wright 10-Year Zero-Coupon Term Premium");
+    expect(container.textContent).toContain("Generated candidate diagnostic");
+    expect(container.textContent).toContain("Not scored");
+    expect(container.textContent).toContain("Does not affect active scores, labels, checklist states, or confidence.");
     expect(container.textContent).toContain("Strategic source gaps");
     expect(container.textContent).toContain("PMIs");
-    expect(container.textContent).toContain("SLOOS");
-    expect(container.textContent).toContain("term premium");
+    expect(container.textContent).toContain("SLOOS scoring promotion");
+    expect(container.textContent).toContain("NY Fed ACM term premium");
     expect(container.textContent).toContain("Treasury net issuance");
     expect(container.textContent).toContain("valuation");
     expect(container.textContent).toContain("earnings revisions");
@@ -2224,6 +2350,7 @@ describe("data-backed routes", () => {
     expect(strategicRows).toHaveLength(11);
     expect(strategicRows.every((row) => row.getAttribute("role") === "listitem")).toBe(true);
     expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(11);
+    expect(container.querySelectorAll(".candidate-diagnostic-row")).toHaveLength(5);
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
     expect(container.textContent).toContain("Consumer and production");
@@ -2231,7 +2358,6 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Consumer balance sheet");
     expect(container.textContent).toContain("Credit cycle");
     expect(container.textContent).toContain("Liquidity cycle");
-    expect(container.textContent).not.toContain("Not scored");
   });
 
   it("renders long-term read when strategic bucket scores are missing", async () => {

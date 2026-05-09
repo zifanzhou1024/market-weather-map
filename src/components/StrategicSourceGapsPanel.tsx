@@ -7,14 +7,14 @@ const strategicRows = [
     note: "Helps track business-cycle breadth before slower hard data updates; not active because source access and redistribution need review, so it cannot affect scores until source review promotes it."
   },
   {
-    label: "SLOOS",
+    label: "SLOOS scoring promotion",
     status: "terms_review_needed",
-    note: "Helps track bank-lending standards and credit availability; not active because survey transformation and redistribution need review, so it cannot affect scores until source review promotes it."
+    note: "Generated official SLOOS diagnostics are visible separately, but scoring promotion still needs transformation and governance review before it can affect active scores."
   },
   {
-    label: "10Y term premium",
+    label: "NY Fed ACM term premium",
     status: "terms_review_needed",
-    note: "Helps separate duration risk premium from expected-rate moves; not active because source access and redistribution need review, so it cannot affect scores until source review promotes it."
+    note: "Kim-Wright term-premium diagnostics are visible separately; NY Fed ACM term premium remains gated until source access and redistribution review is complete."
   },
   {
     label: "Treasury net issuance",

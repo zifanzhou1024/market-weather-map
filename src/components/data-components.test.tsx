@@ -3,6 +3,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import ConfidenceBreakdown from "./ConfidenceBreakdown";
 import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
+import CandidateDiagnosticPanel from "./CandidateDiagnosticPanel";
 import CrossAssetConfirmationMatrix from "./CrossAssetConfirmationMatrix";
 import DataGapPanel from "./DataGapPanel";
 import DataStatusTable from "./DataStatusTable";
@@ -538,6 +539,65 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("No candidate source rows are configured for this view.");
   });
 
+  it("renders generated candidate diagnostics as non-scoring official rows", () => {
+    const diagnosticCatalog: SeriesCatalogEntry[] = [
+      {
+        category: "credit",
+        frequency: "quarterly",
+        higher_is: "riskier",
+        id: "sloos_lending_standards",
+        max_stale_days: 120,
+        name: "SLOOS C&I Lending Standards: Large and Middle-Market Firms",
+        notes: "Generated non-scoring SLOOS lending-standards diagnostic from FRED.",
+        public: true,
+        source: "FRED",
+        source_url: "https://example.com/sloos",
+        units: "net percent",
+        access_status: "free_public",
+        score_status: "candidate"
+      }
+    ];
+    const diagnosticStatus: DataStatusFile = {
+      generated_at_utc: "2026-05-09T00:00:00Z",
+      last_successful_update_utc: "2026-05-09T00:00:00Z",
+      overall_status: "ok",
+      series: {
+        sloos_lending_standards: {
+          expected_frequency: "quarterly",
+          freshness_days: 38,
+          last_observation: "2026-04-01",
+          max_stale_days: 120,
+          message:
+            "Latest quarterly observation covers 2026-Q2. candidate diagnostic only; does not affect active scores.",
+          observation_period: "2026-Q2",
+          score_status: "candidate",
+          source: "FRED",
+          status: "ok"
+        }
+      }
+    };
+
+    const container = render(
+      <CandidateDiagnosticPanel
+        catalog={diagnosticCatalog}
+        diagnosticIds={["sloos_lending_standards"]}
+        status={diagnosticStatus}
+        title="Generated official diagnostics"
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Generated official diagnostics");
+    expect(text).toContain("SLOOS C&I Lending Standards: Large and Middle-Market Firms");
+    expect(text).toContain("Generated candidate diagnostic");
+    expect(text).toContain("Not scored");
+    expect(text).toContain("Does not affect active scores, labels, checklist states, or confidence.");
+    expect(text).toContain("Observation 2026-Q2");
+    expect(text).toContain("FRED");
+    expect(text).not.toContain("Terms review needed");
+    expect(container.querySelectorAll(".candidate-diagnostic-row")).toHaveLength(1);
+  });
+
   it("orders options sentiment candidates without active signal labels", () => {
     const container = render(<OptionsSentimentPanel items={[...candidateRows].reverse()} />);
     const text = container.textContent ?? "";
@@ -623,8 +683,8 @@ describe("data-driven components", () => {
     const text = container.textContent ?? "";
     const labels = [
       "PMIs",
-      "SLOOS",
-      "10Y term premium",
+      "SLOOS scoring promotion",
+      "NY Fed ACM term premium",
       "Treasury net issuance",
       "Auction tail",
       "Bid-to-cover",
