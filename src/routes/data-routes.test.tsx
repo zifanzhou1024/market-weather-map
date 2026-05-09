@@ -2248,12 +2248,17 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("VIX term-structure proxy");
     expect(container.textContent).toContain("Options sentiment");
     expect(container.textContent).toContain("Event risk");
+    expect(container.textContent).toContain("Official source-linked calendar context");
+    expect(container.textContent).toContain("Consumer Price Index");
+    expect(container.textContent).toContain("FOMC Minutes");
+    expect(container.textContent).toContain("Not scored");
+    expect(container.textContent).toContain("does not affect active scores, regime labels, checklist states, or confidence");
     expect(container.textContent).toContain("VIX futures readiness");
     expect(container.textContent).toContain("SPXW put/call ratio");
     expect(container.textContent).toContain("SPXW options source remains under terms review.");
     expect(container.textContent).toContain("VX1 futures");
-    expect(container.textContent).toContain("CPI release calendar");
-    expect(container.textContent).toContain("CPI calendar source remains under review.");
+    expect(container.textContent).toContain("OPEX calendar");
+    expect(container.textContent).toContain("OPEX calendar source remains under review.");
 
     expect(container.textContent).toContain("Market weather");
     expect(container.textContent).toContain("Mixed");
@@ -2263,6 +2268,7 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("-4.10");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/put_call_spxw.json");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
+    expect(fetch).toHaveBeenCalledWith("/data/events/macro_calendar.json");
   });
 
   it("renders short-term credit pulse unavailable state when HY minus IG OAS is missing", async () => {

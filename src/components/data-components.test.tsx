@@ -774,6 +774,53 @@ describe("data-driven components", () => {
     expect(text).toContain("OPEX");
   });
 
+  it("renders official event calendar rows as non-scoring source-linked context", () => {
+    const container = render(
+      <EventRiskPanel
+        calendar={{
+          generated_at_utc: "2026-05-09T00:00:00Z",
+          method_version: "official-event-calendar-v1",
+          events: [
+            {
+              category: "inflation",
+              date: null,
+              id: "cpi",
+              importance: "high",
+              notes: "BLS monthly Consumer Price Index release calendar.",
+              source: "BLS",
+              source_url: "https://www.bls.gov/schedule/news_release/cpi.htm",
+              status: "source_link",
+              time: "08:30",
+              timezone: "America/New_York",
+              title: "CPI"
+            }
+          ]
+        }}
+        items={[
+          {
+            id: "event_opex",
+            label: "OPEX",
+            note: "Options-expiration calendar remains source-gated.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Official source-linked calendar context");
+    expect(text).toContain("Not scored");
+    expect(text).toContain("does not affect active scores, regime labels, checklist states, or confidence");
+    expect(text).toContain("CPI");
+    expect(text).toContain("BLS monthly Consumer Price Index release calendar.");
+    expect(text).toContain("BLS");
+    expect(text).toContain("See source 08:30 America/New_York");
+    expect(text).toContain("OPEX");
+    expect(text).toContain("Options-expiration calendar remains source-gated.");
+    expect(container.querySelectorAll(".calendar-event")).toHaveLength(1);
+    expect(container.querySelectorAll(".candidate-source-row")).toHaveLength(1);
+  });
+
   it("renders route-provided event risk candidate rows", () => {
     const container = render(
       <EventRiskPanel

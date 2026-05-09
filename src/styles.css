@@ -1058,6 +1058,12 @@ select {
   justify-content: flex-end;
 }
 
+.event-risk-candidate-list {
+  margin-top: 16px;
+  border-top: 1px solid #e4e8df;
+  padding-top: 14px;
+}
+
 .candidate-diagnostic-trend {
   display: grid;
   grid-template-columns: 160px minmax(0, 1fr);

@@ -7,7 +7,7 @@ from typing import Any
 from scripts.shared.io import data_dir, write_json
 
 
-METHOD_VERSION = "phase4-pr2-static-event-calendar-v1"
+METHOD_VERSION = "official-event-calendar-v1"
 
 EVENTS: list[dict[str, Any]] = [
     {
@@ -61,6 +61,32 @@ EVENTS: list[dict[str, Any]] = [
         "timezone": "America/New_York",
         "status": "source_link",
         "notes": "BEA release schedule for Personal Income and Outlays including PCE.",
+    },
+    {
+        "id": "gross_domestic_product",
+        "title": "Gross Domestic Product",
+        "category": "growth",
+        "importance": "high",
+        "source": "BEA",
+        "source_url": "https://www.bea.gov/news/schedule/",
+        "date": None,
+        "time": "08:30",
+        "timezone": "America/New_York",
+        "status": "source_link",
+        "notes": "BEA release schedule for Gross Domestic Product estimates.",
+    },
+    {
+        "id": "retail_sales",
+        "title": "Advance Monthly Retail Trade",
+        "category": "growth",
+        "importance": "high",
+        "source": "Census",
+        "source_url": "https://www.census.gov/retail/",
+        "date": None,
+        "time": "08:30",
+        "timezone": "America/New_York",
+        "status": "source_link",
+        "notes": "Census source page for Advance Monthly Retail Trade and Food Services releases.",
     },
     {
         "id": "fomc_meeting",
