@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-05-08T00:11:54Z",
+  "generated_at_utc": "2026-05-09T00:14:38Z",
   "observations": [
     {
       "date": "1990-01-02",
@@ -45896,20 +45896,25 @@
       "date": "2026-05-06",
       "percentile_252d": 52.78,
       "value": 17.39
+    },
+    {
+      "date": "2026-05-07",
+      "percentile_252d": 46.43,
+      "value": 17.08
     }
   ],
   "series_id": "vix",
   "source": "Cboe",
   "source_url": "https://www.cboe.com/us/indices/dashboard/",
   "summary": {
-    "change_12m": -1.23,
-    "change_1d": 0.01,
-    "change_1m": -8.39,
-    "change_1w": -1.42,
-    "change_3m": -4.38,
-    "latest_date": "2026-05-06",
-    "latest_value": 17.39,
-    "percentile_252d": 52.78
+    "change_12m": -0.75,
+    "change_1d": -0.31,
+    "change_1m": -3.96,
+    "change_1w": 0.19,
+    "change_3m": -0.68,
+    "latest_date": "2026-05-07",
+    "latest_value": 17.08,
+    "percentile_252d": 46.43
   },
   "units": "index"
 }

@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-05-08T00:12:34Z",
+  "generated_at_utc": "2026-05-09T00:15:28Z",
   "observations": [
     {
       "date": "1959-12-01",
@@ -3976,20 +3976,25 @@
       "date": "2026-03-01",
       "percentile_252d": 33.33,
       "value": 0.2
+    },
+    {
+      "date": "2026-04-01",
+      "percentile_252d": 25.0,
+      "value": 0.13
     }
   ],
   "series_id": "sahm_rule",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/SAHMREALTIME",
   "summary": {
-    "change_12m": -0.07,
+    "change_12m": -0.14,
     "change_1d": -0.07,
     "change_1m": -0.07,
     "change_1w": -0.07,
-    "change_3m": -0.15,
-    "latest_date": "2026-03-01",
-    "latest_value": 0.2,
-    "percentile_252d": 33.33
+    "change_3m": -0.17,
+    "latest_date": "2026-04-01",
+    "latest_value": 0.13,
+    "percentile_252d": 25.0
   },
   "units": "percentage_points"
 }
