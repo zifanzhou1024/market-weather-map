@@ -280,6 +280,34 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       "quarterly"
     ),
     "/data/series/term_premium_kw_10y.json": diagnosticSeriesFile("term_premium_kw_10y", [0.42, 0.48, 0.52]),
+    "/data/series/monthly_treasury_receipts.json": diagnosticSeriesFile(
+      "monthly_treasury_receipts",
+      [326770, 367645, 850169],
+      "millions_usd",
+      "monthly",
+      "FiscalData"
+    ),
+    "/data/series/monthly_treasury_outlays.json": diagnosticSeriesFile(
+      "monthly_treasury_outlays",
+      [584220, 528174, 591769],
+      "millions_usd",
+      "monthly",
+      "FiscalData"
+    ),
+    "/data/series/monthly_treasury_deficit_surplus.json": diagnosticSeriesFile(
+      "monthly_treasury_deficit_surplus",
+      [257450, 160528, -258400],
+      "millions_usd",
+      "monthly",
+      "FiscalData"
+    ),
+    "/data/series/treasury_auction_supply.json": diagnosticSeriesFile(
+      "treasury_auction_supply",
+      [125000, 147000, 132000],
+      "millions_usd",
+      "weekly",
+      "FiscalData"
+    ),
     ...seriesFiles([
       "bank_credit",
       "bbb_oas",
@@ -626,6 +654,42 @@ const catalog: SeriesCatalogEntry[] = [
     "Kim-Wright 10-Year Zero-Coupon Term Premium",
     "Generated non-scoring Kim-Wright term-premium diagnostic from FRED.",
     "percent"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "monthly_treasury_receipts",
+    "liquidity",
+    "Monthly Treasury Receipts",
+    "Generated non-scoring monthly Treasury receipts diagnostic from FiscalData Monthly Treasury Statement table 1.",
+    "millions_usd",
+    "monthly",
+    "FiscalData"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "monthly_treasury_outlays",
+    "liquidity",
+    "Monthly Treasury Outlays",
+    "Generated non-scoring monthly Treasury outlays diagnostic from FiscalData Monthly Treasury Statement table 1.",
+    "millions_usd",
+    "monthly",
+    "FiscalData"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "monthly_treasury_deficit_surplus",
+    "liquidity",
+    "Monthly Treasury Deficit or Surplus",
+    "Generated non-scoring monthly Treasury deficit-or-surplus diagnostic from FiscalData Monthly Treasury Statement table 1.",
+    "millions_usd",
+    "monthly",
+    "FiscalData"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "treasury_auction_supply",
+    "rates",
+    "Treasury Auction Supply",
+    "Generated non-scoring weekly Treasury auction offering-amount diagnostic from FiscalData Treasury Securities Auctions Data.",
+    "millions_usd",
+    "weekly",
+    "FiscalData"
   ),
   generatedDiagnosticCatalogEntry(
     "bond_volatility_proxy",
@@ -1029,6 +1093,30 @@ const status: DataStatusFile = {
     ),
     term_premium_kw_10y: generatedDiagnosticStatusRow(
       "Latest daily observation is 8 days old. candidate diagnostic only; does not affect active scores."
+    ),
+    monthly_treasury_receipts: generatedDiagnosticStatusRow(
+      "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15. candidate diagnostic only; does not affect active scores.",
+      "monthly",
+      "2026-04",
+      "FiscalData"
+    ),
+    monthly_treasury_outlays: generatedDiagnosticStatusRow(
+      "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15. candidate diagnostic only; does not affect active scores.",
+      "monthly",
+      "2026-04",
+      "FiscalData"
+    ),
+    monthly_treasury_deficit_surplus: generatedDiagnosticStatusRow(
+      "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15. candidate diagnostic only; does not affect active scores.",
+      "monthly",
+      "2026-04",
+      "FiscalData"
+    ),
+    treasury_auction_supply: generatedDiagnosticStatusRow(
+      "Latest weekly observation is within the expected release window ending 2026-05-25. candidate diagnostic only; does not affect active scores.",
+      "weekly",
+      "week of 2026-05-11",
+      "FiscalData"
     ),
     bond_volatility_proxy: generatedDiagnosticStatusRow(
       "Latest daily observation is 2 days old. candidate diagnostic only; does not affect active scores.",
@@ -2409,6 +2497,10 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("SLOOS C&I Loan Demand: Large and Middle-Market Firms");
     expect(container.textContent).toContain("Commercial and Industrial Loans, All Commercial Banks");
     expect(container.textContent).toContain("Kim-Wright 10-Year Zero-Coupon Term Premium");
+    expect(container.textContent).toContain("Monthly Treasury Receipts");
+    expect(container.textContent).toContain("Monthly Treasury Outlays");
+    expect(container.textContent).toContain("Monthly Treasury Deficit or Surplus");
+    expect(container.textContent).toContain("Treasury Auction Supply");
     expect(container.textContent).toContain("Generated candidate diagnostic");
     expect(container.textContent).toContain("Not scored");
     expect(container.textContent).toContain("Does not affect active scores, labels, checklist states, or confidence.");
@@ -2425,11 +2517,13 @@ describe("data-backed routes", () => {
     expect(strategicRows).toHaveLength(11);
     expect(strategicRows.every((row) => row.getAttribute("role") === "listitem")).toBe(true);
     expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(11);
-    expect(container.querySelectorAll(".candidate-diagnostic-row")).toHaveLength(5);
-    expect(container.querySelectorAll(".candidate-diagnostic-sparkline")).toHaveLength(5);
+    expect(container.querySelectorAll(".candidate-diagnostic-row")).toHaveLength(9);
+    expect(container.querySelectorAll(".candidate-diagnostic-sparkline")).toHaveLength(9);
     expect(fetch).toHaveBeenCalledWith("/data/series/sloos_lending_standards.json");
     expect(fetch).toHaveBeenCalledWith("/data/series/ci_loans_weekly.json");
     expect(fetch).toHaveBeenCalledWith("/data/series/term_premium_kw_10y.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/monthly_treasury_receipts.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/treasury_auction_supply.json");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
     expect(container.textContent).toContain("Consumer and production");
@@ -2596,6 +2690,24 @@ describe("data-backed routes", () => {
 
     await waitForContent(container, "10Y yield decomposition");
     expect(container.textContent).toContain("Yield driver");
+  });
+
+  it("rates route renders generated Treasury supply diagnostics as non-scoring context", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/rates"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Treasury supply diagnostics");
+    expect(container.textContent).toContain("Monthly Treasury Deficit or Surplus");
+    expect(container.textContent).toContain("Treasury Auction Supply");
+    expect(container.textContent).toContain("Generated candidate diagnostic");
+    expect(container.textContent).toContain("Not scored");
+    expect(fetch).toHaveBeenCalledWith("/data/series/monthly_treasury_deficit_surplus.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/treasury_auction_supply.json");
   });
 
   it("dollar route renders dollar pressure read interpretation", async () => {

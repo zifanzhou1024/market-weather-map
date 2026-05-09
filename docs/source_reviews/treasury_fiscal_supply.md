@@ -15,14 +15,14 @@ Static JSON redistribution allowed: Likely compatible for transformed static das
 Attribution requirement: Attribute U.S. Treasury FiscalData and the selected dataset names.
 API key required: No key expected for FiscalData unless future endpoint documentation changes.
 Can it be used in browser: No; the browser should consume generated static JSON and link to source documentation.
-Can it be used in GitHub Actions ingestion: Yes, after endpoint selection and schema handling are implemented.
+Can it be used in GitHub Actions ingestion: Yes. Monthly Treasury Statement table 1 is now used for generated candidate diagnostics only.
 Can it affect active scores now: No
 Recommended catalog status: free_public
 Recommended score status: candidate
 Citation text: U.S. Treasury FiscalData Monthly Treasury Statement and related fiscal datasets.
 Citation text to show on website: U.S. Treasury FiscalData Monthly Treasury Statement and related fiscal datasets.
-Notes / unresolved questions: Select exact fields for receipts, outlays, surplus/deficit, debt, cash, and interest expense; document revision behavior and transformation rules before active scoring.
+Notes / unresolved questions: Receipts, outlays, and deficit/surplus are generated from Monthly Treasury Statement table 1 as static candidate diagnostics. Debt, cash, and interest expense remain deferred; document revision behavior and transformation rules before active scoring.
 
 ## Decision
 
-Official public fiscal-data candidate. Keep as source-reviewed candidate until a later PR implements ingestion and scoring.
+Official public fiscal-data candidate. Generated static diagnostics are allowed, but these rows remain non-scoring until a later governance/scoring PR promotes them.
