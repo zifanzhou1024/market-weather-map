@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+import statistics
 from datetime import datetime, timezone
 from typing import Any
 
@@ -85,6 +86,7 @@ FRAGILITY_COVERAGE_GROUPS = {
 }
 DERIVED_STATUS_METADATA = {
     "us10y_minus_us2y": {"max_stale_days": 7},
+    "bond_volatility_proxy": {"max_stale_days": 7},
     "brent_wti_spread": {"max_stale_days": 10},
     "net_liquidity": {"max_stale_days": 14},
     "hy_minus_ig_oas": {"max_stale_days": 10},
@@ -368,6 +370,54 @@ def build_curve(generated_at: str) -> dict[str, Any]:
         "percentage_points",
         "10-year Treasury yield minus 2-year Treasury yield by matched observation date.",
     )
+
+
+def build_bond_volatility_proxy(
+    series_by_id: dict[str, dict[str, Any]],
+    generated_at: str,
+    window: int = 21,
+) -> dict[str, Any]:
+    us10y = series_by_id["us10y"]
+    values = []
+    for observation in us10y.get("observations", []):
+        date = observation.get("date")
+        value = observation.get("value")
+        if isinstance(date, str) and _finite_number(value):
+            values.append((date, float(value)))
+    values.sort(key=lambda item: item[0])
+
+    changes = [
+        (values[index][0], values[index][1] - values[index - 1][1])
+        for index in range(1, len(values))
+    ]
+    observations = []
+    for index in range(window - 1, len(changes)):
+        window_changes = [change for _, change in changes[index - window + 1 : index + 1]]
+        realized_vol = statistics.pstdev(window_changes) * math.sqrt(252) * 100
+        observations.append(
+            {
+                "date": changes[index][0],
+                "value": round(realized_vol, 4),
+            }
+        )
+
+    observations = enrich_observations(observations, "daily")
+    return {
+        "series_id": "bond_volatility_proxy",
+        "generated_at_utc": generated_at,
+        "source": "Derived",
+        "source_url": "/data/series/us10y.json",
+        "frequency": "daily",
+        "units": "basis_points_annualized",
+        "depends_on": ["us10y"],
+        "method": (
+            "Rolling 21-observation population standard deviation of daily 10-year Treasury "
+            "yield changes, annualized by sqrt(252) and converted to basis points; not ICE MOVE "
+            "and not an implied bond-volatility benchmark."
+        ),
+        "summary": series_summary(observations, "daily"),
+        "observations": observations,
+    }
 
 
 def _change_pct(summary: dict[str, Any], change_key: str) -> float | None:
@@ -1798,9 +1848,21 @@ def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_
             "expected_next_release_window": None,
             "message": "Source is unavailable for automated static ingestion.",
         }
-    if (
+    candidate_can_report_freshness = (
         entry.get("score_status") == "candidate"
-        or entry.get("access_status") == "terms_review_needed"
+        and entry.get("access_status") == "free_public"
+        and entry.get("terms_status") in {"ok", "review_each_series"}
+        and (
+            isinstance(series.get("summary"), dict)
+            or bool(series.get("observations"))
+        )
+    )
+    if (
+        not candidate_can_report_freshness
+        and (
+            entry.get("score_status") == "candidate"
+            or entry.get("access_status") == "terms_review_needed"
+        )
         or entry.get("terms_status") == "review_needed"
     ):
         return {
@@ -1823,7 +1885,7 @@ def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_
         frequency=str(entry["frequency"]),
         max_stale_days=int(entry["max_stale_days"]),
     )
-    return {
+    status_payload = {
         "status": freshness["status"],
         "last_observation": freshness["last_observation"],
         "observation_period": freshness["observation_period"],
@@ -1832,8 +1894,15 @@ def _status_for_series(entry: dict[str, Any], series: dict[str, Any], generated_
         "freshness_days": freshness["freshness_days"],
         "max_stale_days": entry["max_stale_days"],
         "expected_next_release_window": freshness["expected_next_release_window"],
-        "message": freshness["message"],
+        "message": (
+            f"{freshness['message']} candidate diagnostic only; does not affect active scores."
+            if entry.get("score_status") == "candidate"
+            else freshness["message"]
+        ),
     }
+    if entry.get("score_status") == "candidate":
+        status_payload["score_status"] = "candidate"
+    return status_payload
 
 
 def _unavailable_status_for_series(entry: dict[str, Any]) -> dict[str, Any]:
@@ -1887,12 +1956,24 @@ def build_status(series_by_id: dict[str, dict[str, Any]], generated_at: str) -> 
         series_id = str(entry["id"])
         if series_id in statuses:
             continue
+        series = series_by_id.get(series_id)
+        if series is None and entry.get("public") is True:
+            payload_paths = [
+                series_path(series_id),
+                data_dir() / "derived" / f"{series_id}.json",
+            ]
+            for payload_path in payload_paths:
+                if payload_path.exists():
+                    series = json.loads(payload_path.read_text(encoding="utf-8"))
+                    break
         statuses[series_id] = _status_for_series(
             entry,
-            series_by_id.get(series_id, {}),
+            series or {},
             generated_at,
         )
     for series_id, metadata in DERIVED_STATUS_METADATA.items():
+        if series_id in statuses:
+            continue
         series = series_by_id.get(series_id)
         if series is None:
             continue
@@ -1932,6 +2013,13 @@ def main() -> None:
     curve = build_curve(generated_at)
     write_json(data_dir() / "derived" / "us10y_minus_us2y.json", curve)
     series_by_id["us10y_minus_us2y"] = curve
+
+    bond_volatility_proxy = build_bond_volatility_proxy(series_by_id, generated_at)
+    write_json(
+        data_dir() / "derived" / "bond_volatility_proxy.json",
+        bond_volatility_proxy,
+    )
+    series_by_id["bond_volatility_proxy"] = bond_volatility_proxy
 
     net_liquidity = build_net_liquidity(series_by_id, generated_at)
     write_json(data_dir() / "derived" / "net_liquidity.json", net_liquidity)

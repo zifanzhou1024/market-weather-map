@@ -333,6 +333,7 @@ export interface ShockRiskSnapshotFile {
 
 export interface SeriesStatus {
   status: DataStatus;
+  score_status?: ScoreStatus;
   last_observation: string | null;
   observation_period?: string | null;
   source: string;

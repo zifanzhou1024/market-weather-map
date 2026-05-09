@@ -26,6 +26,7 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "catalog" / "source_registry.json",
     data_dir() / "events" / "macro_calendar.json",
     data_dir() / "derived" / "us10y_minus_us2y.json",
+    data_dir() / "derived" / "bond_volatility_proxy.json",
     data_dir() / "derived" / "brent_wti_spread.json",
     data_dir() / "derived" / "net_liquidity.json",
     data_dir() / "derived" / "hy_minus_ig_oas.json",
