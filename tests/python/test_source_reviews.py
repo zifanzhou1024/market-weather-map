@@ -93,6 +93,46 @@ def normalize_status_value(value: str) -> str:
     return re.sub(r"\s+", " ", value.replace("`", "")).strip()
 
 
+def markdown_section(text: str, heading: str) -> str:
+    match = re.search(
+        rf"(?ms)^## {re.escape(heading)}\n(?P<section>.*?)(?=^## |\Z)",
+        text,
+    )
+
+    assert match, f"Missing section: {heading}"
+    return match.group("section")
+
+
+def markdown_table_rows(section: str) -> dict[str, str]:
+    rows = {}
+
+    for line in section.splitlines():
+        if not line.startswith("|"):
+            continue
+
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if not cells or re.fullmatch(r"-+", cells[0]):
+            continue
+
+        rows[cells[0]] = line
+
+    return rows
+
+
+def assert_table_row_contains(
+    rows: dict[str, str],
+    first_cell: str,
+    expected_values: tuple[str, ...],
+) -> str:
+    assert first_cell in rows
+    row = rows[first_cell]
+
+    for expected in expected_values:
+        assert expected in row
+
+    return row
+
+
 def test_required_source_review_files_exist():
     present = {path.name for path in SOURCE_REVIEWS.glob("*.md")}
 
@@ -164,6 +204,53 @@ def test_data_sources_summarizes_source_governance_sprint():
         "Current shipped catalog/status",
     ):
         assert expected in text
+
+    sprint_rows = markdown_table_rows(
+        markdown_section(text, "Source Governance Sprint 1")
+    )
+    for first_cell in (
+        "SLOOS",
+        "Treasury FiscalData",
+        "Bond-volatility proxy",
+        "Event calendars",
+    ):
+        row = assert_table_row_contains(
+            sprint_rows,
+            first_cell,
+            ("Official/public candidate",),
+        )
+        assert "Sprint 1 reviewed recommendation" in sprint_rows["Candidate family"]
+        assert row.count("|") >= 5
+
+    candidate_rows = markdown_table_rows(markdown_section(text, "Candidate Sources"))
+    for first_cell in ("SLOOS", "Treasury supply", "PMIs/SLOOS"):
+        assert_table_row_contains(
+            candidate_rows,
+            first_cell,
+            (
+                "terms_review_needed",
+                "Current shipped catalog/status remains",
+                "Source Governance Sprint 1",
+            ),
+        )
+
+    pr2_rows = markdown_table_rows(markdown_section(text, "PR 2 Tactical Source Gates"))
+    assert_table_row_contains(
+        pr2_rows,
+        "Event calendar families",
+        ("terms_review_needed", "Source Governance Sprint 1"),
+    )
+
+    pr4_rows = markdown_table_rows(markdown_section(text, "PR 4 Strategic Source Gates"))
+    for first_cell in (
+        "PMIs and lending standards",
+        "Term premium and Treasury supply",
+    ):
+        assert_table_row_contains(
+            pr4_rows,
+            first_cell,
+            ("terms_review_needed", "Source Governance Sprint 1"),
+        )
 
 
 def test_limitations_document_api_key_and_redistribution_boundaries():
