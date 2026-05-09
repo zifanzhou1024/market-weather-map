@@ -38,6 +38,9 @@
 - Fiscal/Treasury, valuation, PMI/SLOOS, earnings-revision, and remaining candidate consumer rows do not affect scores.
 - Public macro series can be revised after initial publication, so historical scores may change when source data is refreshed.
 - Mismatch warnings are descriptive conflicts between active inputs. They do not imply a resolved direction when volatility, credit, liquidity, rate, dollar, or positioning channels disagree.
+- API-key-enabled ingestion is future server-side or GitHub Actions generation only; the browser must never call provider APIs directly or expose provider credentials.
+- Publicly accessible source pages, dashboards, APIs, CSV files, or documentation are not automatically redistributable as static JSON. Each candidate still needs source-specific review for automation, attribution, transformation, and redistribution boundaries before active publication.
+- Generated public data should include only reviewed, redistributable observations and source metadata. Licensed, gated, or unresolved provider data should remain candidate-only unless later documentation approves the static-public workflow.
 
 ## Score Confidence Limitations
 

@@ -4,6 +4,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE_REVIEWS = ROOT / "docs" / "source_reviews"
+DATA_SOURCES_DOC = ROOT / "docs" / "DATA_SOURCES.md"
+LIMITATIONS_DOC = ROOT / "docs" / "LIMITATIONS.md"
 
 REQUIRED_REVIEW_FILES = {
     "aaii_naaim.md",
@@ -143,3 +145,30 @@ def test_source_review_docs_reference_secret_names_only():
 
     for secret_name in ALLOWED_SECRET_NAMES:
         assert not re.search(rf"\b{re.escape(secret_name)}\b\s*(?:=|:)\s*\S", combined)
+
+
+def test_data_sources_summarizes_source_governance_sprint():
+    text = review_text(DATA_SOURCES_DOC)
+
+    for expected in (
+        "Source Governance Sprint 1",
+        "SLOOS",
+        "Treasury FiscalData",
+        "Bond-volatility proxy",
+        "ICE MOVE",
+        "FRED_API_KEY",
+        "No browser provider calls",
+    ):
+        assert expected in text
+
+
+def test_limitations_document_api_key_and_redistribution_boundaries():
+    text = review_text(LIMITATIONS_DOC)
+
+    for expected in (
+        "API-key-enabled ingestion",
+        "browser must never call provider APIs directly",
+        "Publicly accessible",
+        "redistributable as static JSON",
+    ):
+        assert expected in text

@@ -102,6 +102,21 @@ PR 4 promotes a narrow set of FRED-hosted consumer stress series to active gener
 | Fiscal/Treasury supply | `treasury_interest_expense` | FiscalData MTS | `https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/` | Direct FiscalData ingestion deferred. |
 | Treasury auction supply | `treasury_auction_supply` | TreasuryDirect | `https://www.treasuryauctions.gov/auctions/when-auctions-happen/` | Numeric auction ingestion deferred. |
 
+## Source Governance Sprint 1
+
+Source Governance Sprint 1 adds documentation-level classifications for candidate source families. It does not change ingestion, generated data, scoring, labels, checklists, or frontend behavior in this PR.
+
+No browser provider calls: all provider/API usage must happen in GitHub Actions ingestion or local ingestion, and the browser must read generated static JSON only. Secret names below are listed as names only; no values belong in docs, source review files, generated JSON, or browser bundles.
+
+| Candidate family | Likely first-pass classification | Candidate providers | Potential secret names | Current use boundary |
+| --- | --- | --- | --- | --- |
+| SLOOS | Official/public candidate | Federal Reserve Data Download Program or FRED mirrors | `FRED_API_KEY` only if later FRED API ingestion is chosen | Candidate credit-cycle input; no scoring change in this PR. |
+| Treasury FiscalData | Official/public candidate | U.S. Treasury FiscalData API, CSV, or JSON downloads | None expected | Candidate fiscal-supply input; no ingestion or scoring change in this PR. |
+| Bond-volatility proxy | Official/public derived candidate | Federal Reserve/FRED Treasury-yield series | None expected if existing FRED graph CSV input remains sufficient | Candidate realized Treasury-yield volatility proxy; not ICE MOVE and no scoring change in this PR. |
+| Event calendars | Official/public candidate by event family | Federal Reserve, BLS, BEA, Census, U.S. Treasury, TreasuryDirect, CFTC | `BLS_API_KEY`, `BEA_API_KEY`, `CENSUS_API_KEY` if later structured API ingestion is selected | Descriptive event-risk candidate; no browser provider calls or scoring change in this PR. |
+| ICE MOVE | Gated candidate | ICE Data Indices or licensed redistributors | Licensed credentials may be required, but no public project secret is approved | Terms-review-needed licensed index candidate; not redistributable as public static JSON without documented approval. |
+| Put/call, breadth, valuation, PMIs, earnings, term-premium alternatives | Gated or endpoint-specific candidates | Exchanges, index providers, survey owners, earnings providers, official agencies, or licensed redistributors | Source-specific credentials may be required after review | Keep non-scoring until source terms, automation, attribution, and redistribution are reviewed. |
+
 ## Candidate Sources
 
 Candidate sources are not active scoring inputs until legal, terms, cadence, and redistribution review is complete. They should be marked `terms_review_needed` in source planning unless a later review moves them to `free_public`, `restricted`, or `unavailable`.
