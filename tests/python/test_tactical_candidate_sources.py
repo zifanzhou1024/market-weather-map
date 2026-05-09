@@ -45,6 +45,7 @@ STRATEGIC_CANDIDATE_IDS = (
 )
 
 OFFICIAL_PUBLIC_DIAGNOSTIC_IDS = (
+    "philly_fed_mfg_general_activity",
     "sloos_lending_standards",
     "sloos_small_firm_standards",
     "sloos_large_firm_demand",

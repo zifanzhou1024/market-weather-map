@@ -261,6 +261,13 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       "USD billions",
       "weekly"
     ),
+    "/data/series/philly_fed_mfg_general_activity.json": diagnosticSeriesFile(
+      "philly_fed_mfg_general_activity",
+      [-8.1, 2.4, 12.6],
+      "diffusion_index",
+      "monthly",
+      "FRED"
+    ),
     "/data/series/sloos_lending_standards.json": diagnosticSeriesFile(
       "sloos_lending_standards",
       [8, 12, 16],
@@ -616,6 +623,14 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("bank_credit", "credit", "Bank credit", "USD billions", "weekly"),
   catalogEntry("loans_and_leases", "credit", "Loans and leases", "USD billions", "weekly"),
   catalogEntry("business_loans", "credit", "Commercial and industrial loans", "USD billions", "weekly"),
+  generatedDiagnosticCatalogEntry(
+    "philly_fed_mfg_general_activity",
+    "growth",
+    "Philadelphia Fed Manufacturing General Activity",
+    "Generated non-scoring regional Fed survey proxy from Philadelphia Fed MBOS via FRED; not ISM PMI or S&P Global PMI.",
+    "diffusion_index",
+    "monthly"
+  ),
   generatedDiagnosticCatalogEntry(
     "ci_loans_weekly",
     "credit",
@@ -1071,6 +1086,11 @@ const status: DataStatusFile = {
     bank_credit: statusRow("unavailable", "weekly"),
     loans_and_leases: statusRow("unavailable", "weekly"),
     business_loans: statusRow("unavailable", "weekly"),
+    philly_fed_mfg_general_activity: generatedDiagnosticStatusRow(
+      "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15. candidate diagnostic only; does not affect active scores.",
+      "monthly",
+      "2026-04"
+    ),
     ci_loans_weekly: generatedDiagnosticStatusRow(
       "Latest weekly observation is within the expected release window. candidate diagnostic only; does not affect active scores.",
       "weekly",
@@ -2492,6 +2512,7 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Current Long-Term Read");
     expect(container.textContent).toContain("Macro bucket grid");
     expect(container.textContent).toContain("Generated official diagnostics");
+    expect(container.textContent).toContain("Philadelphia Fed Manufacturing General Activity");
     expect(container.textContent).toContain("SLOOS C&I Lending Standards: Large and Middle-Market Firms");
     expect(container.textContent).toContain("SLOOS C&I Lending Standards: Small Firms");
     expect(container.textContent).toContain("SLOOS C&I Loan Demand: Large and Middle-Market Firms");
@@ -2517,8 +2538,9 @@ describe("data-backed routes", () => {
     expect(strategicRows).toHaveLength(11);
     expect(strategicRows.every((row) => row.getAttribute("role") === "listitem")).toBe(true);
     expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(11);
-    expect(container.querySelectorAll(".candidate-diagnostic-row")).toHaveLength(9);
-    expect(container.querySelectorAll(".candidate-diagnostic-sparkline")).toHaveLength(9);
+    expect(container.querySelectorAll(".candidate-diagnostic-row")).toHaveLength(10);
+    expect(container.querySelectorAll(".candidate-diagnostic-sparkline")).toHaveLength(10);
+    expect(fetch).toHaveBeenCalledWith("/data/series/philly_fed_mfg_general_activity.json");
     expect(fetch).toHaveBeenCalledWith("/data/series/sloos_lending_standards.json");
     expect(fetch).toHaveBeenCalledWith("/data/series/ci_loans_weekly.json");
     expect(fetch).toHaveBeenCalledWith("/data/series/term_premium_kw_10y.json");

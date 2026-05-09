@@ -1318,6 +1318,30 @@
   },
   {
     "access_status": "free_public",
+    "category": "growth",
+    "citation_notes": "Federal Reserve Bank of Philadelphia/FRED MBOS current general activity diffusion index; regional survey proxy only, not ISM PMI or S&P Global PMI.",
+    "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=GACDFSA066MSFRBPHI",
+    "frequency": "monthly",
+    "higher_is": "supportive",
+    "horizon": "strategic",
+    "id": "philly_fed_mfg_general_activity",
+    "max_stale_days": 45,
+    "name": "Philadelphia Fed Manufacturing General Activity",
+    "notes": "Generated non-scoring regional Fed survey proxy from Philadelphia Fed MBOS via FRED; not ISM PMI or S&P Global PMI.",
+    "preferred_chart": "line",
+    "provider_id": "fred",
+    "public": true,
+    "regime_role": [
+      "growth"
+    ],
+    "score_status": "candidate",
+    "source": "FRED",
+    "source_url": "https://fred.stlouisfed.org/series/GACDFSA066MSFRBPHI",
+    "terms_status": "review_each_series",
+    "units": "diffusion_index"
+  },
+  {
+    "access_status": "free_public",
     "category": "credit",
     "citation_notes": "Board of Governors/FRED SLOOS series; candidate diagnostic generated as static JSON with source citation requested.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DRTSCILM",
