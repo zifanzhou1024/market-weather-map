@@ -53,8 +53,23 @@ def active_fred_series() -> list[dict[str, object]]:
     ]
 
 
+def generated_fred_series() -> list[dict[str, object]]:
+    return [
+        series
+        for series in FRED_SERIES
+        if series.get("access_status", "free_public") == "free_public"
+        and (
+            series.get("score_status", "active") == "active"
+            or (
+                series.get("score_status") == "candidate"
+                and series.get("generate_static") is True
+            )
+        )
+    ]
+
+
 def main() -> None:
-    for series in active_fred_series():
+    for series in generated_fred_series():
         fred_id = str(series["fred_id"])
         rows = parse_csv_rows(download_text(fred_endpoint(fred_id)))
         observations = normalize_fred_rows(rows, fred_id)

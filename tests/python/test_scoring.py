@@ -1,4 +1,6 @@
 import json
+import math
+import statistics
 
 import pytest
 
@@ -269,6 +271,32 @@ def test_build_ratio_series_matches_observations_by_date_and_summarizes_latest(m
     ]
     assert ratio["summary"]["latest_date"] == "2026-05-04"
     assert ratio["summary"]["latest_value"] == 2.5
+
+
+def test_build_bond_volatility_proxy_uses_rolling_10y_yield_realized_vol():
+    changes = [basis_points / 100 for basis_points in range(1, 22)]
+    value = 4.0
+    observations = [{"date": "2026-01-01", "value": value}]
+    for index, change in enumerate(changes, start=2):
+        value += change
+        observations.append({"date": f"2026-01-{index:02d}", "value": round(value, 4)})
+
+    proxy = compute_regime_score.build_bond_volatility_proxy(
+        {"us10y": {"frequency": "daily", "observations": observations}},
+        "2026-02-01T00:00:00Z",
+    )
+
+    expected = statistics.pstdev(changes) * math.sqrt(252) * 100
+    latest = proxy["observations"][-1]
+
+    assert proxy["series_id"] == "bond_volatility_proxy"
+    assert proxy["source"] == "Derived"
+    assert proxy["source_url"] == "/data/series/us10y.json"
+    assert proxy["depends_on"] == ["us10y"]
+    assert proxy["units"] == "basis_points_annualized"
+    assert "not ICE MOVE" in proxy["method"]
+    assert latest["date"] == "2026-01-22"
+    assert latest["value"] == pytest.approx(round(expected, 4))
 
 
 def test_build_ratio_series_skips_non_finite_values_and_sorts_by_date(monkeypatch):
@@ -889,6 +917,12 @@ def test_candidate_scaffolding_does_not_change_score_summary():
         "personal_saving_rate": _summary(percentile_252d=100.0),
         "total_consumer_credit": _summary(percentile_252d=100.0),
         "revolving_consumer_credit": _summary(percentile_252d=100.0),
+        "sloos_lending_standards": _summary(percentile_252d=100.0),
+        "sloos_small_firm_standards": _summary(percentile_252d=100.0),
+        "sloos_large_firm_demand": _summary(percentile_252d=0.0),
+        "ci_loans_weekly": _summary(percentile_252d=100.0),
+        "term_premium_kw_10y": _summary(percentile_252d=100.0),
+        "bond_volatility_proxy": _summary(percentile_252d=100.0),
         "monthly_treasury_receipts": _summary(percentile_252d=100.0),
         "monthly_treasury_outlays": _summary(percentile_252d=100.0),
         "monthly_treasury_deficit_surplus": _summary(percentile_252d=100.0),
@@ -1078,6 +1112,32 @@ def test_build_status_marks_missing_active_public_catalog_entries_unavailable(mo
     assert status["overall_status"] == "partial"
     assert status["series"]["cfnai"]["status"] == "unavailable"
     assert status["series"]["cfnai"]["message"] == "Active public catalog series has no generated payload."
+
+
+def test_status_for_generated_free_public_candidate_reports_freshness_but_not_scoring():
+    entry = {
+        "id": "sloos_lending_standards",
+        "source": "FRED",
+        "frequency": "quarterly",
+        "max_stale_days": 120,
+        "score_status": "candidate",
+        "access_status": "free_public",
+        "terms_status": "review_each_series",
+    }
+    series = {
+        "frequency": "quarterly",
+        "summary": {"latest_date": "2026-03-31", "latest_value": 10.0},
+        "observations": [{"date": "2026-03-31", "value": 10.0}],
+    }
+
+    status = _status_for_series(entry, series, "2026-04-15T00:00:00Z")
+
+    assert status["status"] == "ok"
+    assert status["last_observation"] == "2026-03-31"
+    assert status["source"] == "FRED"
+    assert status["score_status"] == "candidate"
+    assert "candidate diagnostic" in status["message"]
+    assert "does not affect active scores" in status["message"]
 
 
 def test_validate_status_file_accepts_governance_series_statuses(tmp_path, monkeypatch):
@@ -1854,6 +1914,7 @@ def test_validate_freshness_rejects_failed_series_status(tmp_path, monkeypatch):
 def test_generated_file_validation_requires_active_derived_files():
     required_paths = set(validate_schema.REQUIRED_GENERATED_FILES)
 
+    assert validate_schema.data_dir() / "derived" / "bond_volatility_proxy.json" in required_paths
     assert (
         validate_schema.data_dir() / "derived" / "commodity_inflation_impulse.json"
     ) in required_paths

@@ -56,8 +56,25 @@ def _expected_freshness(
         return None
 
 
+def _freshness_message_matches(status: dict[str, object], expected: dict[str, Any]) -> bool:
+    actual_message = status.get("message")
+    expected_message = expected.get("message")
+    if actual_message == expected_message:
+        return True
+    if status.get("score_status") != "candidate" or not isinstance(expected_message, str):
+        return False
+    return actual_message == (
+        f"{expected_message} candidate diagnostic only; does not affect active scores."
+    )
+
+
 def _freshness_payload_matches(status: dict[str, object], expected: dict[str, Any]) -> bool:
-    return all(status.get(field) == expected.get(field) for field in FRESHNESS_COMPARE_FIELDS)
+    return all(
+        _freshness_message_matches(status, expected)
+        if field == "message"
+        else status.get(field) == expected.get(field)
+        for field in FRESHNESS_COMPARE_FIELDS
+    )
 
 
 def main() -> None:

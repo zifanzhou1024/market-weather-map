@@ -42,7 +42,13 @@ def test_active_fred_series_excludes_candidate_and_non_public_entries(monkeypatc
         "FRED_SERIES",
         [
             {"id": "active_default", "fred_id": "ACTIVE"},
-            {"id": "candidate", "fred_id": "CANDIDATE", "score_status": "candidate"},
+            {
+                "id": "generated_candidate",
+                "fred_id": "CANDIDATE",
+                "score_status": "candidate",
+                "access_status": "free_public",
+                "generate_static": True,
+            },
             {"id": "terms_review", "fred_id": "TERMS", "access_status": "terms_review_needed"},
             {
                 "id": "active_explicit",
@@ -56,6 +62,40 @@ def test_active_fred_series_excludes_candidate_and_non_public_entries(monkeypatc
     active_ids = {str(series["id"]) for series in fetch_fred_csv.active_fred_series()}
 
     assert active_ids == {"active_default", "active_explicit"}
+
+
+def test_generated_fred_series_includes_explicit_free_public_candidates(monkeypatch):
+    monkeypatch.setattr(
+        fetch_fred_csv,
+        "FRED_SERIES",
+        [
+            {"id": "active_default", "fred_id": "ACTIVE"},
+            {
+                "id": "generated_candidate",
+                "fred_id": "CANDIDATE",
+                "score_status": "candidate",
+                "access_status": "free_public",
+                "generate_static": True,
+            },
+            {
+                "id": "plain_candidate",
+                "fred_id": "PLAIN",
+                "score_status": "candidate",
+                "access_status": "free_public",
+            },
+            {
+                "id": "terms_candidate",
+                "fred_id": "TERMS",
+                "score_status": "candidate",
+                "access_status": "terms_review_needed",
+                "generate_static": True,
+            },
+        ],
+    )
+
+    generated_ids = {str(series["id"]) for series in fetch_fred_csv.generated_fred_series()}
+
+    assert generated_ids == {"active_default", "generated_candidate"}
 
 
 def test_normalize_vix_rows_requires_date_and_close_columns():

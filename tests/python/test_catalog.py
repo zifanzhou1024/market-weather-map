@@ -264,6 +264,46 @@ def test_phase4_catalog_contains_consumer_and_fiscal_candidates_only():
         assert series_id not in active_ids
 
 
+def test_official_public_diagnostic_candidates_are_generated_but_not_active():
+    entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
+    active_ids = {entry["id"] for entry in catalog_module.available_catalog_entries()}
+    expected = {
+        "sloos_lending_standards": ("DRTSCILM", "strategic", "credit"),
+        "sloos_small_firm_standards": ("DRTSCIS", "strategic", "credit"),
+        "sloos_large_firm_demand": ("DRSDCILM", "strategic", "credit"),
+        "ci_loans_weekly": ("TOTCI", "both", "credit"),
+        "term_premium_kw_10y": ("THREEFYTP10", "strategic", "rates"),
+    }
+
+    for series_id, (fred_id, horizon, category) in expected.items():
+        entry = entries[series_id]
+        assert entry["category"] == category
+        assert entry["source"] == "FRED"
+        assert entry["source_url"] == f"https://fred.stlouisfed.org/series/{fred_id}"
+        assert entry["endpoint_url"] == f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
+        assert entry["public"] is True
+        assert entry["access_status"] == "free_public"
+        assert entry["terms_status"] == "review_each_series"
+        assert entry["score_status"] == "candidate"
+        assert entry["horizon"] == horizon
+        assert series_id not in active_ids
+
+
+def test_derived_bond_volatility_proxy_candidate_catalog_row_is_non_scoring():
+    entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
+
+    entry = entries["bond_volatility_proxy"]
+
+    assert entry["source"] == "Derived"
+    assert entry["source_url"] == "/data/series/us10y.json"
+    assert entry["endpoint_url"] == "/data/derived/bond_volatility_proxy.json"
+    assert entry["access_status"] == "free_public"
+    assert entry["terms_status"] == "ok"
+    assert entry["score_status"] == "candidate"
+    assert entry["public"] is True
+    assert entry["regime_role"] == ["bond_volatility"]
+
+
 def test_catalog_entries_use_dollar_category_for_phase3_dollar_series():
     entries = {str(entry["id"]): entry for entry in catalog_entries()}
 
@@ -323,6 +363,8 @@ def test_available_catalog_entries_excludes_candidate_even_if_series_file_exists
     series_dir = tmp_path / "series"
     series_dir.mkdir()
     (series_dir / "ism_manufacturing_pmi.json").write_text("{}", encoding="utf-8")
+    (series_dir / "sloos_lending_standards.json").write_text("{}", encoding="utf-8")
+    (series_dir / "term_premium_kw_10y.json").write_text("{}", encoding="utf-8")
     (series_dir / "vix.json").write_text("{}", encoding="utf-8")
     monkeypatch.setattr(catalog_module, "data_dir", lambda: tmp_path, raising=False)
 
@@ -330,3 +372,5 @@ def test_available_catalog_entries_excludes_candidate_even_if_series_file_exists
 
     assert "vix" in available_entries
     assert "ism_manufacturing_pmi" not in available_entries
+    assert "sloos_lending_standards" not in available_entries
+    assert "term_premium_kw_10y" not in available_entries
