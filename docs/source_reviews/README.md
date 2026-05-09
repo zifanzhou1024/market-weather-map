@@ -6,7 +6,7 @@ These files document source-governance decisions for candidate market, macro, ev
 
 | Status | Meaning |
 | --- | --- |
-| `free_public` | Public source that can be used after the documented implementation constraints are met. |
+| `free_public` | Appears eligible for the planned static-dashboard implementation after documented constraints are met; not a legal determination. Attribution requirements must be honored, and API keys or other secrets must not be exposed to the browser. |
 | `terms_review_needed` | Candidate source needs a terms, access, attribution, redistribution, or automation review before use. |
 | `restricted` | Candidate source has restrictions that prevent current static dashboard use. |
 | `unavailable` | Candidate source is not currently available for the planned dashboard workflow. |

@@ -61,7 +61,6 @@ CATALOG_STATUSES = {
 }
 
 SCORE_STATUSES = {
-    "active",
     "candidate",
     "unavailable",
 }
