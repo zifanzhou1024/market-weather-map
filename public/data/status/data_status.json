@@ -1,6 +1,7 @@
 {
-  "generated_at_utc": "2026-05-09T10:14:40Z",
-  "last_successful_update_utc": "2026-05-09T10:14:40Z",
+  "generated_at_utc": "2026-05-09T22:48:56Z",
+  "last_attempt_utc": "2026-05-09T22:48:56Z",
+  "last_successful_update_utc": "2026-05-09T22:46:58Z",
   "overall_status": "partial",
   "series": {
     "bank_credit": {
@@ -607,36 +608,48 @@
     },
     "monthly_treasury_deficit_surplus": {
       "expected_frequency": "monthly",
-      "expected_next_release_window": null,
-      "freshness_days": null,
-      "last_observation": null,
+      "expected_next_release_window": {
+        "end": "2026-06-14",
+        "start": "2026-04-30"
+      },
+      "freshness_days": 39,
+      "last_observation": "2026-03-31",
       "max_stale_days": 45,
-      "message": "Candidate source requires access or terms review before scoring.",
-      "observation_period": null,
+      "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-06-14. candidate diagnostic only; does not affect active scores.",
+      "observation_period": "2026-03",
+      "score_status": "candidate",
       "source": "FiscalData",
-      "status": "terms_review_needed"
+      "status": "ok"
     },
     "monthly_treasury_outlays": {
       "expected_frequency": "monthly",
-      "expected_next_release_window": null,
-      "freshness_days": null,
-      "last_observation": null,
+      "expected_next_release_window": {
+        "end": "2026-06-14",
+        "start": "2026-04-30"
+      },
+      "freshness_days": 39,
+      "last_observation": "2026-03-31",
       "max_stale_days": 45,
-      "message": "Candidate source requires access or terms review before scoring.",
-      "observation_period": null,
+      "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-06-14. candidate diagnostic only; does not affect active scores.",
+      "observation_period": "2026-03",
+      "score_status": "candidate",
       "source": "FiscalData",
-      "status": "terms_review_needed"
+      "status": "ok"
     },
     "monthly_treasury_receipts": {
       "expected_frequency": "monthly",
-      "expected_next_release_window": null,
-      "freshness_days": null,
-      "last_observation": null,
+      "expected_next_release_window": {
+        "end": "2026-06-14",
+        "start": "2026-04-30"
+      },
+      "freshness_days": 39,
+      "last_observation": "2026-03-31",
       "max_stale_days": 45,
-      "message": "Candidate source requires access or terms review before scoring.",
-      "observation_period": null,
+      "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-06-14. candidate diagnostic only; does not affect active scores.",
+      "observation_period": "2026-03",
+      "score_status": "candidate",
       "source": "FiscalData",
-      "status": "terms_review_needed"
+      "status": "ok"
     },
     "mortgage_rate_30y": {
       "expected_frequency": "weekly",
@@ -1007,14 +1020,18 @@
     },
     "treasury_auction_supply": {
       "expected_frequency": "weekly",
-      "expected_next_release_window": null,
-      "freshness_days": null,
-      "last_observation": null,
+      "expected_next_release_window": {
+        "end": "2026-05-25",
+        "start": "2026-05-11"
+      },
+      "freshness_days": 5,
+      "last_observation": "2026-05-04",
       "max_stale_days": 14,
-      "message": "Candidate source requires access or terms review before scoring.",
-      "observation_period": null,
-      "source": "TreasuryDirect",
-      "status": "terms_review_needed"
+      "message": "Latest weekly observation is within the expected release window ending 2026-05-25. candidate diagnostic only; does not affect active scores.",
+      "observation_period": "week of 2026-05-04",
+      "score_status": "candidate",
+      "source": "FiscalData",
+      "status": "ok"
     },
     "treasury_auction_tail": {
       "expected_frequency": "weekly",
@@ -1333,5 +1350,7 @@
       "source": "FRED",
       "status": "ok"
     }
-  }
+  },
+  "update_message": "TimeoutError: The read operation timed out",
+  "update_status": "failed"
 }

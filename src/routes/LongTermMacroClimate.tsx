@@ -78,7 +78,11 @@ const macroDiagnosticIds = [
   "sloos_small_firm_standards",
   "sloos_large_firm_demand",
   "ci_loans_weekly",
-  "term_premium_kw_10y"
+  "term_premium_kw_10y",
+  "monthly_treasury_receipts",
+  "monthly_treasury_outlays",
+  "monthly_treasury_deficit_surplus",
+  "treasury_auction_supply"
 ];
 
 const macroCyclePanels = [

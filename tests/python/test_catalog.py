@@ -231,10 +231,9 @@ def test_phase4_catalog_contains_active_consumer_balance_sheet_sources():
         assert entry["horizon"] == "strategic"
 
 
-def test_phase4_catalog_contains_consumer_and_fiscal_candidates_only():
+def test_phase4_catalog_contains_consumer_candidates_only():
     entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
     active_ids = {entry["id"] for entry in catalog_module.available_catalog_entries()}
-    fiscaldata_url = "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/"
     expected_candidates = {
         "real_disposable_personal_income": (
             "FRED",
@@ -243,14 +242,6 @@ def test_phase4_catalog_contains_consumer_and_fiscal_candidates_only():
         "personal_saving_rate": ("FRED", "https://fred.stlouisfed.org/series/PSAVERT"),
         "total_consumer_credit": ("FRED", "https://fred.stlouisfed.org/series/TOTALSL"),
         "revolving_consumer_credit": ("FRED", "https://fred.stlouisfed.org/series/REVOLSL"),
-        "monthly_treasury_receipts": ("FiscalData", fiscaldata_url),
-        "monthly_treasury_outlays": ("FiscalData", fiscaldata_url),
-        "monthly_treasury_deficit_surplus": ("FiscalData", fiscaldata_url),
-        "treasury_interest_expense": ("FiscalData", fiscaldata_url),
-        "treasury_auction_supply": (
-            "TreasuryDirect",
-            "https://www.treasuryauctions.gov/auctions/when-auctions-happen/",
-        ),
     }
 
     for series_id, (source, source_url) in expected_candidates.items():
@@ -285,6 +276,37 @@ def test_official_public_diagnostic_candidates_are_generated_but_not_active():
         assert entry["access_status"] == "free_public"
         assert entry["terms_status"] == "review_each_series"
         assert entry["score_status"] == "candidate"
+        assert entry["horizon"] == horizon
+        assert series_id not in active_ids
+
+
+def test_treasury_supply_diagnostics_are_generated_candidates_not_active():
+    entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
+    active_ids = {entry["id"] for entry in catalog_module.available_catalog_entries()}
+    fiscaldata_url = "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/"
+    expected = {
+        "monthly_treasury_receipts": ("FiscalData", fiscaldata_url, "liquidity", "strategic"),
+        "monthly_treasury_outlays": ("FiscalData", fiscaldata_url, "liquidity", "strategic"),
+        "monthly_treasury_deficit_surplus": ("FiscalData", fiscaldata_url, "liquidity", "strategic"),
+        "treasury_auction_supply": (
+            "FiscalData",
+            "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
+            "rates",
+            "both",
+        ),
+    }
+
+    for series_id, (source, source_url, category, horizon) in expected.items():
+        entry = entries[series_id]
+        assert entry["source"] == source
+        assert entry["source_url"] == source_url
+        assert entry["endpoint_url"]
+        assert entry["public"] is True
+        assert entry["access_status"] == "free_public"
+        assert entry["terms_status"] == "review_each_series"
+        assert entry["score_status"] == "candidate"
+        assert entry["generate_static"] is True
+        assert entry["category"] == category
         assert entry["horizon"] == horizon
         assert series_id not in active_ids
 

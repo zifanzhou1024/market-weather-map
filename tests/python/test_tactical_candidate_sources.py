@@ -51,6 +51,10 @@ OFFICIAL_PUBLIC_DIAGNOSTIC_IDS = (
     "ci_loans_weekly",
     "term_premium_kw_10y",
     "bond_volatility_proxy",
+    "monthly_treasury_receipts",
+    "monthly_treasury_outlays",
+    "monthly_treasury_deficit_surplus",
+    "treasury_auction_supply",
 )
 
 SUPPORTED_FRONTEND_FREQUENCIES = {"daily", "weekly", "monthly", "quarterly"}

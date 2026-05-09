@@ -53,6 +53,15 @@
     "terms_status": "review_needed",
     "update_cadence": "calendar"
   },
+  "fiscaldata": {
+    "access_status": "free_public",
+    "base_url": "https://fiscaldata.treasury.gov",
+    "name": "U.S. Treasury FiscalData",
+    "notes": "Official Treasury FiscalData API paths can be generated into static candidate diagnostics with dataset attribution.",
+    "requires_secret": false,
+    "terms_status": "review_each_series",
+    "update_cadence": "monthly_or_auction_calendar"
+  },
   "fred": {
     "access_status": "free_public",
     "base_url": "https://fred.stlouisfed.org",
