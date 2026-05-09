@@ -2536,8 +2536,20 @@ def test_macro_calendar_generator_returns_static_event_payload():
 
     payload = generate_macro_calendar()
 
-    assert payload["method_version"] == "phase4-pr2-static-event-calendar-v1"
+    assert payload["method_version"] == "official-event-calendar-v1"
     assert payload["events"]
+    event_ids = {event["id"] for event in payload["events"]}
+    assert {
+        "cpi",
+        "ppi",
+        "employment_situation_payrolls",
+        "personal_income_outlays_pce",
+        "gross_domestic_product",
+        "retail_sales",
+        "fomc_meeting",
+        "treasury_auctions",
+        "commitments_of_traders",
+    } <= event_ids
     assert all(event["source_url"].startswith("https://") for event in payload["events"])
     assert {event["status"] for event in payload["events"]} <= {
         "scheduled",

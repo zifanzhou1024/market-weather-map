@@ -53,6 +53,32 @@
       "title": "Personal Income and Outlays/PCE"
     },
     {
+      "category": "growth",
+      "date": null,
+      "id": "gross_domestic_product",
+      "importance": "high",
+      "notes": "BEA release schedule for Gross Domestic Product estimates.",
+      "source": "BEA",
+      "source_url": "https://www.bea.gov/news/schedule/",
+      "status": "source_link",
+      "time": "08:30",
+      "timezone": "America/New_York",
+      "title": "Gross Domestic Product"
+    },
+    {
+      "category": "growth",
+      "date": null,
+      "id": "retail_sales",
+      "importance": "high",
+      "notes": "Census source page for Advance Monthly Retail Trade and Food Services releases.",
+      "source": "Census",
+      "source_url": "https://www.census.gov/retail/",
+      "status": "source_link",
+      "time": "08:30",
+      "timezone": "America/New_York",
+      "title": "Advance Monthly Retail Trade"
+    },
+    {
       "category": "rates",
       "date": null,
       "id": "fomc_meeting",
@@ -105,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-05-09T10:14:43Z",
-  "method_version": "phase4-pr2-static-event-calendar-v1"
+  "generated_at_utc": "2026-05-09T22:24:54Z",
+  "method_version": "official-event-calendar-v1"
 }
