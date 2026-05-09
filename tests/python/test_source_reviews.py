@@ -158,6 +158,10 @@ def test_data_sources_summarizes_source_governance_sprint():
         "ICE MOVE",
         "FRED_API_KEY",
         "No browser provider calls",
+        "Sprint 1 reviewed recommendation",
+        "Current shipped catalog/status rows remain unchanged in this docs-only PR",
+        "Official/public candidate",
+        "Current shipped catalog/status",
     ):
         assert expected in text
 
