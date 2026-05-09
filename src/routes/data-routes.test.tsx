@@ -163,6 +163,41 @@ function derivedFile(seriesId: string, value: number): DerivedSeriesFile {
   };
 }
 
+function diagnosticSeriesFile(
+  seriesId: string,
+  values: number[],
+  units = "percent",
+  frequency: SeriesFrequency = "daily",
+  source = "FRED"
+): TimeSeriesFile {
+  const observations = values.map((value, index) => ({
+    date: `2026-05-0${index + 1}`,
+    percentile_252d: 50 + index,
+    value
+  }));
+  const latest = observations[observations.length - 1];
+
+  return {
+    frequency,
+    generated_at_utc: "2026-05-09T00:00:00Z",
+    observations,
+    series_id: seriesId,
+    source,
+    source_url: `https://example.com/${seriesId}`,
+    summary: latest
+      ? {
+          change_1d: null,
+          change_1m: null,
+          change_1w: null,
+          latest_date: latest.date,
+          latest_value: latest.value,
+          percentile_252d: latest.percentile_252d ?? null
+        }
+      : undefined,
+    units
+  };
+}
+
 function routeFetchFiles(overrides: Record<string, unknown> = {}) {
   return {
     "/data/catalog/series_catalog.json": catalog,
@@ -215,6 +250,36 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       method: "Cboe VIX divided by Cboe VIX3M.",
       units: "ratio"
     } satisfies DerivedSeriesFile,
+    "/data/derived/bond_volatility_proxy.json": {
+      ...diagnosticSeriesFile("bond_volatility_proxy", [9.1, 10.4, 8.7], "basis points", "daily", "Derived"),
+      depends_on: ["us10y"],
+      method: "Rolling realized volatility of daily 10-year Treasury-yield changes."
+    } satisfies DerivedSeriesFile,
+    "/data/series/ci_loans_weekly.json": diagnosticSeriesFile(
+      "ci_loans_weekly",
+      [2810, 2825, 2840],
+      "USD billions",
+      "weekly"
+    ),
+    "/data/series/sloos_lending_standards.json": diagnosticSeriesFile(
+      "sloos_lending_standards",
+      [8, 12, 16],
+      "net percent",
+      "quarterly"
+    ),
+    "/data/series/sloos_small_firm_standards.json": diagnosticSeriesFile(
+      "sloos_small_firm_standards",
+      [11, 15, 18],
+      "net percent",
+      "quarterly"
+    ),
+    "/data/series/sloos_large_firm_demand.json": diagnosticSeriesFile(
+      "sloos_large_firm_demand",
+      [-20, -16, -10],
+      "net percent",
+      "quarterly"
+    ),
+    "/data/series/term_premium_kw_10y.json": diagnosticSeriesFile("term_premium_kw_10y", [0.42, 0.48, 0.52]),
     ...seriesFiles([
       "bank_credit",
       "bbb_oas",
@@ -2240,6 +2305,8 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Generated candidate diagnostic");
     expect(container.textContent).toContain("Not scored");
     expect(container.textContent).toContain("not ICE MOVE");
+    expect(container.textContent).toContain("Trend window 3 observations");
+    expect(container.textContent).toContain("Latest 8.70 basis points on 2026-05-03");
     expect(container.textContent).toContain("Gated stress");
     expect(container.textContent).toContain("Mismatch severity");
     expect(container.textContent).toContain("MOVE");
@@ -2339,6 +2406,8 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Generated candidate diagnostic");
     expect(container.textContent).toContain("Not scored");
     expect(container.textContent).toContain("Does not affect active scores, labels, checklist states, or confidence.");
+    expect(container.textContent).toContain("Trend window 3 observations");
+    expect(container.textContent).toContain("Latest 2,840.00 USD billions on 2026-05-03");
     expect(container.textContent).toContain("Strategic source gaps");
     expect(container.textContent).toContain("PMIs");
     expect(container.textContent).toContain("SLOOS scoring promotion");
@@ -2351,6 +2420,10 @@ describe("data-backed routes", () => {
     expect(strategicRows.every((row) => row.getAttribute("role") === "listitem")).toBe(true);
     expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(11);
     expect(container.querySelectorAll(".candidate-diagnostic-row")).toHaveLength(5);
+    expect(container.querySelectorAll(".candidate-diagnostic-sparkline")).toHaveLength(5);
+    expect(fetch).toHaveBeenCalledWith("/data/series/sloos_lending_standards.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/ci_loans_weekly.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/term_premium_kw_10y.json");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
     expect(container.textContent).toContain("Consumer and production");

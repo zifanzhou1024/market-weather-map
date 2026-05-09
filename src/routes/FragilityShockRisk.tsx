@@ -18,8 +18,10 @@ import {
   loadShockRiskSnapshot
 } from "../lib/data";
 import { sanitizeShockRiskSnapshot } from "../lib/shockRisk";
+import { loadRouteDerivedSeries } from "./routeSeries";
 import type {
   DataStatusFile,
+  DerivedSeriesFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
   ShockRiskSnapshotFile,
@@ -40,6 +42,7 @@ const fragilityDiagnosticIds = ["bond_volatility_proxy"];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
+  diagnosticSeries: DerivedSeriesFile[];
   scoreSummary: ScoreSummaryFile;
   shockSnapshot: ShockRiskSnapshotFile;
   snapshot: RegimeSnapshotFile;
@@ -62,8 +65,18 @@ export default function FragilityShockRisk() {
           loadDataStatus(),
           loadCatalog()
         ]);
+        const diagnosticSeries = await loadRouteDerivedSeries(fragilityDiagnosticIds, catalog, status, {
+          allowMissing: new Set(fragilityDiagnosticIds)
+        });
         if (active) {
-          setData({ catalog, scoreSummary, shockSnapshot: sanitizeShockRiskSnapshot(shockSnapshot), snapshot, status });
+          setData({
+            catalog,
+            diagnosticSeries,
+            scoreSummary,
+            shockSnapshot: sanitizeShockRiskSnapshot(shockSnapshot),
+            snapshot,
+            status
+          });
         }
       } catch (loadError) {
         if (active) {
@@ -117,6 +130,7 @@ export default function FragilityShockRisk() {
             catalog={data.catalog}
             diagnosticIds={fragilityDiagnosticIds}
             eyebrow="Generated diagnostics"
+            series={data.diagnosticSeries}
             status={data.status}
             summary="This public realized-yield-volatility proxy is generated from static Treasury-yield data for context only; it is not ICE MOVE."
             title="Public bond-volatility diagnostic"
