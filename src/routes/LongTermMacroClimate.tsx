@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
 import DataGapPanel from "../components/DataGapPanel";
 import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
@@ -72,6 +73,13 @@ const ratesIds = ["real_yield_10y"];
 const macroSeriesIds = [...macroGroups.flatMap((group) => group.ids), ...ratesIds];
 const macroDerivedIds = ["net_liquidity"];
 const macroStatusIds = [...macroSeriesIds, ...macroDerivedIds];
+const macroDiagnosticIds = [
+  "sloos_lending_standards",
+  "sloos_small_firm_standards",
+  "sloos_large_firm_demand",
+  "ci_loans_weekly",
+  "term_premium_kw_10y"
+];
 
 const macroCyclePanels = [
   {
@@ -245,6 +253,14 @@ export default function LongTermMacroClimate() {
               ))}
             </section>
           </section>
+          <CandidateDiagnosticPanel
+            catalog={data.catalog}
+            diagnosticIds={macroDiagnosticIds}
+            eyebrow="Official/public diagnostics"
+            status={data.status}
+            summary="These generated static diagnostics are sourced from official/public paths and shown for context only."
+            title="Generated official diagnostics"
+          />
           <StrategicSourceGapsPanel />
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
           {macroGroups.map((group) => (

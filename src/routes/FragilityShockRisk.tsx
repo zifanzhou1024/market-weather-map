@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
 import DataGapPanel from "../components/DataGapPanel";
 import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
@@ -35,6 +36,7 @@ const fragilityStatusIds = [
   "real_yield_10y",
   "net_liquidity"
 ];
+const fragilityDiagnosticIds = ["bond_volatility_proxy"];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
@@ -111,6 +113,14 @@ export default function FragilityShockRisk() {
             <ScoreCard score={data.scoreSummary.scores.fragility} title="Fragility" />
           </section>
           <ShockRiskDashboard snapshot={data.shockSnapshot} />
+          <CandidateDiagnosticPanel
+            catalog={data.catalog}
+            diagnosticIds={fragilityDiagnosticIds}
+            eyebrow="Generated diagnostics"
+            status={data.status}
+            summary="This public realized-yield-volatility proxy is generated from static Treasury-yield data for context only; it is not ICE MOVE."
+            title="Public bond-volatility diagnostic"
+          />
           <TailRiskPanel catalog={data.catalog} snapshot={data.shockSnapshot} status={data.status} />
           <MismatchWarningPanel warnings={data.shockSnapshot.mismatch_warnings} />
           <DataGapPanel seriesIds={fragilityStatusIds} status={data.status} />
