@@ -13,7 +13,7 @@ Historical availability: Varies by source and event family; source-linked forwar
 Automated download allowed: Likely compatible for official source-linked calendar context after endpoint-specific review; API-backed structured ingestion must be reviewed per agency.
 Static JSON redistribution allowed: Likely compatible for descriptive source-linked event rows with attribution after endpoint review; not a legal determination.
 Attribution requirement: Attribute the owning agency or official calendar page for each event family.
-API key required: BLS_API_KEY, BEA_API_KEY, CENSUS_API_KEY, and EIA_API_KEY may support future structured ingestion; source-linked Fed/Treasury/CFTC pages may not require keys.
+API key required: BLS_API_KEY, BEA_API_KEY, and CENSUS_API_KEY may support future structured ingestion; source-linked Fed/Treasury/CFTC pages may not require keys.
 Can it be used in browser: No; the browser should read generated static event JSON and follow official links only.
 Can it be used in GitHub Actions ingestion: Yes, after each event family endpoint is reviewed and no secrets are exposed to static artifacts.
 Can it affect active scores now: No
