@@ -17,11 +17,11 @@ API key required: No public project key is approved; ICE or vendor access may re
 Can it be used in browser: No; do not fetch or expose licensed ICE data from browser code.
 Can it be used in GitHub Actions ingestion: No, not under the current public-static workflow without documented licensed access and redistribution rights.
 Can it affect active scores now: No
-Recommended catalog status: restricted
+Recommended catalog status: terms_review_needed
 Recommended score status: candidate
-Citation text: ICE MOVE is a licensed bond-volatility index candidate and is not approved for current static redistribution or scoring.
-Notes / unresolved questions: A separate public bond-volatility proxy review covers a Treasury-yield realized-volatility alternative. Do not substitute MOVE values from third-party chart pages without a source-owner review.
+Citation text: ICE MOVE is a terms-review-needed bond-volatility index candidate and is not approved for current static redistribution or scoring.
+Notes / unresolved questions: ICE MOVE appears likely licensed or restriction-constrained, but this sprint keeps the shipped catalog/status alignment at terms_review_needed until a later catalog, status, or governance PR explicitly changes it. A separate public bond-volatility proxy review covers a Treasury-yield realized-volatility alternative. Do not substitute MOVE values from third-party chart pages without a source-owner review.
 
 ## Decision
 
-Keep ICE MOVE restricted and non-active for the current static dashboard unless a later licensing review approves ingestion and redistribution.
+Keep ICE MOVE source-gated as terms_review_needed and non-active for the current static dashboard unless a later licensing review and catalog/status PR approve a different classification, ingestion, and redistribution.

@@ -20,7 +20,7 @@ Can it affect active scores now: No
 Recommended catalog status: terms_review_needed
 Recommended score status: candidate
 Citation text: Cboe SKEW is a candidate-only tail-risk input pending Cboe index-data terms review.
-Notes / unresolved questions: Determine whether a delayed public quote, DataShop file, or licensed index feed is the intended source and whether static chart/data redistribution is permitted.
+Notes / unresolved questions: Determine whether a delayed public quote, DataShop file, or licensed index feed is the intended source and whether static chart/data redistribution is permitted. Before implementation, align catalog provider and source URL metadata to the Cboe SKEW index/data-access source; do not rely on an options-statistics placeholder as approval.
 
 ## Decision
 

@@ -17,11 +17,11 @@ API key required: No public project key is approved; benchmark or index access m
 Can it be used in browser: No; do not fetch benchmark or index data directly from browser code.
 Can it be used in GitHub Actions ingestion: No, not until access, automation, attribution, and redistribution are approved.
 Can it affect active scores now: No
-Recommended catalog status: restricted
+Recommended catalog status: terms_review_needed
 Recommended score status: candidate
 Citation text: Gold benchmark and Nasdaq XAU data are candidate-only inputs pending benchmark/index licensing and redistribution review.
-Notes / unresolved questions: Decide whether a public macro proxy can replace benchmark/index data. Do not use third-party chart pages as a workaround for source-owner restrictions.
+Notes / unresolved questions: LBMA/IBA benchmark and Nasdaq XAU paths appear likely license-constrained, but this family remains source-gated as terms_review_needed pending a concrete source or public proxy choice. Decide whether a public macro proxy can replace benchmark/index data. Do not use third-party chart pages as a workaround for source-owner restrictions.
 
 ## Decision
 
-Keep gold benchmark and XAU index sources restricted and non-active for the current static dashboard.
+Keep gold benchmark and XAU index sources source-gated as terms_review_needed and non-active for the current static dashboard until a later review selects an approved source or proxy path.
