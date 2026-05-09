@@ -1058,6 +1058,39 @@ select {
   justify-content: flex-end;
 }
 
+.candidate-diagnostic-trend {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+  border: 1px solid #e0e5dc;
+  border-radius: 8px;
+  padding: 10px;
+  background: #f7f9f5;
+}
+
+.candidate-diagnostic-trend p {
+  margin: 0;
+  color: #536157;
+  font-size: 0.84rem;
+}
+
+.candidate-diagnostic-trend strong {
+  color: #31516b;
+  font-size: 0.9rem;
+}
+
+.candidate-diagnostic-sparkline {
+  width: 160px;
+  height: 52px;
+  color: #2f6f73;
+}
+
+.candidate-diagnostic-sparkline polyline {
+  stroke-width: 3;
+}
+
 .fallback-proxy-note {
   display: flex;
   gap: 12px;
@@ -1285,6 +1318,10 @@ code {
 
   .fallback-proxy-note {
     display: grid;
+  }
+
+  .candidate-diagnostic-trend {
+    grid-template-columns: 1fr;
   }
 
   .confirmation-matrix,

@@ -581,6 +581,30 @@ describe("data-driven components", () => {
       <CandidateDiagnosticPanel
         catalog={diagnosticCatalog}
         diagnosticIds={["sloos_lending_standards"]}
+        series={[
+          {
+            frequency: "quarterly",
+            generated_at_utc: "2026-05-09T00:00:00Z",
+            observations: [
+              { date: "2025-07-01", value: 10 },
+              { date: "2025-10-01", value: 20 },
+              { date: "2026-01-01", value: 15 },
+              { date: "2026-04-01", value: 30 }
+            ],
+            series_id: "sloos_lending_standards",
+            source: "FRED",
+            source_url: "https://example.com/sloos",
+            summary: {
+              change_1d: null,
+              change_1m: null,
+              change_1w: null,
+              latest_date: "2026-04-01",
+              latest_value: 30,
+              percentile_252d: null
+            },
+            units: "net percent"
+          }
+        ]}
         status={diagnosticStatus}
         title="Generated official diagnostics"
       />
@@ -593,9 +617,42 @@ describe("data-driven components", () => {
     expect(text).toContain("Not scored");
     expect(text).toContain("Does not affect active scores, labels, checklist states, or confidence.");
     expect(text).toContain("Observation 2026-Q2");
+    expect(text).toContain("Trend window 4 observations");
+    expect(text).toContain("Latest 30.00 net percent on 2026-04-01");
     expect(text).toContain("FRED");
     expect(text).not.toContain("Terms review needed");
     expect(container.querySelectorAll(".candidate-diagnostic-row")).toHaveLength(1);
+    expect(container.querySelector(".candidate-diagnostic-sparkline")).not.toBeNull();
+  });
+
+  it("renders a clear generated diagnostic trend fallback without observations", () => {
+    const container = render(
+      <CandidateDiagnosticPanel
+        catalog={[]}
+        diagnosticIds={["missing_diagnostic"]}
+        series={[
+          {
+            frequency: "daily",
+            generated_at_utc: "2026-05-09T00:00:00Z",
+            observations: [],
+            series_id: "missing_diagnostic",
+            source: "Derived",
+            source_url: "https://example.com/missing",
+            units: "index"
+          }
+        ]}
+        status={{
+          generated_at_utc: "2026-05-09T00:00:00Z",
+          last_successful_update_utc: "2026-05-09T00:00:00Z",
+          overall_status: "ok",
+          series: {}
+        }}
+        title="Generated official diagnostics"
+      />
+    );
+
+    expect(container.textContent).toContain("Trend unavailable");
+    expect(container.textContent).toContain("No generated observations are available for this diagnostic.");
   });
 
   it("orders options sentiment candidates without active signal labels", () => {

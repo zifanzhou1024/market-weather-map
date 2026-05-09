@@ -135,6 +135,7 @@ const macroCyclePanels = [
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
+  diagnosticSeries: TimeSeriesFile[];
   netLiquidity: DerivedSeriesFile;
   scoreSummary: ScoreSummaryFile;
   series: TimeSeriesFile[];
@@ -173,13 +174,16 @@ export default function LongTermMacroClimate() {
           loadScoreSummary(),
           loadRegimeSnapshot()
         ]);
-        const [series, [netLiquidity]] = await Promise.all([
+        const [series, diagnosticSeries, [netLiquidity]] = await Promise.all([
           loadRouteSeries(macroSeriesIds, catalog, status),
+          loadRouteSeries(macroDiagnosticIds, catalog, status, {
+            allowMissing: new Set(macroDiagnosticIds)
+          }),
           loadRouteDerivedSeries(macroDerivedIds, catalog, status, {
             allowMissing: new Set(macroDerivedIds)
           })
         ]);
-        if (active) setData({ catalog, netLiquidity, scoreSummary, series, snapshot, status });
+        if (active) setData({ catalog, diagnosticSeries, netLiquidity, scoreSummary, series, snapshot, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load macro climate.");
       }
@@ -257,6 +261,7 @@ export default function LongTermMacroClimate() {
             catalog={data.catalog}
             diagnosticIds={macroDiagnosticIds}
             eyebrow="Official/public diagnostics"
+            series={data.diagnosticSeries}
             status={data.status}
             summary="These generated static diagnostics are sourced from official/public paths and shown for context only."
             title="Generated official diagnostics"
