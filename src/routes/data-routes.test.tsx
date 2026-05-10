@@ -2559,6 +2559,10 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Generated candidate diagnostic");
     expect(container.textContent).toContain("Not scored");
     expect(container.textContent).toContain("not ICE MOVE");
+    // Load-bearing caveat: the full literal must render verbatim (asserted
+    // by substring) so the bond-volatility chart can never be mistaken for
+    // the licensed ICE MOVE index after future refactors.
+    expect(container.textContent).toContain("is NOT the licensed ICE MOVE Index");
     expect(container.textContent).toContain("Trend window 3 observations");
     expect(container.textContent).toContain("Latest 8.70 basis points on 2026-05-03");
     expect(container.textContent).toContain("Gated stress");

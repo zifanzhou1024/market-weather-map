@@ -8,6 +8,8 @@ import HiddenStressMismatchPanel from "../components/HiddenStressMismatchPanel";
 import HiddenStressSummary from "../components/HiddenStressSummary";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MismatchWarningPanel from "../components/MismatchWarningPanel";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import ScoreCard from "../components/ScoreCard";
 import ShockRiskContributionChart from "../components/ShockRiskContributionChart";
 import ShockRiskDashboard from "../components/ShockRiskDashboard";
@@ -117,12 +119,15 @@ export default function FragilityShockRisk() {
             shockSnapshot={data.shockSnapshot}
             status={data.status}
           />
+          <PageInsightHero route="fragility" />
+          {/* SLOT:fragility_primary_chart */}
           <ShockRiskContributionChart activeSignals={data.shockSnapshot.active_signals} />
           <HiddenStressMismatchPanel warnings={data.shockSnapshot.mismatch_warnings} />
           <BondVolatilityProxyChart
             series={data.diagnosticSeries.find((entry) => entry.series_id === "bond_volatility_proxy")}
           />
           <TailRiskReadinessMatrix status={data.status} />
+          {/* SLOT:fragility_pre_metrics_slot */}
           <HiddenStressSummary shockSnapshot={data.shockSnapshot} />
           <InterpretationPanel
             caveats={data.scoreSummary.scores.fragility.missing_or_stale_notes}
@@ -136,19 +141,21 @@ export default function FragilityShockRisk() {
             <ScoreCard score={data.scoreSummary.scores.fragility} title="Fragility" />
           </section>
           <ShockRiskDashboard snapshot={data.shockSnapshot} />
-          <CandidateDiagnosticPanel
-            catalog={data.catalog}
-            diagnosticIds={fragilityDiagnosticIds}
-            eyebrow="Generated diagnostics"
-            series={data.diagnosticSeries}
-            status={data.status}
-            summary="This public realized-yield-volatility proxy is generated from static Treasury-yield data for context only; it is not ICE MOVE."
-            title="Public bond-volatility diagnostic"
-          />
-          <TailRiskPanel catalog={data.catalog} snapshot={data.shockSnapshot} status={data.status} />
-          <MismatchWarningPanel warnings={data.shockSnapshot.mismatch_warnings} />
-          <DataGapPanel seriesIds={fragilityStatusIds} status={data.status} />
-          <DataStatusTable seriesIds={fragilityStatusIds} status={data.status} />
+          <RouteDataFooter route="fragility">
+            <CandidateDiagnosticPanel
+              catalog={data.catalog}
+              diagnosticIds={fragilityDiagnosticIds}
+              eyebrow="Generated diagnostics"
+              series={data.diagnosticSeries}
+              status={data.status}
+              summary="This public realized-yield-volatility proxy is generated from static Treasury-yield data for context only; it is not ICE MOVE."
+              title="Public bond-volatility diagnostic"
+            />
+            <TailRiskPanel catalog={data.catalog} snapshot={data.shockSnapshot} status={data.status} />
+            <MismatchWarningPanel warnings={data.shockSnapshot.mismatch_warnings} />
+            <DataGapPanel seriesIds={fragilityStatusIds} status={data.status} />
+            <DataStatusTable seriesIds={fragilityStatusIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>
