@@ -2344,9 +2344,17 @@ code {
 
 .driver-bar-list__bar {
   height: 100%;
-  min-width: 4%;
   border-radius: 999px;
   transition: width 200ms ease-out;
+}
+
+/*
+ * Only enforce the 4% minimum-visible bar width when the driver has non-zero
+ * priority. A truly-zero priority must collapse to 0% so users don't read
+ * meaning into a residual sliver.
+ */
+.driver-bar-list__bar[data-has-priority="true"] {
+  min-width: 4%;
 }
 
 .driver-bar-list__bar--risk {
@@ -2414,11 +2422,12 @@ code {
 }
 
 .interactive-chart-shell {
+  /* Matches the .panel pattern so shells stack consistently with other cards. */
   border: 1px solid #d9ded2;
   border-radius: 8px;
   background: var(--panel);
   box-shadow: 0 12px 28px rgba(33, 45, 37, 0.07);
-  padding: 18px 20px 16px;
+  padding: 20px;
   display: grid;
   gap: 12px;
 }

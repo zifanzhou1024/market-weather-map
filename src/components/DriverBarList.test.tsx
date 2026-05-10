@@ -123,7 +123,7 @@ describe("DriverBarList", () => {
     expect(labels).toEqual(["Hi", "Mid", "Lo"]);
   });
 
-  it("clamps zero or negative priority to a positive minimum so the bar still renders", () => {
+  it("renders a zero-priority bar with width 0 and data-has-priority=false (no residual min-width)", () => {
     const items: Driver[] = [
       mkDriver({ id: "max", label: "Max", priority: 50 }),
       mkDriver({ id: "zero", label: "Zero", priority: 0 })
@@ -131,9 +131,22 @@ describe("DriverBarList", () => {
     const c = render(<DriverBarList items={items} />);
     const bars = c.querySelectorAll(".driver-bar-list__bar");
     expect(bars).toHaveLength(2);
-    // Highest is 100%; zero is 0% but visual fallback in CSS ensures min-width.
     const zeroBar = bars[1] as HTMLElement;
-    // The component must render the element; CSS provides min-width.
-    expect(zeroBar).not.toBeNull();
+    expect(zeroBar.style.width).toBe("0%");
+    expect(zeroBar.getAttribute("data-has-priority")).toBe("false");
+  });
+
+  it("flags positive-priority bars with data-has-priority=true so the 4% min-width fallback applies", () => {
+    const items: Driver[] = [
+      mkDriver({ id: "tiny", label: "Tiny", priority: 1 }),
+      mkDriver({ id: "big", label: "Big", priority: 100 })
+    ];
+    const c = render(<DriverBarList items={items} />);
+    const bars = c.querySelectorAll(".driver-bar-list__bar");
+    // Find the bar belonging to the priority-1 row (not 100%).
+    const tinyBar = Array.from(bars).find(
+      (b) => (b as HTMLElement).style.width !== "100%"
+    ) as HTMLElement;
+    expect(tinyBar.getAttribute("data-has-priority")).toBe("true");
   });
 });

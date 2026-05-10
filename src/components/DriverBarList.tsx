@@ -88,6 +88,7 @@ export default function DriverBarList({ items, max }: DriverBarListProps) {
             <div className="driver-bar-list__bar-track">
               <div
                 className={`driver-bar-list__bar driver-bar-list__bar--${driver.direction}`}
+                data-has-priority={driver.priority > 0 ? "true" : "false"}
                 style={{ width: `${widthPct}%` }}
               />
             </div>
