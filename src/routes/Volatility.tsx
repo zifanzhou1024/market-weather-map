@@ -4,7 +4,9 @@ import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/MultiSeriesChart";
+import PageInsightHero from "../components/PageInsightHero";
 import PercentileBandChart from "../components/PercentileBandChart";
+import RouteDataFooter from "../components/RouteDataFooter";
 import SourceNote from "../components/SourceNote";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
@@ -160,6 +162,9 @@ export default function Volatility() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="volatility" />
+          {/* SLOT:volatility_primary_chart */}
+          {/* SLOT:volatility_secondary_charts */}
           <InterpretationPanel
             label="Cboe volatility curve"
             summary="Spot VIX, very-short-dated VIX9D, 3-month VIX3M, and VVIX describe equity volatility level, curve shape, and volatility-of-volatility."
@@ -194,11 +199,13 @@ export default function Volatility() {
             </>
           ) : null}
           <MultiSeriesChart series={toChartSeries(data.series)} title="VIX term-structure proxy" units="index" />
-          <VixFuturesReadinessPanel
-            items={candidateItems(data.catalog, data.status, vxCandidateIds)}
-            title="VX futures curve"
-          />
-          <DataStatusTable seriesIds={volatilityStatusIds} status={data.status} />
+          <RouteDataFooter route="volatility">
+            <VixFuturesReadinessPanel
+              items={candidateItems(data.catalog, data.status, vxCandidateIds)}
+              title="VX futures curve"
+            />
+            <DataStatusTable seriesIds={volatilityStatusIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>
