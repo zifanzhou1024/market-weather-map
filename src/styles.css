@@ -2347,6 +2347,63 @@ code {
   line-height: 1.4;
 }
 
+.hero-callout {
+  display: grid;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8faf5;
+}
+
+.hero-callout__message {
+  margin: 0;
+  color: #233029;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.hero-change-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.hero-change-strip__row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+}
+
+.hero-change-strip__label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hero-change-strip__value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #233029;
+}
+
+.hero-change-strip__value--up {
+  color: #3a7d5b;
+}
+
+.hero-change-strip__value--down {
+  color: #b04a3a;
+}
+
+.hero-change-strip__value--flat {
+  color: #607066;
+}
+
 .driver-bar-list {
   display: grid;
   gap: 8px;
