@@ -148,9 +148,11 @@ If any check fails, do not dispatch W1.
 | `src/components/InteractiveChartShell.tsx` | fe-platform | create |
 | `src/components/InteractiveChartShell.test.tsx` | fe-platform | create |
 | `src/components/InsightCallout.tsx` | fe-platform | create |
+| `src/components/InsightCallout.test.tsx` | fe-platform | create (co-located) |
 | `src/components/DriverBarList.tsx` | fe-platform | create |
-| `src/components/ChartStateBadge.tsx` | fe-platform | create |
-| `src/components/__tests__/primitives.test.tsx` | fe-platform | create |
+| `src/components/DriverBarList.test.tsx` | fe-platform | create (co-located) |
+| `src/components/ChartStateBadge.tsx` | fe-platform | create (also exports `type ChartState`) |
+| `src/components/ChartStateBadge.test.tsx` | fe-platform | create (co-located) |
 
 No file is owned by both agents. `src/lib/types.ts` is `be-data` only — `fe-platform` does not import the new types in W1.
 
@@ -258,7 +260,8 @@ No file is owned by both agents. `src/lib/types.ts` is `be-data` only — `fe-pl
   - Tests in `tests/python/test_validate_schema_next_phase.py`:
     - Each new schema accepts a valid fixture.
     - Each new schema rejects a known-bad fixture (one per file: missing field, wrong enum, invalid route key, etc.).
-  - Commit: `feat(validate): add schemas for the four next-phase dashboards`.
+    - **Source-gating invariant (page_insights):** schema rejects fixtures whose `primary_warning.source_status` or `primary_support.source_status` is `"terms_review_needed"` or `"candidate"`. This converts the source-gating regression from a build-time guarantee into a static-data invariant — even a hand-edited or corrupted JSON cannot promote a gated source.
+  - Commit: `feat(validate): add schemas for the four next-phase dashboards including source-gating invariant`.
 
 - [ ] **Task W1A-10: Add 4 freshness expectations to `scripts/validate/validate_freshness.py`.**
   - All four files: daily cadence, tolerance per existing convention.
@@ -337,16 +340,17 @@ npm run build
     - Keyboard arrow-key navigation moves focus.
   - Commit: `feat(components): add ChartRangeControls segmented preset selector`.
 
-- [ ] **Task W1B-4: `src/components/ChartStateBadge.tsx`.**
-  - Pill component. Props: `{ state: "risk" | "support" | "mixed" | "calm" | "watch" | "stale-data" }`.
+- [ ] **Task W1B-4: `src/components/ChartStateBadge.tsx`. (Implement BEFORE W1B-5 and W1B-7 — they import the `ChartState` type from this file.)**
+  - Export `type ChartState = "risk" | "support" | "mixed" | "calm" | "watch" | "stale-data"` from this file. This is the single source of truth for the union; W1B-5 (InsightCallout) and W1B-7 (InteractiveChartShell) import it.
+  - Pill component. Props: `{ state: ChartState }`.
   - Distinct CSS modifier per state (e.g., `.chart-state-badge--risk`) so future color shifts don't lose accessibility-by-text.
-  - Tests in `src/components/__tests__/primitives.test.tsx`: each state renders a distinct class; visible label text matches state name.
-  - Commit: `feat(components): add ChartStateBadge pill primitive`.
+  - Tests in `src/components/ChartStateBadge.test.tsx` (co-located): each state renders a distinct class; visible label text matches state name; the exported `ChartState` type matches the union literal.
+  - Commit: `feat(components): add ChartStateBadge pill primitive with exported ChartState type`.
 
 - [ ] **Task W1B-5: `src/components/InsightCallout.tsx`.**
-  - Compact text block. Props: `{ state?: ChartState; message: string; caveat?: string }`.
+  - Compact text block. Props: `{ state?: ChartState; message: string; caveat?: string }`. Import `ChartState` from `./ChartStateBadge`.
   - Renders state badge inline (using `ChartStateBadge`), message text, optional caveat in muted style below.
-  - Tests in `primitives.test.tsx`: renders without state; renders with state; renders caveat when present.
+  - Tests in `src/components/InsightCallout.test.tsx` (co-located): renders without state; renders with state; renders caveat when present.
   - Commit: `feat(components): add InsightCallout for current-read summaries`.
 
 - [ ] **Task W1B-6: `src/components/DriverBarList.tsx`.**
@@ -354,11 +358,11 @@ npm run build
   - Bar length scales by `priority`. Bar color by `direction` (`risk` red-ish, `support` green-ish, `neutral` grey).
   - Tooltip on each bar shows `why_it_matters`, `freshness_status`, `confidence`.
   - `max` truncates the visible list to top-N by priority.
-  - Tests in `primitives.test.tsx`: renders N bars; truncates to `max`; tooltip text composes correctly; bar width proportional to priority.
+  - Tests in `src/components/DriverBarList.test.tsx` (co-located): renders N bars; truncates to `max`; tooltip text composes correctly; bar width proportional to priority.
   - Commit: `feat(components): add DriverBarList for ranked warning/support visualization`.
 
 - [ ] **Task W1B-7: `src/components/InteractiveChartShell.tsx`.**
-  - Wraps a chart child. Props: `{ title: string; range?: RangePreset; onRangeChange?: (next: RangePreset) => void; state?: ChartState; insight?: ReactNode; ariaLabel: string; children: ReactNode }`.
+  - Wraps a chart child. Props: `{ title: string; range?: RangePreset; onRangeChange?: (next: RangePreset) => void; state?: ChartState; insight?: ReactNode; ariaLabel: string; children: ReactNode }`. Import `ChartState` from `./ChartStateBadge` and `RangePreset` from `../charts/buildTimeWindow`.
   - Layout: title bar (with state badge if `state` provided) → optional `<ChartRangeControls>` → optional `<InsightCallout>` (if `insight` is a string, wrap it; if it's a node, render directly) → chart body via `children`.
   - Falls through to `EChartPanel`'s empty/loading/error states by virtue of wrapping its children.
   - Tests in `src/components/InteractiveChartShell.test.tsx`:
@@ -372,13 +376,15 @@ npm run build
 **Verification gate:**
 
 ```bash
-npm test -- src/charts src/components/__tests__ src/components/ChartRangeControls src/components/InteractiveChartShell
+npm test
 npm run build
 ```
 
+(`npm test` runs the full Vitest suite including the new co-located primitives tests.)
+
 **Acceptance criteria:**
 
-- [ ] All 7 new files exist with passing Vitest tests.
+- [ ] All 7 new production files (`buildTimeWindow.ts`, `buildMarkBands.ts`, `ChartRangeControls.tsx`, `InteractiveChartShell.tsx`, `InsightCallout.tsx`, `DriverBarList.tsx`, `ChartStateBadge.tsx`) exist, plus their co-located test files, all passing.
 - [ ] `npm run build` passes; bundle size delta is documented in the PR description (acceptable if < 5KB gzipped for these primitives).
 - [ ] No edits to `src/routes/`, `src/lib/`, existing `src/components/*`, `src/charts/EChartPanel.tsx`, `chartTheme.ts`, `chartFormatters.ts`.
 - [ ] All new components export TypeScript types (no `any` in public APIs).
@@ -411,7 +417,7 @@ Before merging W1:
 | `src/components/RouteDataFooter.tsx` | create |
 | `src/components/RouteDataFooter.test.tsx` | create |
 | `src/styles.css` (or modular CSS file) | modify (hero + footer styles) |
-| `src/routes/Rates.tsx` | modify (insert hero + 2 slots, relocate footer) |
+| `src/routes/Rates.tsx` | modify (insert hero + 2 slots; wrap data-tail panels in `<RouteDataFooter>`) |
 | `src/routes/Volatility.tsx` | modify (hero + 2 slots + footer) |
 | `src/routes/RegimeMap.tsx` | modify (hero + 1 slot + footer) |
 | `src/routes/LongTermMacroClimate.tsx` | modify (keep `HorizonScoreHeader`; add 2 slots; footer) |
@@ -503,11 +509,16 @@ Before merging W1:
   - Commit: `refactor(long-term-macro): add slots; relocate diagnostics to footer; preserve HorizonScoreHeader`.
 
 - [ ] **Task W2-7: Refactor `src/routes/FragilityShockRisk.tsx`.**
-  - Per PR 6 pattern (preserve body order): read header → `ShockRiskContributionChart` (in `fragility_primary_chart` slot — wrap the existing usage with the slot comment) → `HiddenStressMismatchPanel` (cross-asset, stays in body) → `BondVolatilityProxyChart` (NOT-MOVE caveat preserved verbatim, stays in body) → `TailRiskReadinessMatrix` (stays in body) → `{/* SLOT:fragility_pre_metrics_slot */}` → metric cards → `<RouteDataFooter>` containing `DataGapPanel`, `DataStatusTable`, `CandidateDiagnosticPanel`, `MismatchWarningPanel`, `TailRiskPanel`.
-  - Add `<PageInsightHero route="fragility" />` immediately after the read header.
+  - **Preserve all existing body components in their current positions; only the relocations listed below apply.** The current body contains (among others) `DataQualityBanner`, `HiddenStressSummary`, `InterpretationPanel`, `ShockRiskDashboard`, `ShockRiskContributionChart`, `HiddenStressMismatchPanel`, `BondVolatilityProxyChart`, `TailRiskReadinessMatrix`. None of these are removed. Only the data-transparency tail moves into the footer.
+  - Insertions and relocations:
+    - Add `<PageInsightHero route="fragility" />` immediately after the read header.
+    - Insert `{/* SLOT:fragility_primary_chart */}` as a **single placement marker** on the line immediately preceding the existing `<ShockRiskContributionChart />` JSX (no open+close wrapper — W4 confirms placement and does not replace).
+    - Insert `{/* SLOT:fragility_pre_metrics_slot */}` between `TailRiskReadinessMatrix` (stays in body) and the metric-cards section.
+    - Move into `<RouteDataFooter>`: `DataGapPanel`, `DataStatusTable`, `CandidateDiagnosticPanel`, `MismatchWarningPanel`, `TailRiskPanel`, plus any source-gap or static-feed-freshness panels.
+  - The PR 6 body order is preserved as: read header → PageInsightHero (new) → `DataQualityBanner` → ... → `ShockRiskContributionChart` (with primary slot marker) → `HiddenStressMismatchPanel` → `BondVolatilityProxyChart` (NOT-MOVE caveat verbatim) → `TailRiskReadinessMatrix` → `fragility_pre_metrics_slot` → `HiddenStressSummary` / `InterpretationPanel` / `ShockRiskDashboard` (whichever are above metric cards today, unchanged) → metric cards → `<RouteDataFooter>`.
   - Update `data-routes.test.tsx`.
-  - **Critical:** assert in tests that the literal string "not MOVE" appears in the page (load-bearing caveat).
-  - Commit: `refactor(fragility): apply hero + 2 slots + footer; preserve PR 6 body order and NOT-MOVE caveat`.
+  - **Critical assertion:** the literal substring `"is NOT the licensed ICE MOVE Index"` (the load-bearing caveat in `BondVolatilityProxyChart.tsx:17`) appears in the rendered FragilityShockRisk page. Test with a substring match — this is a stronger guarantee than just matching `"not MOVE"`.
+  - Commit: `refactor(fragility): apply hero + 2 slots + footer; preserve PR 6 body order and full NOT-MOVE caveat`.
 
 - [ ] **Task W2-8: Refactor `src/routes/Credit.tsx`, `Liquidity.tsx`, `DollarGlobal.tsx`, `Commodities.tsx`.**
   - Each: hero + 1 primary slot + metric cards + footer.
@@ -534,10 +545,10 @@ Before merging W1:
   - Commit: `refactor(overview-calendar-methodology-replay): wrap data tails in RouteDataFooter`.
 
 - [ ] **Task W2-13: Cross-route consistency tests in `data-routes.test.tsx`.**
-  - Loop over all 17 routes; assert `<RouteDataFooter>` is the last element rendered.
-  - Loop over the 12 single-domain routes; assert `<PageInsightHero>` is present.
-  - Loop over the 12 single-domain routes + Tactical; assert the slot-comment IDs match the spec slot map.
-  - Commit: `test(routes): cross-route hero + footer + slot consistency`.
+  - Loop over all **18 routes** (the full set under `src/routes/*.tsx` excluding `data-routes.test.tsx`); assert `<RouteDataFooter>` is the last element rendered.
+  - Loop over the **12 single-domain routes** (Rates, Volatility, RegimeMap, Credit, Liquidity, DollarGlobal, Commodities, Inflation, Growth, Housing, Sentiment, FragilityShockRisk); assert `<PageInsightHero>` is present.
+  - Loop over the **14 routes that get slots** (12 single-domain + LongTermMacroClimate + TacticalTradingWeather); assert the slot-comment IDs match the spec slot map. Encode the expected slot map as a constant in the test file (`EXPECTED_SLOTS_BY_ROUTE: Record<string, string[]>`) so spec drift is caught — a forgotten slot would otherwise pass silently.
+  - Commit: `test(routes): cross-route hero + footer + slot consistency (18 routes, 14 with slots)`.
 
 **Verification gate:**
 
@@ -562,7 +573,7 @@ npm run build
 
 - [ ] All 13 W2 tasks checked off.
 - [ ] No source-gated panels above the footer on any route.
-- [ ] Slot map verification: 19 slots inserted across the 13 single-domain routes (Tactical has 2; Rates and Volatility have 2 each; LongTermMacro has 2; FragilityShockRisk has 2; the 8 remaining routes have 1 each).
+- [ ] Slot map verification: 19 slots inserted across **14 routes** (12 single-domain + LongTermMacro + Tactical). Routes with 2 slots: Rates, Volatility, FragilityShockRisk, LongTermMacro, Tactical (= 5 routes × 2 = 10 slots). Routes with 1 slot: RegimeMap, Credit, Liquidity, DollarGlobal, Commodities, Inflation, Growth, Housing, Sentiment (= 9 routes × 1 = 9 slots). Total 19.
 
 ---
 
@@ -593,7 +604,7 @@ Each agent owns its chart components AND its assigned slots in routes. The slot 
 | `src/routes/Rates.tsx` (slots `rates_primary_chart`, `rates_secondary_charts`) | rates-charts | replace slot comments |
 | `src/routes/LongTermMacroClimate.tsx` (slot `macro_yield_chart`) | rates-charts | replace slot comment |
 | `src/components/RegimeQuadrantChart.tsx` | regime-charts | rebuild in ECharts (same path, same export) |
-| `src/components/RegimeQuadrantChart.test.tsx` | regime-charts | rewrite tests for ECharts |
+| `src/components/RegimeQuadrantChart.test.tsx` | regime-charts | create tests for ECharts (no existing component-level test on disk) |
 | `src/components/MacroRegimeQuadrant.tsx` | regime-charts | modify (repoint to `regime_dashboard.json`; PR 7 already created the file) |
 | `src/components/MacroRegimeQuadrant.test.tsx` | regime-charts | update tests for new data source |
 | `src/routes/RegimeMap.tsx` (slot `regime_primary_chart`) | regime-charts | replace slot comment |
@@ -658,8 +669,9 @@ Each agent owns its chart components AND its assigned slots in routes. The slot 
   - Replace the `tactical_vol_curve_slot` wrapper (containing the existing `<VixCurveProxyChart />` usage) with `<VixCurveTermStructureChart compact ... />`.
   - Replace the `tactical_vol_complex_slot` wrapper with `<VolatilityHiddenStressChart compact ... />`.
   - The existing 6-tile section structure stays.
+  - **Remove the now-unused `VixCurveProxyChart` and `VolatilityComplexChart` import statements at the top of `TacticalTradingWeather.tsx`. The legacy component files stay importable for any other consumer; this route just no longer uses them. TS strict mode flags unused imports.**
   - Update tests.
-  - Commit: `feat(tactical): swap VIX curve + volatility complex tiles to next-phase compact charts`.
+  - Commit: `feat(tactical): swap VIX curve + volatility complex tiles to next-phase compact charts; drop unused legacy imports`.
 
 **Verification:**
 
@@ -798,8 +810,9 @@ npm run build
 - [ ] **Task W3C-3: Fill `RegimeMap.tsx` slot `regime_primary_chart`.**
   - Replace `{/* SLOT:regime_primary_chart */}` with `<RegimeQuadrantChart />`.
   - The component already loads its own data; no props needed at the route level.
+  - **Remove the existing `trail={data.snapshot.quadrant_trail}` prop wiring at `src/routes/RegimeMap.tsx` (around line 130) — the rebuilt component reads from `regime_dashboard.json` internally and does not accept a `trail` prop. Also remove any now-unused local variables that were feeding the prop.**
   - Update `data-routes.test.tsx`.
-  - Commit: `feat(regime-map-route): wire rebuilt RegimeQuadrantChart into slot`.
+  - Commit: `feat(regime-map-route): wire rebuilt RegimeQuadrantChart into slot; drop legacy trail prop wiring`.
 
 - [ ] **Task W3C-4: Fill `LongTermMacroClimate.tsx` slot `macro_regime_chart`.**
   - Replace `{/* SLOT:macro_regime_chart */}` with `<MacroRegimeQuadrant />`.
@@ -1064,9 +1077,12 @@ grep -rn "SLOT:" src/                               # all slots are filled (none
 grep -rn "20-observation" src/                      # only HistoricalRegimeReplayPanel.tsx should match
 grep -rn "20-observation change\b" src/             # NO matches expected (singular form removed)
 
-# Tone — descriptive only
-grep -rni "buy\|sell\|short\|target\|stop\|recommend" src/components/ src/routes/ \
-  | grep -v "test\|short_term"                       # short_term as horizon name is allowed; flag others
+# Tone — descriptive only. Allow horizon names (short_term/short-term/Short-Term/long-term/Long-Term),
+# JSX target= attributes, the existing adviceTerms regex guard, and the existing
+# "No trade recommendations" literal in HistoricalRegimeReplayPanel.tsx.
+grep -rEni "\b(buy|sell|short|target|stop|recommend)\b" src/components/ src/routes/ \
+  | grep -v "test\|short_term\|short-term\|Short-Term\|target=\|adviceTerms\|No trade recommendations\|long-term\|Long-Term"
+# Triage any remaining matches manually — the allow-list above is for known false positives.
 ```
 
   Document each grep result in the verification report. Flag any unexpected matches.
