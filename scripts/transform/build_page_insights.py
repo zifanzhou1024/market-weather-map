@@ -30,7 +30,10 @@ METHOD_VERSION = "phase8-pr1-page-insights-v1"
 GATED_STATUSES = frozenset({"terms_review_needed", "candidate"})
 
 # Severity threshold above which a support-only route is labelled
-# "support" rather than "calm".
+# "support" rather than "calm". Severity in this project is the absolute
+# bucket score, scaled 0..100 (see build_signal_priority._build_signal);
+# 25 corresponds to the "meaningful but below elevated" band where the
+# support is strong enough to call out rather than ambient noise.
 SUPPORT_STATE_THRESHOLD = 25.0
 
 # Twelve canonical routes consumed by PageInsightHero.
@@ -144,8 +147,6 @@ def _project_source_status(entry: dict[str, Any]) -> str:
     status = str(entry.get("source_status", "free_public"))
     if status == "active":
         return "free_public"
-    if status in GATED_STATUSES:
-        return status
     return status
 
 

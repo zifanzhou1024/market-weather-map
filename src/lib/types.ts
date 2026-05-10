@@ -462,6 +462,11 @@ export type RouteKey =
   | "sentiment"
   | "fragility";
 
+// "watch" is reserved for a future build path that distinguishes a
+// pre-risk early-warning state from "risk"/"mixed". The current
+// build_page_insights.py only emits risk | support | mixed | calm | unknown;
+// any future emitter must keep the validator's enum (validate_schema.py
+// PAGE_INSIGHT_STATES) and this type aligned.
 export type RouteInsightState =
   | "risk"
   | "support"

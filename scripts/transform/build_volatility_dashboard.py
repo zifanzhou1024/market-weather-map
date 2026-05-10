@@ -17,8 +17,7 @@ proxy in ``compute_regime_score.py``).
 from __future__ import annotations
 
 import json
-from datetime import date as _date
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from scripts.shared.io import data_dir, utc_now_iso, write_json
@@ -229,7 +228,7 @@ def build_volatility_dashboard(
         # Sanity: ensure fallback is a valid YYYY-MM-DD; otherwise use today.
         datetime.strptime(fallback_date, "%Y-%m-%d")
     except ValueError:
-        fallback_date = _date.today().isoformat()
+        fallback_date = date.today().isoformat()
 
     snapshot_date = _resolve_date(latest_curve, hidden_stress, fallback_date)
 

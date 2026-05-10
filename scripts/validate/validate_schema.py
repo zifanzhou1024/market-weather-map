@@ -698,6 +698,11 @@ PAGE_INSIGHT_ROUTE_KEYS = {
     "sentiment",
     "fragility",
 }
+# "watch" is reserved for a future build path. The current
+# build_page_insights.py only emits risk|support|mixed|calm|unknown,
+# but the enum stays open so a future emitter can introduce a pre-risk
+# early-warning state without a schema rev. Keep aligned with
+# RouteInsightState in src/lib/types.ts.
 PAGE_INSIGHT_STATES = {"risk", "support", "mixed", "calm", "watch", "unknown"}
 PAGE_INSIGHT_FRESHNESS_STATUSES = {"ok", "stale", "unavailable"}
 # source_status values that are PERMITTED in primary slots. The gating
