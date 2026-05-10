@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import DollarPressureHero from "../components/charts/DollarPressureHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -60,6 +61,13 @@ export default function DollarGlobal() {
         <div className="route-stack">
           <PageInsightHero route="dollar_global" />
           {/* SLOT:dollar_global_primary_chart */}
+          {broadDollar && broadDollar.observations.length > 0 ? (
+            <DollarPressureHero broadDollar={broadDollar} />
+          ) : (
+            <section className="panel chart-panel" aria-label="Dollar pressure">
+              <p>Dollar pressure chart unavailable until broad-dollar data is active.</p>
+            </section>
+          )}
           <InterpretationPanel
             label="Dollar pressure read"
             notes={["FX series can be stale around holidays and should be checked against freshness status."]}
