@@ -2630,6 +2630,26 @@ describe("data-backed routes", () => {
     expect(fetch).toHaveBeenCalledWith("/data/events/macro_calendar.json");
   });
 
+  it("tactical route swaps the legacy VIX curve + volatility complex tiles for the W3 compact charts", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/short-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Short-Term Market Reaction");
+
+    // Compact tiles render via EChartPanel: "Volatility curve" and "Hidden options stress"
+    // are the titles emitted by the new charts in compact mode.
+    expect(container.textContent).toContain("Volatility curve");
+    expect(container.textContent).toContain("Hidden options stress");
+    // Compact mode suppresses the full-shell "proxy" parenthetical so the
+    // tile title stays terse — the surrounding 6-tile chrome supplies its
+    // own context.
+    expect(container.textContent).not.toContain("Volatility curve (proxy)");
+  });
+
   it("renders short-term credit pulse unavailable state when HY minus IG OAS is missing", async () => {
     const files: Record<string, unknown> = routeFetchFiles();
     delete files["/data/derived/hy_minus_ig_oas.json"];
