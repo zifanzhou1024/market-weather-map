@@ -219,6 +219,16 @@ SIGNAL_CATALOG: tuple[dict[str, Any], ...] = (
 # describe what high-impact signals are not currently scoring.
 MISSING_CATALOG: tuple[dict[str, Any], ...] = (
     {
+        "id": "sp500_index",
+        "label": "S&P 500 benchmark (SPX)",
+        "group": "Equity benchmark",
+        "category": "positioning",
+        "horizon": "short_term",
+        "importance": 5,
+        "data_status_key": "sp500_index",
+        "why_it_matters": "An equity benchmark would let the dashboard compare VIX against realized equity volatility and detect VIX-vs-tape divergences.",
+    },
+    {
         "id": "move_index",
         "label": "MOVE Index (bond volatility)",
         "group": "Volatility & tail risk",
