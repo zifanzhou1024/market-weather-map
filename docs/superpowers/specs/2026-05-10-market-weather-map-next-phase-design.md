@@ -41,6 +41,13 @@ There is also a real bug in the regime-map quadrant: `scripts/transform/compute_
 - Source-gated items must not enter active scores/labels/checklists/confidence/hero-charts/`page_insights`. Footer-only as readiness or diagnostic.
 - Every new `public/data/...` file gets a schema check in `scripts/validate/validate_schema.py` and a freshness expectation in `scripts/validate/validate_freshness.py`.
 
+## Phase prerequisites
+
+- PR 7 (Long-Term macro visual system) is currently open as #32 against `main`. This design assumes PR 7 merges before W1 dispatches. PR 7 adds: `MacroClimateHeatmap`, `MacroRegimeQuadrant`, `GrowthLaborInflationMatrix`, `StrategicSourceGapMatrix`, plus `ScatterChart` registration in `src/charts/EChartPanel.tsx`.
+- With PR 7 merged before W1: `MacroRegimeQuadrant.tsx` already exists, so `regime-charts-agent` only repoints its data source to `regime_dashboard.json` (no rebuild). `ScatterChart` is already registered, so `fe-platform-agent` does not re-register. `StrategicSourceGapsPanel` referenced in W2 is superseded by `StrategicSourceGapMatrix` from PR 7; W2 moves whichever is current into `<RouteDataFooter>`.
+- If PR 7 has not merged before W1 dispatches: `regime-charts-agent` additionally builds `MacroRegimeQuadrant.tsx` from scratch with the same axis convention (real-yield-x, dollar-y), and `fe-platform-agent` registers `ScatterChart` in `EChartPanel`. `LongTermMacroClimate.tsx` PageInsightHero placement is unchanged either way.
+- Test mocks: any new chart-type registration in `EChartPanel` requires updating the `vi.mock("echarts/charts")` blocks at the top of every route-level Vitest test that reaches `EChartPanel` (see PR 7 commit `25113e3` for the precedent).
+
 ## Architecture: 5-wave plan
 
 Five sequential waves; agents run in parallel within each wave. Each wave is one PR.
@@ -79,9 +86,11 @@ In W2, `ia-shell-agent` inserts labeled JSX comment markers in single-domain rou
 {/* SLOT:rates_primary_chart */}
 {/* SLOT:rates_secondary_charts */}
 
-<MetricCardsBlock />
+{/* metric cards JSX from the existing route */}
 <RouteDataFooter route="rates" />
 ```
+
+`MetricCardsBlock` is illustrative — each route has its own existing metric-card JSX (typically `<MetricCard ... />` repeated in a grid); W2 leaves that block unchanged in place between the slots and `<RouteDataFooter>`.
 
 W3/W4 agents replace exactly the labeled comment with their JSX. No surrounding edits. The slot IDs are enumerated in the W2 slot map; W2 inserts them all up front so W3/W4 know which slot is theirs.
 
@@ -131,7 +140,7 @@ type SignalRef = {
   message: string;
   why_it_matters: string;
   severity: number;
-  freshness_status: "fresh" | "stale" | "missing";
+  freshness_status: "ok" | "stale" | "missing";   // matches the existing signal_priority.json convention
   confidence: number;
   source_status: "free_public" | "terms_review_needed" | "candidate";
 };
@@ -289,7 +298,7 @@ Add to `scripts/validate/validate_freshness.py`:
 
 `src/lib/types.ts` — add: `PageInsight`, `RouteInsight`, `SignalRef`, `VolatilityDashboard`, `RatesDashboard`, `RegimeDashboard` and their member types.
 
-`src/lib/data.ts` — add loaders: `loadPageInsights()`, `loadVolatilityDashboard()`, `loadRatesDashboard()`, `loadRegimeDashboard()`. Each follows the existing loader convention: returns `T | null` on 404, throws on schema mismatch only when the file is present but malformed (so a missing file lets routes degrade gracefully; a corrupt file is loud).
+`src/lib/data.ts` — note: the existing `loadJson<T>(path)` helper throws `DataLoadError` on 404; it is unchanged. `be-data-agent` adds a permissive sibling `loadJsonOrNull<T>(path): Promise<T | null>` that returns `null` on 404 and still throws on schema mismatch when the file is present but malformed. Add new loaders that delegate to `loadJsonOrNull`: `loadPageInsights()`, `loadVolatilityDashboard()`, `loadRatesDashboard()`, `loadRegimeDashboard()`. Routes that consume these loaders render fallback UI when the loader returns `null` (a missing file lets routes degrade gracefully; a corrupt file is loud).
 
 #### Pipeline integration
 
@@ -308,7 +317,7 @@ Wire the four new build scripts into `scripts/update_data.py` so they run after 
 
 **Owns:** `src/charts/`, plus 5 specific new component files in `src/components/`.
 
-**Does not touch:** `src/routes/`, existing `src/components/*` files, `src/lib/`.
+**Does not touch:** `src/routes/`, existing `src/components/*` files, `src/lib/`. Single permitted exception: if PR 7 has not merged at W1 dispatch time, register `ScatterChart` in `src/charts/EChartPanel.tsx` (one-line addition, plus matching update to the route-level Vitest `vi.mock("echarts/charts")` arrays — see PR 7 commit `25113e3` for the precedent). If PR 7 has merged, `ScatterChart` is already registered and no edit is needed.
 
 #### New chart helpers
 
@@ -379,7 +388,7 @@ type Driver = {
   priority: number;
   direction: "risk" | "support" | "neutral";
   why_it_matters: string;
-  freshness_status: "fresh" | "stale" | "missing";
+  freshness_status: "ok" | "stale" | "missing";   // matches signal_priority.json convention
   confidence: number;
 };
 type Props = { items: Driver[]; max?: number };
@@ -398,8 +407,8 @@ Small pill. Distinct visual treatment for `stale-data`.
 
 - `npm run build` passes; bundle size does not regress materially.
 - Vitest tests for: `buildTimeWindow` filtering edge cases, `ChartRangeControls` preset switching, `InteractiveChartShell` rendering with present/absent insight + state.
-- No edits to `EChartPanel.tsx`.
-- No edits to routes or other components.
+- Edits to `EChartPanel.tsx` are limited to chart-type registration (`ScatterChart` only, and only if PR 7 has not merged); existing registrations preserved.
+- No edits to routes or other existing components.
 
 ## Wave 2 — IA shell + route refactor
 
@@ -448,7 +457,9 @@ For each of the 12 single-domain routes:
 
 For `Overview.tsx`, `TacticalTradingWeather.tsx`, `Calendar.tsx`, `Methodology.tsx`, `HistoricalRegimeReplay.tsx`: only wrap existing data-transparency tail in `<RouteDataFooter>`. Do not add `<PageInsightHero>`. Do not change existing `MarketBriefHeader`, `HorizonScoreHeader`, or content order above the tail.
 
-For `LongTermMacroClimate.tsx`: keep `HorizonScoreHeader`. Move `CandidateDiagnosticPanel` and `StrategicSourceGapsPanel` into `<RouteDataFooter>`. Insert `macro_regime_chart` and `macro_yield_chart` slots in appropriate positions (above the macro group loop).
+For `LongTermMacroClimate.tsx`: keep `HorizonScoreHeader`. Move `CandidateDiagnosticPanel` and `StrategicSourceGapsPanel` (or its PR 7 successor `StrategicSourceGapMatrix`, whichever is current) into `<RouteDataFooter>`. Insert `macro_regime_chart` and `macro_yield_chart` slots in appropriate positions (above the macro group loop).
+
+For `FragilityShockRisk.tsx` (per the PR 6 pattern committed at `69ddc9d`): body order is preserved as `read header` → `ShockRiskContributionChart` (in `fragility_primary_chart` slot) → `HiddenStressMismatchPanel` (cross-asset mismatches, stays in body) → `BondVolatilityProxyChart` (NOT-MOVE caveat preserved verbatim, stays in body) → `TailRiskReadinessMatrix` (gated readiness display, stays in body) → `fragility_pre_metrics_slot` (W4 fills with the new `VixVvixHiddenStressPanel`) → metric cards. Footer-only relocations: `DataGapPanel`, `DataStatusTable`, `CandidateDiagnosticPanel`, plus any source-gap or static-feed-freshness panels. The "not MOVE" caveat on `BondVolatilityProxyChart` is load-bearing and must be preserved verbatim.
 
 #### Slot map
 
@@ -466,7 +477,7 @@ For `LongTermMacroClimate.tsx`: keep `HorizonScoreHeader`. Move `CandidateDiagno
 | `Growth.tsx` | `growth_primary_chart` |
 | `Housing.tsx` | `housing_primary_chart` |
 | `Sentiment.tsx` | `sentiment_primary_chart` |
-| `FragilityShockRisk.tsx` | `fragility_primary_chart` |
+| `FragilityShockRisk.tsx` | `fragility_primary_chart`, `fragility_pre_metrics_slot` |
 | `TacticalTradingWeather.tsx` | `tactical_vol_curve_slot`, `tactical_vol_complex_slot` (for vol-charts-agent to swap in) |
 
 The `TacticalTradingWeather.tsx` slots replace specific existing chart usages; `ia-shell-agent` inserts the slot comments wrapping the existing JSX so vol-charts-agent in W3 can do the swap surgically.
@@ -494,6 +505,8 @@ ECharts categorical x-axis (`9D`, `30D`, `3M`), y = VIX level. Latest snapshot o
 
 Wraps with `<InteractiveChartShell title="Volatility curve (proxy)" state={state} insight={...} />`. Title intentionally says "proxy" to signal these are index points, not VX futures.
 
+Props: `{ compact?: boolean }`. When `compact` is true: no surrounding `InteractiveChartShell` chrome (used inside Tactical's existing 6-tile grid which has its own framing); height ~200px instead of ~400px; tooltip simplified to tenor + value only.
+
 #### `VixRatioHistoryChart.tsx`
 
 ECharts line chart, two series: `vix9d_vix` and `vix_vix3m`. `markArea` bands for `calm` / `flat` / `stress` zones using thresholds from `volatility_dashboard.json`. `dataZoom` slider + inside enabled. `<ChartRangeControls>` with `1M | 3M | 6M | 1Y | 3Y | All` (default `1Y`).
@@ -505,6 +518,8 @@ Two-panel layout via ECharts `grid` array sharing x-axis:
 - Bottom: line strip showing `hidden_stress_score` over time, `markLine` at watch and elevated thresholds.
 
 `<ChartRangeControls>` controls both panels.
+
+Props: `{ compact?: boolean }`. When `compact` is true: scatter panel only (no time-series strip), no `ChartRangeControls`, no `InteractiveChartShell` chrome, height ~200px. Used in Tactical's 6-tile section to replace the existing `VolatilityComplexChart`.
 
 #### Slot fills
 
@@ -581,7 +596,7 @@ Replace Recharts implementation with ECharts. Same component name, same import p
   - x<0, y>0 → "safe-haven / growth scare"
   - x>0, y<0 → "rotation / reflation / mixed"
 - Quadrant-meaning legend rendered below the chart (text block).
-- Misleading "20-observation change" label removed; replaced by dynamic label `"{window} change"` based on selected window.
+- Misleading "20-observation change" label removed from `RegimeQuadrantChart.tsx` only; replaced by dynamic label `"{window} change"` based on selected window. The literal string `"20-observation changes"` in `src/components/HistoricalRegimeReplayPanel.tsx:79` is correct per `docs/METHODOLOGY.md` (HistoricalRegimeReplay legitimately compares 20-observation windows) and must NOT be touched.
 
 #### `MacroRegimeQuadrant.tsx` — new
 
@@ -598,7 +613,7 @@ Same data, same axis convention as the rebuilt `RegimeQuadrantChart`, but defaul
 
 - `RegimeQuadrantChart.tsx` no longer imports from `recharts`; uses `EChartPanel`.
 - Axes consistent with `MacroRegimeQuadrant.tsx`.
-- "20-observation change" string removed everywhere.
+- "20-observation change" string removed from `RegimeQuadrantChart.tsx` only; `HistoricalRegimeReplayPanel.tsx:79` is intentionally unchanged.
 - `regime_dashboard.json` is the data source; `quadrant_trail` is no longer read by the chart.
 - `npm run build` and `npm test` pass.
 - Vitest test asserts the rebuilt chart renders with fixture data and shows the latest point label.
@@ -634,8 +649,8 @@ Owns: `Sentiment.tsx`, `FragilityShockRisk.tsx`.
 
 | Route | Hero chart | Data spine |
 |---|---|---|
-| Sentiment | CFTC asset manager vs leveraged-money positioning, percentile-normalized lines. If COT data is not yet active, the agent falls back to existing positioning series and surfaces the source gap in `<RouteDataFooter>`. | CFTC COT (if active) or existing positioning series |
-| FragilityShockRisk | Confirms existing `ShockRiskContributionChart` (from PR 6) occupies the slot. Adds a "hidden stress mismatch" panel above metric cards using `volatility_dashboard.json[hidden_stress]`. | Existing `shock_risk_snapshot.json` + new `volatility_dashboard.json` |
+| Sentiment | CFTC asset manager vs leveraged-money positioning, percentile-normalized lines. CFTC COT data is already active in `public/data/derived/` (`cftc_sp500_asset_mgr_net.json` and `cftc_sp500_lev_money_net.json`); chart consumes those directly. Defensive fallback: if either file is missing at render time the loader returns `null` and a "data not yet active" state surfaces a source gap in `<RouteDataFooter>`. | `cftc_sp500_asset_mgr_net.json`, `cftc_sp500_lev_money_net.json` |
+| FragilityShockRisk | `ShockRiskContributionChart` (from PR 6) already occupies the `fragility_primary_chart` slot — agent confirms placement, no rebuild. Builds a NEW component `src/components/VixVvixHiddenStressPanel.tsx` (distinct from PR 6's `HiddenStressMismatchPanel.tsx`, which covers cross-asset mismatches) and renders it into the `fragility_pre_metrics_slot` using `volatility_dashboard.json[hidden_stress]`. | Existing `shock_risk_snapshot.json` (already wired) + new `volatility_dashboard.json[hidden_stress]` |
 
 #### W4 acceptance (all three agents)
 
@@ -671,6 +686,8 @@ Verifies:
 - `<RouteDataFooter>` is the LAST element on every route (not just present, but at the bottom).
 - No data-transparency panels were deleted — only relocated into `<RouteDataFooter>`.
 - Source-gated items appear only in footer, never in `page_insights.json` primary slots, never in hero charts.
+- Consistency grep: `grep -rn "dollar_change\|real_yield_change\|20-observation" src/ scripts/` — verify the regime axis-rename and field-rename are coherent (no leftover `quadrant_trail` references in chart code; "20-observation" string survives only in `HistoricalRegimeReplayPanel.tsx`).
+- This phase does not modify `src/routes/HistoricalRegimeReplay.tsx` or `regime_replay.json`. Wiring `regime_dashboard.json` into HistoricalRegimeReplay is a deferred follow-up.
 
 #### `qa-agent` acceptance
 
