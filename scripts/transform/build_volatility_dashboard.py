@@ -141,52 +141,33 @@ def _build_hidden_stress(
     vvix: dict[str, Any],
     thresholds: dict[str, float],
 ) -> list[dict[str, Any]]:
-    vix_obs = vix.get("observations", []) or []
+    """Daily VIX vs VVIX 5-year-percentile difference.
+
+    Symmetric percentile windows: both vix_percentile and vvix_percentile
+    for an emitted date are computed against the SAME common-date series
+    (intersection of VIX and VVIX dates). Anything else makes the two
+    percentiles incomparable because they would be drawn from different
+    historical universes.
+    """
+    vix_by_date = _values_by_date(vix)
     vvix_by_date = _values_by_date(vvix)
+    common_dates = sorted(set(vix_by_date) & set(vvix_by_date))
 
     history: list[dict[str, Any]] = []
     vix_running: list[float] = []
-    vvix_running_buffer: dict[str, float] = {}
-
-    # We need rolling percentiles per day. Build a sorted list of all
-    # (date, vix_value) entries; for VVIX too, then iterate in date order.
-    vix_entries = sorted(
-        (
-            (str(obs["date"]), float(obs["value"]))
-            for obs in vix_obs
-            if isinstance(obs.get("date"), str)
-            and isinstance(obs.get("value"), int | float)
-        ),
-        key=lambda pair: pair[0],
-    )
-
-    vvix_entries = sorted(
-        (
-            (str(obs["date"]), float(obs["value"]))
-            for obs in vvix.get("observations", []) or []
-            if isinstance(obs.get("date"), str)
-            and isinstance(obs.get("value"), int | float)
-        ),
-        key=lambda pair: pair[0],
-    )
-
-    vvix_dates = [pair[0] for pair in vvix_entries]
-    vvix_values = [pair[1] for pair in vvix_entries]
-    vvix_index_by_date = {d: i for i, d in enumerate(vvix_dates)}
+    vvix_running: list[float] = []
 
     watch = float(thresholds["hidden_stress_watch"])
     elevated = float(thresholds["hidden_stress_elevated"])
 
-    for d, v in vix_entries:
-        if d not in vvix_by_date:
-            continue
+    for d in common_dates:
+        v = vix_by_date[d]
+        vvix_value = vvix_by_date[d]
         vix_running.append(v)
+        vvix_running.append(vvix_value)
         vix_window = vix_running[-ROLLING_WINDOW_DAYS:]
+        vvix_window = vvix_running[-ROLLING_WINDOW_DAYS:]
         vix_pct = _percentile_rank(vix_window, v)
-
-        idx = vvix_index_by_date[d]
-        vvix_value = vvix_values[idx]
-        vvix_window = vvix_values[max(0, idx - ROLLING_WINDOW_DAYS + 1) : idx + 1]
         vvix_pct = _percentile_rank(vvix_window, vvix_value)
 
         score = round(vvix_pct - vix_pct, 2)
