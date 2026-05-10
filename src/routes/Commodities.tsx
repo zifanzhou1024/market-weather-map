@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CommodityImpulseHero from "../components/charts/CommodityImpulseHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -103,6 +104,13 @@ export default function Commodities() {
         <div className="route-stack">
           <PageInsightHero route="commodities" />
           {/* SLOT:commodities_primary_chart */}
+          {data.impulse.observations.length > 0 || data.spread.observations.length > 0 ? (
+            <CommodityImpulseHero impulse={data.impulse} brentWtiSpread={data.spread} />
+          ) : (
+            <section className="panel chart-panel" aria-label="Commodity impulse">
+              <p>Commodity impulse chart unavailable until source data is active.</p>
+            </section>
+          )}
           <InterpretationPanel
             label="Price level versus impulse"
             summary="Spot commodity prices describe current level pressure, while the derived impulse highlights whether commodity prices are adding to or subtracting from inflation pressure."
