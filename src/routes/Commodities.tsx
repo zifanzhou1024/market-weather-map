@@ -3,6 +3,8 @@ import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus, loadDerivedSeries, loadSeries } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
@@ -99,6 +101,8 @@ export default function Commodities() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="commodities" />
+          {/* SLOT:commodities_primary_chart */}
           <InterpretationPanel
             label="Price level versus impulse"
             summary="Spot commodity prices describe current level pressure, while the derived impulse highlights whether commodity prices are adding to or subtracting from inflation pressure."
@@ -120,8 +124,10 @@ export default function Commodities() {
           {wti ? (
             <TimeSeriesChart catalogEntry={data.catalog.find((entry) => entry.id === "wti_crude")} series={wti} />
           ) : null}
-          <DataGapPanel seriesIds={commodityStatusIds} status={data.status} />
-          <DataStatusTable seriesIds={commodityStatusIds} status={data.status} />
+          <RouteDataFooter route="commodities">
+            <DataGapPanel seriesIds={commodityStatusIds} status={data.status} />
+            <DataStatusTable seriesIds={commodityStatusIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>

@@ -3,6 +3,8 @@ import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
@@ -90,6 +92,8 @@ export default function Credit() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="credit" />
+          {/* SLOT:credit_primary_chart */}
           <InterpretationPanel
             label="Credit stress and banking liquidity"
             summary="Credit spreads, stress indexes, and banking aggregates show whether funding stress is concentrated in risky credit or spreading through the banking system."
@@ -124,8 +128,10 @@ export default function Credit() {
               <p>Featured chart unavailable until source data is available.</p>
             </section>
           )}
-          <DataGapPanel seriesIds={creditStatusIds} status={data.status} />
-          <DataStatusTable seriesIds={creditStatusIds} status={data.status} />
+          <RouteDataFooter route="credit">
+            <DataGapPanel seriesIds={creditStatusIds} status={data.status} />
+            <DataStatusTable seriesIds={creditStatusIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>
