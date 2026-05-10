@@ -1948,6 +1948,83 @@ code {
   line-height: 1.4;
 }
 
+.vix-vvix-hidden-stress-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 4px solid #b04a3a;
+  border-radius: 8px;
+  padding: 16px 18px 18px;
+  margin: 16px 0 24px;
+}
+
+.vix-vvix-hidden-stress-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.vix-vvix-hidden-stress-panel__title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0;
+  text-transform: uppercase;
+  color: #344238;
+}
+
+.vix-vvix-hidden-stress-panel__score-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 4px 0 8px;
+}
+
+.vix-vvix-hidden-stress-panel__score {
+  font-size: 1.95rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.vix-vvix-hidden-stress-panel__score-caption {
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.vix-vvix-hidden-stress-panel__spark {
+  margin: 6px 0 10px;
+}
+
+.vix-vvix-hidden-stress-panel__spark .echart-panel {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.vix-vvix-hidden-stress-panel__spark .echart-panel-header {
+  display: none;
+}
+
+.vix-vvix-hidden-stress-panel__spark .echart-panel-body {
+  padding: 0;
+}
+
+.vix-vvix-hidden-stress-panel__footer {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.vix-vvix-hidden-stress-panel__fallback {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 .tail-risk-readiness-matrix {
   background: var(--panel);
   border: 1px solid var(--border);

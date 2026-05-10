@@ -16,6 +16,7 @@ import ShockRiskDashboard from "../components/ShockRiskDashboard";
 import ShockRiskReadHeader from "../components/ShockRiskReadHeader";
 import TailRiskPanel from "../components/TailRiskPanel";
 import TailRiskReadinessMatrix from "../components/TailRiskReadinessMatrix";
+import VixVvixHiddenStressPanel from "../components/VixVvixHiddenStressPanel";
 import {
   loadCatalog,
   loadDataStatus,
@@ -128,6 +129,7 @@ export default function FragilityShockRisk() {
           />
           <TailRiskReadinessMatrix status={data.status} />
           {/* SLOT:fragility_pre_metrics_slot */}
+          <VixVvixHiddenStressPanel />
           <HiddenStressSummary shockSnapshot={data.shockSnapshot} />
           <InterpretationPanel
             caveats={data.scoreSummary.scores.fragility.missing_or_stale_notes}
