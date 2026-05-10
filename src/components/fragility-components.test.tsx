@@ -99,7 +99,7 @@ describe("ShockRiskContributionChart", () => {
     expect(setOption).not.toHaveBeenCalled();
   });
 
-  it("renders one bar per signal sorted by absolute score descending", () => {
+  it("orders y-axis bars ascending by |score| so the largest contributor sits at the top of the rendered chart", () => {
     const signals: ShockRiskSignal[] = [
       makeSignal("a", "Signal A", 12),
       makeSignal("b", "Signal B", -34),
@@ -253,20 +253,18 @@ describe("TailRiskReadinessMatrix", () => {
     expect(badge?.textContent).toContain("ok");
   });
 
-  it("uses --gated badge class for terms_review_needed/restricted/unavailable", () => {
+  it("uses --gated badge class for terms_review_needed and unavailable statuses", () => {
     const c = render(
       <TailRiskReadinessMatrix
         status={makeStatusFile({
           move_index: statusEntry("terms_review_needed"),
-          skew_index: statusEntry("unavailable"),
-          vx1: { ...statusEntry("ok"), status: "restricted" as SeriesStatus["status"] }
+          skew_index: statusEntry("unavailable")
         })}
       />
     );
     const rows = Array.from(c.querySelectorAll(".tail-risk-readiness-row"));
     const moveRow = rows.find((r) => (r.textContent ?? "").includes("ICE MOVE"));
     const skewRow = rows.find((r) => (r.textContent ?? "").includes("Cboe SKEW"));
-    const vx1Row = rows.find((r) => (r.textContent ?? "").includes("VX1 front"));
     expect(
       moveRow?.querySelector(".tail-risk-readiness-badge")?.classList.contains(
         "tail-risk-readiness-badge--gated"
@@ -277,11 +275,22 @@ describe("TailRiskReadinessMatrix", () => {
         "tail-risk-readiness-badge--gated"
       )
     ).toBe(true);
-    expect(
-      vx1Row?.querySelector(".tail-risk-readiness-badge")?.classList.contains(
-        "tail-risk-readiness-badge--gated"
-      )
-    ).toBe(true);
+  });
+
+  it("uses --failed badge class for failed status (distinct from gated)", () => {
+    const c = render(
+      <TailRiskReadinessMatrix
+        status={makeStatusFile({
+          vix: statusEntry("failed")
+        })}
+      />
+    );
+    const rows = Array.from(c.querySelectorAll(".tail-risk-readiness-row"));
+    const vixRow = rows.find((r) => (r.textContent ?? "").includes("VIX"));
+    const badge = vixRow?.querySelector(".tail-risk-readiness-badge");
+    expect(badge?.classList.contains("tail-risk-readiness-badge--failed")).toBe(true);
+    expect(badge?.classList.contains("tail-risk-readiness-badge--gated")).toBe(false);
+    expect(badge?.textContent).toContain("failed");
   });
 
   it("renders the bond-vol proxy row with the exact 'Bond-vol proxy (not MOVE)' label", () => {

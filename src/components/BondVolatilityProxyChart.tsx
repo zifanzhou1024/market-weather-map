@@ -48,23 +48,12 @@ function formatTooltip(params: AxisTooltipParam[]): string {
 }
 
 export default function BondVolatilityProxyChart({ series }: BondVolatilityProxyChartProps) {
-  if (!series || series.observations.length === 0) {
-    return (
-      <EChartPanel
-        title={TITLE}
-        description={DESCRIPTION}
-        state="empty"
-        emptyMessage={EMPTY_MESSAGE}
-        height={280}
-      />
-    );
-  }
+  const points: Array<[string, number]> =
+    series?.observations
+      .filter((obs) => typeof obs.value === "number" && Number.isFinite(obs.value))
+      .map((obs) => [obs.date, obs.value] as [string, number]) ?? [];
 
-  const points: Array<[string, number]> = series.observations
-    .filter((obs) => typeof obs.value === "number" && Number.isFinite(obs.value))
-    .map((obs) => [obs.date, obs.value] as [string, number]);
-
-  if (points.length === 0) {
+  if (!series || series.observations.length === 0 || points.length === 0) {
     return (
       <EChartPanel
         title={TITLE}

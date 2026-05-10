@@ -39,22 +39,24 @@ function safeScore(score: number | null): number {
 }
 
 function buildSortedRows(signals: ShockRiskSignal[]): BarDatum[] {
-  return signals
-    .slice()
-    .map<BarDatum>((signal) => {
-      const score = safeScore(signal.score);
-      return {
-        value: score,
-        itemStyle: { color: colorForScore(score) },
-        score,
-        signalValue: signal.value,
-        change: signal.change,
-        label: signal.label
-      };
-    })
-    .sort((a, b) => Math.abs(a.score) - Math.abs(b.score));
-  // ECharts horizontal bars draw with the first y-category at the bottom; sort
-  // ascending so the largest |score| ends up at the top of the y-axis.
+  return (
+    signals
+      .slice()
+      .map<BarDatum>((signal) => {
+        const score = safeScore(signal.score);
+        return {
+          value: score,
+          itemStyle: { color: colorForScore(score) },
+          score,
+          signalValue: signal.value,
+          change: signal.change,
+          label: signal.label
+        };
+      })
+      // ECharts horizontal bars draw with the first y-category at the bottom; sort
+      // ascending so the largest |score| ends up at the top of the y-axis.
+      .sort((a, b) => Math.abs(a.score) - Math.abs(b.score))
+  );
 }
 
 export default function ShockRiskContributionChart({

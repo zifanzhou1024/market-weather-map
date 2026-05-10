@@ -65,11 +65,12 @@ const GROUPS: SignalGroup[] = [
   }
 ];
 
-const GATED_STATUSES = new Set(["terms_review_needed", "restricted", "unavailable"]);
+const GATED_STATUSES = new Set(["terms_review_needed", "unavailable"]);
 
 function badgeModifier(status: string | undefined): string {
   if (status === "ok") return "tail-risk-readiness-badge--active";
   if (status === "stale") return "tail-risk-readiness-badge--stale";
+  if (status === "failed") return "tail-risk-readiness-badge--failed";
   if (status && GATED_STATUSES.has(status)) return "tail-risk-readiness-badge--gated";
   return "tail-risk-readiness-badge--unknown";
 }
