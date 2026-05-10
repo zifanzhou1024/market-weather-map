@@ -140,7 +140,7 @@ type SignalRef = {
   message: string;
   why_it_matters: string;
   severity: number;
-  freshness_status: "ok" | "stale" | "missing";   // matches the existing signal_priority.json convention
+  freshness_status: SignalFreshnessStatus;   // import from src/lib/types.ts; existing enum is "ok" | "stale" | "unavailable"
   confidence: number;
   source_status: "free_public" | "terms_review_needed" | "candidate";
 };
@@ -388,7 +388,7 @@ type Driver = {
   priority: number;
   direction: "risk" | "support" | "neutral";
   why_it_matters: string;
-  freshness_status: "ok" | "stale" | "missing";   // matches signal_priority.json convention
+  freshness_status: SignalFreshnessStatus;   // import from src/lib/types.ts; existing enum is "ok" | "stale" | "unavailable"
   confidence: number;
 };
 type Props = { items: Driver[]; max?: number };
@@ -457,7 +457,7 @@ For each of the 12 single-domain routes:
 
 For `Overview.tsx`, `TacticalTradingWeather.tsx`, `Calendar.tsx`, `Methodology.tsx`, `HistoricalRegimeReplay.tsx`: only wrap existing data-transparency tail in `<RouteDataFooter>`. Do not add `<PageInsightHero>`. Do not change existing `MarketBriefHeader`, `HorizonScoreHeader`, or content order above the tail.
 
-For `LongTermMacroClimate.tsx`: keep `HorizonScoreHeader`. Move `CandidateDiagnosticPanel` and `StrategicSourceGapsPanel` (or its PR 7 successor `StrategicSourceGapMatrix`, whichever is current) into `<RouteDataFooter>`. Insert `macro_regime_chart` and `macro_yield_chart` slots in appropriate positions (above the macro group loop).
+For `LongTermMacroClimate.tsx`: keep `HorizonScoreHeader`. Move `CandidateDiagnosticPanel` and `StrategicSourceGapMatrix` (PR 7) into `<RouteDataFooter>`. Insert `macro_regime_chart` and `macro_yield_chart` slots in appropriate positions (above the macro group loop).
 
 For `FragilityShockRisk.tsx` (per the PR 6 pattern committed at `69ddc9d`): body order is preserved as `read header` → `ShockRiskContributionChart` (in `fragility_primary_chart` slot) → `HiddenStressMismatchPanel` (cross-asset mismatches, stays in body) → `BondVolatilityProxyChart` (NOT-MOVE caveat preserved verbatim, stays in body) → `TailRiskReadinessMatrix` (gated readiness display, stays in body) → `fragility_pre_metrics_slot` (W4 fills with the new `VixVvixHiddenStressPanel`) → metric cards. Footer-only relocations: `DataGapPanel`, `DataStatusTable`, `CandidateDiagnosticPanel`, plus any source-gap or static-feed-freshness panels. The "not MOVE" caveat on `BondVolatilityProxyChart` is load-bearing and must be preserved verbatim.
 
@@ -716,7 +716,7 @@ ICE MOVE, Cboe SKEW, Cboe put/call, Cboe/CFE VX futures curve, NY Fed ACM term p
 
 ### Freshness UX
 
-`PageInsightHero` shows freshness via state badge if `freshness_status !== "fresh"`. Charts that consume potentially stale data show `<ChartStateBadge state="stale-data" />` overlay rendered by `<InteractiveChartShell>`.
+`PageInsightHero` shows freshness via state badge if `freshness_status !== "ok"`. Charts that consume potentially stale data show `<ChartStateBadge state="stale-data" />` overlay rendered by `<InteractiveChartShell>`.
 
 ### Tone
 
