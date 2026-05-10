@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
 import DataQualityBanner from "../components/DataQualityBanner";
+import PageInsightHero from "../components/PageInsightHero";
 import RegimeInterpretationPanel from "../components/RegimeInterpretationPanel";
 import RegimeQuadrantChart from "../components/RegimeQuadrantChart";
+import RouteDataFooter from "../components/RouteDataFooter";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
 import { loadRegimeSnapshot, loadScoreSummary } from "../lib/data";
 import { directionLabel } from "../lib/regime";
@@ -120,6 +122,8 @@ export default function RegimeMap() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="regime_map" />
+          {/* SLOT:regime_primary_chart */}
           <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <RegimeInterpretationPanel scoreSummary={data.scoreSummary} snapshot={data.snapshot} />
           <section className="metric-grid" aria-label="Regime direction cards">
@@ -129,10 +133,12 @@ export default function RegimeMap() {
           </section>
           <RegimeQuadrantChart trail={data.snapshot.quadrant_trail} />
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
-          <CrossAssetConfirmationMatrix
-            candidateItems={candidateConfirmationRows}
-            items={data.snapshot.confirmations}
-          />
+          <RouteDataFooter route="regime_map">
+            <CrossAssetConfirmationMatrix
+              candidateItems={candidateConfirmationRows}
+              items={data.snapshot.confirmations}
+            />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>
