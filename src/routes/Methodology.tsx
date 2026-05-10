@@ -1,3 +1,5 @@
+import RouteDataFooter from "../components/RouteDataFooter";
+
 export default function Methodology() {
   return (
     <main className="page-shell">
@@ -71,6 +73,7 @@ export default function Methodology() {
           </p>
         </section>
       </div>
+      <RouteDataFooter />
     </main>
   );
 }

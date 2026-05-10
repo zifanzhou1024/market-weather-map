@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DriverAttributionPanel from "../components/DriverAttributionPanel";
 import HistoricalRegimeReplayPanel from "../components/HistoricalRegimeReplayPanel";
 import HowToReadPanel from "../components/HowToReadPanel";
+import RouteDataFooter from "../components/RouteDataFooter";
 import { loadRegimeReplay, loadScoreHistory } from "../lib/data";
 import type { RegimeReplayFile, ScoreHistoryFile } from "../lib/types";
 
@@ -55,6 +56,7 @@ export default function HistoricalRegimeReplay() {
           <HowToReadPanel description="Replay matches are historical context from static public-data artifacts. They do not produce recommendations, projections, or personalized investment guidance." />
           <DriverAttributionPanel history={data.scoreHistory} />
           <HistoricalRegimeReplayPanel replay={data.replay} />
+          <RouteDataFooter />
         </div>
       ) : null}
     </main>
