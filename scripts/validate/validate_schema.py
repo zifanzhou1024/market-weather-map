@@ -41,6 +41,10 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "derived" / "score_history.json",
     data_dir() / "derived" / "shock_risk_snapshot.json",
     data_dir() / "derived" / "signal_priority.json",
+    data_dir() / "derived" / "page_insights.json",
+    data_dir() / "derived" / "volatility_dashboard.json",
+    data_dir() / "derived" / "rates_dashboard.json",
+    data_dir() / "derived" / "regime_dashboard.json",
     data_dir() / "status" / "data_status.json",
 ]
 ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
@@ -678,6 +682,345 @@ def validate_signal_priority_file() -> None:
         _validate_signal_missing_entry(entry, path)
 
 
+# ----- Wave-1 next-phase derived dashboards -------------------------------
+
+PAGE_INSIGHT_ROUTE_KEYS = {
+    "rates",
+    "volatility",
+    "regime_map",
+    "credit",
+    "liquidity",
+    "dollar_global",
+    "commodities",
+    "inflation",
+    "growth",
+    "housing",
+    "sentiment",
+    "fragility",
+}
+PAGE_INSIGHT_STATES = {"risk", "support", "mixed", "calm", "watch", "unknown"}
+PAGE_INSIGHT_FRESHNESS_STATUSES = {"ok", "stale", "unavailable"}
+# source_status values that are PERMITTED in primary slots. The gating
+# invariant says terms_review_needed and candidate must NEVER appear here;
+# they may surface only in freshness_notes (free text).
+PAGE_INSIGHT_PRIMARY_SOURCE_STATUSES = {"free_public"}
+PAGE_INSIGHT_GATED_SOURCE_STATUSES = {"terms_review_needed", "candidate"}
+SIGNAL_REF_REQUIRED_FIELDS = (
+    "id",
+    "label",
+    "message",
+    "why_it_matters",
+    "severity",
+    "freshness_status",
+    "confidence",
+    "source_status",
+)
+
+
+def _validate_signal_ref(entry: dict[str, Any], path: Path, context: str) -> None:
+    if not isinstance(entry, dict):
+        raise ValueError(f"{path} {context} must be an object")
+    missing = [field for field in SIGNAL_REF_REQUIRED_FIELDS if field not in entry]
+    if missing:
+        raise ValueError(f"{path} {context} missing fields: {missing}")
+    for field in ("id", "label", "message", "why_it_matters"):
+        _require_non_empty_string(entry, field, path)
+    _validate_finite_number(entry.get("severity"), path, f"{context}.severity")
+    _validate_confidence_value(entry.get("confidence"), path, f"{context}.confidence")
+    if entry.get("freshness_status") not in PAGE_INSIGHT_FRESHNESS_STATUSES:
+        raise ValueError(
+            f"{path} {context}.freshness_status must be one of {sorted(PAGE_INSIGHT_FRESHNESS_STATUSES)}"
+        )
+    source_status = entry.get("source_status")
+    if not isinstance(source_status, str):
+        raise ValueError(f"{path} {context}.source_status must be a string")
+    # The strongest invariant: source-gated entries must NEVER appear in a
+    # primary slot. Convert the build-time guarantee into a static-data
+    # invariant so a future builder regression is caught at validation time.
+    if source_status in PAGE_INSIGHT_GATED_SOURCE_STATUSES:
+        raise ValueError(
+            f"{path} {context}.source_status is gated ('{source_status}'); "
+            f"gating violation"
+        )
+
+
+def validate_page_insights_file() -> None:
+    path = data_dir() / "derived" / "page_insights.json"
+    payload = _load_json(path)
+    if not isinstance(payload, dict):
+        raise ValueError(f"{path} must be an object")
+    _validate_timestamp_with_timezone(_require_string(payload, "generated_at_utc", path), path)
+    _require_non_empty_string(payload, "method_version", path)
+    _validate_event_date(_require_string(payload, "date", path), path)
+
+    routes = payload.get("routes")
+    if not isinstance(routes, dict):
+        raise ValueError(f"{path} routes must be an object")
+
+    for route_key, insight in routes.items():
+        if route_key not in PAGE_INSIGHT_ROUTE_KEYS:
+            raise ValueError(
+                f"{path} unknown route key '{route_key}' (expected one of "
+                f"{sorted(PAGE_INSIGHT_ROUTE_KEYS)})"
+            )
+        if not isinstance(insight, dict):
+            raise ValueError(f"{path} routes.{route_key} must be an object")
+        _require_non_empty_string(insight, "title", path)
+        _require_non_empty_string(insight, "why_it_matters", path)
+        if insight.get("state") not in PAGE_INSIGHT_STATES:
+            raise ValueError(
+                f"{path} routes.{route_key}.state must be one of {sorted(PAGE_INSIGHT_STATES)}"
+            )
+        _validate_confidence_value(
+            insight.get("confidence"), path, f"routes.{route_key}.confidence"
+        )
+        notes = insight.get("freshness_notes")
+        if not isinstance(notes, list):
+            raise ValueError(f"{path} routes.{route_key}.freshness_notes must be a list")
+        for note in notes:
+            if not isinstance(note, str):
+                raise ValueError(f"{path} routes.{route_key}.freshness_notes items must be strings")
+        if "primary_warning" in insight:
+            _validate_signal_ref(
+                insight["primary_warning"],
+                path,
+                f"routes.{route_key}.primary_warning",
+            )
+        if "primary_support" in insight:
+            _validate_signal_ref(
+                insight["primary_support"],
+                path,
+                f"routes.{route_key}.primary_support",
+            )
+
+
+VOLATILITY_CURVE_TENORS = {"9D", "30D", "3M"}
+VOLATILITY_HIDDEN_STRESS_STATES = {"calm", "watch", "elevated"}
+VOLATILITY_THRESHOLD_KEYS = {
+    "vix9d_vix_calm",
+    "vix9d_vix_stress",
+    "vix_vix3m_calm",
+    "vix_vix3m_stress",
+    "hidden_stress_watch",
+    "hidden_stress_elevated",
+}
+
+
+def validate_volatility_dashboard_file() -> None:
+    path = data_dir() / "derived" / "volatility_dashboard.json"
+    payload = _load_json(path)
+    if not isinstance(payload, dict):
+        raise ValueError(f"{path} must be an object")
+    _validate_timestamp_with_timezone(_require_string(payload, "generated_at_utc", path), path)
+    _require_non_empty_string(payload, "method_version", path)
+    _validate_event_date(_require_string(payload, "date", path), path)
+
+    curve = payload.get("latest_curve")
+    if not isinstance(curve, list):
+        raise ValueError(f"{path} latest_curve must be a list")
+    for index, point in enumerate(curve):
+        if not isinstance(point, dict):
+            raise ValueError(f"{path} latest_curve[{index}] must be an object")
+        if point.get("tenor") not in VOLATILITY_CURVE_TENORS:
+            raise ValueError(
+                f"{path} latest_curve[{index}].tenor must be one of "
+                f"{sorted(VOLATILITY_CURVE_TENORS)}"
+            )
+        _validate_finite_number(point.get("value"), path, f"latest_curve[{index}].value")
+        percentile = point.get("percentile_5y")
+        _validate_finite_number(percentile, path, f"latest_curve[{index}].percentile_5y")
+        if not 0 <= float(percentile) <= 100:
+            raise ValueError(
+                f"{path} latest_curve[{index}].percentile_5y must be between 0 and 100"
+            )
+
+    ratio_history = payload.get("ratio_history")
+    if not isinstance(ratio_history, list):
+        raise ValueError(f"{path} ratio_history must be a list")
+    for index, entry in enumerate(ratio_history):
+        if not isinstance(entry, dict):
+            raise ValueError(f"{path} ratio_history[{index}] must be an object")
+        _validate_event_date(_require_string(entry, "date", path), path)
+        _validate_finite_number(entry.get("vix9d_vix"), path, f"ratio_history[{index}].vix9d_vix")
+        _validate_finite_number(entry.get("vix_vix3m"), path, f"ratio_history[{index}].vix_vix3m")
+
+    hidden_stress = payload.get("hidden_stress")
+    if not isinstance(hidden_stress, list):
+        raise ValueError(f"{path} hidden_stress must be a list")
+    for index, entry in enumerate(hidden_stress):
+        if not isinstance(entry, dict):
+            raise ValueError(f"{path} hidden_stress[{index}] must be an object")
+        _validate_event_date(_require_string(entry, "date", path), path)
+        for field in ("vix_value", "vvix_value", "vix_percentile", "vvix_percentile", "hidden_stress_score"):
+            _validate_finite_number(entry.get(field), path, f"hidden_stress[{index}].{field}")
+        if entry.get("state") not in VOLATILITY_HIDDEN_STRESS_STATES:
+            raise ValueError(
+                f"{path} hidden_stress[{index}].state must be one of "
+                f"{sorted(VOLATILITY_HIDDEN_STRESS_STATES)}"
+            )
+
+    thresholds = payload.get("thresholds")
+    if not isinstance(thresholds, dict):
+        raise ValueError(f"{path} thresholds must be an object")
+    missing = VOLATILITY_THRESHOLD_KEYS - set(thresholds.keys())
+    if missing:
+        raise ValueError(f"{path} thresholds missing keys: {sorted(missing)}")
+    for key in VOLATILITY_THRESHOLD_KEYS:
+        _validate_finite_number(thresholds.get(key), path, f"thresholds.{key}")
+
+
+RATES_WINDOW_KEYS = {"1M", "3M", "6M", "1Y"}
+RATES_DRIVER_VALUES = {"real_yield", "breakeven", "balanced"}
+RATES_CURVE_TENORS = {"2Y", "10Y", "20Y", "30Y"}
+RATES_SNAPSHOT_KEYS = {"current", "one_month_ago", "three_months_ago", "one_year_ago"}
+
+
+def validate_rates_dashboard_file() -> None:
+    path = data_dir() / "derived" / "rates_dashboard.json"
+    payload = _load_json(path)
+    if not isinstance(payload, dict):
+        raise ValueError(f"{path} must be an object")
+    _validate_timestamp_with_timezone(_require_string(payload, "generated_at_utc", path), path)
+    _require_non_empty_string(payload, "method_version", path)
+    _validate_event_date(_require_string(payload, "date", path), path)
+
+    windows = payload.get("yield_change_windows")
+    if not isinstance(windows, dict):
+        raise ValueError(f"{path} yield_change_windows must be an object")
+    if set(windows.keys()) != RATES_WINDOW_KEYS:
+        raise ValueError(
+            f"{path} yield_change_windows must have keys {sorted(RATES_WINDOW_KEYS)}"
+        )
+    for window_key, block in windows.items():
+        if not isinstance(block, dict):
+            raise ValueError(f"{path} yield_change_windows.{window_key} must be an object")
+        for field in ("nominal_10y_bps", "real_yield_10y_bps", "breakeven_10y_bps"):
+            _validate_finite_number(block.get(field), path, f"yield_change_windows.{window_key}.{field}")
+        if block.get("driver") not in RATES_DRIVER_VALUES:
+            raise ValueError(
+                f"{path} yield_change_windows.{window_key}.driver must be one of "
+                f"{sorted(RATES_DRIVER_VALUES)}"
+            )
+
+    decomp = payload.get("current_decomposition")
+    if not isinstance(decomp, dict):
+        raise ValueError(f"{path} current_decomposition must be an object")
+    for field in ("nominal_10y_pct", "real_yield_10y_pct", "breakeven_10y_pct"):
+        _validate_finite_number(decomp.get(field), path, f"current_decomposition.{field}")
+
+    snapshots = payload.get("curve_snapshots")
+    if not isinstance(snapshots, dict):
+        raise ValueError(f"{path} curve_snapshots must be an object")
+    if set(snapshots.keys()) != RATES_SNAPSHOT_KEYS:
+        raise ValueError(
+            f"{path} curve_snapshots must have keys {sorted(RATES_SNAPSHOT_KEYS)}"
+        )
+    for snapshot_key, points in snapshots.items():
+        if not isinstance(points, list):
+            raise ValueError(f"{path} curve_snapshots.{snapshot_key} must be a list")
+        for index, point in enumerate(points):
+            if not isinstance(point, dict):
+                raise ValueError(f"{path} curve_snapshots.{snapshot_key}[{index}] must be an object")
+            if point.get("tenor") not in RATES_CURVE_TENORS:
+                raise ValueError(
+                    f"{path} curve_snapshots.{snapshot_key}[{index}].tenor must be one of "
+                    f"{sorted(RATES_CURVE_TENORS)}"
+                )
+            _validate_finite_number(
+                point.get("value"), path, f"curve_snapshots.{snapshot_key}[{index}].value"
+            )
+
+    history = payload.get("decomposition_history")
+    if not isinstance(history, list):
+        raise ValueError(f"{path} decomposition_history must be a list")
+    for index, entry in enumerate(history):
+        if not isinstance(entry, dict):
+            raise ValueError(f"{path} decomposition_history[{index}] must be an object")
+        _validate_event_date(_require_string(entry, "date", path), path)
+        for field in ("nominal_pct", "real_pct", "breakeven_pct"):
+            _validate_finite_number(entry.get(field), path, f"decomposition_history[{index}].{field}")
+
+
+REGIME_DASHBOARD_WINDOW_KEYS = {"20D", "60D", "120D"}
+REGIME_DASHBOARD_REGIMES = {
+    "risk_on_easing",
+    "global_tightening_risk_off",
+    "safe_haven_growth_scare",
+    "rotation_reflation",
+    "mixed",
+}
+REGIME_DASHBOARD_THRESHOLD_KEYS = {"real_yield_neutral_bps", "dollar_neutral_pct"}
+
+
+def validate_regime_dashboard_file() -> None:
+    path = data_dir() / "derived" / "regime_dashboard.json"
+    payload = _load_json(path)
+    if not isinstance(payload, dict):
+        raise ValueError(f"{path} must be an object")
+    _validate_timestamp_with_timezone(_require_string(payload, "generated_at_utc", path), path)
+    _require_non_empty_string(payload, "method_version", path)
+    _validate_event_date(_require_string(payload, "date", path), path)
+
+    windows = payload.get("windows")
+    if not isinstance(windows, dict):
+        raise ValueError(f"{path} windows must be an object")
+    if set(windows.keys()) != REGIME_DASHBOARD_WINDOW_KEYS:
+        raise ValueError(
+            f"{path} windows must have keys {sorted(REGIME_DASHBOARD_WINDOW_KEYS)}"
+        )
+
+    for window_key, points in windows.items():
+        if not isinstance(points, list):
+            raise ValueError(f"{path} windows.{window_key} must be a list")
+        seen_dates: set[str] = set()
+        last_date: str | None = None
+        for index, point in enumerate(points):
+            if not isinstance(point, dict):
+                raise ValueError(f"{path} windows.{window_key}[{index}] must be an object")
+            point_date = _require_string(point, "date", path)
+            _validate_event_date(point_date, path)
+            if point_date in seen_dates:
+                raise ValueError(
+                    f"{path} windows.{window_key} duplicate date {point_date}"
+                )
+            if last_date is not None and point_date < last_date:
+                raise ValueError(
+                    f"{path} windows.{window_key} dates must be ascending; "
+                    f"got {point_date} after {last_date}"
+                )
+            seen_dates.add(point_date)
+            last_date = point_date
+            for field in (
+                "real_yield_change_bps",
+                "dollar_change_pct",
+                "vix_percentile",
+                "credit_change_bps",
+                "fragility_score",
+            ):
+                _validate_finite_number(point.get(field), path, f"windows.{window_key}[{index}].{field}")
+            if point.get("regime") not in REGIME_DASHBOARD_REGIMES:
+                raise ValueError(
+                    f"{path} windows.{window_key}[{index}].regime must be one of "
+                    f"{sorted(REGIME_DASHBOARD_REGIMES)}"
+                )
+            fragility = point.get("fragility_score")
+            if not 0.0 <= float(fragility) <= 1.0:
+                raise ValueError(
+                    f"{path} windows.{window_key}[{index}].fragility_score must be between 0 and 1"
+                )
+
+    thresholds = payload.get("thresholds")
+    if not isinstance(thresholds, dict):
+        raise ValueError(f"{path} thresholds must be an object")
+    missing = REGIME_DASHBOARD_THRESHOLD_KEYS - set(thresholds.keys())
+    if missing:
+        raise ValueError(f"{path} thresholds missing keys: {sorted(missing)}")
+    for key in REGIME_DASHBOARD_THRESHOLD_KEYS:
+        _validate_finite_number(thresholds.get(key), path, f"thresholds.{key}")
+        if float(thresholds[key]) <= 0:
+            raise ValueError(f"{path} thresholds.{key} must be positive")
+
+
 def validate_status_file() -> None:
     path = data_dir() / "status" / "data_status.json"
     payload = _load_json(path)
@@ -719,6 +1062,10 @@ def main() -> None:
     validate_score_history_file()
     validate_shock_risk_snapshot_file()
     validate_signal_priority_file()
+    validate_page_insights_file()
+    validate_volatility_dashboard_file()
+    validate_rates_dashboard_file()
+    validate_regime_dashboard_file()
     validate_status_file()
 
 
