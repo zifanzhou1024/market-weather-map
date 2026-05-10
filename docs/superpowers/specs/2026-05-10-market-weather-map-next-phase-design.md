@@ -43,10 +43,12 @@ There is also a real bug in the regime-map quadrant: `scripts/transform/compute_
 
 ## Phase prerequisites
 
-- PR 7 (Long-Term macro visual system) is currently open as #32 against `main`. This design assumes PR 7 merges before W1 dispatches. PR 7 adds: `MacroClimateHeatmap`, `MacroRegimeQuadrant`, `GrowthLaborInflationMatrix`, `StrategicSourceGapMatrix`, plus `ScatterChart` registration in `src/charts/EChartPanel.tsx`.
-- With PR 7 merged before W1: `MacroRegimeQuadrant.tsx` already exists, so `regime-charts-agent` only repoints its data source to `regime_dashboard.json` (no rebuild). `ScatterChart` is already registered, so `fe-platform-agent` does not re-register. `StrategicSourceGapsPanel` referenced in W2 is superseded by `StrategicSourceGapMatrix` from PR 7; W2 moves whichever is current into `<RouteDataFooter>`.
-- If PR 7 has not merged before W1 dispatches: `regime-charts-agent` additionally builds `MacroRegimeQuadrant.tsx` from scratch with the same axis convention (real-yield-x, dollar-y), and `fe-platform-agent` registers `ScatterChart` in `EChartPanel`. `LongTermMacroClimate.tsx` PageInsightHero placement is unchanged either way.
-- Test mocks: any new chart-type registration in `EChartPanel` requires updating the `vi.mock("echarts/charts")` blocks at the top of every route-level Vitest test that reaches `EChartPanel` (see PR 7 commit `25113e3` for the precedent).
+- PR 7 (Long-Term macro visual system, #32) merged into `origin/main` on 2026-05-10 at commit `e8be748`. This design layers on top of PR 7. Before W1 dispatches, the working branch must be synced to a base that includes PR 7's commits (`25113e3`, `eb851a1`, `2fe4bdc`).
+- PR 7 already provides: `MacroClimateHeatmap.tsx`, `MacroRegimeQuadrant.tsx`, `GrowthLaborInflationMatrix.tsx`, `StrategicSourceGapMatrix.tsx`, plus `ScatterChart` registration in `src/charts/EChartPanel.tsx`. As a consequence:
+  - `regime-charts-agent` does NOT rebuild `MacroRegimeQuadrant.tsx`. It only repoints the existing component to `regime_dashboard.json` and verifies the axis convention is `(real-yield-x, dollar-y)` — already correct in PR 7's implementation.
+  - `fe-platform-agent` does NOT register `ScatterChart` (already done in PR 7 commit `25113e3`).
+  - W2 moves `StrategicSourceGapMatrix` (and any retained `StrategicSourceGapsPanel`) into `<RouteDataFooter>` on `LongTermMacroClimate.tsx`.
+- Test mocks: PR 7 already updated `vi.mock("echarts/charts")` arrays to include `ScatterChart`. This phase does not register new chart types, so no further mock updates are needed unless a W3 chart introduces `CustomChart` (regime quadrant trail arrows can be implemented without it; if `CustomChart` becomes necessary, `regime-charts-agent` registers it locally and updates affected mocks per PR 7's precedent).
 
 ## Architecture: 5-wave plan
 
@@ -153,7 +155,7 @@ Build process (`scripts/transform/build_page_insights.py`):
 4. Derive `state`: if both warning and support are present and weighted similarly → `mixed`; if only warning → `risk`; if only support → `support` or `calm` depending on severity; etc.
 5. `why_it_matters` is the underlying signal's field, possibly compacted to one sentence.
 6. `confidence` = average of available signal confidences for this route.
-7. `freshness_notes` lists any sources marked `stale` or `missing` for this route's category.
+7. `freshness_notes` lists any sources marked `stale` or `unavailable` for this route's category.
 
 Source-gated signals are excluded from `primary_warning` and `primary_support`. They may show up in `freshness_notes`.
 
@@ -317,7 +319,7 @@ Wire the four new build scripts into `scripts/update_data.py` so they run after 
 
 **Owns:** `src/charts/`, plus 5 specific new component files in `src/components/`.
 
-**Does not touch:** `src/routes/`, existing `src/components/*` files, `src/lib/`. Single permitted exception: if PR 7 has not merged at W1 dispatch time, register `ScatterChart` in `src/charts/EChartPanel.tsx` (one-line addition, plus matching update to the route-level Vitest `vi.mock("echarts/charts")` arrays — see PR 7 commit `25113e3` for the precedent). If PR 7 has merged, `ScatterChart` is already registered and no edit is needed.
+**Does not touch:** `src/routes/`, existing `src/components/*` files, `src/lib/`, `src/charts/EChartPanel.tsx` (PR 7 already registered `ScatterChart`).
 
 #### New chart helpers
 
@@ -407,7 +409,7 @@ Small pill. Distinct visual treatment for `stale-data`.
 
 - `npm run build` passes; bundle size does not regress materially.
 - Vitest tests for: `buildTimeWindow` filtering edge cases, `ChartRangeControls` preset switching, `InteractiveChartShell` rendering with present/absent insight + state.
-- Edits to `EChartPanel.tsx` are limited to chart-type registration (`ScatterChart` only, and only if PR 7 has not merged); existing registrations preserved.
+- No edits to `EChartPanel.tsx` (PR 7's `ScatterChart` registration is already in place).
 - No edits to routes or other existing components.
 
 ## Wave 2 — IA shell + route refactor
