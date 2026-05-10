@@ -3,11 +3,15 @@ import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
 import DataGapPanel from "../components/DataGapPanel";
 import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
+import GrowthLaborInflationMatrix from "../components/GrowthLaborInflationMatrix";
 import HorizonScoreHeader from "../components/HorizonScoreHeader";
 import InterpretationPanel from "../components/InterpretationPanel";
+import MacroClimateHeatmap from "../components/MacroClimateHeatmap";
 import MacroCyclePanel from "../components/MacroCyclePanel";
+import MacroRegimeQuadrant from "../components/MacroRegimeQuadrant";
 import MetricCard from "../components/MetricCard";
 import ScoreCard from "../components/ScoreCard";
+import StrategicSourceGapMatrix from "../components/StrategicSourceGapMatrix";
 import StrategicSourceGapsPanel from "../components/StrategicSourceGapsPanel";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
 import {
@@ -228,6 +232,9 @@ export default function LongTermMacroClimate() {
             supports={data.scoreSummary.scores.macro_climate.top_supports}
             title="Current Long-Term Read"
           />
+          <MacroClimateHeatmap scoreSummary={data.scoreSummary} />
+          <MacroRegimeQuadrant trail={data.snapshot.quadrant_trail} />
+          <GrowthLaborInflationMatrix scoreSummary={data.scoreSummary} />
           <InterpretationPanel
             label="Strategic regime summary"
             notes={data.scoreSummary.scores.macro_climate.missing_or_stale_notes}
@@ -271,6 +278,7 @@ export default function LongTermMacroClimate() {
             summary="These generated static diagnostics are sourced from official/public paths and shown for context only."
             title="Generated official diagnostics"
           />
+          <StrategicSourceGapMatrix />
           <StrategicSourceGapsPanel />
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
           {macroGroups.map((group) => (
