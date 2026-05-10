@@ -2460,6 +2460,121 @@ code {
   gap: 12px;
 }
 
+.page-insight-hero {
+  border: 1px solid #d9ded2;
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 12px 28px rgba(33, 45, 37, 0.07);
+  padding: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.page-insight-hero--fallback {
+  background: #fbfbf6;
+}
+
+.page-insight-hero__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-insight-hero__title-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.page-insight-hero__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1c3429;
+  letter-spacing: 0;
+}
+
+.page-insight-hero__generated-at {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.page-insight-hero__drivers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.page-insight-hero__driver-slot {
+  display: grid;
+  gap: 6px;
+}
+
+.page-insight-hero__driver-eyebrow {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.page-insight-hero__why {
+  margin: 0;
+  max-width: 760px;
+  color: #344238;
+  line-height: 1.5;
+}
+
+.page-insight-hero__caveat {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #6b7568;
+}
+
+.page-insight-hero__confidence {
+  font-weight: 600;
+}
+
+.page-insight-hero__freshness {
+  margin: 0;
+  padding: 0 0 0 18px;
+  list-style: disc;
+}
+
+.route-data-footer {
+  margin-top: 32px;
+  display: grid;
+  gap: 16px;
+}
+
+.route-data-footer__separator {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+  opacity: 0.6;
+}
+
+.route-data-footer__heading {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.route-data-footer__panels {
+  display: grid;
+  gap: 16px;
+}
+
 @media (max-width: 760px) {
   .chart-range-controls {
     flex-wrap: wrap;
@@ -2467,5 +2582,9 @@ code {
 
   .chart-range-controls__button {
     flex: 1 1 33%;
+  }
+
+  .page-insight-hero__drivers {
+    grid-template-columns: 1fr;
   }
 }
