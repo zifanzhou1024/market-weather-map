@@ -17,6 +17,18 @@ FRESHNESS_COMPARE_FIELDS = (
     "message",
 )
 
+# Per-file daily-cadence tolerance (days). page_insights and volatility
+# follow daily series so 7 days matches the existing per-series convention
+# for daily inputs (same buffer used by VIX/VIX9D/VIX3M). rates also daily.
+# regime_dashboard tolerates 10 days because the broad-dollar input is
+# weekly-ish and may lag a few business days.
+DASHBOARD_FRESHNESS_TOLERANCE_DAYS: dict[str, int] = {
+    "page_insights.json": 7,
+    "volatility_dashboard.json": 7,
+    "rates_dashboard.json": 7,
+    "regime_dashboard.json": 10,
+}
+
 
 def _parse_iso_date(value: Any) -> date | None:
     if not isinstance(value, str):
@@ -77,6 +89,50 @@ def _freshness_payload_matches(status: dict[str, object], expected: dict[str, An
     )
 
 
+def validate_dashboard_freshness() -> None:
+    """Verify that the four Wave-1 derived dashboards carry a snapshot
+    ``date`` within the per-file tolerance of ``generated_at_utc``.
+
+    Missing files are silently skipped — the schema validator already
+    reports them as required-file errors.
+    """
+    derived_root = data_dir() / "derived"
+    failures: list[str] = []
+
+    for filename, tolerance_days in DASHBOARD_FRESHNESS_TOLERANCE_DAYS.items():
+        path = derived_root / filename
+        if not path.exists():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            failures.append(f"{filename} is not valid JSON: {error}")
+            continue
+        generated_at_utc = payload.get("generated_at_utc")
+        snapshot_date = payload.get("date")
+        generated_at = _parse_iso_date(generated_at_utc)
+        observed = _parse_iso_date(snapshot_date)
+        if generated_at is None or observed is None:
+            failures.append(
+                f"{filename} missing valid generated_at_utc / date for freshness check"
+            )
+            continue
+        freshness_days = (generated_at - observed).days
+        if freshness_days < 0:
+            failures.append(
+                f"{filename} snapshot date {snapshot_date} is after generated_at {generated_at_utc}"
+            )
+            continue
+        if freshness_days > tolerance_days:
+            failures.append(
+                f"{filename} is stale: snapshot {snapshot_date} is {freshness_days} "
+                f"days old > {tolerance_days} day tolerance"
+            )
+
+    if failures:
+        raise SystemExit("\n".join(failures))
+
+
 def main() -> None:
     path = data_dir() / "status" / "data_status.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -109,6 +165,8 @@ def main() -> None:
 
     if failures:
         raise SystemExit("\n".join(failures))
+
+    validate_dashboard_freshness()
 
 
 if __name__ == "__main__":
