@@ -779,7 +779,7 @@ describe("data-driven components", () => {
       <EventRiskPanel
         calendar={{
           generated_at_utc: "2026-05-09T00:00:00Z",
-          method_version: "official-event-calendar-v1",
+          method_version: "official-event-calendar-v2",
           events: [
             {
               category: "inflation",
@@ -810,6 +810,7 @@ describe("data-driven components", () => {
 
     expect(text).toContain("Official source-linked calendar context");
     expect(text).toContain("Not scored");
+    expect(text).toContain("generated candidate diagnostic, not a live alert");
     expect(text).toContain("does not affect active scores, regime labels, checklist states, or confidence");
     expect(text).toContain("CPI");
     expect(text).toContain("BLS monthly Consumer Price Index release calendar.");

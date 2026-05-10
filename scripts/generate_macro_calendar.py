@@ -4,10 +4,11 @@ from copy import deepcopy
 from datetime import datetime, timezone
 from typing import Any
 
+from scripts.ingest.fetch_event_calendar import fetch_official_event_overlays
 from scripts.shared.io import data_dir, write_json
 
 
-METHOD_VERSION = "official-event-calendar-v1"
+METHOD_VERSION = "official-event-calendar-v2"
 
 EVENTS: list[dict[str, Any]] = [
     {
@@ -21,7 +22,7 @@ EVENTS: list[dict[str, Any]] = [
         "time": "08:30",
         "timezone": "America/New_York",
         "status": "source_link",
-        "notes": "BLS monthly Consumer Price Index release calendar.",
+        "notes": "BLS monthly Consumer Price Index release calendar. Exact-date ingestion remains source-linked only; descriptive event context only and not scored.",
     },
     {
         "id": "ppi",
@@ -34,7 +35,7 @@ EVENTS: list[dict[str, Any]] = [
         "time": "08:30",
         "timezone": "America/New_York",
         "status": "source_link",
-        "notes": "BLS monthly Producer Price Index release calendar.",
+        "notes": "BLS monthly Producer Price Index release calendar. Exact-date ingestion remains source-linked only; descriptive event context only and not scored.",
     },
     {
         "id": "employment_situation_payrolls",
@@ -47,7 +48,7 @@ EVENTS: list[dict[str, Any]] = [
         "time": "08:30",
         "timezone": "America/New_York",
         "status": "source_link",
-        "notes": "BLS monthly Employment Situation release calendar.",
+        "notes": "BLS monthly Employment Situation release calendar. Exact-date ingestion remains source-linked only; descriptive event context only and not scored.",
     },
     {
         "id": "personal_income_outlays_pce",
@@ -138,16 +139,28 @@ EVENTS: list[dict[str, Any]] = [
         "time": "15:30",
         "timezone": "America/New_York",
         "status": "source_link",
-        "notes": "CFTC Commitments of Traders release schedule source.",
+        "notes": "CFTC Commitments of Traders release schedule source. Descriptive event context only and not scored.",
     },
 ]
 
 
-def generate_macro_calendar() -> dict[str, Any]:
+def generate_macro_calendar(
+    *,
+    fetch_official_events: bool = True,
+    official_events: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    events_by_id = {event["id"]: deepcopy(event) for event in EVENTS}
+    overlays = official_events
+    if overlays is None and fetch_official_events:
+        overlays = fetch_official_event_overlays()
+    for event_id, event in (overlays or {}).items():
+        if event_id in events_by_id:
+            events_by_id[event_id] = deepcopy(event)
+
     return {
         "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "method_version": METHOD_VERSION,
-        "events": deepcopy(EVENTS),
+        "events": list(events_by_id.values()),
     }
 
 

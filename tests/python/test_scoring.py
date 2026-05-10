@@ -2534,9 +2534,9 @@ def test_macro_calendar_schema_rejects_invalid_semantic_fields(
 def test_macro_calendar_generator_returns_static_event_payload():
     from scripts.generate_macro_calendar import generate_macro_calendar
 
-    payload = generate_macro_calendar()
+    payload = generate_macro_calendar(fetch_official_events=False)
 
-    assert payload["method_version"] == "official-event-calendar-v1"
+    assert payload["method_version"] == "official-event-calendar-v2"
     assert payload["events"]
     event_ids = {event["id"] for event in payload["events"]}
     assert {
@@ -2561,9 +2561,115 @@ def test_macro_calendar_generator_returns_static_event_payload():
 def test_macro_calendar_generator_returns_fresh_event_objects():
     from scripts.generate_macro_calendar import generate_macro_calendar
 
-    first_payload = generate_macro_calendar()
+    first_payload = generate_macro_calendar(fetch_official_events=False)
     first_payload["events"][0]["title"] = "Mutated"
 
-    second_payload = generate_macro_calendar()
+    second_payload = generate_macro_calendar(fetch_official_events=False)
 
     assert second_payload["events"][0]["title"] == "CPI"
+
+
+def test_event_calendar_parsers_return_official_scheduled_events():
+    from datetime import date
+
+    from scripts.ingest.fetch_event_calendar import (
+        TREASURY_AUCTIONS_API_URL,
+        parse_bea_schedule_events,
+        parse_census_schedule_events,
+        parse_fomc_meeting_events,
+        parse_treasury_auction_events,
+    )
+
+    bea_events = parse_bea_schedule_events(
+        """
+        <tr>
+          <td class="scheduled-date">
+            <div class="release-date">May 28</div>
+            <small class="text-muted">8:30 AM</small>
+          </td>
+          <td class="release-title">GDP (Second Estimate) and Corporate Profits, 1st Quarter 2026</td>
+        </tr>
+        <tr>
+          <td class="scheduled-date">
+            <div class="release-date">June 9</div>
+            <small class="text-muted">8:30 AM</small>
+          </td>
+          <td class="release-title">Personal Income and Outlays, April 2026</td>
+        </tr>
+        """,
+        as_of=date(2026, 5, 9),
+    )
+    assert bea_events["gross_domestic_product"]["date"] == "2026-05-28"
+    assert bea_events["personal_income_outlays_pce"]["date"] == "2026-06-09"
+    assert {event["status"] for event in bea_events.values()} == {"scheduled"}
+
+    census_events = parse_census_schedule_events(
+        """
+        <tr>
+          <td><a href="/construction/nrc">New Residential Construction</a></td>
+          <td sorttable_customkey="202605190830">May 19, 2026</td>
+          <td>8:30 AM</td>
+        </tr>
+        <tr>
+          <td><a href="/retail">Advance Monthly Sales for Retail and Food Services</a></td>
+          <td sorttable_customkey="202605150830">May 15, 2026</td>
+          <td>8:30 AM</td>
+        </tr>
+        """,
+        as_of=date(2026, 5, 9),
+    )
+    assert census_events["retail_sales"]["date"] == "2026-05-15"
+    assert census_events["new_residential_construction"]["date"] == "2026-05-19"
+
+    fomc_events = parse_fomc_meeting_events(
+        """
+        <h4>2026 FOMC Meetings</h4>
+        <div class="fomc-meeting"><div class="fomc-meeting__month">January</div>
+        <div class="fomc-meeting__date">27-28</div></div>
+        <div class="fomc-meeting"><div class="fomc-meeting__month">June</div>
+        <div class="fomc-meeting__date">16-17*</div></div>
+        """,
+        as_of=date(2026, 5, 9),
+    )
+    assert fomc_events["fomc_meeting"]["date"] == "2026-06-17"
+    assert fomc_events["fomc_meeting"]["time"] == "14:00"
+
+    treasury_events = parse_treasury_auction_events(
+        [
+            {"auction_date": "2026-05-08", "security_type": "Bill", "security_term": "4-Week", "offering_amt": "80000000000"},
+            {"auction_date": "2026-05-12", "security_type": "Note", "security_term": "10-Year", "offering_amt": "42000000000"},
+        ],
+        as_of=date(2026, 5, 9),
+    )
+    assert treasury_events["treasury_auctions"]["date"] == "2026-05-12"
+    assert "10-Year Note" in treasury_events["treasury_auctions"]["notes"]
+    assert "sort=-auction_date" in TREASURY_AUCTIONS_API_URL
+
+
+def test_macro_calendar_generator_overlays_official_events_and_preserves_bls_source_links():
+    from scripts.generate_macro_calendar import generate_macro_calendar
+
+    payload = generate_macro_calendar(
+        fetch_official_events=False,
+        official_events={
+            "fomc_meeting": {
+                "id": "fomc_meeting",
+                "title": "FOMC Meeting",
+                "category": "rates",
+                "importance": "high",
+                "source": "Federal Reserve",
+                "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+                "date": "2026-06-17",
+                "time": "14:00",
+                "timezone": "America/New_York",
+                "status": "scheduled",
+                "notes": "Official Federal Reserve FOMC calendar date. Descriptive event context only; not scored.",
+            }
+        },
+    )
+    by_id = {event["id"]: event for event in payload["events"]}
+
+    assert by_id["fomc_meeting"]["status"] == "scheduled"
+    assert by_id["fomc_meeting"]["date"] == "2026-06-17"
+    assert by_id["employment_situation_payrolls"]["status"] == "source_link"
+    assert by_id["employment_situation_payrolls"]["date"] is None

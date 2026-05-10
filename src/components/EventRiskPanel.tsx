@@ -77,8 +77,9 @@ export default function EventRiskPanel({ calendar, items = eventRiskItems }: Eve
           <p className="eyebrow">Official source-linked calendar context</p>
           <h3>Event risk</h3>
           <p>
-            Static official calendar context is descriptive release context only and does not affect active scores,
-            regime labels, checklist states, or confidence.
+            Static official calendar context is a generated candidate diagnostic, not a live alert. It remains
+            descriptive release context only and does not affect active scores, regime labels, checklist states, or
+            confidence.
           </p>
         </div>
         <span className="status-pill status-not_scored">Not scored</span>
