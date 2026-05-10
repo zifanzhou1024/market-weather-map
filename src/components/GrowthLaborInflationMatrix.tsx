@@ -1,0 +1,104 @@
+import { formatNumber, formatSignedScore } from "../charts/chartFormatters";
+import type { ScoreSummaryFile } from "../lib/types";
+
+interface GrowthLaborInflationMatrixProps {
+  scoreSummary: ScoreSummaryFile;
+}
+
+const FOCUS_BUCKETS = ["growth", "labor", "inflation"] as const;
+
+const EM_DASH = "—";
+
+function humaniseBucketKey(key: string): string {
+  if (!key) return key;
+  const spaced = key.replace(/_/g, " ");
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function pickReadLine(
+  bucket: string,
+  supports: string[],
+  risks: string[]
+): string | null {
+  const needle = bucket.toLowerCase();
+  for (const note of supports) {
+    if (typeof note === "string" && note.toLowerCase().includes(needle)) return note;
+  }
+  for (const note of risks) {
+    if (typeof note === "string" && note.toLowerCase().includes(needle)) return note;
+  }
+  return null;
+}
+
+export default function GrowthLaborInflationMatrix({
+  scoreSummary
+}: GrowthLaborInflationMatrixProps) {
+  const macro = scoreSummary.scores?.macro_climate;
+  const bucketScores = macro?.bucket_scores ?? {};
+  const bucketWeights = macro?.bucket_weights ?? {};
+  const supports = macro?.top_supports ?? [];
+  const risks = macro?.top_risks ?? [];
+
+  return (
+    <section
+      className="growth-labor-inflation-matrix"
+      aria-label="Growth, labor, and inflation pulse"
+    >
+      <header>
+        <h3>Growth / labor / inflation pulse</h3>
+        <p>
+          Strategic-cycle core: bucket score, weight, and weighted contribution for the three
+          durable inputs.
+        </p>
+      </header>
+      <div className="growth-labor-inflation-row">
+        {FOCUS_BUCKETS.map((bucketKey) => {
+          const rawScore = bucketScores[bucketKey];
+          const rawWeight = bucketWeights[bucketKey];
+          const hasScore = isFiniteNumber(rawScore);
+          const hasWeight = isFiniteNumber(rawWeight);
+          const contribution = hasScore && hasWeight ? rawScore * rawWeight : null;
+
+          const scoreText = hasScore ? formatSignedScore(rawScore) : EM_DASH;
+          const weightText = hasWeight ? formatNumber(rawWeight, 2) : EM_DASH;
+          const contributionText =
+            contribution !== null ? formatSignedScore(contribution) : EM_DASH;
+
+          const readLine = hasScore
+            ? pickReadLine(bucketKey, supports, risks) ??
+              "No bucket-specific note in the latest read."
+            : "Bucket not scored in current run.";
+
+          return (
+            <article
+              key={bucketKey}
+              className="growth-labor-inflation-card"
+              aria-label={`${humaniseBucketKey(bucketKey)} bucket pulse`}
+            >
+              <h4 className="growth-labor-inflation-card-heading">
+                {humaniseBucketKey(bucketKey)}
+              </h4>
+              <div className="gli-stat">
+                <span className="gli-stat-label">Score</span>
+                <span className="gli-stat-value">{scoreText}</span>
+              </div>
+              <div className="gli-stat">
+                <span className="gli-stat-label">Weight</span>
+                <span className="gli-stat-value">{weightText}</span>
+              </div>
+              <div className="gli-stat">
+                <span className="gli-stat-label">Contribution</span>
+                <span className="gli-stat-value">{contributionText}</span>
+              </div>
+              <p className="growth-labor-inflation-read">{readLine}</p>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}

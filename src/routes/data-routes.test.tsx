@@ -37,7 +37,8 @@ vi.mock("echarts/core", () => ({
 vi.mock("echarts/charts", () => ({
   LineChart: {},
   BarChart: {},
-  HeatmapChart: {}
+  HeatmapChart: {},
+  ScatterChart: {}
 }));
 vi.mock("echarts/components", () => ({
   TitleComponent: {},
