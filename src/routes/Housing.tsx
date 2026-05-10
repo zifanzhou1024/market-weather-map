@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import HousingActivityHero from "../components/charts/HousingActivityHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -43,6 +44,16 @@ export default function Housing() {
   }, []);
 
   const housingStarts = data?.series.find((series) => series.series_id === "housing_starts");
+  const buildingPermits = data?.series.find((series) => series.series_id === "building_permits");
+  const mortgageRate30y = data?.series.find(
+    (series) => series.series_id === "mortgage_rate_30y"
+  );
+  const heroAllReady = housingStarts && buildingPermits && mortgageRate30y;
+  const heroHasObservations =
+    heroAllReady &&
+    (housingStarts.observations.length > 0 ||
+      buildingPermits.observations.length > 0 ||
+      mortgageRate30y.observations.length > 0);
 
   return (
     <main className="page-shell">
@@ -60,6 +71,17 @@ export default function Housing() {
         <div className="route-stack">
           <PageInsightHero route="housing" />
           {/* SLOT:housing_primary_chart */}
+          {heroAllReady && heroHasObservations ? (
+            <HousingActivityHero
+              housingStarts={housingStarts}
+              buildingPermits={buildingPermits}
+              mortgageRate30y={mortgageRate30y}
+            />
+          ) : (
+            <section className="panel chart-panel" aria-label="Housing activity vs mortgage rate">
+              <p>Housing activity vs mortgage rate chart unavailable until housing starts, building permits, or 30Y mortgage rate data are active.</p>
+            </section>
+          )}
           <InterpretationPanel
             label="Housing activity read"
             notes={["Housing starts and building permits are monthly, while mortgage rates update weekly."]}
