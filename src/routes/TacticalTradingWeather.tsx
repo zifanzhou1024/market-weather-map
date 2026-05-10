@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import CreditPulsePanel from "../components/CreditPulsePanel";
+import CreditStressMatrix from "../components/CreditStressMatrix";
 import DataGapPanel from "../components/DataGapPanel";
 import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
 import DollarRealYieldPressurePanel from "../components/DollarRealYieldPressurePanel";
 import EventRiskPanel from "../components/EventRiskPanel";
+import EventRiskTimeline from "../components/EventRiskTimeline";
 import HorizonScoreHeader from "../components/HorizonScoreHeader";
+import LiquidityDollarPressureChart from "../components/LiquidityDollarPressureChart";
 import LiquidityPulsePanel from "../components/LiquidityPulsePanel";
 import type { MultiSeriesChartSeries } from "../components/MultiSeriesChart";
 import OptionsSentimentPanel from "../components/OptionsSentimentPanel";
+import RatesPressureChart from "../components/RatesPressureChart";
 import SignalChecklist from "../components/SignalChecklist";
 import TopSignalList from "../components/TopSignalList";
+import VixCurveProxyChart from "../components/VixCurveProxyChart";
 import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
+import VolatilityComplexChart from "../components/VolatilityComplexChart";
 import VolatilityTermStructurePanel from "../components/VolatilityTermStructurePanel";
 import { scoreLabel } from "../lib/horizon";
 import {
@@ -41,8 +47,14 @@ const tacticalSeriesIds = [
   "vix3m",
   "vvix",
   "high_yield_oas",
+  "investment_grade_oas",
+  "bbb_oas",
   "broad_dollar",
-  "real_yield_10y"
+  "real_yield_10y",
+  "us2y",
+  "us10y",
+  "us30y",
+  "breakeven_10y"
 ];
 const tacticalDerivedIds = ["vix9d_vix_ratio", "vix_vix3m_ratio", "hy_minus_ig_oas", "net_liquidity"];
 const optionCandidateIds = [
@@ -217,6 +229,36 @@ export default function TacticalTradingWeather() {
               />
             </section>
           ) : null}
+          <section
+            className="tactical-charts"
+            aria-label="Short-term tactical charts: volatility, rates, credit, liquidity, dollar, and event risk"
+          >
+            <VixCurveProxyChart
+              vix9d={findSeries(data.series, "vix9d")}
+              vix={findSeries(data.series, "vix")}
+              vix3m={findSeries(data.series, "vix3m")}
+            />
+            <VolatilityComplexChart
+              vix={findSeries(data.series, "vix")}
+              vvix={findSeries(data.series, "vvix")}
+            />
+            <CreditStressMatrix
+              highYieldOas={findSeries(data.series, "high_yield_oas")}
+              investmentGradeOas={findSeries(data.series, "investment_grade_oas")}
+              bbbOas={findSeries(data.series, "bbb_oas")}
+            />
+            <RatesPressureChart
+              us2y={findSeries(data.series, "us2y")}
+              us10y={findSeries(data.series, "us10y")}
+              realYield10y={findSeries(data.series, "real_yield_10y")}
+              breakeven10y={findSeries(data.series, "breakeven_10y")}
+            />
+            <LiquidityDollarPressureChart
+              broadDollar={findSeries(data.series, "broad_dollar")}
+              realYield10y={findSeries(data.series, "real_yield_10y")}
+            />
+            <EventRiskTimeline calendar={data.calendar} />
+          </section>
           <div className="section-heading">
             <h3>Daily checklist</h3>
           </div>
