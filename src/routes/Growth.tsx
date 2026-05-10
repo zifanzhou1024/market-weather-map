@@ -3,6 +3,8 @@ import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
@@ -67,6 +69,8 @@ export default function Growth() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="growth" />
+          {/* SLOT:growth_primary_chart */}
           <InterpretationPanel
             label="Growth and labor read"
             notes={["Monthly growth and labor data can lag source release schedules."]}
@@ -74,7 +78,6 @@ export default function Growth() {
             summary="Growth combines activity breadth, real demand, production, durable goods, labor momentum, and recession-risk indicators."
             supports={["Firm CFNAI, retail sales, production, and payroll inputs support the macro climate score."]}
           />
-          <DataGapPanel status={data.status} seriesIds={growthSeriesIds.concat(laborSeriesIds)} />
           <section className="metric-grid" aria-label="Growth metrics">
             {data.growthSeries.map((series) => (
               <MetricCard
@@ -112,7 +115,10 @@ export default function Growth() {
               <p>Featured chart unavailable until source data is available.</p>
             </section>
           )}
-          <DataStatusTable seriesIds={[...growthSeriesIds, ...laborSeriesIds]} status={data.status} />
+          <RouteDataFooter route="growth">
+            <DataGapPanel status={data.status} seriesIds={growthSeriesIds.concat(laborSeriesIds)} />
+            <DataStatusTable seriesIds={[...growthSeriesIds, ...laborSeriesIds]} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>

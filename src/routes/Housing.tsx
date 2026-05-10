@@ -3,6 +3,8 @@ import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
@@ -56,6 +58,8 @@ export default function Housing() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="housing" />
+          {/* SLOT:housing_primary_chart */}
           <InterpretationPanel
             label="Housing activity read"
             notes={["Housing starts and building permits are monthly, while mortgage rates update weekly."]}
@@ -63,7 +67,6 @@ export default function Housing() {
             summary="Housing starts, building permits, and 30-year mortgage rates track construction momentum and mortgage-rate sensitivity."
             supports={["Firm starts and permits can support growth when rate pressure is contained."]}
           />
-          <DataGapPanel status={data.status} seriesIds={housingSeriesIds} />
           <section className="metric-grid" aria-label="Housing metrics">
             {data.series.map((series) => (
               <MetricCard
@@ -90,7 +93,10 @@ export default function Housing() {
               <p>Featured chart unavailable until source data is available.</p>
             </section>
           )}
-          <DataStatusTable seriesIds={housingSeriesIds} status={data.status} />
+          <RouteDataFooter route="housing">
+            <DataGapPanel status={data.status} seriesIds={housingSeriesIds} />
+            <DataStatusTable seriesIds={housingSeriesIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>

@@ -3,6 +3,8 @@ import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
@@ -64,6 +66,8 @@ export default function Inflation() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="inflation" />
+          {/* SLOT:inflation_primary_chart */}
           <InterpretationPanel
             label="Inflation pressure read"
             notes={["Monthly inflation indexes use observation months and should be read with release-aware freshness notes."]}
@@ -71,7 +75,6 @@ export default function Inflation() {
             summary="CPI, PCE, PPI, breakevens, and forward inflation expectations separate realized price pressure from market-implied inflation compensation."
             supports={["Contained breakevens and easing core momentum can reduce macro climate pressure."]}
           />
-          <DataGapPanel status={data.status} seriesIds={inflationSeriesIds} />
           <section className="metric-grid" aria-label="Inflation metrics">
             {data.series.map((series) => (
               <MetricCard
@@ -98,7 +101,10 @@ export default function Inflation() {
               <p>Featured chart unavailable until source data is available.</p>
             </section>
           )}
-          <DataStatusTable seriesIds={inflationSeriesIds} status={data.status} />
+          <RouteDataFooter route="inflation">
+            <DataGapPanel status={data.status} seriesIds={inflationSeriesIds} />
+            <DataStatusTable seriesIds={inflationSeriesIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>
