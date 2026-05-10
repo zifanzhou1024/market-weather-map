@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import InflationSpreadHero from "../components/charts/InflationSpreadHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -51,6 +52,20 @@ export default function Inflation() {
   }, []);
 
   const headlineCpi = data?.series.find((series) => series.series_id === "headline_cpi");
+  const coreCpi = data?.series.find((series) => series.series_id === "core_cpi");
+  const breakeven10y = data?.series.find((series) => series.series_id === "breakeven_10y");
+  const forwardInflation5y5y = data?.series.find(
+    (series) => series.series_id === "forward_inflation_5y5y"
+  );
+  const heroHasData =
+    headlineCpi &&
+    coreCpi &&
+    breakeven10y &&
+    forwardInflation5y5y &&
+    (headlineCpi.observations.length > 0 ||
+      coreCpi.observations.length > 0 ||
+      breakeven10y.observations.length > 0 ||
+      forwardInflation5y5y.observations.length > 0);
 
   return (
     <main className="page-shell">
@@ -68,6 +83,18 @@ export default function Inflation() {
         <div className="route-stack">
           <PageInsightHero route="inflation" />
           {/* SLOT:inflation_primary_chart */}
+          {heroHasData ? (
+            <InflationSpreadHero
+              headlineCpi={headlineCpi}
+              coreCpi={coreCpi}
+              breakeven10y={breakeven10y}
+              forwardInflation5y5y={forwardInflation5y5y}
+            />
+          ) : (
+            <section className="panel chart-panel" aria-label="Realized vs market-implied inflation">
+              <p>Realized vs market-implied inflation chart unavailable until headline CPI, core CPI, 10Y breakevens, or 5y5y forward inflation are active.</p>
+            </section>
+          )}
           <InterpretationPanel
             label="Inflation pressure read"
             notes={["Monthly inflation indexes use observation months and should be read with release-aware freshness notes."]}
