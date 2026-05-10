@@ -155,7 +155,7 @@ export default function TacticalTradingWeather() {
             loadRegimeSnapshot(),
             loadSignalPriority().catch(() => null),
             loadMacroCalendar(),
-            loadVolatilityDashboard().catch(() => null)
+            loadVolatilityDashboard()
           ]);
         const [series, derived] = await Promise.all([
           loadRouteSeries(tacticalSeriesIds, catalog, status),

@@ -139,7 +139,7 @@ export default function Volatility() {
         const [catalog, status, volDashboard] = await Promise.all([
           loadCatalog(),
           loadDataStatus(),
-          loadVolatilityDashboard().catch(() => null)
+          loadVolatilityDashboard()
         ]);
         const [series, derived] = await Promise.all([
           Promise.all(volatilitySeriesIds.map((seriesId) => loadSeries(seriesId))),

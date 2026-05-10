@@ -81,7 +81,7 @@ export default function Rates() {
           loadCatalog(),
           loadDataStatus(),
           loadRegimeSnapshot(),
-          loadRatesDashboard().catch(() => null)
+          loadRatesDashboard()
         ]);
         const [series, diagnosticSeries, curve] = await Promise.all([
           loadRouteSeries(ratesSeriesIds, catalog, status),

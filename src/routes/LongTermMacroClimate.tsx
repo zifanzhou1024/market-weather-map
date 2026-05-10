@@ -187,7 +187,7 @@ export default function LongTermMacroClimate() {
           loadDataStatus(),
           loadScoreSummary(),
           loadRegimeSnapshot(),
-          loadRatesDashboard().catch(() => null)
+          loadRatesDashboard()
         ]);
         const [series, diagnosticSeries, [netLiquidity]] = await Promise.all([
           loadRouteSeries(macroSeriesIds, catalog, status),
