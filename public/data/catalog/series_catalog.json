@@ -1586,6 +1586,30 @@
     "units": "index"
   },
   {
+    "access_status": "terms_review_needed",
+    "category": "sentiment",
+    "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
+    "endpoint_url": null,
+    "frequency": "daily",
+    "higher_is": "supportive",
+    "horizon": "tactical",
+    "id": "sp500_index",
+    "max_stale_days": 7,
+    "name": "S&P 500 Index",
+    "notes": "Candidate equity benchmark; gated on S&P DJI redistribution review of the FRED SP500 series.",
+    "preferred_chart": "line",
+    "provider_id": "terms_review",
+    "public": false,
+    "regime_role": [
+      "sentiment"
+    ],
+    "score_status": "candidate",
+    "source": "FRED",
+    "source_url": "https://fred.stlouisfed.org/series/SP500",
+    "terms_status": "review_needed",
+    "units": "index"
+  },
+  {
     "access_status": "free_public",
     "category": "volatility",
     "citation_notes": "Derived from active public Treasury-yield data; diagnostic only and not a substitute for licensed MOVE.",

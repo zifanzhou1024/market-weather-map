@@ -163,6 +163,7 @@ def _status(overrides: dict[str, dict[str, object]] | None = None) -> dict[str, 
         "put_call_spxw": {"status": "terms_review_needed", "last_observation": None},
         "vx1": {"status": "terms_review_needed", "last_observation": None},
         "term_premium_acm_10y": {"status": "terms_review_needed", "last_observation": None},
+        "sp500_index": {"status": "terms_review_needed", "last_observation": None},
     }
     if overrides:
         for key, value in overrides.items():
@@ -287,6 +288,16 @@ def test_missing_high_value_signals_surface_gated_sources():
     # put/call and VX futures surface from data_status candidate rows.
     assert "put_call_total" in missing_ids or "put_call_spxw" in missing_ids
     assert "vx_futures_curve" in missing_ids
+    # SPX benchmark is the highest-importance missing equity signal; it must
+    # surface to make the gap explicit on Overview and Tactical.
+    assert "sp500_index" in missing_ids
+    sp500_entry = next(
+        entry
+        for entry in snapshot["missing_high_value_signals"]
+        if entry["id"] == "sp500_index"
+    )
+    assert sp500_entry["importance"] == 5
+    assert sp500_entry["source_status"] == "terms_review_needed"
     for entry in snapshot["missing_high_value_signals"]:
         assert entry["source_status"] != "active"
         assert entry["importance"] >= 3
@@ -299,7 +310,14 @@ def test_gated_sources_never_appear_in_active_warnings_or_supports():
 
     active_ids = {item["id"] for item in snapshot["top_warnings"]}
     active_ids.update(item["id"] for item in snapshot["top_supports"])
-    for gated in {"move_index", "skew_index", "put_call_total", "put_call_spxw", "vx_futures_curve"}:
+    for gated in {
+        "move_index",
+        "skew_index",
+        "put_call_total",
+        "put_call_spxw",
+        "vx_futures_curve",
+        "sp500_index",
+    }:
         assert gated not in active_ids
 
 
