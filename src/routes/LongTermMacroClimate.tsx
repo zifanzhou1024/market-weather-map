@@ -15,15 +15,18 @@ import ScoreCard from "../components/ScoreCard";
 import StrategicSourceGapMatrix from "../components/StrategicSourceGapMatrix";
 import StrategicSourceGapsPanel from "../components/StrategicSourceGapsPanel";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
+import YieldDecompositionStackChart from "../components/charts/YieldDecompositionStackChart";
 import {
   loadCatalog,
   loadDataStatus,
+  loadRatesDashboard,
   loadRegimeSnapshot,
   loadScoreSummary
 } from "../lib/data";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
+  RatesDashboardFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
   SeriesCatalogEntry,
@@ -147,6 +150,7 @@ interface RouteState {
   catalog: SeriesCatalogEntry[];
   diagnosticSeries: TimeSeriesFile[];
   netLiquidity: DerivedSeriesFile;
+  ratesDashboard: RatesDashboardFile | null;
   scoreSummary: ScoreSummaryFile;
   series: TimeSeriesFile[];
   snapshot: RegimeSnapshotFile;
@@ -178,11 +182,12 @@ export default function LongTermMacroClimate() {
 
     async function loadLongTermMacroClimate() {
       try {
-        const [catalog, status, scoreSummary, snapshot] = await Promise.all([
+        const [catalog, status, scoreSummary, snapshot, ratesDashboard] = await Promise.all([
           loadCatalog(),
           loadDataStatus(),
           loadScoreSummary(),
-          loadRegimeSnapshot()
+          loadRegimeSnapshot(),
+          loadRatesDashboard().catch(() => null)
         ]);
         const [series, diagnosticSeries, [netLiquidity]] = await Promise.all([
           loadRouteSeries(macroSeriesIds, catalog, status),
@@ -193,7 +198,17 @@ export default function LongTermMacroClimate() {
             allowMissing: new Set(macroDerivedIds)
           })
         ]);
-        if (active) setData({ catalog, diagnosticSeries, netLiquidity, scoreSummary, series, snapshot, status });
+        if (active)
+          setData({
+            catalog,
+            diagnosticSeries,
+            netLiquidity,
+            ratesDashboard,
+            scoreSummary,
+            series,
+            snapshot,
+            status
+          });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load macro climate.");
       }
@@ -272,6 +287,13 @@ export default function LongTermMacroClimate() {
           </section>
           {/* SLOT:macro_regime_chart */}
           {/* SLOT:macro_yield_chart */}
+          {data.ratesDashboard ? (
+            <YieldDecompositionStackChart data={data.ratesDashboard.current_decomposition} />
+          ) : (
+            <p className="data-loading" role="status">
+              Current-decomposition view loading…
+            </p>
+          )}
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
           {macroGroups.map((group) => (
             <section className="route-stack" key={group.label}>

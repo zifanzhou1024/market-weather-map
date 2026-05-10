@@ -2984,6 +2984,40 @@ describe("data-backed routes", () => {
     expect(realYieldsFact?.textContent).toContain("N/A");
   });
 
+  it("long-term macro route renders the W3B YieldDecompositionStackChart from the rates dashboard fixture", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/long-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Long-Term Macro / Allocation Climate");
+    await waitForContent(container, "Yield decomposition (current)");
+
+    // The new ECharts stack chart renders from current_decomposition.
+    expect(container.textContent).toContain("Yield decomposition (current)");
+    // Legacy Recharts decomposition history still renders below.
+    expect(container.textContent).toContain("Yield decomposition");
+  });
+
+  it("long-term macro route renders a graceful loading placeholder for the macro yield slot when rates_dashboard is missing", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/rates_dashboard.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/long-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Long-Term Macro / Allocation Climate");
+    await waitForContent(container, "Current-decomposition view loading");
+    expect(container.textContent).toContain("Current-decomposition view loading");
+    // Legacy decomposition is still present.
+    expect(container.textContent).toContain("Yield decomposition");
+  });
+
   it("renders the regime map route", async () => {
     mockStaticFetch(
       routeFetchFiles({
