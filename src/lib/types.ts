@@ -375,3 +375,72 @@ export interface MacroCalendarFile {
   method_version: string;
   events: MacroCalendarEvent[];
 }
+
+export type SignalHorizon = "short_term" | "long_term" | "both" | "fragility";
+
+export type SignalCategory =
+  | "volatility"
+  | "rates"
+  | "credit"
+  | "liquidity"
+  | "dollar"
+  | "positioning"
+  | "macro"
+  | "event";
+
+export type SignalDirection = "support" | "risk" | "neutral";
+
+export type SignalUrgency = "immediate" | "near_term" | "slow" | "background";
+
+export type SignalFreshnessStatus = "ok" | "stale" | "unavailable";
+
+export interface SignalActiveEntry {
+  id: string;
+  label: string;
+  group: string;
+  category: SignalCategory;
+  horizon: SignalHorizon;
+  importance: number;
+  severity: number;
+  priority: number;
+  direction: SignalDirection;
+  urgency: SignalUrgency;
+  confidence: number;
+  freshness_status: SignalFreshnessStatus;
+  source_status: "active";
+  message: string;
+  why_it_matters: string;
+}
+
+export interface SignalMissingEntry {
+  id: string;
+  label: string;
+  group: string;
+  category: SignalCategory;
+  horizon: SignalHorizon;
+  importance: number;
+  source_status: DataStatus;
+  message: string;
+  why_it_matters: string;
+}
+
+export interface SignalOverallReadEntry {
+  label: string;
+  score: number;
+  confidence: number;
+}
+
+export interface SignalPriorityFile {
+  generated_at_utc: string;
+  date: string;
+  method_version: string;
+  overall_read: {
+    short_term: SignalOverallReadEntry;
+    long_term: SignalOverallReadEntry;
+    fragility: SignalOverallReadEntry;
+    regime: { label: string };
+  };
+  top_warnings: SignalActiveEntry[];
+  top_supports: SignalActiveEntry[];
+  missing_high_value_signals: SignalMissingEntry[];
+}

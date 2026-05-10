@@ -39,6 +39,7 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "derived" / "regime_replay.json",
     data_dir() / "derived" / "score_history.json",
     data_dir() / "derived" / "shock_risk_snapshot.json",
+    data_dir() / "derived" / "signal_priority.json",
     data_dir() / "status" / "data_status.json",
 ]
 ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
@@ -514,6 +515,168 @@ def validate_score_history_file() -> None:
                 raise ValueError(f"{path} latest_attribution.{score_key}.{field} must be a list")
 
 
+SIGNAL_PRIORITY_HORIZONS = {"short_term", "long_term", "both", "fragility"}
+SIGNAL_PRIORITY_CATEGORIES = {
+    "volatility",
+    "rates",
+    "credit",
+    "liquidity",
+    "dollar",
+    "positioning",
+    "macro",
+    "event",
+}
+SIGNAL_PRIORITY_DIRECTIONS = {"support", "risk", "neutral"}
+SIGNAL_PRIORITY_URGENCIES = {"immediate", "near_term", "slow", "background"}
+SIGNAL_PRIORITY_FRESHNESS = {"ok", "stale", "unavailable"}
+SIGNAL_PRIORITY_OVERALL_KEYS = ("short_term", "long_term", "fragility")
+ACTIVE_ENTRY_REQUIRED_FIELDS = (
+    "id",
+    "label",
+    "group",
+    "category",
+    "horizon",
+    "importance",
+    "severity",
+    "priority",
+    "direction",
+    "urgency",
+    "confidence",
+    "freshness_status",
+    "source_status",
+    "message",
+    "why_it_matters",
+)
+MISSING_ENTRY_REQUIRED_FIELDS = (
+    "id",
+    "label",
+    "group",
+    "category",
+    "horizon",
+    "importance",
+    "source_status",
+    "message",
+    "why_it_matters",
+)
+
+
+def _validate_signal_active_entry(entry: dict[str, Any], path: Path, context: str) -> None:
+    if not isinstance(entry, dict):
+        raise ValueError(f"{path} {context} item must be an object")
+    missing = [field for field in ACTIVE_ENTRY_REQUIRED_FIELDS if field not in entry]
+    if missing:
+        raise ValueError(f"{path} {context} item missing fields: {missing}")
+    for field in ("id", "label", "group", "message", "why_it_matters"):
+        _require_non_empty_string(entry, field, path)
+    if entry["category"] not in SIGNAL_PRIORITY_CATEGORIES:
+        raise ValueError(f"{path} {context} category is invalid for {entry['id']}")
+    if entry["horizon"] not in SIGNAL_PRIORITY_HORIZONS:
+        raise ValueError(f"{path} {context} horizon is invalid for {entry['id']}")
+    if entry["direction"] not in SIGNAL_PRIORITY_DIRECTIONS:
+        raise ValueError(f"{path} {context} direction is invalid for {entry['id']}")
+    if entry["urgency"] not in SIGNAL_PRIORITY_URGENCIES:
+        raise ValueError(f"{path} {context} urgency is invalid for {entry['id']}")
+    if entry["freshness_status"] not in SIGNAL_PRIORITY_FRESHNESS:
+        raise ValueError(f"{path} {context} freshness_status is invalid for {entry['id']}")
+    if entry["source_status"] != "active":
+        raise ValueError(
+            f"{path} {context} source_status must be 'active' for {entry['id']}; "
+            f"gated sources belong in missing_high_value_signals"
+        )
+    importance = entry["importance"]
+    if (
+        not isinstance(importance, int)
+        or isinstance(importance, bool)
+        or importance < 1
+        or importance > 5
+    ):
+        raise ValueError(f"{path} {context} importance must be an integer 1-5 for {entry['id']}")
+    for field in ("severity", "priority"):
+        _validate_finite_number(entry.get(field), path, f"{context}.{field}")
+        if float(entry[field]) < 0:
+            raise ValueError(f"{path} {context} {field} must be non-negative for {entry['id']}")
+    _validate_confidence_value(entry.get("confidence"), path, f"{context}.confidence")
+
+
+def _validate_signal_missing_entry(entry: dict[str, Any], path: Path) -> None:
+    if not isinstance(entry, dict):
+        raise ValueError(f"{path} missing_high_value_signals item must be an object")
+    missing = [field for field in MISSING_ENTRY_REQUIRED_FIELDS if field not in entry]
+    if missing:
+        raise ValueError(
+            f"{path} missing_high_value_signals item missing fields: {missing}"
+        )
+    for field in ("id", "label", "group", "message", "why_it_matters"):
+        _require_non_empty_string(entry, field, path)
+    if entry["category"] not in SIGNAL_PRIORITY_CATEGORIES:
+        raise ValueError(
+            f"{path} missing_high_value_signals category is invalid for {entry['id']}"
+        )
+    if entry["horizon"] not in SIGNAL_PRIORITY_HORIZONS:
+        raise ValueError(
+            f"{path} missing_high_value_signals horizon is invalid for {entry['id']}"
+        )
+    if entry["source_status"] == "active":
+        raise ValueError(
+            f"{path} missing_high_value_signals source_status must not be 'active' for {entry['id']}"
+        )
+    importance = entry["importance"]
+    if (
+        not isinstance(importance, int)
+        or isinstance(importance, bool)
+        or importance < 1
+        or importance > 5
+    ):
+        raise ValueError(
+            f"{path} missing_high_value_signals importance must be an integer 1-5 for {entry['id']}"
+        )
+
+
+def validate_signal_priority_file() -> None:
+    path = data_dir() / "derived" / "signal_priority.json"
+    payload = _load_json(path)
+    if not isinstance(payload, dict):
+        raise ValueError(f"{path} must be an object")
+
+    _validate_timestamp_with_timezone(_require_string(payload, "generated_at_utc", path), path)
+    _require_non_empty_string(payload, "method_version", path)
+    _validate_event_date(_require_string(payload, "date", path), path)
+
+    overall_read = payload.get("overall_read")
+    if not isinstance(overall_read, dict):
+        raise ValueError(f"{path} overall_read must be an object")
+    for key in SIGNAL_PRIORITY_OVERALL_KEYS:
+        block = overall_read.get(key)
+        if not isinstance(block, dict):
+            raise ValueError(f"{path} overall_read.{key} must be an object")
+        _require_non_empty_string(block, "label", path)
+        _validate_finite_number(block.get("score"), path, f"overall_read.{key}.score")
+        _validate_confidence_value(block.get("confidence"), path, f"overall_read.{key}.confidence")
+    regime = overall_read.get("regime")
+    if not isinstance(regime, dict):
+        raise ValueError(f"{path} overall_read.regime must be an object")
+    _require_non_empty_string(regime, "label", path)
+
+    for field in ("top_warnings", "top_supports", "missing_high_value_signals"):
+        if not isinstance(payload.get(field), list):
+            raise ValueError(f"{path} {field} must be a list")
+
+    for entry in payload["top_warnings"]:
+        _validate_signal_active_entry(entry, path, "top_warnings")
+        if entry["direction"] != "risk":
+            raise ValueError(
+                f"{path} top_warnings entry {entry.get('id')} must have direction 'risk'"
+            )
+    for entry in payload["top_supports"]:
+        _validate_signal_active_entry(entry, path, "top_supports")
+        if entry["direction"] != "support":
+            raise ValueError(
+                f"{path} top_supports entry {entry.get('id')} must have direction 'support'"
+            )
+    for entry in payload["missing_high_value_signals"]:
+        _validate_signal_missing_entry(entry, path)
+
+
 def validate_status_file() -> None:
     path = data_dir() / "status" / "data_status.json"
     payload = _load_json(path)
@@ -554,6 +717,7 @@ def main() -> None:
     validate_regime_replay_file()
     validate_score_history_file()
     validate_shock_risk_snapshot_file()
+    validate_signal_priority_file()
     validate_status_file()
 
 

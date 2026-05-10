@@ -10,6 +10,7 @@ import MetricCard from "../components/MetricCard";
 import OverviewDecisionCard from "../components/OverviewDecisionCard";
 import ScoreCard from "../components/ScoreCard";
 import SignalList from "../components/SignalList";
+import TopSignalList from "../components/TopSignalList";
 import {
   loadCatalog,
   loadDataStatus,
@@ -18,7 +19,8 @@ import {
   loadScoreHistory,
   loadScoreSummary,
   loadShockRiskSnapshot,
-  loadSeries
+  loadSeries,
+  loadSignalPriority
 } from "../lib/data";
 import { countSourceGaps, firstText, scoreLabel } from "../lib/horizon";
 import type {
@@ -30,6 +32,7 @@ import type {
   ScoreSummaryFile,
   SeriesCatalogEntry,
   ShockRiskSnapshotFile,
+  SignalPriorityFile,
   TimeSeriesFile
 } from "../lib/types";
 
@@ -48,6 +51,7 @@ interface OverviewState {
   scoreHistory: ScoreHistoryFile | null;
   scoreSummary: ScoreSummaryFile;
   shockSnapshot: ShockRiskSnapshotFile;
+  signalPriority: SignalPriorityFile | null;
   status: DataStatusFile;
   series: Array<TimeSeriesFile | DerivedSeriesFile>;
 }
@@ -127,13 +131,23 @@ export default function Overview() {
 
     async function loadOverview() {
       try {
-        const [catalog, scoreSummary, scoreHistory, status, regimeSnapshot, shockSnapshot, series] = await Promise.all([
+        const [
+          catalog,
+          scoreSummary,
+          scoreHistory,
+          status,
+          regimeSnapshot,
+          shockSnapshot,
+          signalPriority,
+          series
+        ] = await Promise.all([
           loadCatalog(),
           loadScoreSummary(),
           loadScoreHistory().catch(() => null),
           loadDataStatus(),
           loadRegimeSnapshot(),
           loadShockRiskSnapshot(),
+          loadSignalPriority().catch(() => null),
           Promise.all(
             overviewSeriesIds.map((seriesId) =>
               seriesId === "net_liquidity" ? loadDerivedSeries(seriesId) : loadSeries(seriesId)
@@ -141,7 +155,17 @@ export default function Overview() {
           )
         ]);
 
-        if (active) setData({ catalog, regimeSnapshot, scoreHistory, scoreSummary, shockSnapshot, status, series });
+        if (active)
+          setData({
+            catalog,
+            regimeSnapshot,
+            scoreHistory,
+            scoreSummary,
+            shockSnapshot,
+            signalPriority,
+            status,
+            series
+          });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load market data.");
       }
@@ -231,6 +255,31 @@ export default function Overview() {
                   <span>Long-Term Impact</span>
                 </div>
                 <HorizonImpactMatrix />
+                {data.signalPriority ? (
+                  <section
+                    className="signal-priority-grid"
+                    aria-label="Top active warnings, supports, and missing high-value signals"
+                  >
+                    <TopSignalList
+                      title="Top Active Warnings"
+                      emptyText="No top active warnings in the current snapshot."
+                      variant="warning"
+                      signals={data.signalPriority.top_warnings}
+                    />
+                    <TopSignalList
+                      title="Top Active Supports"
+                      emptyText="No top active supports in the current snapshot."
+                      variant="support"
+                      signals={data.signalPriority.top_supports}
+                    />
+                    <TopSignalList
+                      title="Missing High-Value Signals"
+                      emptyText="All high-value signals have an active source."
+                      variant="missing"
+                      signals={data.signalPriority.missing_high_value_signals}
+                    />
+                  </section>
+                ) : null}
                 <section className="score-grid" aria-label="Overview scores">
                   <ScoreCard score={scoreSummary.scores.market_weather} title="Market Weather" />
                   <ScoreCard score={scoreSummary.scores.macro_climate} title="Macro Climate" />

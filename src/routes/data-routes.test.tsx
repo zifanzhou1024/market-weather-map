@@ -16,6 +16,7 @@ import type {
   SeriesCategory,
   SeriesCatalogEntry,
   SeriesFrequency,
+  SignalPriorityFile,
   TimeSeriesFile
 } from "../lib/types";
 
@@ -132,6 +133,7 @@ function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
     "/data/derived/score_history.json": scoreHistory,
     "/data/derived/score_summary.json": scoreSummaryFile,
     "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
+    "/data/derived/signal_priority.json": signalPriority,
     "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
     "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
     "/data/series/us10y.json": seriesFile("us10y", 4.2),
@@ -197,6 +199,7 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
     "/data/derived/score_summary.json": scoreSummary,
     "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
     "/data/derived/regime_snapshot.json": regimeSnapshot,
+    "/data/derived/signal_priority.json": signalPriority,
     "/data/derived/us10y_minus_us2y.json": {
       ...derivedFile("us10y_minus_us2y", 0.42),
       depends_on: ["us10y", "us2y"],
@@ -1174,6 +1177,69 @@ const malformedShockRiskSnapshot = {
   mismatch_warnings: { id: "not-array" }
 } as unknown as ShockRiskSnapshotFile;
 
+const signalPriority: SignalPriorityFile = {
+  date: "2026-05-06",
+  generated_at_utc: "2026-05-07T17:57:48Z",
+  method_version: "phase6-pr1-signal-priority-v1",
+  overall_read: {
+    short_term: { label: "Mixed", score: 7.18, confidence: 1.0 },
+    long_term: { label: "Mixed", score: 14.44, confidence: 0.99 },
+    fragility: { label: "Low Fragility", score: 39.47, confidence: 0.99 },
+    regime: { label: "Mixed" }
+  },
+  top_warnings: [
+    {
+      id: "real_yields",
+      label: "10Y real yields",
+      group: "Rates / Real-Yield Pressure",
+      category: "rates",
+      horizon: "both",
+      importance: 5,
+      severity: 33.34,
+      priority: 167,
+      direction: "risk",
+      urgency: "near_term",
+      confidence: 1.0,
+      freshness_status: "ok",
+      source_status: "active",
+      message: "Real yields are elevated and pressuring valuations.",
+      why_it_matters: "Higher real yields tighten financial conditions."
+    }
+  ],
+  top_supports: [
+    {
+      id: "credit_spreads",
+      label: "Credit spreads",
+      group: "Credit",
+      category: "credit",
+      horizon: "both",
+      importance: 5,
+      severity: 62.3,
+      priority: 311,
+      direction: "support",
+      urgency: "near_term",
+      confidence: 1.0,
+      freshness_status: "ok",
+      source_status: "active",
+      message: "Credit spread pressure is contained.",
+      why_it_matters: "Credit spreads confirm whether stress is spreading beyond equities."
+    }
+  ],
+  missing_high_value_signals: [
+    {
+      id: "move_index",
+      label: "MOVE Index (bond volatility)",
+      group: "Volatility & tail risk",
+      category: "volatility",
+      horizon: "fragility",
+      importance: 4,
+      source_status: "terms_review_needed",
+      message: "Candidate source requires access or terms review before scoring.",
+      why_it_matters: "Bond-volatility moves can pressure markets even when equity volatility is calm."
+    }
+  ]
+};
+
 afterEach(() => {
   if (root) {
     act(() => root?.unmount());
@@ -1305,6 +1371,46 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Freshness and coverage notes");
     expect(container.textContent).not.toContain("Weather score");
     expect(container.textContent).not.toContain("Market Weather buckets");
+  });
+
+  it("renders top warnings, supports, and missing high-value signals on overview", async () => {
+    mockStaticFetch(overviewFetchFiles());
+
+    const container = renderOverview();
+    await waitForContent(container, "Top Active Warnings");
+
+    expect(container.textContent).toContain("Top Active Warnings");
+    expect(container.textContent).toContain("Top Active Supports");
+    expect(container.textContent).toContain("Missing High-Value Signals");
+    // Active warning entry from fixture.
+    expect(container.textContent).toContain("10Y real yields");
+    expect(container.textContent).toContain("Real yields are elevated and pressuring valuations.");
+    // Active support entry.
+    expect(container.textContent).toContain("Credit spreads");
+    expect(container.textContent).toContain("Credit spread pressure is contained.");
+    // Missing high-value entry surfaces the gated source status.
+    expect(container.textContent).toContain("MOVE Index (bond volatility)");
+    expect(container.textContent).toContain("terms_review_needed");
+    // Section is bounded so it does not crowd the rest of the overview.
+    const grid = container.querySelector(".signal-priority-grid");
+    expect(grid).not.toBeNull();
+    expect(grid?.querySelectorAll(".top-signal-list--warning li").length).toBe(1);
+    expect(grid?.querySelectorAll(".top-signal-list--support li").length).toBe(1);
+    expect(grid?.querySelectorAll(".top-signal-list--missing li").length).toBe(1);
+  });
+
+  it("omits the signal-priority section when signal_priority.json is missing", async () => {
+    const { "/data/derived/signal_priority.json": _omitted, ...filesWithoutSignalPriority } =
+      overviewFetchFiles();
+    void _omitted;
+    mockStaticFetch(filesWithoutSignalPriority);
+
+    const container = renderOverview();
+    // Wait for the overview to finish loading something the fixture provides.
+    await waitForContent(container, "Macro Climate");
+
+    expect(container.querySelector(".signal-priority-grid")).toBeNull();
+    expect(container.textContent).not.toContain("Top Active Warnings");
   });
 
   it("renders overview empty states for malformed score summary top-level fields", async () => {
