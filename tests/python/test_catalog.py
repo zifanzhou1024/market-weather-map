@@ -259,6 +259,7 @@ def test_official_public_diagnostic_candidates_are_generated_but_not_active():
     entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
     active_ids = {entry["id"] for entry in catalog_module.available_catalog_entries()}
     expected = {
+        "philly_fed_mfg_general_activity": ("GACDFSA066MSFRBPHI", "strategic", "growth"),
         "sloos_lending_standards": ("DRTSCILM", "strategic", "credit"),
         "sloos_small_firm_standards": ("DRTSCIS", "strategic", "credit"),
         "sloos_large_firm_demand": ("DRSDCILM", "strategic", "credit"),

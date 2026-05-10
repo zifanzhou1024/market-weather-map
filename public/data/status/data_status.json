@@ -1,7 +1,6 @@
 {
-  "generated_at_utc": "2026-05-09T22:48:56Z",
-  "last_attempt_utc": "2026-05-09T22:48:56Z",
-  "last_successful_update_utc": "2026-05-09T22:46:58Z",
+  "generated_at_utc": "2026-05-09T23:33:42Z",
+  "last_successful_update_utc": "2026-05-09T23:33:42Z",
   "overall_status": "partial",
   "series": {
     "bank_credit": {
@@ -715,6 +714,21 @@
       "source": "FRED",
       "status": "terms_review_needed"
     },
+    "philly_fed_mfg_general_activity": {
+      "expected_frequency": "monthly",
+      "expected_next_release_window": {
+        "end": "2026-06-15",
+        "start": "2026-05-01"
+      },
+      "freshness_days": 38,
+      "last_observation": "2026-04-01",
+      "max_stale_days": 45,
+      "message": "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15. candidate diagnostic only; does not affect active scores.",
+      "observation_period": "2026-04",
+      "score_status": "candidate",
+      "source": "FRED",
+      "status": "ok"
+    },
     "ppi_final_demand": {
       "expected_frequency": "monthly",
       "expected_next_release_window": {
@@ -1350,7 +1364,5 @@
       "source": "FRED",
       "status": "ok"
     }
-  },
-  "update_message": "TimeoutError: The read operation timed out",
-  "update_status": "failed"
+  }
 }

@@ -111,6 +111,7 @@ No browser provider calls: all provider/API usage must happen in GitHub Actions 
 | Candidate family | Sprint 1 reviewed recommendation | Candidate providers | Potential secret names | Current use boundary |
 | --- | --- | --- | --- | --- |
 | SLOOS | Official/public candidate | Federal Reserve Data Download Program or FRED mirrors | `FRED_API_KEY` only if later FRED API ingestion is chosen | Candidate credit-cycle input; no scoring change in this PR. |
+| Regional Fed survey proxy | Official/public candidate | Philadelphia Fed MBOS via FRED mirror | `FRED_API_KEY` only if later FRED API ingestion is chosen | Generated candidate business-cycle proxy; not ISM PMI or S&P Global PMI and not scored. |
 | Treasury FiscalData | Official/public candidate | U.S. Treasury FiscalData API, CSV, or JSON downloads | None expected | Candidate fiscal-supply input; no ingestion or scoring change in this PR. |
 | Bond-volatility proxy | Official/public candidate derived from public yield series | Federal Reserve/FRED Treasury-yield series | None expected if existing FRED graph CSV input remains sufficient | Candidate realized Treasury-yield volatility proxy; not ICE MOVE and no scoring change in this PR. |
 | Event calendars | Official/public candidate by event family | Federal Reserve, BLS, BEA, Census, U.S. Treasury, TreasuryDirect, CFTC | `BLS_API_KEY`, `BEA_API_KEY`, `CENSUS_API_KEY` if later structured API ingestion is selected | Descriptive event-risk candidate; no browser provider calls or scoring change in this PR. |
@@ -123,11 +124,12 @@ Candidate sources are not active scoring inputs until legal, terms, cadence, and
 
 These candidate rows are displayed as source gaps. They do not affect active scores, regime labels, checklist states, or confidence except as documented source-readiness gaps.
 
-Current shipped catalog/status rows remain unchanged in this docs-only PR. The tables below describe the current shipped catalog/status source-gap layer; when a row is also covered by Source Governance Sprint 1, use the Sprint 1 section as the reviewed recommendation for future implementation and keep the shipped status unchanged until a later catalog/status, ingestion, and scoring PR updates it.
+Generated official/public diagnostics may ship as static candidate rows after source review, but they remain non-scoring until a later scoring PR explicitly promotes them. The tables below describe the source-gap layer and gated candidates that still require review or scoring promotion.
 
 | Candidate | Provider | Access status | Potential use | Review notes |
 | --- | --- | --- | --- | --- |
 | ISM manufacturing and services | Institute for Supply Management | `terms_review_needed` | Growth breadth and business-cycle momentum. | Confirm redistribution and automation terms before static publication. |
+| Regional Fed survey proxy | Philadelphia Fed / FRED mirror | `free_public` candidate diagnostic | Public business-cycle breadth proxy. | `philly_fed_mfg_general_activity` is generated as a non-scoring regional Fed survey proxy; do not label it as ISM PMI or S&P Global PMI. |
 | AAII investor sentiment | AAII | `terms_review_needed` | Retail sentiment and contrarian crowding context. | Confirm historical access, redistribution rights, and automated download terms. |
 | NAAIM Exposure Index | NAAIM | `terms_review_needed` | Active manager exposure and risk appetite. | Confirm whether automated ingestion and public JSON redistribution are permitted. |
 | SLOOS | Federal Reserve | `terms_review_needed` | Bank lending standards and credit availability. | Current shipped catalog/status remains `terms_review_needed` in this docs-only PR; see Source Governance Sprint 1 for the reviewed recommendation. |
