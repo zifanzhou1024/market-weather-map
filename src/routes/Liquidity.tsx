@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import LiquidityDecompositionHero from "../components/charts/LiquidityDecompositionHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -81,6 +82,13 @@ export default function Liquidity() {
         <div className="route-stack">
           <PageInsightHero route="liquidity" />
           {/* SLOT:liquidity_primary_chart */}
+          {data.netLiquidity.observations.length > 0 ? (
+            <LiquidityDecompositionHero netLiquidity={data.netLiquidity} />
+          ) : (
+            <section className="panel chart-panel" aria-label="Net liquidity">
+              <p>Net liquidity chart unavailable until source data is active.</p>
+            </section>
+          )}
           <InterpretationPanel
             label="Liquidity funding conditions"
             summary="This view combines a derived net liquidity proxy with balance-sheet and funding inputs."
