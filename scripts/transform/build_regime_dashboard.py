@@ -111,14 +111,23 @@ def _build_window_points(
 ) -> list[dict[str, Any]]:
     """Construct one window's series of quadrant points.
 
-    Only emit points where the prior observation `window_days` business-day
-    indices back exists in BOTH the real-yield and dollar series.
+    Coverage cap: emit a point only when the date AND its window-prior date
+    are both inside the intersected coverage of all four upstream inputs
+    (real-yield, dollar, VIX percentile, credit). This eliminates the
+    misleading ``0.0`` sentinel that used to mark "data unavailable" — a
+    consumer can no longer mistake it for "no movement". Capping also keeps
+    the output JSON small (downstream consumers fetch this from GitHub Pages
+    on first paint).
     """
     real_by = _values_by_date(real_yield)
     dollar_by = _values_by_date(dollar)
     credit_by = _values_by_date(high_yield_oas)
 
-    common_dates = sorted(set(real_by) & set(dollar_by))
+    # Intersected dates across all four inputs (vix_percentile is already a
+    # date->value dict).
+    common_dates = sorted(
+        set(real_by) & set(dollar_by) & set(credit_by) & set(vix_percentile)
+    )
     if len(common_dates) <= window_days:
         return []
 
@@ -135,10 +144,8 @@ def _build_window_points(
         dollar_change_pct = round(
             (dollar_by[this_date] / prior_dollar - 1.0) * 100.0, 4
         )
-        credit_change_bps = (
-            round((credit_by[this_date] - credit_by[prior_date]) * 100.0, 2)
-            if (this_date in credit_by and prior_date in credit_by)
-            else 0.0
+        credit_change_bps = round(
+            (credit_by[this_date] - credit_by[prior_date]) * 100.0, 2
         )
         regime = _classify_quadrant(real_change_bps, dollar_change_pct, thresholds)
         points.append(
@@ -146,7 +153,7 @@ def _build_window_points(
                 "date": this_date,
                 "real_yield_change_bps": real_change_bps,
                 "dollar_change_pct": dollar_change_pct,
-                "vix_percentile": float(vix_percentile.get(this_date, 0.0)),
+                "vix_percentile": float(vix_percentile[this_date]),
                 "credit_change_bps": credit_change_bps,
                 "fragility_score": fragility_score,
                 "regime": regime,

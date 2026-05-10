@@ -252,3 +252,133 @@ def test_window_omits_dates_without_lookback_data():
     assert len(result["windows"]["120D"]) >= 190
     assert len(result["windows"]["120D"]) <= 220
     assert len(result["windows"]["20D"]) > len(result["windows"]["120D"])
+
+
+def test_history_capped_to_dates_where_all_inputs_have_coverage():
+    """When credit data starts later than real-yield/dollar/vix, every
+    emitted point's date AND its window-prior date must be within the
+    coverage of credit too. The previous behaviour emitted ``0.0`` for
+    ``credit_change_bps`` whenever the date predated credit coverage; that
+    sentinel is indistinguishable from "no movement" downstream."""
+    # Real yield / dollar / VIX cover 220 business days from 2024-01-02.
+    # Credit only covers the LAST 60 business days (so first credit date is
+    # ~12 weeks into the run), forcing the cap to apply.
+    days = _calendar_business_days(220)
+    real_yield = [{"date": d, "value": 2.00 + i * 0.01} for i, d in enumerate(days)]
+    dollar = [{"date": d, "value": 100.0 + i * 0.05} for i, d in enumerate(days)]
+    vix = [
+        {"date": d, "value": 15.0, "percentile_252d": 30.0 + (i % 50)}
+        for i, d in enumerate(days)
+    ]
+    # Credit only covers the last 60 days.
+    credit_days = days[-60:]
+    credit = [
+        {"date": d, "value": 350.0 - i * 0.1} for i, d in enumerate(credit_days)
+    ]
+    inputs = {
+        "real_yield_10y": _series(real_yield),
+        "broad_dollar": _series(dollar),
+        "vix": _series(vix),
+        "high_yield_oas": _series(credit),
+    }
+
+    result = build_regime_dashboard.build_regime_dashboard(
+        series_by_id=inputs,
+        shock_risk_snapshot=_baseline_shock(),
+        generated_at_utc="2026-05-10T09:30:00Z",
+    )
+
+    credit_dates = {obs["date"] for obs in credit}
+    for window_key in ("20D", "60D", "120D"):
+        for point in result["windows"][window_key]:
+            # Every emitted point must have its date inside credit coverage —
+            # otherwise the credit_change_bps would have to be a sentinel.
+            assert point["date"] in credit_dates, (
+                f"{window_key}: point {point['date']} is outside credit coverage; "
+                "the cap should have skipped it"
+            )
+
+
+def test_credit_change_bps_never_zero_due_to_missing_data():
+    """No emitted point should have ``credit_change_bps == 0.0`` purely
+    because credit data is missing for that date. With the floor cap, every
+    emitted (this_date, prior_date) pair must lie within all inputs'
+    coverage, so 0.0 can only result from genuinely identical credit values
+    at this_date and prior_date — which we eliminate by making credit
+    monotonic."""
+    days = _calendar_business_days(220)
+    real_yield = [{"date": d, "value": 2.00 + i * 0.01} for i, d in enumerate(days)]
+    dollar = [{"date": d, "value": 100.0 + i * 0.05} for i, d in enumerate(days)]
+    vix = [
+        {"date": d, "value": 15.0, "percentile_252d": 30.0 + (i % 50)}
+        for i, d in enumerate(days)
+    ]
+    # Credit covers only the last 60 days, AND is strictly monotonic so any
+    # 0.0 we observe MUST come from missing-data-driven sentinel logic.
+    credit_days = days[-60:]
+    credit = [
+        {"date": d, "value": 350.0 - i * 0.1}
+        for i, d in enumerate(credit_days)
+    ]
+    inputs = {
+        "real_yield_10y": _series(real_yield),
+        "broad_dollar": _series(dollar),
+        "vix": _series(vix),
+        "high_yield_oas": _series(credit),
+    }
+
+    result = build_regime_dashboard.build_regime_dashboard(
+        series_by_id=inputs,
+        shock_risk_snapshot=_baseline_shock(),
+        generated_at_utc="2026-05-10T09:30:00Z",
+    )
+
+    for window_key in ("20D", "60D", "120D"):
+        for point in result["windows"][window_key]:
+            assert point["credit_change_bps"] != 0.0, (
+                f"{window_key}: point at {point['date']} has credit_change_bps=0.0; "
+                "this is the missing-data sentinel — the cap should have "
+                "excluded it"
+            )
+
+
+def test_vix_percentile_never_zero_due_to_missing_data():
+    """vix_percentile == 0.0 was used as a "missing" sentinel; with the cap
+    in place, every emitted point has VIX percentile available."""
+    days = _calendar_business_days(220)
+    real_yield = [{"date": d, "value": 2.00 + i * 0.01} for i, d in enumerate(days)]
+    dollar = [{"date": d, "value": 100.0 + i * 0.05} for i, d in enumerate(days)]
+    # VIX is missing percentile_252d on the first 60 days (so the cap must
+    # exclude those dates from the windows).
+    vix = []
+    for i, d in enumerate(days):
+        entry: dict[str, object] = {"date": d, "value": 15.0}
+        if i >= 60:
+            entry["percentile_252d"] = 30.0 + (i % 50)
+        vix.append(entry)
+    credit_days = days[-60:]
+    credit = [
+        {"date": d, "value": 350.0 - i * 0.1} for i, d in enumerate(credit_days)
+    ]
+    inputs = {
+        "real_yield_10y": _series(real_yield),
+        "broad_dollar": _series(dollar),
+        "vix": _series(vix),
+        "high_yield_oas": _series(credit),
+    }
+
+    result = build_regime_dashboard.build_regime_dashboard(
+        series_by_id=inputs,
+        shock_risk_snapshot=_baseline_shock(),
+        generated_at_utc="2026-05-10T09:30:00Z",
+    )
+
+    for window_key in ("20D", "60D", "120D"):
+        for point in result["windows"][window_key]:
+            # The fixture VIX values use percentile in [30, 80) so 0.0 can
+            # only come from the missing-data fallback.
+            assert point["vix_percentile"] != 0.0, (
+                f"{window_key}: point at {point['date']} has vix_percentile=0.0; "
+                "this is the missing-data sentinel — the cap should have "
+                "excluded it"
+            )
