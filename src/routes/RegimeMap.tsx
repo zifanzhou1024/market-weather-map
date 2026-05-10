@@ -124,6 +124,7 @@ export default function RegimeMap() {
         <div className="route-stack">
           <PageInsightHero route="regime_map" />
           {/* SLOT:regime_primary_chart */}
+          <RegimeQuadrantChart />
           <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <RegimeInterpretationPanel scoreSummary={data.scoreSummary} snapshot={data.snapshot} />
           <section className="metric-grid" aria-label="Regime direction cards">
@@ -131,7 +132,6 @@ export default function RegimeMap() {
             <DirectionCard direction={data.snapshot.regime.dollar_direction} label="Dollar direction" />
             <DirectionCard direction={data.snapshot.regime.nominal_yield_direction} label="Nominal-yield direction" />
           </section>
-          <RegimeQuadrantChart trail={data.snapshot.quadrant_trail} />
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
           <RouteDataFooter route="regime_map">
             <CrossAssetConfirmationMatrix

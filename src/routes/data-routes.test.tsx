@@ -9,8 +9,10 @@ import type {
   DataStatusFile,
   DerivedSeriesFile,
   RatesDashboardFile,
+  RegimeDashboardFile,
   RegimeReplayFile,
   RegimeSnapshotFile,
+  RegimeWindowPoint,
   ScoreSummaryFile,
   ScoreHistoryFile,
   ShockRiskSnapshotFile,
@@ -265,6 +267,7 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
     "/data/derived/score_history.json": scoreHistory,
     "/data/derived/score_summary.json": scoreSummary,
     "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
+    "/data/derived/regime_dashboard.json": regimeDashboard,
     "/data/derived/regime_snapshot.json": regimeSnapshot,
     "/data/derived/rates_dashboard.json": ratesDashboard,
     "/data/derived/signal_priority.json": signalPriority,
@@ -1700,6 +1703,37 @@ const ratesDashboard: RatesDashboardFile = {
     { date: "2026-05-07", nominal_pct: 4.4, real_pct: 1.95, breakeven_pct: 2.45 },
     { date: "2026-05-08", nominal_pct: 4.41, real_pct: 1.96, breakeven_pct: 2.45 }
   ]
+};
+
+function regimeDashboardWindow(count: number, seed: number): RegimeWindowPoint[] {
+  const points: RegimeWindowPoint[] = [];
+  const start = new Date("2026-03-01").getTime();
+  const oneDay = 24 * 60 * 60 * 1000;
+  for (let i = 0; i < count; i += 1) {
+    const date = new Date(start + i * oneDay).toISOString().slice(0, 10);
+    points.push({
+      date,
+      real_yield_change_bps: Math.sin((i + seed) / 5) * 20,
+      dollar_change_pct: Math.cos((i + seed) / 7) * 1.5,
+      vix_percentile: ((i * 6 + seed) % 100),
+      credit_change_bps: Math.cos(i / 4) * 25,
+      fragility_score: 0.2,
+      regime: i % 2 === 0 ? "risk_on_easing" : "rotation_reflation"
+    });
+  }
+  return points;
+}
+
+const regimeDashboard: RegimeDashboardFile = {
+  date: "2026-05-08",
+  generated_at_utc: "2026-05-10T15:30:00Z",
+  method_version: "w1a-regime-dashboard-v1",
+  thresholds: { real_yield_neutral_bps: 5.0, dollar_neutral_pct: 0.5 },
+  windows: {
+    "20D": regimeDashboardWindow(20, 1),
+    "60D": regimeDashboardWindow(60, 2),
+    "120D": regimeDashboardWindow(120, 3)
+  }
 };
 
 const malformedShockRiskRowSnapshot = {
@@ -3529,16 +3563,43 @@ describe("W2-13: cross-route IA consistency", () => {
     expect(lines[78]).toContain("20-observation changes");
   });
 
-  it("RegimeQuadrantChart still carries the '20-observation' label until W3 regime-charts-agent rebuilds it", () => {
-    // W3 rebuilds RegimeQuadrantChart to use a dynamic '{window} change' label.
-    // W2 must NOT pre-edit the chart's static literal so the W3 agent's
-    // exact-string replacement (replacing the misleading static label) still
-    // matches. We only assert the file exists and is still Recharts-based, not
-    // the precise label text, to avoid coupling to the in-flight W3 change.
+  it("RegimeQuadrantChart no longer imports from recharts after W3C rebuild", () => {
+    // W3C rebuilds RegimeQuadrantChart in ECharts via EChartPanel; recharts is
+    // out of the dependency graph for this file.
     const chartSource = readFileSync(
       join(__routesDir, "..", "components", "RegimeQuadrantChart.tsx"),
       "utf8"
     );
-    expect(chartSource.length).toBeGreaterThan(0);
+    expect(chartSource).not.toMatch(/from\s+"recharts"/);
+    expect(chartSource).toContain("EChartPanel");
+  });
+
+  it("RegimeQuadrantChart drops the misleading '20-observation change' literal (W3C)", () => {
+    const chartSource = readFileSync(
+      join(__routesDir, "..", "components", "RegimeQuadrantChart.tsx"),
+      "utf8"
+    );
+    expect(chartSource).not.toContain("20-observation change");
+  });
+
+  it("RegimeMap fills regime_primary_chart slot with <RegimeQuadrantChart /> (no legacy trail prop)", () => {
+    const source = readRouteSource("RegimeMap.tsx");
+    const slotIdx = source.indexOf("{/* SLOT:regime_primary_chart */}");
+    const chartIdx = source.indexOf("<RegimeQuadrantChart");
+    expect(slotIdx).toBeGreaterThan(-1);
+    expect(chartIdx).toBeGreaterThan(slotIdx);
+    // After W3C, the rebuilt chart self-loads from regime_dashboard.json — no
+    // `trail` prop is wired in the route any more.
+    expect(source).not.toMatch(/<RegimeQuadrantChart\s+trail=/);
+  });
+
+  it("LongTermMacroClimate fills macro_regime_chart slot with <MacroRegimeQuadrant /> (no trail prop)", () => {
+    const source = readRouteSource("LongTermMacroClimate.tsx");
+    const slotIdx = source.indexOf("{/* SLOT:macro_regime_chart */}");
+    const chartIdx = source.indexOf("<MacroRegimeQuadrant");
+    expect(slotIdx).toBeGreaterThan(-1);
+    expect(chartIdx).toBeGreaterThan(slotIdx);
+    // After W3C, MacroRegimeQuadrant self-loads — no `trail` prop is wired.
+    expect(source).not.toMatch(/<MacroRegimeQuadrant\s+trail=/);
   });
 });
