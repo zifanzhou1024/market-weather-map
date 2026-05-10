@@ -33,12 +33,15 @@ vi.mock("echarts/renderers", () => ({
 import MacroClimateHeatmap, {
   buildMacroClimateHeatmapPayload
 } from "./MacroClimateHeatmap";
-import MacroRegimeQuadrant, {
-  buildQuadrantPoints
-} from "./MacroRegimeQuadrant";
+import MacroRegimeQuadrant from "./MacroRegimeQuadrant";
 import GrowthLaborInflationMatrix from "./GrowthLaborInflationMatrix";
 import StrategicSourceGapMatrix from "./StrategicSourceGapMatrix";
-import type { RegimeSnapshotFile, ScoreSummaryFile } from "../lib/types";
+import type {
+  RegimeDashboardFile,
+  RegimeWindowKey,
+  RegimeWindowPoint,
+  ScoreSummaryFile
+} from "../lib/types";
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT =
   true;
@@ -203,133 +206,166 @@ describe("MacroClimateHeatmap", () => {
   });
 });
 
-function makeTrail(
-  overrides?: Array<Partial<RegimeSnapshotFile["quadrant_trail"][number]>>
-): RegimeSnapshotFile["quadrant_trail"] {
-  const base = [
-    {
-      date: "2026-05-01",
-      dollar_change: 0.5,
-      real_yield_change: 0.1,
-      nominal_yield_change: 0.2,
-      vix_percentile: 25,
-      credit_change: 0.0
-    },
-    {
-      date: "2026-05-05",
-      dollar_change: -0.3,
-      real_yield_change: -0.2,
-      nominal_yield_change: -0.1,
-      vix_percentile: 60,
-      credit_change: 0.1
-    },
-    {
-      date: "2026-05-08",
-      dollar_change: 0.7,
-      real_yield_change: 0.4,
-      nominal_yield_change: 0.5,
-      vix_percentile: 80,
-      credit_change: 0.2
+function makeDashboardWindow(seed: number, count: number): RegimeWindowPoint[] {
+  const points: RegimeWindowPoint[] = [];
+  const start = new Date("2026-03-01").getTime();
+  const oneDay = 24 * 60 * 60 * 1000;
+  for (let i = 0; i < count; i += 1) {
+    const date = new Date(start + i * oneDay).toISOString().slice(0, 10);
+    points.push({
+      date,
+      real_yield_change_bps: Math.sin((i + seed) / 5) * 25,
+      dollar_change_pct: Math.cos((i + seed) / 7) * 1.5,
+      vix_percentile: ((i * 5 + seed) % 100),
+      credit_change_bps: Math.sin(i / 4) * 30,
+      fragility_score: 0.2,
+      regime: i % 2 === 0 ? "risk_on_easing" : "rotation_reflation"
+    });
+  }
+  return points;
+}
+
+function makeDashboardFixture(): RegimeDashboardFile {
+  return {
+    date: "2026-05-01",
+    generated_at_utc: "2026-05-10T14:58:30Z",
+    method_version: "phase8-pr1-regime-dashboard-v1",
+    thresholds: { real_yield_neutral_bps: 5.0, dollar_neutral_pct: 0.5 },
+    windows: {
+      "20D": makeDashboardWindow(1, 20),
+      "60D": makeDashboardWindow(2, 60),
+      "120D": makeDashboardWindow(3, 120)
     }
-  ];
-  if (!overrides) return base;
-  return base.map((entry, i) => ({ ...entry, ...(overrides[i] ?? {}) }));
+  };
+}
+
+async function flush() {
+  for (let i = 0; i < 5; i += 1) {
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+  }
+}
+
+function stubFetchOk(fixture: unknown) {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => fixture
+    }))
+  );
+}
+
+function stubFetch404() {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => ({
+      ok: false,
+      status: 404,
+      json: async () => ({})
+    }))
+  );
 }
 
 describe("MacroRegimeQuadrant", () => {
-  it("renders the empty state when trail is empty", () => {
-    const c = render(<MacroRegimeQuadrant trail={[]} />);
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("renders the empty state when regime_dashboard.json is missing (404)", async () => {
+    stubFetch404();
+    const c = render(<MacroRegimeQuadrant />);
+    await flush();
     expect(c.querySelector("[data-state='empty']")).not.toBeNull();
-    expect(setOption).not.toHaveBeenCalled();
   });
 
-  it("renders ready state with finite trail entries", () => {
-    const trail = makeTrail();
-    const c = render(<MacroRegimeQuadrant trail={trail} />);
+  it("renders ready state with points from regime_dashboard.json (default 60D)", async () => {
+    const fixture = makeDashboardFixture();
+    stubFetchOk(fixture);
+    const c = render(<MacroRegimeQuadrant />);
+    await flush();
     expect(c.querySelector("[data-state='ready']")).not.toBeNull();
-    const points = buildQuadrantPoints(trail);
-    expect(points.length).toBe(3);
+    const option = lastOption();
+    const series = option?.series as Array<{ type: string; data: unknown[] }>;
+    const scatter = series.find((s) => s.type === "scatter");
+    // Default window is 60D — should match the 60D window length in the fixture.
+    expect(scatter?.data.length).toBe(fixture.windows["60D"].length);
   });
 
-  it("filters out entries with null or non-finite x/y values", () => {
-    const trail: RegimeSnapshotFile["quadrant_trail"] = [
-      {
-        date: "2026-05-01",
-        dollar_change: 0.5,
-        real_yield_change: 0.1,
-        nominal_yield_change: 0.2,
-        vix_percentile: 25
-      },
-      {
-        date: "2026-05-02",
-        dollar_change: Number.NaN,
-        real_yield_change: 0.1,
-        nominal_yield_change: 0.2,
-        vix_percentile: 30
-      },
-      {
-        date: "2026-05-03",
-        dollar_change: 0.3,
-        // @ts-expect-error null is part of the runtime contract
-        real_yield_change: null,
-        nominal_yield_change: 0.2,
-        vix_percentile: 40
-      },
-      {
-        date: "2026-05-04",
-        dollar_change: 0.6,
-        real_yield_change: 0.3,
-        nominal_yield_change: 0.4,
-        vix_percentile: 50
-      }
-    ];
-    const points = buildQuadrantPoints(trail);
-    expect(points.length).toBe(2);
-    expect(points.map((p) => p.date)).toEqual(["2026-05-01", "2026-05-04"]);
+  it("uses real-yield (x) and dollar (y) axis convention", async () => {
+    stubFetchOk(makeDashboardFixture());
+    render(<MacroRegimeQuadrant />);
+    await flush();
+    const option = lastOption();
+    const xName = String((option?.xAxis as { name?: string })?.name ?? "").toLowerCase();
+    const yName = String((option?.yAxis as { name?: string })?.name ?? "").toLowerCase();
+    expect(xName).toContain("real");
+    expect(xName).toContain("yield");
+    expect(yName).toContain("dollar");
   });
 
-  it("marks the last finite entry as the latest point", () => {
-    const trail = makeTrail();
-    const points = buildQuadrantPoints(trail);
-    const latest = points.find((p) => p.isLatest);
-    expect(latest?.date).toBe("2026-05-08");
-    expect(points.filter((p) => p.isLatest).length).toBe(1);
+  it("switches window when a different lookback is selected", async () => {
+    const fixture = makeDashboardFixture();
+    stubFetchOk(fixture);
+    const c = render(<MacroRegimeQuadrant />);
+    await flush();
+    const radios = Array.from(c.querySelectorAll('[role="radio"]')) as HTMLButtonElement[];
+    const oneTwentyD = radios.find((b) => b.textContent === "120D");
+    expect(oneTwentyD).toBeDefined();
+    act(() => {
+      oneTwentyD!.click();
+    });
+    await flush();
+    const option = lastOption();
+    const series = option?.series as Array<{ type: string; data: unknown[] }>;
+    const scatter = series.find((s) => s.type === "scatter");
+    expect(scatter?.data.length).toBe(fixture.windows["120D"].length);
   });
 
-  it("latest point is the last FINITE entry, not the last raw entry", () => {
-    // Last raw entry has a non-finite dollar_change and must be dropped.
-    // The second-to-last raw entry (2026-05-05) is the last finite entry, so
-    // its date should be flagged as the latest point.
-    const trail: RegimeSnapshotFile["quadrant_trail"] = [
-      {
-        date: "2026-05-01",
-        dollar_change: 0.5,
-        real_yield_change: 0.1,
-        nominal_yield_change: 0.2,
-        vix_percentile: 25
-      },
-      {
-        date: "2026-05-05",
-        dollar_change: -0.3,
-        real_yield_change: -0.2,
-        nominal_yield_change: -0.1,
-        vix_percentile: 60
-      },
-      {
-        date: "2026-05-08",
-        dollar_change: Number.NaN,
-        // @ts-expect-error null is part of the runtime contract
-        real_yield_change: null,
-        nominal_yield_change: 0.5,
-        vix_percentile: 80
-      }
-    ];
-    const points = buildQuadrantPoints(trail);
-    expect(points.length).toBe(2);
-    const latest = points.find((p) => p.isLatest);
-    expect(latest?.date).toBe("2026-05-05");
-    expect(latest?.date).not.toBe("2026-05-08");
-    expect(points.filter((p) => p.isLatest).length).toBe(1);
+  it("marks the last point with a label that includes its date", async () => {
+    const fixture = makeDashboardFixture();
+    stubFetchOk(fixture);
+    render(<MacroRegimeQuadrant />);
+    await flush();
+    const option = lastOption();
+    const series = option?.series as Array<{
+      type: string;
+      data: Array<{ label?: { show?: boolean; formatter?: string } }>;
+    }>;
+    const scatter = series.find((s) => s.type === "scatter");
+    const labeled = (scatter?.data ?? []).filter((d) => d.label?.show === true);
+    expect(labeled).toHaveLength(1);
+    const lastDate =
+      fixture.windows["60D"][fixture.windows["60D"].length - 1].date;
+    expect(labeled[0].label!.formatter ?? "").toContain(lastDate);
+  });
+
+  it("renders the four quadrant meaning strings in its legend", async () => {
+    stubFetchOk(makeDashboardFixture());
+    const c = render(<MacroRegimeQuadrant />);
+    await flush();
+    const text = (c.textContent ?? "").toLowerCase();
+    expect(text).toContain("risk-on easing");
+    expect(text).toContain("global tightening");
+    expect(text).toContain("safe-haven");
+    expect(text).toContain("rotation");
+  });
+
+  it("defaults to the 60D window selector being active", async () => {
+    stubFetchOk(makeDashboardFixture());
+    const c = render(<MacroRegimeQuadrant />);
+    await flush();
+    const radios = Array.from(c.querySelectorAll('[role="radio"]'));
+    const sixtyD = radios.find((b) => b.textContent === "60D");
+    expect(sixtyD?.getAttribute("aria-checked")).toBe("true");
+    // Spec sanity: 20D and 120D should NOT be checked at first render.
+    const otherWindows: RegimeWindowKey[] = ["20D", "120D"];
+    for (const w of otherWindows) {
+      const node = radios.find((b) => b.textContent === w);
+      expect(node?.getAttribute("aria-checked")).toBe("false");
+    }
   });
 });
 
