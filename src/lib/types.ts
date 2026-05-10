@@ -445,3 +445,183 @@ export interface SignalPriorityFile {
   top_supports: SignalActiveEntry[];
   missing_high_value_signals: SignalMissingEntry[];
 }
+
+// --- next-phase derived dashboards -----------------------------------------
+
+export type RouteKey =
+  | "rates"
+  | "volatility"
+  | "regime_map"
+  | "credit"
+  | "liquidity"
+  | "dollar_global"
+  | "commodities"
+  | "inflation"
+  | "growth"
+  | "housing"
+  | "sentiment"
+  | "fragility";
+
+export type RouteInsightState =
+  | "risk"
+  | "support"
+  | "mixed"
+  | "calm"
+  | "watch"
+  | "unknown";
+
+export type SignalRefSourceStatus =
+  | "free_public"
+  | "terms_review_needed"
+  | "candidate";
+
+export interface SignalRef {
+  id: string;
+  label: string;
+  message: string;
+  why_it_matters: string;
+  severity: number;
+  freshness_status: SignalFreshnessStatus;
+  confidence: number;
+  source_status: SignalRefSourceStatus;
+}
+
+export interface RouteInsight {
+  title: string;
+  state: RouteInsightState;
+  primary_warning?: SignalRef;
+  primary_support?: SignalRef;
+  why_it_matters: string;
+  confidence: number;
+  freshness_notes: string[];
+}
+
+export interface PageInsightsFile {
+  generated_at_utc: string;
+  date: string;
+  method_version: string;
+  routes: Partial<Record<RouteKey, RouteInsight>>;
+}
+
+export type VolatilityCurveTenor = "9D" | "30D" | "3M";
+
+export type VolatilityHiddenStressState = "calm" | "watch" | "elevated";
+
+export interface VolatilityCurvePoint {
+  tenor: VolatilityCurveTenor;
+  value: number;
+  percentile_5y: number;
+}
+
+export interface VolatilityRatioHistoryPoint {
+  date: string;
+  vix9d_vix: number;
+  vix_vix3m: number;
+}
+
+export interface VolatilityHiddenStressPoint {
+  date: string;
+  vix_value: number;
+  vvix_value: number;
+  vix_percentile: number;
+  vvix_percentile: number;
+  hidden_stress_score: number;
+  state: VolatilityHiddenStressState;
+}
+
+export interface VolatilityDashboardThresholds {
+  vix9d_vix_calm: number;
+  vix9d_vix_stress: number;
+  vix_vix3m_calm: number;
+  vix_vix3m_stress: number;
+  hidden_stress_watch: number;
+  hidden_stress_elevated: number;
+}
+
+export interface VolatilityDashboardFile {
+  generated_at_utc: string;
+  date: string;
+  method_version: string;
+  latest_curve: VolatilityCurvePoint[];
+  ratio_history: VolatilityRatioHistoryPoint[];
+  hidden_stress: VolatilityHiddenStressPoint[];
+  thresholds: VolatilityDashboardThresholds;
+}
+
+export type RatesYieldChangeWindowKey = "1M" | "3M" | "6M" | "1Y";
+export type RatesYieldDriver = "real_yield" | "breakeven" | "balanced";
+export type RatesCurveTenor = "2Y" | "10Y" | "20Y" | "30Y";
+
+export interface RatesYieldChangeWindow {
+  nominal_10y_bps: number;
+  real_yield_10y_bps: number;
+  breakeven_10y_bps: number;
+  driver: RatesYieldDriver;
+}
+
+export interface RatesCurveSnapshotPoint {
+  tenor: RatesCurveTenor;
+  value: number;
+}
+
+export interface RatesCurveSnapshots {
+  current: RatesCurveSnapshotPoint[];
+  one_month_ago: RatesCurveSnapshotPoint[];
+  three_months_ago: RatesCurveSnapshotPoint[];
+  one_year_ago: RatesCurveSnapshotPoint[];
+}
+
+export interface RatesDecompositionHistoryPoint {
+  date: string;
+  nominal_pct: number;
+  real_pct: number;
+  breakeven_pct: number;
+}
+
+export interface RatesCurrentDecomposition {
+  nominal_10y_pct: number;
+  real_yield_10y_pct: number;
+  breakeven_10y_pct: number;
+}
+
+export interface RatesDashboardFile {
+  generated_at_utc: string;
+  date: string;
+  method_version: string;
+  yield_change_windows: Record<RatesYieldChangeWindowKey, RatesYieldChangeWindow>;
+  current_decomposition: RatesCurrentDecomposition;
+  curve_snapshots: RatesCurveSnapshots;
+  decomposition_history: RatesDecompositionHistoryPoint[];
+}
+
+export type RegimeWindowKey = "20D" | "60D" | "120D";
+
+export type RegimeQuadrantLabel =
+  | "risk_on_easing"
+  | "global_tightening_risk_off"
+  | "safe_haven_growth_scare"
+  | "rotation_reflation"
+  | "mixed";
+
+export interface RegimeWindowPoint {
+  date: string;
+  real_yield_change_bps: number;
+  dollar_change_pct: number;
+  vix_percentile: number;
+  credit_change_bps: number;
+  fragility_score: number;
+  regime: RegimeQuadrantLabel;
+}
+
+export interface RegimeDashboardThresholds {
+  real_yield_neutral_bps: number;
+  dollar_neutral_pct: number;
+}
+
+export interface RegimeDashboardFile {
+  generated_at_utc: string;
+  date: string;
+  method_version: string;
+  windows: Record<RegimeWindowKey, RegimeWindowPoint[]>;
+  thresholds: RegimeDashboardThresholds;
+}

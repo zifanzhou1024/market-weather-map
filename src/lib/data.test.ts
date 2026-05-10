@@ -9,9 +9,16 @@ import {
 } from "./data";
 import type {
   DataStatusFile,
+  PageInsightsFile,
+  RatesDashboardFile,
+  RegimeDashboardFile,
+  RouteInsight,
   ScoreSummaryFile,
   SeriesCatalogEntry,
-  SourceRegistryFile
+  SignalFreshnessStatus,
+  SignalRef,
+  SourceRegistryFile,
+  VolatilityDashboardFile
 } from "./types";
 
 const fetchMock = vi.fn();
@@ -146,6 +153,98 @@ describe("loadJsonOrNull", () => {
       SyntaxError
     );
   });
+});
+
+test("type contracts: SignalRef.freshness_status reuses SignalFreshnessStatus enum", () => {
+  // Compile-time check: assigning an enum member to a SignalRef field must be
+  // accepted; an off-spec literal must be rejected (caught by tsc strict mode).
+  const freshnessOk: SignalFreshnessStatus = "ok";
+  const freshnessStale: SignalFreshnessStatus = "stale";
+  const freshnessUnavailable: SignalFreshnessStatus = "unavailable";
+  const ref: SignalRef = {
+    id: "vix_complex",
+    label: "VIX / VVIX complex",
+    message: "Volatility tail risk is contained.",
+    why_it_matters: "Tail risk is calm.",
+    severity: 25.79,
+    freshness_status: freshnessOk,
+    confidence: 0.99,
+    source_status: "free_public"
+  };
+  expect(ref.freshness_status).toBe("ok");
+  expect(freshnessStale).toBe("stale");
+  expect(freshnessUnavailable).toBe("unavailable");
+});
+
+test("type contracts: PageInsightsFile, route insight, dashboard files compose without circular imports", () => {
+  const routeInsight: RouteInsight = {
+    title: "Volatility",
+    state: "calm",
+    why_it_matters: "Volatility tail risk is contained.",
+    confidence: 0.99,
+    freshness_notes: []
+  };
+  const file: PageInsightsFile = {
+    generated_at_utc: "2026-05-10T00:00:00Z",
+    date: "2026-05-10",
+    method_version: "phase8-pr1-page-insights-v1",
+    routes: { volatility: routeInsight }
+  };
+  const vol: VolatilityDashboardFile = {
+    generated_at_utc: "2026-05-10T00:00:00Z",
+    date: "2026-05-10",
+    method_version: "phase8-pr1-volatility-dashboard-v1",
+    latest_curve: [
+      { tenor: "9D", value: 14.0, percentile_5y: 30 },
+      { tenor: "30D", value: 16.0, percentile_5y: 35 },
+      { tenor: "3M", value: 17.0, percentile_5y: 40 }
+    ],
+    ratio_history: [],
+    hidden_stress: [],
+    thresholds: {
+      vix9d_vix_calm: 0.95,
+      vix9d_vix_stress: 1.05,
+      vix_vix3m_calm: 0.95,
+      vix_vix3m_stress: 1.0,
+      hidden_stress_watch: 15,
+      hidden_stress_elevated: 30
+    }
+  };
+  const rates: RatesDashboardFile = {
+    generated_at_utc: "2026-05-10T00:00:00Z",
+    date: "2026-05-10",
+    method_version: "phase8-pr1-rates-dashboard-v1",
+    yield_change_windows: {
+      "1M": { nominal_10y_bps: 5, real_yield_10y_bps: 3, breakeven_10y_bps: 2, driver: "balanced" },
+      "3M": { nominal_10y_bps: 15, real_yield_10y_bps: 12, breakeven_10y_bps: 3, driver: "real_yield" },
+      "6M": { nominal_10y_bps: 25, real_yield_10y_bps: 5, breakeven_10y_bps: 20, driver: "breakeven" },
+      "1Y": { nominal_10y_bps: 40, real_yield_10y_bps: 30, breakeven_10y_bps: 10, driver: "real_yield" }
+    },
+    current_decomposition: {
+      nominal_10y_pct: 4.4,
+      real_yield_10y_pct: 2.0,
+      breakeven_10y_pct: 2.4
+    },
+    curve_snapshots: {
+      current: [{ tenor: "10Y", value: 4.4 }],
+      one_month_ago: [],
+      three_months_ago: [],
+      one_year_ago: []
+    },
+    decomposition_history: []
+  };
+  const regime: RegimeDashboardFile = {
+    generated_at_utc: "2026-05-10T00:00:00Z",
+    date: "2026-05-10",
+    method_version: "phase8-pr1-regime-dashboard-v1",
+    windows: { "20D": [], "60D": [], "120D": [] },
+    thresholds: { real_yield_neutral_bps: 5, dollar_neutral_pct: 0.5 }
+  };
+
+  expect(file.routes.volatility?.state).toBe("calm");
+  expect(vol.latest_curve).toHaveLength(3);
+  expect(rates.yield_change_windows["1Y"].driver).toBe("real_yield");
+  expect(regime.thresholds.real_yield_neutral_bps).toBe(5);
 });
 
 test("type contracts support monthly public data and update metadata", () => {
