@@ -24,6 +24,35 @@ vi.mock("../components/TimeSeriesChart", () => ({
   default: () => <section aria-label="Chart placeholder" />
 }));
 
+// echarts attempts to render to a canvas during setOption; jsdom has no
+// canvas so we stub the modular imports that EChartPanel uses.
+vi.mock("echarts/core", () => ({
+  init: vi.fn(() => ({
+    setOption: vi.fn(),
+    resize: vi.fn(),
+    dispose: vi.fn()
+  })),
+  use: vi.fn()
+}));
+vi.mock("echarts/charts", () => ({
+  LineChart: {},
+  BarChart: {},
+  HeatmapChart: {}
+}));
+vi.mock("echarts/components", () => ({
+  TitleComponent: {},
+  TooltipComponent: {},
+  GridComponent: {},
+  LegendComponent: {},
+  MarkLineComponent: {},
+  MarkAreaComponent: {},
+  DataZoomComponent: {},
+  VisualMapComponent: {}
+}));
+vi.mock("echarts/renderers", () => ({
+  CanvasRenderer: {}
+}));
+
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT =
   true;
 
@@ -1804,12 +1833,16 @@ describe("data-backed routes", () => {
     // Missing high-value entry surfaces the gated source status.
     expect(container.textContent).toContain("MOVE Index (bond volatility)");
     expect(container.textContent).toContain("terms_review_needed");
-    // Section is bounded so it does not crowd the rest of the overview.
+    // The two-column signal-priority section holds warnings and supports.
     const grid = container.querySelector(".signal-priority-grid");
     expect(grid).not.toBeNull();
     expect(grid?.querySelectorAll(".top-signal-list--warning li").length).toBe(1);
     expect(grid?.querySelectorAll(".top-signal-list--support li").length).toBe(1);
-    expect(grid?.querySelectorAll(".top-signal-list--missing li").length).toBe(1);
+    // Missing high-value signals render via the dedicated MissingSignalPanel,
+    // not as the third column of the signal-priority grid.
+    expect(grid?.querySelectorAll(".top-signal-list--missing").length).toBe(0);
+    const missingPanelRows = container.querySelectorAll(".missing-signal-panel-row");
+    expect(missingPanelRows.length).toBe(1);
   });
 
   it("omits the signal-priority section when signal_priority.json is missing", async () => {

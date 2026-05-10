@@ -7,9 +7,12 @@ import DriverAttributionPanel from "../components/DriverAttributionPanel";
 import HorizonImpactMatrix from "../components/HorizonImpactMatrix";
 import HowToReadPanel from "../components/HowToReadPanel";
 import InterpretationPanel from "../components/InterpretationPanel";
+import MarketBriefHeader from "../components/MarketBriefHeader";
 import MetricCard from "../components/MetricCard";
+import MissingSignalPanel from "../components/MissingSignalPanel";
 import OverviewDecisionCard from "../components/OverviewDecisionCard";
 import ScoreCard from "../components/ScoreCard";
+import ScoreContributionHeatmap from "../components/ScoreContributionHeatmap";
 import SignalList from "../components/SignalList";
 import TopSignalList from "../components/TopSignalList";
 import {
@@ -214,6 +217,35 @@ export default function Overview() {
 
             return (
               <>
+                {data.signalPriority ? (
+                  <MarketBriefHeader
+                    overallRead={data.signalPriority.overall_read}
+                    date={data.signalPriority.date}
+                  />
+                ) : null}
+                {data.signalPriority ? (
+                  <section
+                    className="signal-priority-grid signal-priority-grid--two-column"
+                    aria-label="Top active warnings and supports"
+                  >
+                    <TopSignalList
+                      title="Top Active Warnings"
+                      emptyText="No top active warnings in the current snapshot."
+                      variant="warning"
+                      signals={data.signalPriority.top_warnings}
+                    />
+                    <TopSignalList
+                      title="Top Active Supports"
+                      emptyText="No top active supports in the current snapshot."
+                      variant="support"
+                      signals={data.signalPriority.top_supports}
+                    />
+                  </section>
+                ) : null}
+                <ScoreContributionHeatmap scoreSummary={scoreSummary} />
+                {data.signalPriority ? (
+                  <MissingSignalPanel signals={data.signalPriority.missing_high_value_signals} />
+                ) : null}
                 <HowToReadPanel description="Market Weather, Macro Climate, and Fragility are separate descriptive scores for observed conditions. They summarize public-data context for comparing current market and macro inputs." />
                 <DataQualityBanner dataQuality={scoreSummary.data_quality} />
                 <section className="decision-grid" aria-label="Decision views">
@@ -257,31 +289,6 @@ export default function Overview() {
                   <span>Long-Term Impact</span>
                 </div>
                 <HorizonImpactMatrix />
-                {data.signalPriority ? (
-                  <section
-                    className="signal-priority-grid"
-                    aria-label="Top active warnings, supports, and missing high-value signals"
-                  >
-                    <TopSignalList
-                      title="Top Active Warnings"
-                      emptyText="No top active warnings in the current snapshot."
-                      variant="warning"
-                      signals={data.signalPriority.top_warnings}
-                    />
-                    <TopSignalList
-                      title="Top Active Supports"
-                      emptyText="No top active supports in the current snapshot."
-                      variant="support"
-                      signals={data.signalPriority.top_supports}
-                    />
-                    <TopSignalList
-                      title="Missing High-Value Signals"
-                      emptyText="All high-value signals have an active source."
-                      variant="missing"
-                      signals={data.signalPriority.missing_high_value_signals}
-                    />
-                  </section>
-                ) : null}
                 <section className="score-grid" aria-label="Overview scores">
                   <ScoreCard score={scoreSummary.scores.market_weather} title="Market Weather" />
                   <ScoreCard score={scoreSummary.scores.macro_climate} title="Macro Climate" />
