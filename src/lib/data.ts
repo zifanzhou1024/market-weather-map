@@ -3,6 +3,9 @@ import type {
   DataStatusFile,
   DerivedSeriesFile,
   MacroCalendarFile,
+  PageInsightsFile,
+  RatesDashboardFile,
+  RegimeDashboardFile,
   RegimeReplayFile,
   RegimeScoreFile,
   RegimeSnapshotFile,
@@ -12,7 +15,8 @@ import type {
   SeriesCatalogEntry,
   SignalPriorityFile,
   SourceRegistryFile,
-  TimeSeriesFile
+  TimeSeriesFile,
+  VolatilityDashboardFile
 } from "./types";
 
 const baseUrl = (import.meta as ImportMeta & { env: { BASE_URL: string } }).env.BASE_URL.replace(
@@ -128,4 +132,20 @@ export function loadMacroCalendar(): Promise<MacroCalendarFile> {
 
 export function loadSignalPriority(): Promise<SignalPriorityFile> {
   return loadJson<SignalPriorityFile>("/data/derived/signal_priority.json");
+}
+
+export function loadPageInsights(): Promise<PageInsightsFile | null> {
+  return loadJsonOrNull<PageInsightsFile>("/data/derived/page_insights.json");
+}
+
+export function loadVolatilityDashboard(): Promise<VolatilityDashboardFile | null> {
+  return loadJsonOrNull<VolatilityDashboardFile>("/data/derived/volatility_dashboard.json");
+}
+
+export function loadRatesDashboard(): Promise<RatesDashboardFile | null> {
+  return loadJsonOrNull<RatesDashboardFile>("/data/derived/rates_dashboard.json");
+}
+
+export function loadRegimeDashboard(): Promise<RegimeDashboardFile | null> {
+  return loadJsonOrNull<RegimeDashboardFile>("/data/derived/regime_dashboard.json");
 }

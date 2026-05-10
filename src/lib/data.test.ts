@@ -3,9 +3,13 @@ import {
   DataLoadError,
   loadJson,
   loadJsonOrNull,
+  loadPageInsights,
+  loadRatesDashboard,
+  loadRegimeDashboard,
   loadScoreSummary,
   loadSeries,
-  loadSourceRegistry
+  loadSourceRegistry,
+  loadVolatilityDashboard
 } from "./data";
 import type {
   DataStatusFile,
@@ -152,6 +156,71 @@ describe("loadJsonOrNull", () => {
     await expect(loadJsonOrNull("/data/derived/page_insights.json")).rejects.toBeInstanceOf(
       SyntaxError
     );
+  });
+});
+
+describe("next-phase derived dashboard loaders", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    fetchMock.mockReset();
+  });
+
+  it("loadPageInsights fetches the canonical path and returns parsed object", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ generated_at_utc: "2026-05-10T00:00:00Z", routes: {} })
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await loadPageInsights();
+    expect(result).toEqual({ generated_at_utc: "2026-05-10T00:00:00Z", routes: {} });
+    expect(fetchMock).toHaveBeenCalledWith("/data/derived/page_insights.json");
+  });
+
+  it("loadVolatilityDashboard returns null on 404", async () => {
+    fetchMock.mockResolvedValue({ ok: false, status: 404, json: vi.fn() });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadVolatilityDashboard()).resolves.toBeNull();
+    expect(fetchMock).toHaveBeenCalledWith("/data/derived/volatility_dashboard.json");
+  });
+
+  it("loadRatesDashboard fetches the canonical path", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ generated_at_utc: "2026-05-10T00:00:00Z" })
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await loadRatesDashboard();
+    expect(result).toMatchObject({ generated_at_utc: "2026-05-10T00:00:00Z" });
+    expect(fetchMock).toHaveBeenCalledWith("/data/derived/rates_dashboard.json");
+  });
+
+  it("loadRegimeDashboard returns null on 404 and throws on 500", async () => {
+    fetchMock
+      .mockResolvedValueOnce({ ok: false, status: 404, json: vi.fn() })
+      .mockResolvedValueOnce({ ok: false, status: 500, json: vi.fn() });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadRegimeDashboard()).resolves.toBeNull();
+    await expect(loadRegimeDashboard()).rejects.toMatchObject({
+      name: "DataLoadError",
+      status: 500
+    } satisfies Partial<DataLoadError>);
+  });
+
+  it("loadPageInsights re-throws when the file is present but malformed", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockRejectedValue(new SyntaxError("malformed"))
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadPageInsights()).rejects.toBeInstanceOf(SyntaxError);
   });
 });
 
