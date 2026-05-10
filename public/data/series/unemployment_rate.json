@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-05-08T00:12:34Z",
+  "generated_at_utc": "2026-05-09T23:33:01Z",
   "observations": [
     {
       "date": "1948-01-01",
@@ -4691,6 +4691,11 @@
       "date": "2026-03-01",
       "percentile_252d": 66.67,
       "value": 4.3
+    },
+    {
+      "date": "2026-04-01",
+      "percentile_252d": 66.67,
+      "value": 4.3
     }
   ],
   "series_id": "unemployment_rate",
@@ -4698,11 +4703,11 @@
   "source_url": "https://fred.stlouisfed.org/series/UNRATE",
   "summary": {
     "change_12m": 0.1,
-    "change_1d": -0.1,
-    "change_1m": -0.1,
-    "change_1w": -0.1,
-    "change_3m": -0.1,
-    "latest_date": "2026-03-01",
+    "change_1d": 0.0,
+    "change_1m": 0.0,
+    "change_1w": 0.0,
+    "change_3m": 0.0,
+    "latest_date": "2026-04-01",
     "latest_value": 4.3,
     "percentile_252d": 66.67
   },

@@ -65,17 +65,17 @@ Future Phase 4 source expansion should prefer FRED graph CSV mirrors for time se
 
 ## Static Macro Calendar Sources
 
-The calendar at `public/data/events/macro_calendar.json` is descriptive event-risk context. PR 2 uses source-linked rows rather than scraped exact-date alerts.
+The calendar at `public/data/events/macro_calendar.json` is descriptive event-risk context. The current generator overlays scheduled dates from reviewed official/public endpoints when available and preserves source-linked rows when structured access is unavailable or still gated. These rows are generated candidate diagnostics, not live alerts, and do not affect scores, regime labels, checklist states, or confidence.
 
 | Event Area | Source | Source URL | Treatment |
 | --- | --- | --- | --- |
-| CPI | BLS | `https://www.bls.gov/schedule/news_release/cpi.htm` | Source-linked calendar context. |
-| PPI | BLS | `https://www.bls.gov/schedule/news_release/ppi.htm` | Source-linked calendar context. |
-| Payrolls | BLS | `https://www.bls.gov/schedule/news_release/empsit.htm` | Source-linked calendar context. |
-| Personal Income and Outlays / PCE | BEA | `https://www.bea.gov/news/schedule/` | Source-linked calendar context. |
-| FOMC meetings | Federal Reserve | `https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm` | Source-linked calendar context. |
-| Treasury auctions | TreasuryDirect | `https://www.treasuryauctions.gov/auctions/when-auctions-happen/` | Source-linked calendar context. |
-| Housing releases | Census | `https://www.census.gov/construction/nrc/` | Source-linked calendar context. |
+| CPI | BLS | `https://www.bls.gov/schedule/news_release/cpi.htm` | Source-linked calendar context; structured BLS date ingestion remains gated/blocked in this pass. |
+| PPI | BLS | `https://www.bls.gov/schedule/news_release/ppi.htm` | Source-linked calendar context; structured BLS date ingestion remains gated/blocked in this pass. |
+| Payrolls | BLS | `https://www.bls.gov/schedule/news_release/empsit.htm` | Source-linked calendar context; structured BLS date ingestion remains gated/blocked in this pass. |
+| Personal Income and Outlays / PCE | BEA | `https://www.bea.gov/news/schedule/` | Generated scheduled event when available from the official BEA schedule; otherwise source-linked context. |
+| FOMC meetings | Federal Reserve | `https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm` | Generated scheduled event when available from the official FOMC calendar; otherwise source-linked context. |
+| Treasury auctions | FiscalData / U.S. Treasury | `https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/` | Generated scheduled event when a future FiscalData auction row is available; otherwise source-linked context. |
+| Housing releases | Census | `https://www.census.gov/economic-indicators/calendar-listview.html` | Generated scheduled event when available from the official Census economic indicators calendar; otherwise source-linked context. |
 | COT positioning | CFTC | `https://www.cftc.gov/MarketReports/CommitmentsofTraders/ReleaseSchedule/index.htm` | Source-linked calendar context. |
 
 ## Candidate-Only Macro Completeness Sources
@@ -102,18 +102,37 @@ PR 4 promotes a narrow set of FRED-hosted consumer stress series to active gener
 | Fiscal/Treasury supply | `treasury_interest_expense` | FiscalData MTS | `https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/` | Direct FiscalData ingestion deferred. |
 | Treasury auction supply | `treasury_auction_supply` | TreasuryDirect | `https://www.treasuryauctions.gov/auctions/when-auctions-happen/` | Numeric auction ingestion deferred. |
 
+## Source Governance Sprint 1
+
+Source Governance Sprint 1 added documentation-level classifications for candidate source families. Later follow-up work may promote official/public diagnostics into generated static JSON, but those diagnostics remain non-scoring until a separate methodology/scoring PR explicitly promotes them.
+
+No browser provider calls: all provider/API usage must happen in GitHub Actions ingestion or local ingestion, and the browser must read generated static JSON only. Secret names below are listed as names only; no values belong in docs, source review files, generated JSON, or browser bundles.
+
+| Candidate family | Sprint 1 reviewed recommendation | Candidate providers | Potential secret names | Current use boundary |
+| --- | --- | --- | --- | --- |
+| SLOOS | Official/public candidate | Federal Reserve Data Download Program or FRED mirrors | `FRED_API_KEY` only if later FRED API ingestion is chosen | Candidate credit-cycle input; no scoring change in this PR. |
+| Regional Fed survey proxy | Official/public candidate | Philadelphia Fed MBOS via FRED mirror | `FRED_API_KEY` only if later FRED API ingestion is chosen | Generated candidate business-cycle proxy; not ISM PMI or S&P Global PMI and not scored. |
+| Treasury FiscalData | Official/public candidate | U.S. Treasury FiscalData API, CSV, or JSON downloads | None expected | Candidate fiscal-supply input; no ingestion or scoring change in this PR. |
+| Bond-volatility proxy | Official/public candidate derived from public yield series | Federal Reserve/FRED Treasury-yield series | None expected if existing FRED graph CSV input remains sufficient | Candidate realized Treasury-yield volatility proxy; not ICE MOVE and no scoring change in this PR. |
+| Event calendars | Official/public candidate by event family | Federal Reserve, BLS, BEA, Census, U.S. Treasury, TreasuryDirect, CFTC | `BLS_API_KEY`, `BEA_API_KEY`, `CENSUS_API_KEY` if later structured API ingestion is selected | Generated candidate diagnostic for reviewed official rows; no browser provider calls or scoring change. |
+| ICE MOVE | Gated candidate | ICE Data Indices or licensed redistributors | Licensed credentials may be required, but no public project secret is approved | Terms-review-needed licensed index candidate; not redistributable as public static JSON without documented approval. |
+| Put/call, breadth, valuation, PMIs, earnings, term-premium alternatives | Gated or endpoint-specific candidates | Exchanges, index providers, survey owners, earnings providers, official agencies, or licensed redistributors | Source-specific credentials may be required after review | Keep non-scoring until source terms, automation, attribution, and redistribution are reviewed. |
+
 ## Candidate Sources
 
 Candidate sources are not active scoring inputs until legal, terms, cadence, and redistribution review is complete. They should be marked `terms_review_needed` in source planning unless a later review moves them to `free_public`, `restricted`, or `unavailable`.
 
 These candidate rows are displayed as source gaps. They do not affect active scores, regime labels, checklist states, or confidence except as documented source-readiness gaps.
 
+Generated official/public diagnostics may ship as static candidate rows after source review, but they remain non-scoring until a later scoring PR explicitly promotes them. The tables below describe the source-gap layer and gated candidates that still require review or scoring promotion.
+
 | Candidate | Provider | Access status | Potential use | Review notes |
 | --- | --- | --- | --- | --- |
 | ISM manufacturing and services | Institute for Supply Management | `terms_review_needed` | Growth breadth and business-cycle momentum. | Confirm redistribution and automation terms before static publication. |
+| Regional Fed survey proxy | Philadelphia Fed / FRED mirror | `free_public` candidate diagnostic | Public business-cycle breadth proxy. | `philly_fed_mfg_general_activity` is generated as a non-scoring regional Fed survey proxy; do not label it as ISM PMI or S&P Global PMI. |
 | AAII investor sentiment | AAII | `terms_review_needed` | Retail sentiment and contrarian crowding context. | Confirm historical access, redistribution rights, and automated download terms. |
 | NAAIM Exposure Index | NAAIM | `terms_review_needed` | Active manager exposure and risk appetite. | Confirm whether automated ingestion and public JSON redistribution are permitted. |
-| SLOOS | Federal Reserve | `terms_review_needed` | Bank lending standards and credit availability. | Public release is available, but transformation and redistribution format need review. |
+| SLOOS | Federal Reserve | `terms_review_needed` | Bank lending standards and credit availability. | Current shipped catalog/status remains `terms_review_needed` in this docs-only PR; see Source Governance Sprint 1 for the reviewed recommendation. |
 | MOVE Index | ICE Data Indices or licensed redistributors | `terms_review_needed` | Rates volatility and fragility. | Review source access and redistribution terms before scoring. |
 | Equity put-call ratios | OCC, Cboe, or other exchanges | `terms_review_needed` | Options positioning and sentiment. | Confirm source-specific terms and whether historical files can be redistributed. |
 | NY Fed ACM term premium | Federal Reserve Bank of New York | `terms_review_needed` | Term premium and real-rate decomposition. | Review download format, attribution, and static redistribution expectations. |
@@ -125,12 +144,12 @@ These candidate rows are displayed as source gaps. They do not affect active sco
 | Equity breadth | Exchange, index-provider, or licensed market-data sources | `terms_review_needed` | Internal equity-market confirmation and risk breadth. | Candidate score status until source terms, calculation method, and redistribution rules are reviewed. |
 | Term premium | Federal Reserve Bank of New York or other model providers | `terms_review_needed` | Yield-driver decomposition and rate-regime context. | Candidate score status until source terms, model attribution, and static redistribution rules are reviewed. |
 | Valuation | S&P, MSCI, FactSet, Robert Shiller dataset, or other providers | `terms_review_needed` | Long-term macro climate and expected-return context. | Candidate score status until source coverage, calculation method, and redistribution rules are reviewed. |
-| Treasury supply | U.S. Treasury, TreasuryDirect, or fiscal-data APIs | `terms_review_needed` | Issuance, auction, and duration-supply pressure. | Candidate score status until source endpoints, transformation rules, and redistribution expectations are reviewed. |
-| PMIs/SLOOS | ISM, S&P Global, Federal Reserve, or FRED mirrors | `terms_review_needed` | Business-cycle breadth and lending-standards confirmation. | Candidate score status until survey terms, redistribution rules, and permitted derived publication are reviewed. |
+| Treasury supply | U.S. Treasury, TreasuryDirect, or fiscal-data APIs | `terms_review_needed` | Issuance, auction, and duration-supply pressure. | Current shipped catalog/status remains `terms_review_needed` in this docs-only PR; see Source Governance Sprint 1 for Treasury FiscalData and Treasury auction implementation recommendations. |
+| PMIs/SLOOS | ISM, S&P Global, Federal Reserve, or FRED mirrors | `terms_review_needed` | Business-cycle breadth and lending-standards confirmation. | Current shipped catalog/status remains `terms_review_needed` in this docs-only PR; see Source Governance Sprint 1 for the SLOOS reviewed recommendation while PMI sources remain separately gated. |
 
 ## PR 2 Tactical Source Gates
 
-PR 2 tactical panels expose source-readiness gaps for options sentiment, VX futures readiness, and event risk while source access is reviewed. Each row remains `terms_review_needed` until source terms, automation constraints, attribution, cadence, historical coverage, and static redistribution rules are documented.
+PR 2 tactical panels expose source-readiness gaps for options sentiment, VX futures readiness, and event risk while source access is reviewed. Each row remains `terms_review_needed` until source terms, automation constraints, attribution, cadence, historical coverage, and static redistribution rules are documented. Event-calendar display can include generated official/public diagnostics, but they remain descriptive and non-scoring.
 
 These candidate rows are displayed as source gaps. They do not affect active scores, regime labels, checklist states, or confidence except as documented source-readiness gaps.
 
@@ -138,7 +157,7 @@ These candidate rows are displayed as source gaps. They do not affect active sco
 | --- | --- | --- | --- | --- | --- |
 | Put/call categories | Total, index, equity, ETP, VIX, SPX, SPXW | OCC, Cboe, exchanges, or licensed redistributors | `terms_review_needed` | Options sentiment coverage and category-level source gaps. | Confirm category definitions, historical access, redistribution rules, and automated ingestion terms. |
 | VIX futures curve | VX1, VX2, VX3, VX4, VX5, VX6, VX7, VX8 | Cboe Futures Exchange or licensed redistributors | `terms_review_needed` | VX futures readiness and volatility term-structure source gaps. | Confirm delayed-data constraints, contract roll handling, access terms, attribution, and static redistribution rules. |
-| Event calendar families | CPI, FOMC, payrolls, Treasury auctions, OPEX | BLS, Federal Reserve, Treasury, OCC, exchanges, or official calendars | `terms_review_needed` | Event-risk source gaps and calendar-readiness context. | Confirm official machine-readable endpoints, update cadence, historical coverage, attribution, and redistribution expectations. |
+| Event calendar families | CPI, FOMC, payrolls, Treasury auctions, OPEX | BLS, Federal Reserve, Treasury, OCC, exchanges, or official calendars | `terms_review_needed` | Event-risk source gaps and generated candidate diagnostics. | Source Governance Sprint 1 reviewed official/public event recommendations; generated official/public rows are descriptive only, and OPEX plus blocked/gated event sources remain candidate-only until reviewed. |
 
 ## PR 3 Shock-Risk Source Gates
 
@@ -153,12 +172,12 @@ These candidate rows are displayed as source gaps. They do not affect active sco
 
 ## PR 4 Strategic Source Gates
 
-PR 4 adds strategic source-readiness rows for long-term macro completeness without making them active scoring inputs. Each row remains `terms_review_needed` until source terms, automation constraints, attribution, cadence, historical coverage, calculation rules, and static redistribution rules are documented.
+PR 4 adds strategic source-readiness rows for long-term macro completeness without making them active scoring inputs. Each row remains `terms_review_needed` until source terms, automation constraints, attribution, cadence, historical coverage, calculation rules, and static redistribution rules are documented. Current shipped catalog/status rows remain unchanged in this docs-only PR; see Source Governance Sprint 1 for reviewed recommendations that may guide later implementation work.
 
 | Candidate family | Candidate rows | Provider candidates | Access status | Source-readiness use | Review notes |
 | --- | --- | --- | --- | --- | --- |
-| PMIs and lending standards | ISM services PMI, SLOOS lending standards | ISM, Federal Reserve, FRED mirrors, or licensed redistributors | `terms_review_needed` | Business-cycle breadth and credit-availability source gaps. | Confirm survey/data redistribution rights, transformation method, and attribution before ingestion. |
-| Term premium and Treasury supply | ACM 10Y term premium, Treasury net issuance, auction tail, bid-to-cover | NY Fed, U.S. Treasury, TreasuryDirect, or FiscalData | `terms_review_needed` | Yield-driver, duration-supply, and auction-demand source gaps. | Confirm model attribution, endpoint stability, calculation rules, and static redistribution expectations. |
+| PMIs and lending standards | ISM services PMI, SLOOS lending standards | ISM, Federal Reserve, FRED mirrors, or licensed redistributors | `terms_review_needed` | Business-cycle breadth and credit-availability source gaps. | Current shipped catalog/status remains `terms_review_needed` in this docs-only PR; see Source Governance Sprint 1 for the SLOOS reviewed recommendation while PMI sources remain separately gated. |
+| Term premium and Treasury supply | ACM 10Y term premium, Treasury net issuance, auction tail, bid-to-cover | NY Fed, U.S. Treasury, TreasuryDirect, or FiscalData | `terms_review_needed` | Yield-driver, duration-supply, and auction-demand source gaps. | Current shipped catalog/status remains `terms_review_needed` in this docs-only PR; see Source Governance Sprint 1 for Treasury FiscalData and related Treasury recommendations. |
 | Valuation and earnings | CAPE, forward P/E, equity risk premium, earnings revision breadth | Shiller dataset, index providers, earnings providers, or licensed redistributors | `terms_review_needed` | Strategic valuation and earnings-cycle source gaps. | Confirm provider permissions, methodology, licensing, and redistribution rules before scoring. |
 
 ## Source Handling

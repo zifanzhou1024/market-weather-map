@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
 import DataGapPanel from "../components/DataGapPanel";
+import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
 import HorizonScoreHeader from "../components/HorizonScoreHeader";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -71,6 +73,18 @@ const ratesIds = ["real_yield_10y"];
 const macroSeriesIds = [...macroGroups.flatMap((group) => group.ids), ...ratesIds];
 const macroDerivedIds = ["net_liquidity"];
 const macroStatusIds = [...macroSeriesIds, ...macroDerivedIds];
+const macroDiagnosticIds = [
+  "philly_fed_mfg_general_activity",
+  "sloos_lending_standards",
+  "sloos_small_firm_standards",
+  "sloos_large_firm_demand",
+  "ci_loans_weekly",
+  "term_premium_kw_10y",
+  "monthly_treasury_receipts",
+  "monthly_treasury_outlays",
+  "monthly_treasury_deficit_surplus",
+  "treasury_auction_supply"
+];
 
 const macroCyclePanels = [
   {
@@ -126,6 +140,7 @@ const macroCyclePanels = [
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
+  diagnosticSeries: TimeSeriesFile[];
   netLiquidity: DerivedSeriesFile;
   scoreSummary: ScoreSummaryFile;
   series: TimeSeriesFile[];
@@ -164,13 +179,16 @@ export default function LongTermMacroClimate() {
           loadScoreSummary(),
           loadRegimeSnapshot()
         ]);
-        const [series, [netLiquidity]] = await Promise.all([
+        const [series, diagnosticSeries, [netLiquidity]] = await Promise.all([
           loadRouteSeries(macroSeriesIds, catalog, status),
+          loadRouteSeries(macroDiagnosticIds, catalog, status, {
+            allowMissing: new Set(macroDiagnosticIds)
+          }),
           loadRouteDerivedSeries(macroDerivedIds, catalog, status, {
             allowMissing: new Set(macroDerivedIds)
           })
         ]);
-        if (active) setData({ catalog, netLiquidity, scoreSummary, series, snapshot, status });
+        if (active) setData({ catalog, diagnosticSeries, netLiquidity, scoreSummary, series, snapshot, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load macro climate.");
       }
@@ -197,6 +215,7 @@ export default function LongTermMacroClimate() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <section className="score-grid" aria-label="Macro climate score">
             <ScoreCard score={data.scoreSummary.scores.macro_climate} title="Macro Climate" />
           </section>
@@ -243,6 +262,15 @@ export default function LongTermMacroClimate() {
               ))}
             </section>
           </section>
+          <CandidateDiagnosticPanel
+            catalog={data.catalog}
+            diagnosticIds={macroDiagnosticIds}
+            eyebrow="Official/public diagnostics"
+            series={data.diagnosticSeries}
+            status={data.status}
+            summary="These generated static diagnostics are sourced from official/public paths and shown for context only."
+            title="Generated official diagnostics"
+          />
           <StrategicSourceGapsPanel />
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
           {macroGroups.map((group) => (

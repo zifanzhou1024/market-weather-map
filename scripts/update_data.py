@@ -11,6 +11,7 @@ from scripts.shared.safe_update import restore_snapshot, snapshot_tree, write_fa
 MODULES = [
     "scripts.ingest.fetch_cboe",
     "scripts.ingest.fetch_fred_csv",
+    "scripts.ingest.fetch_treasury",
     "scripts.ingest.fetch_cftc",
     "scripts.transform.normalize_series",
     "scripts.transform.compute_percentiles",

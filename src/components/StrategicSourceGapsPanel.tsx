@@ -1,34 +1,63 @@
 import CandidateSourcePanel from "./CandidateSourcePanel";
 
 const strategicRows = [
-  { label: "PMIs", status: "terms_review_needed", note: "Strategic breadth input remains source-gated." },
   {
-    label: "SLOOS",
+    label: "PMIs",
     status: "terms_review_needed",
-    note: "Bank lending survey transformation and redistribution remain under review."
+    note: "Helps track business-cycle breadth before slower hard data updates; not active because source access and redistribution need review, so it cannot affect scores until source review promotes it."
   },
   {
-    label: "Term premium",
+    label: "SLOOS scoring promotion",
     status: "terms_review_needed",
-    note: "NY Fed ACM or equivalent source requires access review before scoring."
+    note: "Generated official SLOOS diagnostics are visible separately, but scoring promotion still needs transformation and governance review before it can affect active scores."
   },
   {
-    label: "Treasury supply",
+    label: "NY Fed ACM term premium",
     status: "terms_review_needed",
-    note: "Issuance and auction data require source-governed static publication rules."
+    note: "Kim-Wright term-premium diagnostics are visible separately; NY Fed ACM term premium remains gated until source access and redistribution review is complete."
   },
   {
-    label: "Valuation",
+    label: "Treasury net issuance",
     status: "terms_review_needed",
-    note: "CAPE, forward P/E, ERP, and related valuation inputs remain candidate-only."
+    note: "Helps track supply pressure on duration markets; not active because fiscal-source automation and redistribution need review, so it cannot affect scores until source review promotes it."
   },
   {
-    label: "Earnings revisions",
+    label: "Auction tail",
     status: "terms_review_needed",
-    note: "Analyst revision data remains candidate-only until a compliant source is approved."
+    note: "Helps track demand weakness at Treasury auctions; not active because auction-data publication rules need review, so it cannot affect scores until source review promotes it."
+  },
+  {
+    label: "Bid-to-cover",
+    status: "terms_review_needed",
+    note: "Helps track auction demand depth; not active because auction-data publication rules need review, so it cannot affect scores until source review promotes it."
+  },
+  {
+    label: "CAPE",
+    status: "terms_review_needed",
+    note: "Helps frame long-horizon valuation pressure; not active because valuation source access and redistribution need review, so it cannot affect scores until source review promotes it."
+  },
+  {
+    label: "Forward P/E",
+    status: "terms_review_needed",
+    note: "Helps frame earnings-adjusted valuation pressure; not active because forward-estimate source rights need review, so it cannot affect scores until source review promotes it."
+  },
+  {
+    label: "Equity risk premium",
+    status: "terms_review_needed",
+    note: "Helps compare equity compensation against rates; not active because calculation inputs and source rights need review, so it cannot affect scores until source review promotes it."
+  },
+  {
+    label: "Earnings revision breadth",
+    status: "terms_review_needed",
+    note: "Helps track analyst estimate momentum; not active because revision data source rights need review, so it cannot affect scores until source review promotes it."
+  },
+  {
+    label: "Fiscal deficit / interest expense",
+    status: "terms_review_needed",
+    note: "Helps frame fiscal pressure and debt-service load over strategic horizons; not active because source timing and redistribution need review, so it cannot affect scores until source review promotes it."
   }
 ].map((row) => ({
-  id: row.label.toLowerCase().replace(/\s+/g, "_"),
+  id: row.label.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, ""),
   ...row
 }));
 
@@ -37,7 +66,7 @@ export default function StrategicSourceGapsPanel() {
     <CandidateSourcePanel
       eyebrow="Candidate sources"
       items={strategicRows}
-      summary="PMIs, SLOOS, term premium, Treasury supply, valuation, and earnings revisions remain candidate-only strategic inputs and do not affect active scores."
+      summary="Strategic source gaps remain candidate-only until source access, transformation, and redistribution review promotes them."
       title="Strategic source gaps"
     />
   );

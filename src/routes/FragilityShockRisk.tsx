@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
 import DataGapPanel from "../components/DataGapPanel";
+import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
+import HiddenStressSummary from "../components/HiddenStressSummary";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MismatchWarningPanel from "../components/MismatchWarningPanel";
 import ScoreCard from "../components/ScoreCard";
@@ -14,8 +17,11 @@ import {
   loadScoreSummary,
   loadShockRiskSnapshot
 } from "../lib/data";
+import { sanitizeShockRiskSnapshot } from "../lib/shockRisk";
+import { loadRouteDerivedSeries } from "./routeSeries";
 import type {
   DataStatusFile,
+  DerivedSeriesFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
   ShockRiskSnapshotFile,
@@ -32,9 +38,11 @@ const fragilityStatusIds = [
   "real_yield_10y",
   "net_liquidity"
 ];
+const fragilityDiagnosticIds = ["bond_volatility_proxy"];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
+  diagnosticSeries: DerivedSeriesFile[];
   scoreSummary: ScoreSummaryFile;
   shockSnapshot: ShockRiskSnapshotFile;
   snapshot: RegimeSnapshotFile;
@@ -57,7 +65,19 @@ export default function FragilityShockRisk() {
           loadDataStatus(),
           loadCatalog()
         ]);
-        if (active) setData({ catalog, scoreSummary, shockSnapshot, snapshot, status });
+        const diagnosticSeries = await loadRouteDerivedSeries(fragilityDiagnosticIds, catalog, status, {
+          allowMissing: new Set(fragilityDiagnosticIds)
+        });
+        if (active) {
+          setData({
+            catalog,
+            diagnosticSeries,
+            scoreSummary,
+            shockSnapshot: sanitizeShockRiskSnapshot(shockSnapshot),
+            snapshot,
+            status
+          });
+        }
       } catch (loadError) {
         if (active) {
           setError(loadError instanceof Error ? loadError.message : "Unable to load fragility shock risk.");
@@ -86,12 +106,14 @@ export default function FragilityShockRisk() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <ShockRiskReadHeader
             catalog={data.catalog}
             scoreSummary={data.scoreSummary}
             shockSnapshot={data.shockSnapshot}
             status={data.status}
           />
+          <HiddenStressSummary shockSnapshot={data.shockSnapshot} />
           <InterpretationPanel
             caveats={data.scoreSummary.scores.fragility.missing_or_stale_notes}
             label={data.snapshot.regime.label}
@@ -104,6 +126,15 @@ export default function FragilityShockRisk() {
             <ScoreCard score={data.scoreSummary.scores.fragility} title="Fragility" />
           </section>
           <ShockRiskDashboard snapshot={data.shockSnapshot} />
+          <CandidateDiagnosticPanel
+            catalog={data.catalog}
+            diagnosticIds={fragilityDiagnosticIds}
+            eyebrow="Generated diagnostics"
+            series={data.diagnosticSeries}
+            status={data.status}
+            summary="This public realized-yield-volatility proxy is generated from static Treasury-yield data for context only; it is not ICE MOVE."
+            title="Public bond-volatility diagnostic"
+          />
           <TailRiskPanel catalog={data.catalog} snapshot={data.shockSnapshot} status={data.status} />
           <MismatchWarningPanel warnings={data.shockSnapshot.mismatch_warnings} />
           <DataGapPanel seriesIds={fragilityStatusIds} status={data.status} />

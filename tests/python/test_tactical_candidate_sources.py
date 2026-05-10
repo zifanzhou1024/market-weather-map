@@ -34,7 +34,6 @@ TACTICAL_CANDIDATE_IDS = (
 
 STRATEGIC_CANDIDATE_IDS = (
     "ism_services_pmi",
-    "sloos_lending_standards",
     "term_premium_acm_10y",
     "treasury_net_issuance",
     "treasury_auction_tail",
@@ -43,6 +42,20 @@ STRATEGIC_CANDIDATE_IDS = (
     "forward_pe",
     "equity_risk_premium",
     "earnings_revision_breadth",
+)
+
+OFFICIAL_PUBLIC_DIAGNOSTIC_IDS = (
+    "philly_fed_mfg_general_activity",
+    "sloos_lending_standards",
+    "sloos_small_firm_standards",
+    "sloos_large_firm_demand",
+    "ci_loans_weekly",
+    "term_premium_kw_10y",
+    "bond_volatility_proxy",
+    "monthly_treasury_receipts",
+    "monthly_treasury_outlays",
+    "monthly_treasury_deficit_surplus",
+    "treasury_auction_supply",
 )
 
 SUPPORTED_FRONTEND_FREQUENCIES = {"daily", "weekly", "monthly", "quarterly"}
@@ -116,4 +129,15 @@ def test_strategic_candidate_source_gates_are_inactive():
         assert entry["terms_status"] == "review_needed"
         assert entry["public"] is False
         assert entry["horizon"] == "strategic"
+        assert entry["frequency"] in SUPPORTED_FRONTEND_FREQUENCIES
+
+
+def test_official_public_diagnostics_remain_candidate_only():
+    entries = entries_by_id()
+
+    for series_id in OFFICIAL_PUBLIC_DIAGNOSTIC_IDS:
+        entry = entries[series_id]
+        assert entry["score_status"] == "candidate"
+        assert entry["access_status"] == "free_public"
+        assert entry["public"] is True
         assert entry["frequency"] in SUPPORTED_FRONTEND_FREQUENCIES

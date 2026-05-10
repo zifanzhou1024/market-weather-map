@@ -3,6 +3,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import ConfidenceBreakdown from "./ConfidenceBreakdown";
 import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
+import CandidateDiagnosticPanel from "./CandidateDiagnosticPanel";
 import CrossAssetConfirmationMatrix from "./CrossAssetConfirmationMatrix";
 import DataGapPanel from "./DataGapPanel";
 import DataStatusTable from "./DataStatusTable";
@@ -28,6 +29,7 @@ import SignalChecklist from "./SignalChecklist";
 import SignalList from "./SignalList";
 import SourceNote from "./SourceNote";
 import SourceAccessBadge from "./SourceAccessBadge";
+import StrategicSourceGapsPanel from "./StrategicSourceGapsPanel";
 import TailRiskPanel from "./TailRiskPanel";
 import VixFuturesReadinessPanel from "./VixFuturesReadinessPanel";
 import YieldDecompositionChart from "./YieldDecompositionChart";
@@ -537,6 +539,122 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("No candidate source rows are configured for this view.");
   });
 
+  it("renders generated candidate diagnostics as non-scoring official rows", () => {
+    const diagnosticCatalog: SeriesCatalogEntry[] = [
+      {
+        category: "credit",
+        frequency: "quarterly",
+        higher_is: "riskier",
+        id: "sloos_lending_standards",
+        max_stale_days: 120,
+        name: "SLOOS C&I Lending Standards: Large and Middle-Market Firms",
+        notes: "Generated non-scoring SLOOS lending-standards diagnostic from FRED.",
+        public: true,
+        source: "FRED",
+        source_url: "https://example.com/sloos",
+        units: "net percent",
+        access_status: "free_public",
+        score_status: "candidate"
+      }
+    ];
+    const diagnosticStatus: DataStatusFile = {
+      generated_at_utc: "2026-05-09T00:00:00Z",
+      last_successful_update_utc: "2026-05-09T00:00:00Z",
+      overall_status: "ok",
+      series: {
+        sloos_lending_standards: {
+          expected_frequency: "quarterly",
+          freshness_days: 38,
+          last_observation: "2026-04-01",
+          max_stale_days: 120,
+          message:
+            "Latest quarterly observation covers 2026-Q2. candidate diagnostic only; does not affect active scores.",
+          observation_period: "2026-Q2",
+          score_status: "candidate",
+          source: "FRED",
+          status: "ok"
+        }
+      }
+    };
+
+    const container = render(
+      <CandidateDiagnosticPanel
+        catalog={diagnosticCatalog}
+        diagnosticIds={["sloos_lending_standards"]}
+        series={[
+          {
+            frequency: "quarterly",
+            generated_at_utc: "2026-05-09T00:00:00Z",
+            observations: [
+              { date: "2025-07-01", value: 10 },
+              { date: "2025-10-01", value: 20 },
+              { date: "2026-01-01", value: 15 },
+              { date: "2026-04-01", value: 30 }
+            ],
+            series_id: "sloos_lending_standards",
+            source: "FRED",
+            source_url: "https://example.com/sloos",
+            summary: {
+              change_1d: null,
+              change_1m: null,
+              change_1w: null,
+              latest_date: "2026-04-01",
+              latest_value: 30,
+              percentile_252d: null
+            },
+            units: "net percent"
+          }
+        ]}
+        status={diagnosticStatus}
+        title="Generated official diagnostics"
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Generated official diagnostics");
+    expect(text).toContain("SLOOS C&I Lending Standards: Large and Middle-Market Firms");
+    expect(text).toContain("Generated candidate diagnostic");
+    expect(text).toContain("Not scored");
+    expect(text).toContain("Does not affect active scores, labels, checklist states, or confidence.");
+    expect(text).toContain("Observation 2026-Q2");
+    expect(text).toContain("Trend window 4 observations");
+    expect(text).toContain("Latest 30.00 net percent on 2026-04-01");
+    expect(text).toContain("FRED");
+    expect(text).not.toContain("Terms review needed");
+    expect(container.querySelectorAll(".candidate-diagnostic-row")).toHaveLength(1);
+    expect(container.querySelector(".candidate-diagnostic-sparkline")).not.toBeNull();
+  });
+
+  it("renders a clear generated diagnostic trend fallback without observations", () => {
+    const container = render(
+      <CandidateDiagnosticPanel
+        catalog={[]}
+        diagnosticIds={["missing_diagnostic"]}
+        series={[
+          {
+            frequency: "daily",
+            generated_at_utc: "2026-05-09T00:00:00Z",
+            observations: [],
+            series_id: "missing_diagnostic",
+            source: "Derived",
+            source_url: "https://example.com/missing",
+            units: "index"
+          }
+        ]}
+        status={{
+          generated_at_utc: "2026-05-09T00:00:00Z",
+          last_successful_update_utc: "2026-05-09T00:00:00Z",
+          overall_status: "ok",
+          series: {}
+        }}
+        title="Generated official diagnostics"
+      />
+    );
+
+    expect(container.textContent).toContain("Trend unavailable");
+    expect(container.textContent).toContain("No generated observations are available for this diagnostic.");
+  });
+
   it("orders options sentiment candidates without active signal labels", () => {
     const container = render(<OptionsSentimentPanel items={[...candidateRows].reverse()} />);
     const text = container.textContent ?? "";
@@ -551,6 +669,13 @@ describe("data-driven components", () => {
     ];
 
     expect(text).toContain("Options sentiment");
+    expect(text).toContain("Useful short-term sentiment context");
+    expect(text).toContain("automated historical access");
+    expect(text).toContain("static JSON redistribution");
+    expect(text).toContain(
+      "cannot affect scores, regime labels, checklist states, or confidence"
+    );
+    expect(text).toContain("SPX/SPXW, index, equity, VIX, ETP, and total put/call");
     expect(text).toContain("Source review required");
     for (const label of orderedLabels) {
       expect(text).toContain(label);
@@ -562,16 +687,28 @@ describe("data-driven components", () => {
   });
 
   it("renders active options sentiment series before candidate-only fallback rows", () => {
+    const activeEquitySeries: TimeSeriesFile = {
+      ...activeOptionsSeries,
+      series_id: "put_call_equity",
+      summary: {
+        change_1d: 0.04,
+        change_1m: null,
+        change_1w: null,
+        latest_date: "2026-05-01",
+        latest_value: 0.81,
+        percentile_252d: null
+      }
+    };
     const container = render(
-      <OptionsSentimentPanel activeSeries={[activeOptionsSeries]} items={candidateRows} />
+      <OptionsSentimentPanel activeSeries={[activeEquitySeries]} items={candidateRows} />
     );
     const text = container.textContent ?? "";
 
     expect(text).toContain("Options sentiment");
-    expect(text).toContain("SPX/SPXW put/call");
+    expect(text).toContain("Equity put/call");
     expect(text).toContain("Active data");
-    expect(text).toContain("Latest ratio 1.23 on 2026-05-01.");
-    expect(text.indexOf("SPX/SPXW put/call")).toBeLessThan(text.indexOf("SPX put/call"));
+    expect(text).toContain("Latest ratio 0.81 on 2026-05-01.");
+    expect(text.indexOf("Equity put/call")).toBeLessThan(text.indexOf("SPX/SPXW put/call"));
     expect(text).toContain("Source review required");
     expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
   });
@@ -598,6 +735,32 @@ describe("data-driven components", () => {
     expect(text.toLowerCase()).not.toMatch(/\b(panic|hedged|complacent)\b/);
   });
 
+  it("renders strategic source gaps with source-review governance copy", () => {
+    const container = render(<StrategicSourceGapsPanel />);
+    const text = container.textContent ?? "";
+    const labels = [
+      "PMIs",
+      "SLOOS scoring promotion",
+      "NY Fed ACM term premium",
+      "Treasury net issuance",
+      "Auction tail",
+      "Bid-to-cover",
+      "CAPE",
+      "Forward P/E",
+      "Equity risk premium",
+      "Earnings revision breadth",
+      "Fiscal deficit / interest expense"
+    ];
+
+    expect(text).toContain("Strategic source gaps");
+    for (const label of labels) {
+      expect(text).toContain(label);
+    }
+    expect(text).toContain("cannot affect scores until source review promotes it");
+    expect(container.querySelectorAll(".candidate-source-row")).toHaveLength(labels.length);
+    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(labels.length);
+  });
+
   it("renders event risk source-gated candidate rows", () => {
     const container = render(<EventRiskPanel />);
     const text = container.textContent ?? "";
@@ -609,6 +772,54 @@ describe("data-driven components", () => {
     expect(text).toContain("payrolls");
     expect(text).toContain("Treasury auctions");
     expect(text).toContain("OPEX");
+  });
+
+  it("renders official event calendar rows as non-scoring source-linked context", () => {
+    const container = render(
+      <EventRiskPanel
+        calendar={{
+          generated_at_utc: "2026-05-09T00:00:00Z",
+          method_version: "official-event-calendar-v2",
+          events: [
+            {
+              category: "inflation",
+              date: null,
+              id: "cpi",
+              importance: "high",
+              notes: "BLS monthly Consumer Price Index release calendar.",
+              source: "BLS",
+              source_url: "https://www.bls.gov/schedule/news_release/cpi.htm",
+              status: "source_link",
+              time: "08:30",
+              timezone: "America/New_York",
+              title: "CPI"
+            }
+          ]
+        }}
+        items={[
+          {
+            id: "event_opex",
+            label: "OPEX",
+            note: "Options-expiration calendar remains source-gated.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const text = container.textContent ?? "";
+
+    expect(text).toContain("Official source-linked calendar context");
+    expect(text).toContain("Not scored");
+    expect(text).toContain("generated candidate diagnostic, not a live alert");
+    expect(text).toContain("does not affect active scores, regime labels, checklist states, or confidence");
+    expect(text).toContain("CPI");
+    expect(text).toContain("BLS monthly Consumer Price Index release calendar.");
+    expect(text).toContain("BLS");
+    expect(text).toContain("See source 08:30 America/New_York");
+    expect(text).toContain("OPEX");
+    expect(text).toContain("Options-expiration calendar remains source-gated.");
+    expect(container.querySelectorAll(".calendar-event")).toHaveLength(1);
+    expect(container.querySelectorAll(".candidate-source-row")).toHaveLength(1);
   });
 
   it("renders route-provided event risk candidate rows", () => {
@@ -958,6 +1169,137 @@ describe("data-driven components", () => {
     expect(text).toContain("Diverging");
     expect(text).toContain("Unavailable");
     expect(text.toLowerCase()).not.toMatch(/\b(buy|sell|short|long|entry|target|stop)\b/);
+  });
+
+  it("renders candidate-only cross-asset rows after active confirmations", () => {
+    const container = render(
+      <CrossAssetConfirmationMatrix
+        items={[
+          {
+            id: "credit",
+            label: "Credit",
+            message: "Credit confirms the current regime.",
+            status: "confirming"
+          }
+        ]}
+        candidateItems={[
+          {
+            id: "move_index",
+            label: "MOVE",
+            message: "Bond-volatility confirmation remains source-gated.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const rows = Array.from(container.querySelectorAll(".confirmation-matrix__item"));
+    const text = container.textContent ?? "";
+
+    expect(rows).toHaveLength(2);
+    expect(rows[0]?.textContent).toContain("Credit");
+    expect(rows[1]?.textContent).toContain("MOVE");
+    expect(rows[1]?.classList.contains("candidate-only")).toBe(true);
+    expect(rows[1]?.querySelector(".status-pill")?.classList.contains("status-terms_review_needed")).toBe(true);
+    expect(text.indexOf("Credit")).toBeLessThan(text.indexOf("MOVE"));
+    expect(text).toContain("Terms review needed");
+  });
+
+  it("deduplicates candidate-only cross-asset rows against active rows by normalized id or label", () => {
+    const container = render(
+      <CrossAssetConfirmationMatrix
+        items={[
+          {
+            id: "credit",
+            label: "Credit",
+            message: "Credit confirms the current regime.",
+            status: "confirming"
+          },
+          {
+            id: "liquidity",
+            label: "Liquidity",
+            message: "Liquidity confirms the current regime.",
+            status: "confirming"
+          }
+        ]}
+        candidateItems={[
+          {
+            id: "Credit",
+            label: "Credit candidate",
+            message: "Duplicate by id.",
+            status: "terms_review_needed"
+          },
+          {
+            id: "liquidity_candidate",
+            label: "liquidity",
+            message: "Duplicate by label.",
+            status: "terms_review_needed"
+          },
+          {
+            id: "move_index",
+            label: "MOVE",
+            message: "Bond-volatility confirmation remains source-gated.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const rows = Array.from(container.querySelectorAll(".confirmation-matrix__item"));
+
+    expect(rows).toHaveLength(3);
+    expect(container.textContent).toContain("MOVE");
+    expect(container.textContent).not.toContain("Credit candidate");
+    expect(container.textContent).not.toContain("Duplicate by label.");
+  });
+
+  it("ignores malformed active confirmation rows before deduplicating candidates", () => {
+    const malformedItems = [
+      {
+        id: "credit",
+        label: "Credit",
+        message: "Credit confirms the current regime.",
+        status: "confirming"
+      },
+      {
+        id: null,
+        label: "Malformed active",
+        message: "This malformed active row should not render.",
+        status: "confirming"
+      },
+      {
+        id: "bad_label",
+        label: 42,
+        message: "This malformed label should not render.",
+        status: "diverging"
+      }
+    ] as unknown as RegimeSnapshotFile["confirmations"];
+
+    const container = render(
+      <CrossAssetConfirmationMatrix
+        items={malformedItems}
+        candidateItems={[
+          {
+            id: "Credit",
+            label: "Credit candidate",
+            message: "Duplicate by valid active id.",
+            status: "terms_review_needed"
+          },
+          {
+            id: "move_index",
+            label: "MOVE",
+            message: "Candidate-only row remains visible.",
+            status: "terms_review_needed"
+          }
+        ]}
+      />
+    );
+    const rows = Array.from(container.querySelectorAll(".confirmation-matrix__item"));
+
+    expect(rows).toHaveLength(2);
+    expect(rows[0]?.textContent).toContain("Credit");
+    expect(rows[1]?.textContent).toContain("MOVE");
+    expect(container.textContent).not.toContain("Malformed active");
+    expect(container.textContent).not.toContain("malformed label");
+    expect(container.textContent).not.toContain("Credit candidate");
   });
 
   it("renders regime quadrant labels as DOM text", () => {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -28,10 +29,17 @@ const ratesSeriesIds = [
   "breakeven_10y",
   "forward_inflation_5y5y"
 ];
+const treasurySupplyDiagnosticIds = [
+  "monthly_treasury_deficit_surplus",
+  "monthly_treasury_receipts",
+  "monthly_treasury_outlays",
+  "treasury_auction_supply"
+];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
   curve: DerivedSeriesFile;
+  diagnosticSeries: TimeSeriesFile[];
   snapshot: RegimeSnapshotFile;
   series: TimeSeriesFile[];
   status: DataStatusFile;
@@ -61,11 +69,14 @@ export default function Rates() {
           loadDataStatus(),
           loadRegimeSnapshot()
         ]);
-        const [series, curve] = await Promise.all([
+        const [series, diagnosticSeries, curve] = await Promise.all([
           loadRouteSeries(ratesSeriesIds, catalog, status),
+          loadRouteSeries(treasurySupplyDiagnosticIds, catalog, status, {
+            allowMissing: new Set(treasurySupplyDiagnosticIds)
+          }),
           loadDerivedSeries("us10y_minus_us2y")
         ]);
-        if (active) setData({ catalog, curve, snapshot, series, status });
+        if (active) setData({ catalog, curve, diagnosticSeries, snapshot, series, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load rates data.");
       }
@@ -126,6 +137,15 @@ export default function Rates() {
             summary={`Yield driver: ${yieldDriverLabel(data.snapshot.regime.yield_driver)}`}
           />
           <DataGapPanel status={data.status} seriesIds={ratesSeriesIds.concat(["us10y_minus_us2y"])} />
+          <CandidateDiagnosticPanel
+            catalog={data.catalog}
+            diagnosticIds={treasurySupplyDiagnosticIds}
+            eyebrow="Official/public diagnostics"
+            series={data.diagnosticSeries}
+            status={data.status}
+            summary="FiscalData Treasury supply rows are generated as static candidate diagnostics for rates context only."
+            title="Treasury supply diagnostics"
+          />
           <section className="metric-grid" aria-label="Rates metrics">
             {data.series.map((series) => (
               <MetricCard

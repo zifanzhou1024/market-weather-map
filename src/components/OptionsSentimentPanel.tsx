@@ -38,7 +38,10 @@ function fallbackLabel(seriesId: string) {
     .toUpperCase();
 }
 
-function activeSeriesItem(series: TimeSeriesFile, candidatesById: Map<string, CandidateSourceItem>) {
+function activeSeriesItem(
+  series: TimeSeriesFile,
+  candidatesById: Map<string, CandidateSourceItem>
+): CandidateSourceItem {
   const latestObservation = series.observations[series.observations.length - 1];
   const latestValue = series.summary?.latest_value ?? latestObservation?.value;
   const latestDate = series.summary?.latest_date ?? latestObservation?.date;
@@ -64,19 +67,31 @@ function uniqueActiveSeries(activeSeries: TimeSeriesFile[]) {
 export default function OptionsSentimentPanel({ items, activeSeries = [] }: OptionsSentimentPanelProps) {
   const candidatesById = new Map(items.map((item) => [item.id, item]));
   const activeOptionsSeries = uniqueActiveSeries(activeSeries);
-  const activeItems = activeOptionsSeries.map((series) => activeSeriesItem(series, candidatesById));
+  const activeItems = sortCandidateItems(
+    activeOptionsSeries.map((series) => activeSeriesItem(series, candidatesById))
+  );
   const activeIds = new Set(activeOptionsSeries.map((series) => series.series_id));
-  const combinedItems = sortCandidateItems([
+  const candidateItems = sortCandidateItems(
+    items.filter((item) => !activeIds.has(item.id))
+  );
+  const combinedItems = [
     ...activeItems,
-    ...items.filter((item) => !activeIds.has(item.id))
-  ]);
+    ...candidateItems
+  ];
 
   return (
     <CandidateSourcePanel
       eyebrow="Candidate sources"
       emptyText="No active options sentiment candidate rows are configured."
+      footer={
+        <p className="score-note">
+          Useful short-term sentiment context, but automated historical access and static JSON
+          redistribution are not approved. Candidate-only options sentiment cannot affect scores,
+          regime labels, checklist states, or confidence until source review promotes it.
+        </p>
+      }
       items={combinedItems}
-      summary="Source review required before options sentiment rows can publish active signals."
+      summary="Source review required: SPX/SPXW, index, equity, VIX, ETP, and total put/call remain source-gated candidate context until review approves active publication."
       title="Options sentiment"
     />
   );

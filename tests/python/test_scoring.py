@@ -1,4 +1,6 @@
 import json
+import math
+import statistics
 
 import pytest
 
@@ -269,6 +271,32 @@ def test_build_ratio_series_matches_observations_by_date_and_summarizes_latest(m
     ]
     assert ratio["summary"]["latest_date"] == "2026-05-04"
     assert ratio["summary"]["latest_value"] == 2.5
+
+
+def test_build_bond_volatility_proxy_uses_rolling_10y_yield_realized_vol():
+    changes = [basis_points / 100 for basis_points in range(1, 22)]
+    value = 4.0
+    observations = [{"date": "2026-01-01", "value": value}]
+    for index, change in enumerate(changes, start=2):
+        value += change
+        observations.append({"date": f"2026-01-{index:02d}", "value": round(value, 4)})
+
+    proxy = compute_regime_score.build_bond_volatility_proxy(
+        {"us10y": {"frequency": "daily", "observations": observations}},
+        "2026-02-01T00:00:00Z",
+    )
+
+    expected = statistics.pstdev(changes) * math.sqrt(252) * 100
+    latest = proxy["observations"][-1]
+
+    assert proxy["series_id"] == "bond_volatility_proxy"
+    assert proxy["source"] == "Derived"
+    assert proxy["source_url"] == "/data/series/us10y.json"
+    assert proxy["depends_on"] == ["us10y"]
+    assert proxy["units"] == "basis_points_annualized"
+    assert "not ICE MOVE" in proxy["method"]
+    assert latest["date"] == "2026-01-22"
+    assert latest["value"] == pytest.approx(round(expected, 4))
 
 
 def test_build_ratio_series_skips_non_finite_values_and_sorts_by_date(monkeypatch):
@@ -889,6 +917,12 @@ def test_candidate_scaffolding_does_not_change_score_summary():
         "personal_saving_rate": _summary(percentile_252d=100.0),
         "total_consumer_credit": _summary(percentile_252d=100.0),
         "revolving_consumer_credit": _summary(percentile_252d=100.0),
+        "sloos_lending_standards": _summary(percentile_252d=100.0),
+        "sloos_small_firm_standards": _summary(percentile_252d=100.0),
+        "sloos_large_firm_demand": _summary(percentile_252d=0.0),
+        "ci_loans_weekly": _summary(percentile_252d=100.0),
+        "term_premium_kw_10y": _summary(percentile_252d=100.0),
+        "bond_volatility_proxy": _summary(percentile_252d=100.0),
         "monthly_treasury_receipts": _summary(percentile_252d=100.0),
         "monthly_treasury_outlays": _summary(percentile_252d=100.0),
         "monthly_treasury_deficit_surplus": _summary(percentile_252d=100.0),
@@ -1078,6 +1112,32 @@ def test_build_status_marks_missing_active_public_catalog_entries_unavailable(mo
     assert status["overall_status"] == "partial"
     assert status["series"]["cfnai"]["status"] == "unavailable"
     assert status["series"]["cfnai"]["message"] == "Active public catalog series has no generated payload."
+
+
+def test_status_for_generated_free_public_candidate_reports_freshness_but_not_scoring():
+    entry = {
+        "id": "sloos_lending_standards",
+        "source": "FRED",
+        "frequency": "quarterly",
+        "max_stale_days": 120,
+        "score_status": "candidate",
+        "access_status": "free_public",
+        "terms_status": "review_each_series",
+    }
+    series = {
+        "frequency": "quarterly",
+        "summary": {"latest_date": "2026-03-31", "latest_value": 10.0},
+        "observations": [{"date": "2026-03-31", "value": 10.0}],
+    }
+
+    status = _status_for_series(entry, series, "2026-04-15T00:00:00Z")
+
+    assert status["status"] == "ok"
+    assert status["last_observation"] == "2026-03-31"
+    assert status["source"] == "FRED"
+    assert status["score_status"] == "candidate"
+    assert "candidate diagnostic" in status["message"]
+    assert "does not affect active scores" in status["message"]
 
 
 def test_validate_status_file_accepts_governance_series_statuses(tmp_path, monkeypatch):
@@ -1854,6 +1914,7 @@ def test_validate_freshness_rejects_failed_series_status(tmp_path, monkeypatch):
 def test_generated_file_validation_requires_active_derived_files():
     required_paths = set(validate_schema.REQUIRED_GENERATED_FILES)
 
+    assert validate_schema.data_dir() / "derived" / "bond_volatility_proxy.json" in required_paths
     assert (
         validate_schema.data_dir() / "derived" / "commodity_inflation_impulse.json"
     ) in required_paths
@@ -2473,10 +2534,22 @@ def test_macro_calendar_schema_rejects_invalid_semantic_fields(
 def test_macro_calendar_generator_returns_static_event_payload():
     from scripts.generate_macro_calendar import generate_macro_calendar
 
-    payload = generate_macro_calendar()
+    payload = generate_macro_calendar(fetch_official_events=False)
 
-    assert payload["method_version"] == "phase4-pr2-static-event-calendar-v1"
+    assert payload["method_version"] == "official-event-calendar-v2"
     assert payload["events"]
+    event_ids = {event["id"] for event in payload["events"]}
+    assert {
+        "cpi",
+        "ppi",
+        "employment_situation_payrolls",
+        "personal_income_outlays_pce",
+        "gross_domestic_product",
+        "retail_sales",
+        "fomc_meeting",
+        "treasury_auctions",
+        "commitments_of_traders",
+    } <= event_ids
     assert all(event["source_url"].startswith("https://") for event in payload["events"])
     assert {event["status"] for event in payload["events"]} <= {
         "scheduled",
@@ -2488,9 +2561,115 @@ def test_macro_calendar_generator_returns_static_event_payload():
 def test_macro_calendar_generator_returns_fresh_event_objects():
     from scripts.generate_macro_calendar import generate_macro_calendar
 
-    first_payload = generate_macro_calendar()
+    first_payload = generate_macro_calendar(fetch_official_events=False)
     first_payload["events"][0]["title"] = "Mutated"
 
-    second_payload = generate_macro_calendar()
+    second_payload = generate_macro_calendar(fetch_official_events=False)
 
     assert second_payload["events"][0]["title"] == "CPI"
+
+
+def test_event_calendar_parsers_return_official_scheduled_events():
+    from datetime import date
+
+    from scripts.ingest.fetch_event_calendar import (
+        TREASURY_AUCTIONS_API_URL,
+        parse_bea_schedule_events,
+        parse_census_schedule_events,
+        parse_fomc_meeting_events,
+        parse_treasury_auction_events,
+    )
+
+    bea_events = parse_bea_schedule_events(
+        """
+        <tr>
+          <td class="scheduled-date">
+            <div class="release-date">May 28</div>
+            <small class="text-muted">8:30 AM</small>
+          </td>
+          <td class="release-title">GDP (Second Estimate) and Corporate Profits, 1st Quarter 2026</td>
+        </tr>
+        <tr>
+          <td class="scheduled-date">
+            <div class="release-date">June 9</div>
+            <small class="text-muted">8:30 AM</small>
+          </td>
+          <td class="release-title">Personal Income and Outlays, April 2026</td>
+        </tr>
+        """,
+        as_of=date(2026, 5, 9),
+    )
+    assert bea_events["gross_domestic_product"]["date"] == "2026-05-28"
+    assert bea_events["personal_income_outlays_pce"]["date"] == "2026-06-09"
+    assert {event["status"] for event in bea_events.values()} == {"scheduled"}
+
+    census_events = parse_census_schedule_events(
+        """
+        <tr>
+          <td><a href="/construction/nrc">New Residential Construction</a></td>
+          <td sorttable_customkey="202605190830">May 19, 2026</td>
+          <td>8:30 AM</td>
+        </tr>
+        <tr>
+          <td><a href="/retail">Advance Monthly Sales for Retail and Food Services</a></td>
+          <td sorttable_customkey="202605150830">May 15, 2026</td>
+          <td>8:30 AM</td>
+        </tr>
+        """,
+        as_of=date(2026, 5, 9),
+    )
+    assert census_events["retail_sales"]["date"] == "2026-05-15"
+    assert census_events["new_residential_construction"]["date"] == "2026-05-19"
+
+    fomc_events = parse_fomc_meeting_events(
+        """
+        <h4>2026 FOMC Meetings</h4>
+        <div class="fomc-meeting"><div class="fomc-meeting__month">January</div>
+        <div class="fomc-meeting__date">27-28</div></div>
+        <div class="fomc-meeting"><div class="fomc-meeting__month">June</div>
+        <div class="fomc-meeting__date">16-17*</div></div>
+        """,
+        as_of=date(2026, 5, 9),
+    )
+    assert fomc_events["fomc_meeting"]["date"] == "2026-06-17"
+    assert fomc_events["fomc_meeting"]["time"] == "14:00"
+
+    treasury_events = parse_treasury_auction_events(
+        [
+            {"auction_date": "2026-05-08", "security_type": "Bill", "security_term": "4-Week", "offering_amt": "80000000000"},
+            {"auction_date": "2026-05-12", "security_type": "Note", "security_term": "10-Year", "offering_amt": "42000000000"},
+        ],
+        as_of=date(2026, 5, 9),
+    )
+    assert treasury_events["treasury_auctions"]["date"] == "2026-05-12"
+    assert "10-Year Note" in treasury_events["treasury_auctions"]["notes"]
+    assert "sort=-auction_date" in TREASURY_AUCTIONS_API_URL
+
+
+def test_macro_calendar_generator_overlays_official_events_and_preserves_bls_source_links():
+    from scripts.generate_macro_calendar import generate_macro_calendar
+
+    payload = generate_macro_calendar(
+        fetch_official_events=False,
+        official_events={
+            "fomc_meeting": {
+                "id": "fomc_meeting",
+                "title": "FOMC Meeting",
+                "category": "rates",
+                "importance": "high",
+                "source": "Federal Reserve",
+                "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+                "date": "2026-06-17",
+                "time": "14:00",
+                "timezone": "America/New_York",
+                "status": "scheduled",
+                "notes": "Official Federal Reserve FOMC calendar date. Descriptive event context only; not scored.",
+            }
+        },
+    )
+    by_id = {event["id"]: event for event in payload["events"]}
+
+    assert by_id["fomc_meeting"]["status"] == "scheduled"
+    assert by_id["fomc_meeting"]["date"] == "2026-06-17"
+    assert by_id["employment_situation_payrolls"]["status"] == "source_link"
+    assert by_id["employment_situation_payrolls"]["date"] is None

@@ -165,6 +165,41 @@ function derivedFile(seriesId: string, value: number): DerivedSeriesFile {
   };
 }
 
+function diagnosticSeriesFile(
+  seriesId: string,
+  values: number[],
+  units = "percent",
+  frequency: SeriesFrequency = "daily",
+  source = "FRED"
+): TimeSeriesFile {
+  const observations = values.map((value, index) => ({
+    date: `2026-05-0${index + 1}`,
+    percentile_252d: 50 + index,
+    value
+  }));
+  const latest = observations[observations.length - 1];
+
+  return {
+    frequency,
+    generated_at_utc: "2026-05-09T00:00:00Z",
+    observations,
+    series_id: seriesId,
+    source,
+    source_url: `https://example.com/${seriesId}`,
+    summary: latest
+      ? {
+          change_1d: null,
+          change_1m: null,
+          change_1w: null,
+          latest_date: latest.date,
+          latest_value: latest.value,
+          percentile_252d: latest.percentile_252d ?? null
+        }
+      : undefined,
+    units
+  };
+}
+
 function routeFetchFiles(overrides: Record<string, unknown> = {}) {
   return {
     "/data/catalog/series_catalog.json": catalog,
@@ -218,6 +253,71 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
       method: "Cboe VIX divided by Cboe VIX3M.",
       units: "ratio"
     } satisfies DerivedSeriesFile,
+    "/data/derived/bond_volatility_proxy.json": {
+      ...diagnosticSeriesFile("bond_volatility_proxy", [9.1, 10.4, 8.7], "basis points", "daily", "Derived"),
+      depends_on: ["us10y"],
+      method: "Rolling realized volatility of daily 10-year Treasury-yield changes."
+    } satisfies DerivedSeriesFile,
+    "/data/series/ci_loans_weekly.json": diagnosticSeriesFile(
+      "ci_loans_weekly",
+      [2810, 2825, 2840],
+      "USD billions",
+      "weekly"
+    ),
+    "/data/series/philly_fed_mfg_general_activity.json": diagnosticSeriesFile(
+      "philly_fed_mfg_general_activity",
+      [-8.1, 2.4, 12.6],
+      "diffusion_index",
+      "monthly",
+      "FRED"
+    ),
+    "/data/series/sloos_lending_standards.json": diagnosticSeriesFile(
+      "sloos_lending_standards",
+      [8, 12, 16],
+      "net percent",
+      "quarterly"
+    ),
+    "/data/series/sloos_small_firm_standards.json": diagnosticSeriesFile(
+      "sloos_small_firm_standards",
+      [11, 15, 18],
+      "net percent",
+      "quarterly"
+    ),
+    "/data/series/sloos_large_firm_demand.json": diagnosticSeriesFile(
+      "sloos_large_firm_demand",
+      [-20, -16, -10],
+      "net percent",
+      "quarterly"
+    ),
+    "/data/series/term_premium_kw_10y.json": diagnosticSeriesFile("term_premium_kw_10y", [0.42, 0.48, 0.52]),
+    "/data/series/monthly_treasury_receipts.json": diagnosticSeriesFile(
+      "monthly_treasury_receipts",
+      [326770, 367645, 850169],
+      "millions_usd",
+      "monthly",
+      "FiscalData"
+    ),
+    "/data/series/monthly_treasury_outlays.json": diagnosticSeriesFile(
+      "monthly_treasury_outlays",
+      [584220, 528174, 591769],
+      "millions_usd",
+      "monthly",
+      "FiscalData"
+    ),
+    "/data/series/monthly_treasury_deficit_surplus.json": diagnosticSeriesFile(
+      "monthly_treasury_deficit_surplus",
+      [257450, 160528, -258400],
+      "millions_usd",
+      "monthly",
+      "FiscalData"
+    ),
+    "/data/series/treasury_auction_supply.json": diagnosticSeriesFile(
+      "treasury_auction_supply",
+      [125000, 147000, 132000],
+      "millions_usd",
+      "weekly",
+      "FiscalData"
+    ),
     ...seriesFiles([
       "bank_credit",
       "bbb_oas",
@@ -294,6 +394,25 @@ function candidateCatalogEntry(
     notes,
     score_status: "candidate",
     source: "Candidate registry",
+    source_url: `https://example.com/${id}`
+  };
+}
+
+function generatedDiagnosticCatalogEntry(
+  id: string,
+  category: SeriesCategory,
+  name: string,
+  notes: string,
+  units = "index",
+  frequency: SeriesFrequency = "daily",
+  source = "FRED"
+): SeriesCatalogEntry {
+  return {
+    ...catalogEntry(id, category, name, units, frequency),
+    access_status: "free_public",
+    notes,
+    score_status: "candidate",
+    source,
     source_url: `https://example.com/${id}`
   };
 }
@@ -507,6 +626,98 @@ const catalog: SeriesCatalogEntry[] = [
   catalogEntry("bank_credit", "credit", "Bank credit", "USD billions", "weekly"),
   catalogEntry("loans_and_leases", "credit", "Loans and leases", "USD billions", "weekly"),
   catalogEntry("business_loans", "credit", "Commercial and industrial loans", "USD billions", "weekly"),
+  generatedDiagnosticCatalogEntry(
+    "philly_fed_mfg_general_activity",
+    "growth",
+    "Philadelphia Fed Manufacturing General Activity",
+    "Generated non-scoring regional Fed survey proxy from Philadelphia Fed MBOS via FRED; not ISM PMI or S&P Global PMI.",
+    "diffusion_index",
+    "monthly"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "ci_loans_weekly",
+    "credit",
+    "Commercial and Industrial Loans, All Commercial Banks",
+    "Generated non-scoring weekly H.8 C&I loan diagnostic from FRED TOTCI.",
+    "USD billions",
+    "weekly"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "sloos_lending_standards",
+    "credit",
+    "SLOOS C&I Lending Standards: Large and Middle-Market Firms",
+    "Generated non-scoring SLOOS lending-standards diagnostic from FRED.",
+    "net percent",
+    "quarterly"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "sloos_small_firm_standards",
+    "credit",
+    "SLOOS C&I Lending Standards: Small Firms",
+    "Generated non-scoring SLOOS small-firm lending-standards diagnostic from FRED.",
+    "net percent",
+    "quarterly"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "sloos_large_firm_demand",
+    "credit",
+    "SLOOS C&I Loan Demand: Large and Middle-Market Firms",
+    "Generated non-scoring SLOOS loan-demand diagnostic from FRED.",
+    "net percent",
+    "quarterly"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "term_premium_kw_10y",
+    "rates",
+    "Kim-Wright 10-Year Zero-Coupon Term Premium",
+    "Generated non-scoring Kim-Wright term-premium diagnostic from FRED.",
+    "percent"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "monthly_treasury_receipts",
+    "liquidity",
+    "Monthly Treasury Receipts",
+    "Generated non-scoring monthly Treasury receipts diagnostic from FiscalData Monthly Treasury Statement table 1.",
+    "millions_usd",
+    "monthly",
+    "FiscalData"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "monthly_treasury_outlays",
+    "liquidity",
+    "Monthly Treasury Outlays",
+    "Generated non-scoring monthly Treasury outlays diagnostic from FiscalData Monthly Treasury Statement table 1.",
+    "millions_usd",
+    "monthly",
+    "FiscalData"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "monthly_treasury_deficit_surplus",
+    "liquidity",
+    "Monthly Treasury Deficit or Surplus",
+    "Generated non-scoring monthly Treasury deficit-or-surplus diagnostic from FiscalData Monthly Treasury Statement table 1.",
+    "millions_usd",
+    "monthly",
+    "FiscalData"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "treasury_auction_supply",
+    "rates",
+    "Treasury Auction Supply",
+    "Generated non-scoring weekly Treasury auction offering-amount diagnostic from FiscalData Treasury Securities Auctions Data.",
+    "millions_usd",
+    "weekly",
+    "FiscalData"
+  ),
+  generatedDiagnosticCatalogEntry(
+    "bond_volatility_proxy",
+    "volatility",
+    "Realized 10-Year Yield Volatility Proxy",
+    "Generated non-scoring realized Treasury-yield volatility proxy derived from public 10-year Treasury yields; not ICE MOVE.",
+    "basis points",
+    "daily",
+    "Derived"
+  ),
   catalogEntry("bank_deposits", "credit", "Bank deposits", "USD billions", "weekly"),
   catalogEntry("broad_dollar", "dollar", "Nominal Broad U.S. Dollar Index", "index"),
   catalogEntry("usdjpy", "dollar", "USD/JPY", "exchange rate"),
@@ -703,6 +914,22 @@ function candidateStatusRow(message: string): DataStatusFile["series"][string] {
   };
 }
 
+function generatedDiagnosticStatusRow(
+  message: string,
+  frequency: SeriesFrequency = "daily",
+  observationPeriod = "2026-05-01",
+  source = "FRED"
+): DataStatusFile["series"][string] {
+  return {
+    ...statusRow("ok", frequency),
+    max_stale_days: frequency === "quarterly" ? 120 : frequency === "weekly" ? 14 : 7,
+    message,
+    observation_period: observationPeriod,
+    score_status: "candidate",
+    source
+  };
+}
+
 const status: DataStatusFile = {
   generated_at_utc: "2026-05-03T18:32:54Z",
   last_successful_update_utc: "2026-05-03T18:32:54Z",
@@ -862,6 +1089,64 @@ const status: DataStatusFile = {
     bank_credit: statusRow("unavailable", "weekly"),
     loans_and_leases: statusRow("unavailable", "weekly"),
     business_loans: statusRow("unavailable", "weekly"),
+    philly_fed_mfg_general_activity: generatedDiagnosticStatusRow(
+      "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15. candidate diagnostic only; does not affect active scores.",
+      "monthly",
+      "2026-04"
+    ),
+    ci_loans_weekly: generatedDiagnosticStatusRow(
+      "Latest weekly observation is within the expected release window. candidate diagnostic only; does not affect active scores.",
+      "weekly",
+      "week of 2026-04-29"
+    ),
+    sloos_lending_standards: generatedDiagnosticStatusRow(
+      "Latest quarterly observation covers 2026-Q2. candidate diagnostic only; does not affect active scores.",
+      "quarterly",
+      "2026-Q2"
+    ),
+    sloos_small_firm_standards: generatedDiagnosticStatusRow(
+      "Latest quarterly observation covers 2026-Q2. candidate diagnostic only; does not affect active scores.",
+      "quarterly",
+      "2026-Q2"
+    ),
+    sloos_large_firm_demand: generatedDiagnosticStatusRow(
+      "Latest quarterly observation covers 2026-Q2. candidate diagnostic only; does not affect active scores.",
+      "quarterly",
+      "2026-Q2"
+    ),
+    term_premium_kw_10y: generatedDiagnosticStatusRow(
+      "Latest daily observation is 8 days old. candidate diagnostic only; does not affect active scores."
+    ),
+    monthly_treasury_receipts: generatedDiagnosticStatusRow(
+      "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15. candidate diagnostic only; does not affect active scores.",
+      "monthly",
+      "2026-04",
+      "FiscalData"
+    ),
+    monthly_treasury_outlays: generatedDiagnosticStatusRow(
+      "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15. candidate diagnostic only; does not affect active scores.",
+      "monthly",
+      "2026-04",
+      "FiscalData"
+    ),
+    monthly_treasury_deficit_surplus: generatedDiagnosticStatusRow(
+      "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15. candidate diagnostic only; does not affect active scores.",
+      "monthly",
+      "2026-04",
+      "FiscalData"
+    ),
+    treasury_auction_supply: generatedDiagnosticStatusRow(
+      "Latest weekly observation is within the expected release window ending 2026-05-25. candidate diagnostic only; does not affect active scores.",
+      "weekly",
+      "week of 2026-05-11",
+      "FiscalData"
+    ),
+    bond_volatility_proxy: generatedDiagnosticStatusRow(
+      "Latest daily observation is 2 days old. candidate diagnostic only; does not affect active scores.",
+      "daily",
+      "2026-05-01",
+      "Derived"
+    ),
     bank_deposits: statusRow("unavailable", "weekly"),
     broad_dollar: statusRow("unavailable"),
     usdjpy: statusRow("unavailable"),
@@ -955,8 +1240,8 @@ const scoreSummary: ScoreSummaryFile = {
     freshness_confidence: 0.7,
     model_confidence: 0.75,
     source_confidence: 0.68,
-    overall_confidence: 0.73,
-    reasons: ["Sentiment coverage is limited to public CFTC positioning."]
+    overall_confidence: 0.92,
+    reasons: ["Treasury/bond volatility source is not active."]
   }
 };
 
@@ -1240,6 +1525,80 @@ const signalPriority: SignalPriorityFile = {
   ]
 };
 
+const malformedShockRiskRowSnapshot = {
+  ...shockRiskSnapshot,
+  active_signals: [
+    null,
+    {
+      change: "not-a-number",
+      id: "valid_active",
+      label: "Valid active stress",
+      message: "First active signal message.",
+      score: undefined,
+      value: Number.NaN
+    },
+    {
+      change: 2.1,
+      id: "valid_active",
+      label: "Duplicate active stress",
+      message: "Duplicate active signal message.",
+      score: -1,
+      value: 20
+    },
+    {
+      change: 1.2,
+      id: "missing_message",
+      label: "Missing active message",
+      score: -2,
+      value: 21
+    }
+  ],
+  mismatch_warnings: [
+    null,
+    {
+      id: "valid_warning",
+      label: "Valid warning",
+      message: "First warning message."
+    },
+    {
+      id: "valid_warning",
+      label: "Duplicate warning",
+      message: "Duplicate warning message."
+    },
+    {
+      id: "missing_warning_message",
+      label: "Missing warning message"
+    }
+  ],
+  source_gaps: [
+    null,
+    {
+      id: "valid_partial_gap",
+      label: "Valid partial gated stress",
+      message: "Partial source gap should remain visible.",
+      status: "partial"
+    },
+    {
+      id: "valid_partial_gap",
+      label: "Duplicate partial gated stress",
+      message: "Duplicate partial source gap message.",
+      status: "unavailable"
+    },
+    {
+      id: "restricted_gap",
+      label: "Restricted gated stress",
+      message: "Restricted source gap should be dropped.",
+      status: "restricted"
+    },
+    {
+      id: "release_window_gap",
+      label: "Release-window gated stress",
+      message: "Release-window source gap should be dropped.",
+      status: "release_window_ok"
+    }
+  ]
+} as unknown as ShockRiskSnapshotFile;
+
 afterEach(() => {
   if (root) {
     act(() => root?.unmount());
@@ -1259,6 +1618,8 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
     await waitForContent(shortTerm, "Short-Term Market Reaction");
+    expect(shortTerm.textContent).toContain("High data quality");
+    expect(shortTerm.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(shortTerm.textContent).toContain("Current Tactical Read");
     expect(shortTerm.textContent).toContain("Volatility term-structure");
     expect(shortTerm.textContent).toContain("Credit pulse");
@@ -1275,6 +1636,8 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
     await waitForContent(longTerm, "Long-Term Macro / Allocation Climate");
+    expect(longTerm.textContent).toContain("High data quality");
+    expect(longTerm.textContent).toContain("Treasury/bond volatility source is not active.");
   });
 
   it("keeps tactical and macro-climate deep links compatible", async () => {
@@ -1324,6 +1687,54 @@ describe("data-backed routes", () => {
     expect(text).toContain("Long-Term");
   });
 
+  it("routes every grouped navigation link to its page heading", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Overview");
+
+    const navExpectations = [
+      { label: "Overview", heading: "Overview" },
+      { label: "Short-Term", heading: "Short-Term Market Reaction" },
+      { label: "Long-Term", heading: "Long-Term Macro / Allocation Climate" },
+      { label: "Fragility", heading: "Fragility / Shock Risk" },
+      { label: "Regime Map", heading: "TIPS x Dollar Regime Map" },
+      { label: "Replay", heading: "Historical Regime Replay" },
+      { label: "Volatility", heading: "VIX state" },
+      { label: "Rates", heading: "Rates & Policy" },
+      { label: "Liquidity", heading: "Funding and balance sheet" },
+      { label: "Credit", heading: "Credit & Banking" },
+      { label: "Dollar", heading: "Dollar & Global" },
+      { label: "Commodities", heading: "Energy and grains" },
+      { label: "Growth", heading: "Growth" },
+      { label: "Housing", heading: "Housing" },
+      { label: "Inflation", heading: "Inflation" },
+      { label: "Positioning", heading: "Sentiment & Positioning" },
+      { label: "Calendar", heading: "Macro Calendar" },
+      { label: "Methodology", heading: "How the map works" }
+    ];
+
+    for (const expectation of navExpectations) {
+      const link = Array.from(container.querySelectorAll("nav a")).find(
+        (anchor) => anchor.textContent === expectation.label
+      );
+      expect(link, `Missing nav link ${expectation.label}`).toBeTruthy();
+
+      await act(async () => {
+        link?.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      await waitForContent(container, expectation.heading);
+      expect(container.querySelector("h2")?.textContent).toBe(expectation.heading);
+    }
+  });
+
   it("renders overview as a horizon decision hub", async () => {
     mockStaticFetch(routeFetchFiles());
 
@@ -1365,6 +1776,8 @@ describe("data-backed routes", () => {
 
     await waitForContent(container, "Macro Climate");
 
+    expect(container.textContent).toContain("High data quality");
+    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Fragility");
     expect(container.textContent).toContain("Data confidence");
@@ -2049,12 +2462,17 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("VIX term-structure proxy");
     expect(container.textContent).toContain("Options sentiment");
     expect(container.textContent).toContain("Event risk");
+    expect(container.textContent).toContain("Official source-linked calendar context");
+    expect(container.textContent).toContain("Consumer Price Index");
+    expect(container.textContent).toContain("FOMC Minutes");
+    expect(container.textContent).toContain("Not scored");
+    expect(container.textContent).toContain("does not affect active scores, regime labels, checklist states, or confidence");
     expect(container.textContent).toContain("VIX futures readiness");
     expect(container.textContent).toContain("SPXW put/call ratio");
     expect(container.textContent).toContain("SPXW options source remains under terms review.");
     expect(container.textContent).toContain("VX1 futures");
-    expect(container.textContent).toContain("CPI release calendar");
-    expect(container.textContent).toContain("CPI calendar source remains under review.");
+    expect(container.textContent).toContain("OPEX calendar");
+    expect(container.textContent).toContain("OPEX calendar source remains under review.");
 
     expect(container.textContent).toContain("Market weather");
     expect(container.textContent).toContain("Mixed");
@@ -2064,6 +2482,7 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("-4.10");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/put_call_spxw.json");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
+    expect(fetch).toHaveBeenCalledWith("/data/events/macro_calendar.json");
   });
 
   it("renders short-term credit pulse unavailable state when HY minus IG OAS is missing", async () => {
@@ -2098,6 +2517,18 @@ describe("data-backed routes", () => {
     );
 
     await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("High data quality");
+    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
+    expect(container.textContent).toContain("Visible vs gated stress");
+    expect(container.textContent).toContain("Public bond-volatility diagnostic");
+    expect(container.textContent).toContain("Realized 10-Year Yield Volatility Proxy");
+    expect(container.textContent).toContain("Generated candidate diagnostic");
+    expect(container.textContent).toContain("Not scored");
+    expect(container.textContent).toContain("not ICE MOVE");
+    expect(container.textContent).toContain("Trend window 3 observations");
+    expect(container.textContent).toContain("Latest 8.70 basis points on 2026-05-03");
+    expect(container.textContent).toContain("Gated stress");
+    expect(container.textContent).toContain("Mismatch severity");
     expect(container.textContent).toContain("MOVE");
     expect(container.textContent).toContain("SKEW");
     expect(container.textContent).toContain("Mismatch warnings");
@@ -2136,6 +2567,40 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("No mismatch warnings in the current shock-risk snapshot.");
   });
 
+  it("sanitizes malformed fragility shock-risk rows before rendering children", async () => {
+    mockStaticFetch(routeFetchFiles({
+      "/data/derived/shock_risk_snapshot.json": malformedShockRiskRowSnapshot
+    }));
+
+    const container = render(
+      <MemoryRouter initialEntries={["/fragility"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Fragility / Shock Risk");
+    expect(container.textContent).toContain("Valid active stress");
+    expect(container.textContent).toContain("First active signal message.");
+    expect(container.textContent).toContain("Score N/A");
+    expect(container.textContent).not.toContain("Duplicate active stress");
+    expect(container.textContent).not.toContain("Duplicate active signal message.");
+    expect(container.textContent).not.toContain("Missing active message");
+
+    expect(container.textContent).toContain("Valid partial gated stress");
+    expect(container.textContent).toContain("Partial source gap should remain visible.");
+    expect(container.textContent).toContain("Partial");
+    expect(container.textContent).not.toContain("Duplicate partial gated stress");
+    expect(container.textContent).not.toContain("Duplicate partial source gap message.");
+    expect(container.textContent).not.toContain("Restricted gated stress");
+    expect(container.textContent).not.toContain("Release-window gated stress");
+
+    expect(container.textContent).toContain("Valid warning");
+    expect(container.textContent).toContain("First warning message.");
+    expect(container.textContent).not.toContain("Duplicate warning");
+    expect(container.textContent).not.toContain("Duplicate warning message.");
+    expect(container.textContent).not.toContain("Missing warning message");
+  });
+
   it("renders long-term macro climate from current score summary", async () => {
     mockStaticFetch(
       routeFetchFiles({
@@ -2152,17 +2617,41 @@ describe("data-backed routes", () => {
     await waitForContent(container, "Long-Term Macro / Allocation Climate");
     expect(container.textContent).toContain("Current Long-Term Read");
     expect(container.textContent).toContain("Macro bucket grid");
+    expect(container.textContent).toContain("Generated official diagnostics");
+    expect(container.textContent).toContain("Philadelphia Fed Manufacturing General Activity");
+    expect(container.textContent).toContain("SLOOS C&I Lending Standards: Large and Middle-Market Firms");
+    expect(container.textContent).toContain("SLOOS C&I Lending Standards: Small Firms");
+    expect(container.textContent).toContain("SLOOS C&I Loan Demand: Large and Middle-Market Firms");
+    expect(container.textContent).toContain("Commercial and Industrial Loans, All Commercial Banks");
+    expect(container.textContent).toContain("Kim-Wright 10-Year Zero-Coupon Term Premium");
+    expect(container.textContent).toContain("Monthly Treasury Receipts");
+    expect(container.textContent).toContain("Monthly Treasury Outlays");
+    expect(container.textContent).toContain("Monthly Treasury Deficit or Surplus");
+    expect(container.textContent).toContain("Treasury Auction Supply");
+    expect(container.textContent).toContain("Generated candidate diagnostic");
+    expect(container.textContent).toContain("Not scored");
+    expect(container.textContent).toContain("Does not affect active scores, labels, checklist states, or confidence.");
+    expect(container.textContent).toContain("Trend window 3 observations");
+    expect(container.textContent).toContain("Latest 2,840.00 USD billions on 2026-05-03");
     expect(container.textContent).toContain("Strategic source gaps");
     expect(container.textContent).toContain("PMIs");
-    expect(container.textContent).toContain("SLOOS");
-    expect(container.textContent).toContain("term premium");
-    expect(container.textContent).toContain("Treasury supply");
+    expect(container.textContent).toContain("SLOOS scoring promotion");
+    expect(container.textContent).toContain("NY Fed ACM term premium");
+    expect(container.textContent).toContain("Treasury net issuance");
     expect(container.textContent).toContain("valuation");
     expect(container.textContent).toContain("earnings revisions");
     const strategicRows = Array.from(container.querySelectorAll(".candidate-source-row"));
-    expect(strategicRows).toHaveLength(6);
+    expect(strategicRows).toHaveLength(11);
     expect(strategicRows.every((row) => row.getAttribute("role") === "listitem")).toBe(true);
-    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(6);
+    expect(container.querySelectorAll(".status-terms_review_needed")).toHaveLength(11);
+    expect(container.querySelectorAll(".candidate-diagnostic-row")).toHaveLength(10);
+    expect(container.querySelectorAll(".candidate-diagnostic-sparkline")).toHaveLength(10);
+    expect(fetch).toHaveBeenCalledWith("/data/series/philly_fed_mfg_general_activity.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/sloos_lending_standards.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/ci_loans_weekly.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/term_premium_kw_10y.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/monthly_treasury_receipts.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/treasury_auction_supply.json");
     expect(container.textContent).toContain("Macro Climate");
     expect(container.textContent).toContain("Growth cycle");
     expect(container.textContent).toContain("Consumer and production");
@@ -2170,7 +2659,6 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Consumer balance sheet");
     expect(container.textContent).toContain("Credit cycle");
     expect(container.textContent).toContain("Liquidity cycle");
-    expect(container.textContent).not.toContain("Not scored");
   });
 
   it("renders long-term read when strategic bucket scores are missing", async () => {
@@ -2236,8 +2724,16 @@ describe("data-backed routes", () => {
     );
 
     await waitForContent(container, "TIPS x Dollar Regime Map");
+    expect(container.textContent).toContain("High data quality");
+    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
     expect(container.textContent).toContain("Yield driver");
     expect(container.textContent).toContain("Cross-asset confirmation");
+    expect(container.textContent).toContain("Gold / XAU");
+    expect(container.textContent).toContain("MOVE");
+    expect(container.textContent).toContain("Terms review needed");
+    expect(container.textContent).toContain("Duration-bond confirmation");
+    expect(container.textContent).not.toContain("signal-duration");
+    expect(container.textContent).not.toContain("signal-bond");
   });
 
   it("renders regime interpretation and conflict context", async () => {
@@ -2322,6 +2818,24 @@ describe("data-backed routes", () => {
 
     await waitForContent(container, "10Y yield decomposition");
     expect(container.textContent).toContain("Yield driver");
+  });
+
+  it("rates route renders generated Treasury supply diagnostics as non-scoring context", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/rates"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await waitForContent(container, "Treasury supply diagnostics");
+    expect(container.textContent).toContain("Monthly Treasury Deficit or Surplus");
+    expect(container.textContent).toContain("Treasury Auction Supply");
+    expect(container.textContent).toContain("Generated candidate diagnostic");
+    expect(container.textContent).toContain("Not scored");
+    expect(fetch).toHaveBeenCalledWith("/data/series/monthly_treasury_deficit_surplus.json");
+    expect(fetch).toHaveBeenCalledWith("/data/series/treasury_auction_supply.json");
   });
 
   it("dollar route renders dollar pressure read interpretation", async () => {

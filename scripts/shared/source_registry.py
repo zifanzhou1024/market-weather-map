@@ -93,6 +93,15 @@ def source_registry_entries() -> dict[str, dict[str, object]]:
             "update_cadence": "calendar",
             "notes": "Treasury auction schedules require source-specific access, attribution, and redistribution review before automated publication.",
         },
+        "fiscaldata": {
+            "name": "U.S. Treasury FiscalData",
+            "base_url": "https://fiscaldata.treasury.gov",
+            "requires_secret": False,
+            "access_status": "free_public",
+            "terms_status": "review_each_series",
+            "update_cadence": "monthly_or_auction_calendar",
+            "notes": "Official Treasury FiscalData API paths can be generated into static candidate diagnostics with dataset attribution.",
+        },
         "terms_review": {
             "name": "Terms-reviewed candidate sources",
             "base_url": "",

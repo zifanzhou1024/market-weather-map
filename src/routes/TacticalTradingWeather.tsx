@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import CreditPulsePanel from "../components/CreditPulsePanel";
 import DataGapPanel from "../components/DataGapPanel";
+import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
 import DollarRealYieldPressurePanel from "../components/DollarRealYieldPressurePanel";
 import EventRiskPanel from "../components/EventRiskPanel";
@@ -17,6 +18,7 @@ import { scoreLabel } from "../lib/horizon";
 import {
   loadCatalog,
   loadDataStatus,
+  loadMacroCalendar,
   loadRegimeSnapshot,
   loadScoreSummary,
   loadSignalPriority
@@ -24,6 +26,7 @@ import {
 import type {
   DataStatusFile,
   DerivedSeriesFile,
+  MacroCalendarFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
   SeriesCatalogEntry,
@@ -52,13 +55,7 @@ const optionCandidateIds = [
   "put_call_total"
 ];
 const vxCandidateIds = ["vx1", "vx2", "vx3", "vx4", "vx5", "vx6", "vx7", "vx8"];
-const eventCandidateIds = [
-  "event_cpi",
-  "event_fomc",
-  "event_payrolls",
-  "event_treasury_auction",
-  "event_opex"
-];
+const eventCandidateIds = ["event_opex"];
 const tacticalStatusIds = [
   ...tacticalSeriesIds,
   ...tacticalDerivedIds,
@@ -68,6 +65,7 @@ const tacticalStatusIds = [
 ];
 
 interface RouteState {
+  calendar: MacroCalendarFile;
   catalog: SeriesCatalogEntry[];
   derived: DerivedSeriesFile[];
   scoreSummary: ScoreSummaryFile;
@@ -133,12 +131,13 @@ export default function TacticalTradingWeather() {
 
     async function loadTacticalTradingWeather() {
       try {
-        const [catalog, status, scoreSummary, snapshot, signalPriority] = await Promise.all([
+        const [catalog, status, scoreSummary, snapshot, signalPriority, calendar] = await Promise.all([
           loadCatalog(),
           loadDataStatus(),
           loadScoreSummary(),
           loadRegimeSnapshot(),
-          loadSignalPriority().catch(() => null)
+          loadSignalPriority().catch(() => null),
+          loadMacroCalendar()
         ]);
         const [series, derived] = await Promise.all([
           loadRouteSeries(tacticalSeriesIds, catalog, status),
@@ -147,7 +146,7 @@ export default function TacticalTradingWeather() {
           })
         ]);
         if (active) {
-          setData({ catalog, derived, scoreSummary, series, signalPriority, snapshot, status });
+          setData({ calendar, catalog, derived, scoreSummary, series, signalPriority, snapshot, status });
         }
       } catch (loadError) {
         if (active) {
@@ -177,6 +176,7 @@ export default function TacticalTradingWeather() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <HorizonScoreHeader
             eyebrow="Short-term"
             facts={[
@@ -240,7 +240,10 @@ export default function TacticalTradingWeather() {
           />
           <LiquidityPulsePanel catalog={data.catalog} netLiquidity={findDerived(data.derived, "net_liquidity")} />
           <OptionsSentimentPanel items={candidateItems(data.catalog, data.status, optionCandidateIds)} />
-          <EventRiskPanel items={candidateItems(data.catalog, data.status, eventCandidateIds)} />
+          <EventRiskPanel
+            calendar={data.calendar}
+            items={candidateItems(data.catalog, data.status, ["event_opex"])}
+          />
           <VixFuturesReadinessPanel items={candidateItems(data.catalog, data.status, vxCandidateIds)} />
           <DataGapPanel seriesIds={tacticalStatusIds} status={data.status} />
           <DataStatusTable seriesIds={tacticalStatusIds} status={data.status} />

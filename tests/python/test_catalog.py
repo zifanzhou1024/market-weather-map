@@ -231,10 +231,9 @@ def test_phase4_catalog_contains_active_consumer_balance_sheet_sources():
         assert entry["horizon"] == "strategic"
 
 
-def test_phase4_catalog_contains_consumer_and_fiscal_candidates_only():
+def test_phase4_catalog_contains_consumer_candidates_only():
     entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
     active_ids = {entry["id"] for entry in catalog_module.available_catalog_entries()}
-    fiscaldata_url = "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/"
     expected_candidates = {
         "real_disposable_personal_income": (
             "FRED",
@@ -243,14 +242,6 @@ def test_phase4_catalog_contains_consumer_and_fiscal_candidates_only():
         "personal_saving_rate": ("FRED", "https://fred.stlouisfed.org/series/PSAVERT"),
         "total_consumer_credit": ("FRED", "https://fred.stlouisfed.org/series/TOTALSL"),
         "revolving_consumer_credit": ("FRED", "https://fred.stlouisfed.org/series/REVOLSL"),
-        "monthly_treasury_receipts": ("FiscalData", fiscaldata_url),
-        "monthly_treasury_outlays": ("FiscalData", fiscaldata_url),
-        "monthly_treasury_deficit_surplus": ("FiscalData", fiscaldata_url),
-        "treasury_interest_expense": ("FiscalData", fiscaldata_url),
-        "treasury_auction_supply": (
-            "TreasuryDirect",
-            "https://www.treasuryauctions.gov/auctions/when-auctions-happen/",
-        ),
     }
 
     for series_id, (source, source_url) in expected_candidates.items():
@@ -262,6 +253,78 @@ def test_phase4_catalog_contains_consumer_and_fiscal_candidates_only():
         assert entry["access_status"] == "terms_review_needed"
         assert entry["terms_status"] == "review_needed"
         assert series_id not in active_ids
+
+
+def test_official_public_diagnostic_candidates_are_generated_but_not_active():
+    entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
+    active_ids = {entry["id"] for entry in catalog_module.available_catalog_entries()}
+    expected = {
+        "philly_fed_mfg_general_activity": ("GACDFSA066MSFRBPHI", "strategic", "growth"),
+        "sloos_lending_standards": ("DRTSCILM", "strategic", "credit"),
+        "sloos_small_firm_standards": ("DRTSCIS", "strategic", "credit"),
+        "sloos_large_firm_demand": ("DRSDCILM", "strategic", "credit"),
+        "ci_loans_weekly": ("TOTCI", "both", "credit"),
+        "term_premium_kw_10y": ("THREEFYTP10", "strategic", "rates"),
+    }
+
+    for series_id, (fred_id, horizon, category) in expected.items():
+        entry = entries[series_id]
+        assert entry["category"] == category
+        assert entry["source"] == "FRED"
+        assert entry["source_url"] == f"https://fred.stlouisfed.org/series/{fred_id}"
+        assert entry["endpoint_url"] == f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
+        assert entry["public"] is True
+        assert entry["access_status"] == "free_public"
+        assert entry["terms_status"] == "review_each_series"
+        assert entry["score_status"] == "candidate"
+        assert entry["horizon"] == horizon
+        assert series_id not in active_ids
+
+
+def test_treasury_supply_diagnostics_are_generated_candidates_not_active():
+    entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
+    active_ids = {entry["id"] for entry in catalog_module.available_catalog_entries()}
+    fiscaldata_url = "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/"
+    expected = {
+        "monthly_treasury_receipts": ("FiscalData", fiscaldata_url, "liquidity", "strategic"),
+        "monthly_treasury_outlays": ("FiscalData", fiscaldata_url, "liquidity", "strategic"),
+        "monthly_treasury_deficit_surplus": ("FiscalData", fiscaldata_url, "liquidity", "strategic"),
+        "treasury_auction_supply": (
+            "FiscalData",
+            "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
+            "rates",
+            "both",
+        ),
+    }
+
+    for series_id, (source, source_url, category, horizon) in expected.items():
+        entry = entries[series_id]
+        assert entry["source"] == source
+        assert entry["source_url"] == source_url
+        assert entry["endpoint_url"]
+        assert entry["public"] is True
+        assert entry["access_status"] == "free_public"
+        assert entry["terms_status"] == "review_each_series"
+        assert entry["score_status"] == "candidate"
+        assert entry["generate_static"] is True
+        assert entry["category"] == category
+        assert entry["horizon"] == horizon
+        assert series_id not in active_ids
+
+
+def test_derived_bond_volatility_proxy_candidate_catalog_row_is_non_scoring():
+    entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
+
+    entry = entries["bond_volatility_proxy"]
+
+    assert entry["source"] == "Derived"
+    assert entry["source_url"] == "/data/series/us10y.json"
+    assert entry["endpoint_url"] == "/data/derived/bond_volatility_proxy.json"
+    assert entry["access_status"] == "free_public"
+    assert entry["terms_status"] == "ok"
+    assert entry["score_status"] == "candidate"
+    assert entry["public"] is True
+    assert entry["regime_role"] == ["bond_volatility"]
 
 
 def test_catalog_entries_use_dollar_category_for_phase3_dollar_series():
@@ -323,6 +386,8 @@ def test_available_catalog_entries_excludes_candidate_even_if_series_file_exists
     series_dir = tmp_path / "series"
     series_dir.mkdir()
     (series_dir / "ism_manufacturing_pmi.json").write_text("{}", encoding="utf-8")
+    (series_dir / "sloos_lending_standards.json").write_text("{}", encoding="utf-8")
+    (series_dir / "term_premium_kw_10y.json").write_text("{}", encoding="utf-8")
     (series_dir / "vix.json").write_text("{}", encoding="utf-8")
     monkeypatch.setattr(catalog_module, "data_dir", lambda: tmp_path, raising=False)
 
@@ -330,3 +395,5 @@ def test_available_catalog_entries_excludes_candidate_even_if_series_file_exists
 
     assert "vix" in available_entries
     assert "ism_manufacturing_pmi" not in available_entries
+    assert "sloos_lending_standards" not in available_entries
+    assert "term_premium_kw_10y" not in available_entries
