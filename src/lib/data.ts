@@ -47,6 +47,25 @@ export async function loadJson<T>(path: string): Promise<T> {
   return (await response.json()) as T;
 }
 
+/**
+ * Permissive sibling of `loadJson`. Returns `null` when the file is absent
+ * (HTTP 404 / `DataLoadError` with status 404). Other failure modes —
+ * non-404 HTTP errors, JSON parse failures, invalid paths — still throw
+ * so callers can keep loud feedback for malformed payloads. Use this for
+ * derived JSONs that may not yet be generated (graceful degradation),
+ * not for required core datasets.
+ */
+export async function loadJsonOrNull<T>(path: string): Promise<T | null> {
+  try {
+    return await loadJson<T>(path);
+  } catch (error) {
+    if (error instanceof DataLoadError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
 export function loadCatalog(): Promise<SeriesCatalogEntry[]> {
   return loadJson<SeriesCatalogEntry[]>("/data/catalog/series_catalog.json");
 }

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, test, vi } from "vitest";
 import {
   DataLoadError,
   loadJson,
+  loadJsonOrNull,
   loadScoreSummary,
   loadSeries,
   loadSourceRegistry
@@ -75,6 +76,75 @@ describe("data loaders", () => {
 
     expect(fetchMock).toHaveBeenCalledWith("/data/derived/score_summary.json");
     expect(fetchMock).toHaveBeenCalledWith("/data/catalog/source_registry.json");
+  });
+});
+
+describe("loadJsonOrNull", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    fetchMock.mockReset();
+  });
+
+  it("returns parsed JSON when the response is 200", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ ok: true })
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadJsonOrNull("/data/derived/page_insights.json")).resolves.toEqual({
+      ok: true
+    });
+    expect(fetchMock).toHaveBeenCalledWith("/data/derived/page_insights.json");
+  });
+
+  it("returns null when the response is 404", async () => {
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 404,
+      json: vi.fn()
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadJsonOrNull("/data/derived/page_insights.json")).resolves.toBeNull();
+  });
+
+  it("throws DataLoadError when the response is 500", async () => {
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: vi.fn()
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadJsonOrNull("/data/derived/page_insights.json")).rejects.toMatchObject({
+      name: "DataLoadError",
+      status: 500
+    } satisfies Partial<DataLoadError>);
+  });
+
+  it("throws DataLoadError when the path is invalid (matches dataPathPattern)", async () => {
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadJsonOrNull("/not-data/file.json")).rejects.toMatchObject({
+      name: "DataLoadError",
+      path: "/not-data/file.json"
+    } satisfies Partial<DataLoadError>);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("re-throws when JSON parsing fails on a present file", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockRejectedValue(new SyntaxError("Unexpected end of JSON input"))
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadJsonOrNull("/data/derived/page_insights.json")).rejects.toBeInstanceOf(
+      SyntaxError
+    );
   });
 });
 
