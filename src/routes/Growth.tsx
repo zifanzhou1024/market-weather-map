@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import GrowthLaborMatrixHero from "../components/charts/GrowthLaborMatrixHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -54,6 +55,47 @@ export default function Growth() {
   }, []);
 
   const cfnai = data?.growthSeries.find((series) => series.series_id === "cfnai");
+  const cfnai3mAvg = data?.growthSeries.find((series) => series.series_id === "cfnai_3m_avg");
+  const realRetailSales = data?.growthSeries.find(
+    (series) => series.series_id === "real_retail_sales"
+  );
+  const industrialProduction = data?.growthSeries.find(
+    (series) => series.series_id === "industrial_production"
+  );
+  const durableGoodsOrders = data?.growthSeries.find(
+    (series) => series.series_id === "durable_goods_orders"
+  );
+  const unemploymentRate = data?.laborSeries.find(
+    (series) => series.series_id === "unemployment_rate"
+  );
+  const nonfarmPayrolls = data?.laborSeries.find(
+    (series) => series.series_id === "nonfarm_payrolls"
+  );
+  const initialClaims = data?.laborSeries.find((series) => series.series_id === "initial_claims");
+  const sahmRule = data?.laborSeries.find((series) => series.series_id === "sahm_rule");
+  const heroAllReady =
+    sahmRule &&
+    initialClaims &&
+    unemploymentRate &&
+    nonfarmPayrolls &&
+    durableGoodsOrders &&
+    realRetailSales &&
+    industrialProduction &&
+    cfnai3mAvg &&
+    cfnai;
+  const heroHasObservations =
+    heroAllReady &&
+    [
+      sahmRule,
+      initialClaims,
+      unemploymentRate,
+      nonfarmPayrolls,
+      durableGoodsOrders,
+      realRetailSales,
+      industrialProduction,
+      cfnai3mAvg,
+      cfnai
+    ].some((series) => series.observations.length > 0);
 
   return (
     <main className="page-shell">
@@ -71,6 +113,23 @@ export default function Growth() {
         <div className="route-stack">
           <PageInsightHero route="growth" />
           {/* SLOT:growth_primary_chart */}
+          {heroAllReady && heroHasObservations ? (
+            <GrowthLaborMatrixHero
+              sahmRule={sahmRule}
+              initialClaims={initialClaims}
+              unemploymentRate={unemploymentRate}
+              nonfarmPayrolls={nonfarmPayrolls}
+              durableGoodsOrders={durableGoodsOrders}
+              realRetailSales={realRetailSales}
+              industrialProduction={industrialProduction}
+              cfnai3mAvg={cfnai3mAvg}
+              cfnai={cfnai}
+            />
+          ) : (
+            <section className="panel chart-panel" aria-label="Growth, labor, and recession-risk percentile strip">
+              <p>Growth, labor, and recession-risk percentile strip unavailable until growth and labor history are active.</p>
+            </section>
+          )}
           <InterpretationPanel
             label="Growth and labor read"
             notes={["Monthly growth and labor data can lag source release schedules."]}
