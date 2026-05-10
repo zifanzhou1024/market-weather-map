@@ -8,6 +8,7 @@ import App from "../App";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
+  RatesDashboardFile,
   RegimeReplayFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
@@ -265,6 +266,7 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
     "/data/derived/score_summary.json": scoreSummary,
     "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
     "/data/derived/regime_snapshot.json": regimeSnapshot,
+    "/data/derived/rates_dashboard.json": ratesDashboard,
     "/data/derived/signal_priority.json": signalPriority,
     "/data/derived/volatility_dashboard.json": volatilityDashboard,
     "/data/derived/us10y_minus_us2y.json": {
@@ -1632,6 +1634,74 @@ const volatilityDashboard: VolatilityDashboardFile = {
   }
 };
 
+const ratesDashboard: RatesDashboardFile = {
+  date: "2026-05-08",
+  generated_at_utc: "2026-05-10T15:00:10Z",
+  method_version: "w1a-rates-dashboard-v1",
+  yield_change_windows: {
+    "1M": {
+      nominal_10y_bps: 12,
+      real_yield_10y_bps: 0,
+      breakeven_10y_bps: 11,
+      driver: "breakeven"
+    },
+    "3M": {
+      nominal_10y_bps: 19,
+      real_yield_10y_bps: 8,
+      breakeven_10y_bps: 10,
+      driver: "balanced"
+    },
+    "6M": {
+      nominal_10y_bps: 31,
+      real_yield_10y_bps: 15,
+      breakeven_10y_bps: 15,
+      driver: "balanced"
+    },
+    "1Y": {
+      nominal_10y_bps: 5,
+      real_yield_10y_bps: -12,
+      breakeven_10y_bps: 19,
+      driver: "breakeven"
+    }
+  },
+  current_decomposition: {
+    nominal_10y_pct: 4.41,
+    real_yield_10y_pct: 1.96,
+    breakeven_10y_pct: 2.45
+  },
+  curve_snapshots: {
+    current: [
+      { tenor: "2Y", value: 3.92 },
+      { tenor: "10Y", value: 4.41 },
+      { tenor: "20Y", value: 4.84 },
+      { tenor: "30Y", value: 4.97 }
+    ],
+    one_month_ago: [
+      { tenor: "2Y", value: 3.95 },
+      { tenor: "10Y", value: 4.29 },
+      { tenor: "20Y", value: 4.7 },
+      { tenor: "30Y", value: 4.81 }
+    ],
+    three_months_ago: [
+      { tenor: "2Y", value: 4.02 },
+      { tenor: "10Y", value: 4.22 },
+      { tenor: "20Y", value: 4.6 },
+      { tenor: "30Y", value: 4.72 }
+    ],
+    one_year_ago: [
+      { tenor: "2Y", value: 3.83 },
+      { tenor: "10Y", value: 4.36 },
+      { tenor: "20Y", value: 4.84 },
+      { tenor: "30Y", value: 4.83 }
+    ]
+  },
+  decomposition_history: [
+    { date: "2026-05-06", nominal_pct: 4.39, real_pct: 1.94, breakeven_pct: 2.45 },
+    { date: "2026-05-07", nominal_pct: 4.4, real_pct: 1.95, breakeven_pct: 2.45 },
+    { date: "2026-05-08", nominal_pct: 4.41, real_pct: 1.96, breakeven_pct: 2.45 }
+  ]
+};
+
 const malformedShockRiskRowSnapshot = {
   ...shockRiskSnapshot,
   active_signals: [
@@ -2141,6 +2211,41 @@ describe("data-backed routes", () => {
     await waitForContent(container, "10Y-2Y spread");
 
     expect(container.textContent).toContain("0.42 percentage points");
+  });
+
+  it("rates route renders the W3B waterfall, curve-comparison, and decomposition-stack charts from the dashboard fixture", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/rates"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Yield change waterfall");
+
+    // Primary chart slot
+    expect(container.textContent).toContain("Yield change waterfall");
+    // Secondary slot, both charts
+    expect(container.textContent).toContain("Yield curve comparison");
+    expect(container.textContent).toContain("Yield decomposition (current)");
+    // Legacy Recharts tertiary history retained below the new charts.
+    expect(container.textContent).toContain("Yield decomposition history");
+  });
+
+  it("rates route renders a loading placeholder when the rates dashboard file is missing", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/rates_dashboard.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/rates"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Interactive rates view loading");
+    expect(container.textContent).toContain("Interactive rates view loading");
+    // Legacy decomposition history still renders so the route degrades gracefully.
+    expect(container.textContent).toContain("Yield decomposition history");
   });
 
   it("renders the growth route with growth and labor risk sections", async () => {

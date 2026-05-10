@@ -7,13 +7,23 @@ import MetricCard from "../components/MetricCard";
 import PageInsightHero from "../components/PageInsightHero";
 import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
+import YieldChangeWaterfallChart from "../components/charts/YieldChangeWaterfallChart";
+import YieldCurveComparisonChart from "../components/charts/YieldCurveComparisonChart";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
-import { loadCatalog, loadDataStatus, loadDerivedSeries, loadRegimeSnapshot } from "../lib/data";
+import YieldDecompositionStackChart from "../components/charts/YieldDecompositionStackChart";
+import {
+  loadCatalog,
+  loadDataStatus,
+  loadDerivedSeries,
+  loadRatesDashboard,
+  loadRegimeSnapshot
+} from "../lib/data";
 import { directionLabel, yieldDriverLabel } from "../lib/regime";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
   DirectionState,
+  RatesDashboardFile,
   RegimeSnapshotFile,
   SeriesCatalogEntry,
   TimeSeriesFile
@@ -42,6 +52,7 @@ interface RouteState {
   catalog: SeriesCatalogEntry[];
   curve: DerivedSeriesFile;
   diagnosticSeries: TimeSeriesFile[];
+  ratesDashboard: RatesDashboardFile | null;
   snapshot: RegimeSnapshotFile;
   series: TimeSeriesFile[];
   status: DataStatusFile;
@@ -66,10 +77,11 @@ export default function Rates() {
 
     async function loadRates() {
       try {
-        const [catalog, status, snapshot] = await Promise.all([
+        const [catalog, status, snapshot, ratesDashboard] = await Promise.all([
           loadCatalog(),
           loadDataStatus(),
-          loadRegimeSnapshot()
+          loadRegimeSnapshot(),
+          loadRatesDashboard().catch(() => null)
         ]);
         const [series, diagnosticSeries, curve] = await Promise.all([
           loadRouteSeries(ratesSeriesIds, catalog, status),
@@ -78,7 +90,8 @@ export default function Rates() {
           }),
           loadDerivedSeries("us10y_minus_us2y")
         ]);
-        if (active) setData({ catalog, curve, diagnosticSeries, snapshot, series, status });
+        if (active)
+          setData({ catalog, curve, diagnosticSeries, ratesDashboard, snapshot, series, status });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load rates data.");
       }
@@ -124,7 +137,20 @@ export default function Rates() {
         <div className="route-stack">
           <PageInsightHero route="rates" />
           {/* SLOT:rates_primary_chart */}
+          {data.ratesDashboard ? (
+            <YieldChangeWaterfallChart data={data.ratesDashboard.yield_change_windows} />
+          ) : (
+            <p className="data-loading" role="status">
+              Interactive rates view loading…
+            </p>
+          )}
           {/* SLOT:rates_secondary_charts */}
+          {data.ratesDashboard ? (
+            <>
+              <YieldCurveComparisonChart data={data.ratesDashboard.curve_snapshots} />
+              <YieldDecompositionStackChart data={data.ratesDashboard.current_decomposition} />
+            </>
+          ) : null}
           <InterpretationPanel
             label="Rates and policy read"
             notes={["Real-yield and breakeven data are daily market-implied context, not policy forecasts."]}
@@ -141,16 +167,6 @@ export default function Rates() {
             ]}
             summary={`Yield driver: ${yieldDriverLabel(data.snapshot.regime.yield_driver)}`}
           />
-          <section className="metric-grid" aria-label="Rates metrics">
-            {data.series.map((series) => (
-              <MetricCard
-                catalogEntry={data.catalog.find((entry) => entry.id === series.series_id)}
-                key={series.series_id}
-                series={series}
-              />
-            ))}
-            <MetricCard catalogEntry={curveCatalogEntry} series={data.curve} />
-          </section>
           {hasObservations(us10y) ? (
             <TimeSeriesChart
               catalogEntry={data.catalog.find((entry) => entry.id === "us10y")}
@@ -168,7 +184,25 @@ export default function Rates() {
               <p>Featured chart unavailable until source data is available.</p>
             </section>
           )}
-          <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
+          <section className="route-stack" aria-labelledby="yield-decomposition-history-heading">
+            <div className="section-header">
+              <div>
+                <p className="eyebrow">History</p>
+                <h3 id="yield-decomposition-history-heading">Yield decomposition history</h3>
+              </div>
+            </div>
+            <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
+          </section>
+          <section className="metric-grid" aria-label="Rates metrics">
+            {data.series.map((series) => (
+              <MetricCard
+                catalogEntry={data.catalog.find((entry) => entry.id === series.series_id)}
+                key={series.series_id}
+                series={series}
+              />
+            ))}
+            <MetricCard catalogEntry={curveCatalogEntry} series={data.curve} />
+          </section>
           <RouteDataFooter route="rates">
             <DataGapPanel status={data.status} seriesIds={ratesSeriesIds.concat(["us10y_minus_us2y"])} />
             <CandidateDiagnosticPanel
