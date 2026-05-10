@@ -21,6 +21,83 @@ def test_update_runner_generates_macro_calendar_before_schema_validation():
     )
 
 
+def test_update_runner_includes_next_phase_dashboard_builders():
+    """The four next-phase derived dashboards must run after their upstream
+    inputs are generated and before schema validation so the validator
+    catches malformed output rather than missing files."""
+    expected_builders = [
+        "scripts.transform.build_page_insights",
+        "scripts.transform.build_volatility_dashboard",
+        "scripts.transform.build_rates_dashboard",
+        "scripts.transform.build_regime_dashboard",
+    ]
+    for module in expected_builders:
+        assert module in update_data.MODULES, (
+            f"Wave-1 builder {module} not wired into update_data.MODULES"
+        )
+
+    # page_insights must run AFTER signal_priority (its upstream input).
+    assert update_data.MODULES.index(
+        "scripts.transform.build_signal_priority"
+    ) < update_data.MODULES.index("scripts.transform.build_page_insights")
+
+    # All builders must run BEFORE schema validation.
+    schema_idx = update_data.MODULES.index("scripts.validate.validate_schema")
+    for module in expected_builders:
+        assert update_data.MODULES.index(module) < schema_idx, (
+            f"{module} runs after schema validation; validator can't catch bad output"
+        )
+
+
+def test_update_runner_safe_update_path_records_failure_when_dashboard_builder_fails(tmp_path, monkeypatch):
+    """Simulate one of the new builders failing; the safe-update path must
+    preserve prior good JSON and write a failure entry into data_status."""
+    data_root = tmp_path / "public" / "data"
+    status_dir = data_root / "status"
+    status_dir.mkdir(parents=True)
+    (status_dir / "data_status.json").write_text(
+        json.dumps(
+            {
+                "generated_at_utc": "2026-05-02T00:00:00Z",
+                "last_successful_update_utc": "2026-05-02T00:00:00Z",
+                "overall_status": "ok",
+                "series": {},
+            }
+        )
+    )
+
+    # Pre-existing (prior good) page_insights file.
+    derived_dir = data_root / "derived"
+    derived_dir.mkdir(parents=True)
+    (derived_dir / "page_insights.json").write_text(
+        '{"prior_good": true}'
+    )
+
+    monkeypatch.setattr(update_data, "data_dir", lambda: data_root)
+    monkeypatch.setattr(
+        update_data,
+        "MODULES",
+        ["scripts.transform.build_page_insights"],
+    )
+
+    def fail_module(module):
+        raise RuntimeError(f"{module} failed")
+
+    monkeypatch.setattr(update_data, "run_module", fail_module)
+
+    assert update_data.main() == 1
+
+    # Prior good JSON must be preserved.
+    assert (
+        derived_dir / "page_insights.json"
+    ).read_text() == '{"prior_good": true}'
+
+    # data_status.json must record the failure.
+    payload = json.loads((status_dir / "data_status.json").read_text())
+    assert payload["update_status"] == "failed"
+    assert "build_page_insights" in payload["update_message"]
+
+
 def test_restore_snapshot_preserves_prior_good_json(tmp_path):
     data_dir = tmp_path / "public" / "data"
     series_dir = data_dir / "series"

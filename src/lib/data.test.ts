@@ -2,15 +2,27 @@ import { afterEach, describe, expect, it, test, vi } from "vitest";
 import {
   DataLoadError,
   loadJson,
+  loadJsonOrNull,
+  loadPageInsights,
+  loadRatesDashboard,
+  loadRegimeDashboard,
   loadScoreSummary,
   loadSeries,
-  loadSourceRegistry
+  loadSourceRegistry,
+  loadVolatilityDashboard
 } from "./data";
 import type {
   DataStatusFile,
+  PageInsightsFile,
+  RatesDashboardFile,
+  RegimeDashboardFile,
+  RouteInsight,
   ScoreSummaryFile,
   SeriesCatalogEntry,
-  SourceRegistryFile
+  SignalFreshnessStatus,
+  SignalRef,
+  SourceRegistryFile,
+  VolatilityDashboardFile
 } from "./types";
 
 const fetchMock = vi.fn();
@@ -76,6 +88,232 @@ describe("data loaders", () => {
     expect(fetchMock).toHaveBeenCalledWith("/data/derived/score_summary.json");
     expect(fetchMock).toHaveBeenCalledWith("/data/catalog/source_registry.json");
   });
+});
+
+describe("loadJsonOrNull", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    fetchMock.mockReset();
+  });
+
+  it("returns parsed JSON when the response is 200", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ ok: true })
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadJsonOrNull("/data/derived/page_insights.json")).resolves.toEqual({
+      ok: true
+    });
+    expect(fetchMock).toHaveBeenCalledWith("/data/derived/page_insights.json");
+  });
+
+  it("returns null when the response is 404", async () => {
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 404,
+      json: vi.fn()
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadJsonOrNull("/data/derived/page_insights.json")).resolves.toBeNull();
+  });
+
+  it("throws DataLoadError when the response is 500", async () => {
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: vi.fn()
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadJsonOrNull("/data/derived/page_insights.json")).rejects.toMatchObject({
+      name: "DataLoadError",
+      status: 500
+    } satisfies Partial<DataLoadError>);
+  });
+
+  it("throws DataLoadError when the path is invalid (matches dataPathPattern)", async () => {
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadJsonOrNull("/not-data/file.json")).rejects.toMatchObject({
+      name: "DataLoadError",
+      path: "/not-data/file.json"
+    } satisfies Partial<DataLoadError>);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("re-throws when JSON parsing fails on a present file", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockRejectedValue(new SyntaxError("Unexpected end of JSON input"))
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadJsonOrNull("/data/derived/page_insights.json")).rejects.toBeInstanceOf(
+      SyntaxError
+    );
+  });
+});
+
+describe("next-phase derived dashboard loaders", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    fetchMock.mockReset();
+  });
+
+  it("loadPageInsights fetches the canonical path and returns parsed object", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ generated_at_utc: "2026-05-10T00:00:00Z", routes: {} })
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await loadPageInsights();
+    expect(result).toEqual({ generated_at_utc: "2026-05-10T00:00:00Z", routes: {} });
+    expect(fetchMock).toHaveBeenCalledWith("/data/derived/page_insights.json");
+  });
+
+  it("loadVolatilityDashboard returns null on 404", async () => {
+    fetchMock.mockResolvedValue({ ok: false, status: 404, json: vi.fn() });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadVolatilityDashboard()).resolves.toBeNull();
+    expect(fetchMock).toHaveBeenCalledWith("/data/derived/volatility_dashboard.json");
+  });
+
+  it("loadRatesDashboard fetches the canonical path", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ generated_at_utc: "2026-05-10T00:00:00Z" })
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await loadRatesDashboard();
+    expect(result).toMatchObject({ generated_at_utc: "2026-05-10T00:00:00Z" });
+    expect(fetchMock).toHaveBeenCalledWith("/data/derived/rates_dashboard.json");
+  });
+
+  it("loadRegimeDashboard returns null on 404 and throws on 500", async () => {
+    fetchMock
+      .mockResolvedValueOnce({ ok: false, status: 404, json: vi.fn() })
+      .mockResolvedValueOnce({ ok: false, status: 500, json: vi.fn() });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadRegimeDashboard()).resolves.toBeNull();
+    await expect(loadRegimeDashboard()).rejects.toMatchObject({
+      name: "DataLoadError",
+      status: 500
+    } satisfies Partial<DataLoadError>);
+  });
+
+  it("loadPageInsights re-throws when the file is present but malformed", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockRejectedValue(new SyntaxError("malformed"))
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadPageInsights()).rejects.toBeInstanceOf(SyntaxError);
+  });
+});
+
+test("type contracts: SignalRef.freshness_status reuses SignalFreshnessStatus enum", () => {
+  // Compile-time check: assigning an enum member to a SignalRef field must be
+  // accepted; an off-spec literal must be rejected (caught by tsc strict mode).
+  const freshnessOk: SignalFreshnessStatus = "ok";
+  const freshnessStale: SignalFreshnessStatus = "stale";
+  const freshnessUnavailable: SignalFreshnessStatus = "unavailable";
+  const ref: SignalRef = {
+    id: "vix_complex",
+    label: "VIX / VVIX complex",
+    message: "Volatility tail risk is contained.",
+    why_it_matters: "Tail risk is calm.",
+    severity: 25.79,
+    freshness_status: freshnessOk,
+    confidence: 0.99,
+    source_status: "free_public"
+  };
+  expect(ref.freshness_status).toBe("ok");
+  expect(freshnessStale).toBe("stale");
+  expect(freshnessUnavailable).toBe("unavailable");
+});
+
+test("type contracts: PageInsightsFile, route insight, dashboard files compose without circular imports", () => {
+  const routeInsight: RouteInsight = {
+    title: "Volatility",
+    state: "calm",
+    why_it_matters: "Volatility tail risk is contained.",
+    confidence: 0.99,
+    freshness_notes: []
+  };
+  const file: PageInsightsFile = {
+    generated_at_utc: "2026-05-10T00:00:00Z",
+    date: "2026-05-10",
+    method_version: "phase8-pr1-page-insights-v1",
+    routes: { volatility: routeInsight }
+  };
+  const vol: VolatilityDashboardFile = {
+    generated_at_utc: "2026-05-10T00:00:00Z",
+    date: "2026-05-10",
+    method_version: "phase8-pr1-volatility-dashboard-v1",
+    latest_curve: [
+      { tenor: "9D", value: 14.0, percentile_5y: 30 },
+      { tenor: "30D", value: 16.0, percentile_5y: 35 },
+      { tenor: "3M", value: 17.0, percentile_5y: 40 }
+    ],
+    ratio_history: [],
+    hidden_stress: [],
+    thresholds: {
+      vix9d_vix_calm: 0.95,
+      vix9d_vix_stress: 1.05,
+      vix_vix3m_calm: 0.95,
+      vix_vix3m_stress: 1.0,
+      hidden_stress_watch: 15,
+      hidden_stress_elevated: 30
+    }
+  };
+  const rates: RatesDashboardFile = {
+    generated_at_utc: "2026-05-10T00:00:00Z",
+    date: "2026-05-10",
+    method_version: "phase8-pr1-rates-dashboard-v1",
+    yield_change_windows: {
+      "1M": { nominal_10y_bps: 5, real_yield_10y_bps: 3, breakeven_10y_bps: 2, driver: "balanced" },
+      "3M": { nominal_10y_bps: 15, real_yield_10y_bps: 12, breakeven_10y_bps: 3, driver: "real_yield" },
+      "6M": { nominal_10y_bps: 25, real_yield_10y_bps: 5, breakeven_10y_bps: 20, driver: "breakeven" },
+      "1Y": { nominal_10y_bps: 40, real_yield_10y_bps: 30, breakeven_10y_bps: 10, driver: "real_yield" }
+    },
+    current_decomposition: {
+      nominal_10y_pct: 4.4,
+      real_yield_10y_pct: 2.0,
+      breakeven_10y_pct: 2.4
+    },
+    curve_snapshots: {
+      current: [{ tenor: "10Y", value: 4.4 }],
+      one_month_ago: [],
+      three_months_ago: [],
+      one_year_ago: []
+    },
+    decomposition_history: []
+  };
+  const regime: RegimeDashboardFile = {
+    generated_at_utc: "2026-05-10T00:00:00Z",
+    date: "2026-05-10",
+    method_version: "phase8-pr1-regime-dashboard-v1",
+    windows: { "20D": [], "60D": [], "120D": [] },
+    thresholds: { real_yield_neutral_bps: 5, dollar_neutral_pct: 0.5 }
+  };
+
+  expect(file.routes.volatility?.state).toBe("calm");
+  expect(vol.latest_curve).toHaveLength(3);
+  expect(rates.yield_change_windows["1Y"].driver).toBe("real_yield");
+  expect(regime.thresholds.real_yield_neutral_bps).toBe(5);
 });
 
 test("type contracts support monthly public data and update metadata", () => {

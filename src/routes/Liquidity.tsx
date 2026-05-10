@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import LiquidityDecompositionHero from "../components/charts/LiquidityDecompositionHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
@@ -77,6 +80,15 @@ export default function Liquidity() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="liquidity" />
+          {/* SLOT:liquidity_primary_chart */}
+          {data.netLiquidity.observations.length > 0 ? (
+            <LiquidityDecompositionHero netLiquidity={data.netLiquidity} />
+          ) : (
+            <section className="panel chart-panel" aria-label="Net liquidity">
+              <p>Net liquidity chart unavailable until source data is active.</p>
+            </section>
+          )}
           <InterpretationPanel
             label="Liquidity funding conditions"
             summary="This view combines a derived net liquidity proxy with balance-sheet and funding inputs."
@@ -108,8 +120,10 @@ export default function Liquidity() {
               <p>Featured chart unavailable until source data is available.</p>
             </section>
           )}
-          <DataGapPanel seriesIds={liquidityStatusIds} status={data.status} />
-          <DataStatusTable seriesIds={liquidityStatusIds} status={data.status} />
+          <RouteDataFooter route="liquidity">
+            <DataGapPanel seriesIds={liquidityStatusIds} status={data.status} />
+            <DataStatusTable seriesIds={liquidityStatusIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>

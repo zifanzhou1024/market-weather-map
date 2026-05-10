@@ -14,11 +14,12 @@ import LiquidityPulsePanel from "../components/LiquidityPulsePanel";
 import type { MultiSeriesChartSeries } from "../components/MultiSeriesChart";
 import OptionsSentimentPanel from "../components/OptionsSentimentPanel";
 import RatesPressureChart from "../components/RatesPressureChart";
+import RouteDataFooter from "../components/RouteDataFooter";
 import SignalChecklist from "../components/SignalChecklist";
 import TopSignalList from "../components/TopSignalList";
-import VixCurveProxyChart from "../components/VixCurveProxyChart";
+import VixCurveTermStructureChart from "../components/charts/VixCurveTermStructureChart";
 import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
-import VolatilityComplexChart from "../components/VolatilityComplexChart";
+import VolatilityHiddenStressChart from "../components/charts/VolatilityHiddenStressChart";
 import VolatilityTermStructurePanel from "../components/VolatilityTermStructurePanel";
 import { scoreLabel } from "../lib/horizon";
 import {
@@ -27,7 +28,8 @@ import {
   loadMacroCalendar,
   loadRegimeSnapshot,
   loadScoreSummary,
-  loadSignalPriority
+  loadSignalPriority,
+  loadVolatilityDashboard
 } from "../lib/data";
 import type {
   DataStatusFile,
@@ -37,7 +39,8 @@ import type {
   ScoreSummaryFile,
   SeriesCatalogEntry,
   SignalPriorityFile,
-  TimeSeriesFile
+  TimeSeriesFile,
+  VolatilityDashboardFile
 } from "../lib/types";
 import { loadRouteDerivedSeries, loadRouteSeries } from "./routeSeries";
 
@@ -85,6 +88,7 @@ interface RouteState {
   signalPriority: SignalPriorityFile | null;
   snapshot: RegimeSnapshotFile;
   status: DataStatusFile;
+  volDashboard: VolatilityDashboardFile | null;
 }
 
 const chartColors = ["#2f6f73", "#31516b", "#b76f2b", "#7a5b92"];
@@ -143,14 +147,16 @@ export default function TacticalTradingWeather() {
 
     async function loadTacticalTradingWeather() {
       try {
-        const [catalog, status, scoreSummary, snapshot, signalPriority, calendar] = await Promise.all([
-          loadCatalog(),
-          loadDataStatus(),
-          loadScoreSummary(),
-          loadRegimeSnapshot(),
-          loadSignalPriority().catch(() => null),
-          loadMacroCalendar()
-        ]);
+        const [catalog, status, scoreSummary, snapshot, signalPriority, calendar, volDashboard] =
+          await Promise.all([
+            loadCatalog(),
+            loadDataStatus(),
+            loadScoreSummary(),
+            loadRegimeSnapshot(),
+            loadSignalPriority().catch(() => null),
+            loadMacroCalendar(),
+            loadVolatilityDashboard()
+          ]);
         const [series, derived] = await Promise.all([
           loadRouteSeries(tacticalSeriesIds, catalog, status),
           loadRouteDerivedSeries(tacticalDerivedIds, catalog, status, {
@@ -158,7 +164,17 @@ export default function TacticalTradingWeather() {
           })
         ]);
         if (active) {
-          setData({ calendar, catalog, derived, scoreSummary, series, signalPriority, snapshot, status });
+          setData({
+            calendar,
+            catalog,
+            derived,
+            scoreSummary,
+            series,
+            signalPriority,
+            snapshot,
+            status,
+            volDashboard
+          });
         }
       } catch (loadError) {
         if (active) {
@@ -233,15 +249,24 @@ export default function TacticalTradingWeather() {
             className="tactical-charts"
             aria-label="Short-term tactical charts: volatility, rates, credit, liquidity, dollar, and event risk"
           >
-            <VixCurveProxyChart
-              vix9d={findSeries(data.series, "vix9d")}
-              vix={findSeries(data.series, "vix")}
-              vix3m={findSeries(data.series, "vix3m")}
-            />
-            <VolatilityComplexChart
-              vix={findSeries(data.series, "vix")}
-              vvix={findSeries(data.series, "vvix")}
-            />
+            {/* SLOT:tactical_vol_curve_slot */}
+            {data.volDashboard ? (
+              <VixCurveTermStructureChart
+                compact
+                data={data.volDashboard.latest_curve}
+                thresholds={data.volDashboard.thresholds}
+              />
+            ) : null}
+            {/* /SLOT:tactical_vol_curve_slot */}
+            {/* SLOT:tactical_vol_complex_slot */}
+            {data.volDashboard ? (
+              <VolatilityHiddenStressChart
+                compact
+                data={data.volDashboard.hidden_stress}
+                thresholds={data.volDashboard.thresholds}
+              />
+            ) : null}
+            {/* /SLOT:tactical_vol_complex_slot */}
             <CreditStressMatrix
               highYieldOas={findSeries(data.series, "high_yield_oas")}
               investmentGradeOas={findSeries(data.series, "investment_grade_oas")}
@@ -281,14 +306,16 @@ export default function TacticalTradingWeather() {
             snapshot={data.snapshot}
           />
           <LiquidityPulsePanel catalog={data.catalog} netLiquidity={findDerived(data.derived, "net_liquidity")} />
-          <OptionsSentimentPanel items={candidateItems(data.catalog, data.status, optionCandidateIds)} />
-          <EventRiskPanel
-            calendar={data.calendar}
-            items={candidateItems(data.catalog, data.status, ["event_opex"])}
-          />
-          <VixFuturesReadinessPanel items={candidateItems(data.catalog, data.status, vxCandidateIds)} />
-          <DataGapPanel seriesIds={tacticalStatusIds} status={data.status} />
-          <DataStatusTable seriesIds={tacticalStatusIds} status={data.status} />
+          <RouteDataFooter>
+            <OptionsSentimentPanel items={candidateItems(data.catalog, data.status, optionCandidateIds)} />
+            <EventRiskPanel
+              calendar={data.calendar}
+              items={candidateItems(data.catalog, data.status, ["event_opex"])}
+            />
+            <VixFuturesReadinessPanel items={candidateItems(data.catalog, data.status, vxCandidateIds)} />
+            <DataGapPanel seriesIds={tacticalStatusIds} status={data.status} />
+            <DataStatusTable seriesIds={tacticalStatusIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>

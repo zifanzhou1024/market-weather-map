@@ -4,12 +4,23 @@ import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/MultiSeriesChart";
+import PageInsightHero from "../components/PageInsightHero";
 import PercentileBandChart from "../components/PercentileBandChart";
+import RouteDataFooter from "../components/RouteDataFooter";
 import SourceNote from "../components/SourceNote";
 import TimeSeriesChart from "../components/TimeSeriesChart";
+import VixCurveTermStructureChart from "../components/charts/VixCurveTermStructureChart";
 import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
-import { loadCatalog, loadDataStatus, loadSeries } from "../lib/data";
-import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import VixRatioHistoryChart from "../components/charts/VixRatioHistoryChart";
+import VolatilityHiddenStressChart from "../components/charts/VolatilityHiddenStressChart";
+import { loadCatalog, loadDataStatus, loadSeries, loadVolatilityDashboard } from "../lib/data";
+import type {
+  DataStatusFile,
+  DerivedSeriesFile,
+  SeriesCatalogEntry,
+  TimeSeriesFile,
+  VolatilityDashboardFile
+} from "../lib/types";
 import { loadRouteDerivedSeries } from "./routeSeries";
 
 const volatilitySeriesIds = ["vix", "vvix", "vix9d", "vix3m"];
@@ -28,6 +39,7 @@ interface RouteState {
   derived: DerivedSeriesFile[];
   series: TimeSeriesFile[];
   status: DataStatusFile;
+  volDashboard: VolatilityDashboardFile | null;
 }
 
 function volatilityDerivedEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
@@ -124,14 +136,18 @@ export default function Volatility() {
 
     async function loadVolatility() {
       try {
-        const [catalog, status] = await Promise.all([loadCatalog(), loadDataStatus()]);
+        const [catalog, status, volDashboard] = await Promise.all([
+          loadCatalog(),
+          loadDataStatus(),
+          loadVolatilityDashboard()
+        ]);
         const [series, derived] = await Promise.all([
           Promise.all(volatilitySeriesIds.map((seriesId) => loadSeries(seriesId))),
           loadRouteDerivedSeries(volatilityDerivedIds, [], status, {
             allowMissing: new Set(volatilityDerivedIds)
           })
         ]);
-        if (active) setData({ catalog, derived, series, status });
+        if (active) setData({ catalog, derived, series, status, volDashboard });
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load volatility data.");
       }
@@ -160,6 +176,31 @@ export default function Volatility() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="volatility" />
+          {/* SLOT:volatility_primary_chart */}
+          {data.volDashboard ? (
+            <VixCurveTermStructureChart
+              data={data.volDashboard.latest_curve}
+              thresholds={data.volDashboard.thresholds}
+            />
+          ) : (
+            <p className="data-loading" role="status">
+              Interactive volatility view loading…
+            </p>
+          )}
+          {/* SLOT:volatility_secondary_charts */}
+          {data.volDashboard ? (
+            <>
+              <VixRatioHistoryChart
+                data={data.volDashboard.ratio_history}
+                thresholds={data.volDashboard.thresholds}
+              />
+              <VolatilityHiddenStressChart
+                data={data.volDashboard.hidden_stress}
+                thresholds={data.volDashboard.thresholds}
+              />
+            </>
+          ) : null}
           <InterpretationPanel
             label="Cboe volatility curve"
             summary="Spot VIX, very-short-dated VIX9D, 3-month VIX3M, and VVIX describe equity volatility level, curve shape, and volatility-of-volatility."
@@ -194,11 +235,13 @@ export default function Volatility() {
             </>
           ) : null}
           <MultiSeriesChart series={toChartSeries(data.series)} title="VIX term-structure proxy" units="index" />
-          <VixFuturesReadinessPanel
-            items={candidateItems(data.catalog, data.status, vxCandidateIds)}
-            title="VX futures curve"
-          />
-          <DataStatusTable seriesIds={volatilityStatusIds} status={data.status} />
+          <RouteDataFooter route="volatility">
+            <VixFuturesReadinessPanel
+              items={candidateItems(data.catalog, data.status, vxCandidateIds)}
+              title="VX futures curve"
+            />
+            <DataStatusTable seriesIds={volatilityStatusIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>

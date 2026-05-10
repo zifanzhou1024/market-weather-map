@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import SentimentPositioningHero from "../components/charts/SentimentPositioningHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus, loadSeries } from "../lib/data";
 import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
@@ -42,6 +45,7 @@ export default function Sentiment() {
     };
   }, []);
 
+  const assetManager = data?.series.find((series) => series.series_id === "cftc_sp500_asset_mgr_net");
   const leveragedMoney = data?.series.find((series) => series.series_id === "cftc_sp500_lev_money_net");
 
   return (
@@ -58,6 +62,14 @@ export default function Sentiment() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="sentiment" />
+          {/* SLOT:sentiment_primary_chart */}
+          {assetManager && leveragedMoney ? (
+            <SentimentPositioningHero
+              assetManagerNet={assetManager}
+              leveragedMoneyNet={leveragedMoney}
+            />
+          ) : null}
           <InterpretationPanel
             label="Active data is positioning only"
             notes={[
@@ -83,8 +95,10 @@ export default function Sentiment() {
               series={leveragedMoney}
             />
           ) : null}
-          <DataGapPanel seriesIds={sentimentSeriesIds} status={data.status} />
-          <DataStatusTable seriesIds={sentimentSeriesIds} status={data.status} />
+          <RouteDataFooter route="sentiment">
+            <DataGapPanel seriesIds={sentimentSeriesIds} status={data.status} />
+            <DataStatusTable seriesIds={sentimentSeriesIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>

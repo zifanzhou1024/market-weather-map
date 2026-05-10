@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import RouteDataFooter from "../components/RouteDataFooter";
 import { loadMacroCalendar } from "../lib/data";
 import type { MacroCalendarEvent, MacroCalendarFile, MacroEventImportance, MacroEventStatus } from "../lib/types";
 
@@ -141,6 +142,7 @@ export default function Calendar() {
               </section>
             );
           })}
+          <RouteDataFooter />
         </div>
       ) : null}
     </main>

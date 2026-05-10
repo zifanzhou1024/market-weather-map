@@ -20,7 +20,7 @@ import MultiSeriesChart from "./MultiSeriesChart";
 import OptionsSentimentPanel from "./OptionsSentimentPanel";
 import PercentileBandChart from "./PercentileBandChart";
 import RegimeInterpretationPanel from "./RegimeInterpretationPanel";
-import RegimeQuadrantChart, { domainIncludingZero } from "./RegimeQuadrantChart";
+import RegimeQuadrantChart from "./RegimeQuadrantChart";
 import RegimeBadge from "./RegimeBadge";
 import ScoreCard from "./ScoreCard";
 import ShockRiskDashboard from "./ShockRiskDashboard";
@@ -1302,56 +1302,39 @@ describe("data-driven components", () => {
     expect(container.textContent).not.toContain("Credit candidate");
   });
 
-  it("renders regime quadrant labels as DOM text", () => {
-    const container = render(
-      <RegimeQuadrantChart
-        trail={[
-          {
-            date: "2026-05-01",
-            dollar_change: -0.4,
-            real_yield_change: -0.2,
-            nominal_yield_change: -0.1,
-            vix_percentile: 40,
-            credit_change: -3
-          }
-        ]}
-      />
-    );
+  it("renders all four descriptive regime quadrant meaning strings in the legend", () => {
+    // The rebuilt ECharts chart self-loads from regime_dashboard.json; with no
+    // fetch stubbed it stays in its non-ready states, but the quadrant-meaning
+    // legend (rendered as a static <dl> below the chart body) is always visible.
+    const container = render(<RegimeQuadrantChart />);
 
-    expect(container.textContent).toContain("Strong risk-on");
-    expect(container.textContent).toContain("Reallocation / rotation");
-    expect(container.textContent).toContain("Tightening / risk-off");
-    expect(container.textContent).toContain("Bonds-first / safe haven");
+    const text = (container.textContent ?? "").toLowerCase();
+    expect(text).toContain("risk-on easing");
+    expect(text).toContain("global tightening");
+    expect(text).toContain("safe-haven");
+    expect(text).toContain("rotation");
   });
 
-  it("places regime quadrant labels by dollar and real-yield sign", () => {
-    const container = render(
-      <RegimeQuadrantChart
-        trail={[
-          {
-            date: "2026-05-01",
-            dollar_change: 0.4,
-            real_yield_change: 0.2,
-            nominal_yield_change: 0.1,
-            vix_percentile: 40,
-            credit_change: 3
-          }
-        ]}
-      />
-    );
+  it("ships a quadrant legend with descriptive dt/dd pairs for each quadrant", () => {
+    const container = render(<RegimeQuadrantChart />);
 
-    expect(container.querySelector(".quadrant-label--top-left")?.textContent).toBe("Reallocation / rotation");
-    expect(container.querySelector(".quadrant-label--top-right")?.textContent).toBe("Tightening / risk-off");
-    expect(container.querySelector(".quadrant-label--bottom-right")?.textContent).toBe(
-      "Bonds-first / safe haven"
+    const dl = container.querySelector(
+      'dl[aria-label="Quadrant meaning legend"]'
     );
-    expect(container.querySelector(".quadrant-label--bottom-left")?.textContent).toBe("Strong risk-on");
+    expect(dl).not.toBeNull();
+    const dds = Array.from(dl!.querySelectorAll("dd"), (n) => n.textContent);
+    expect(dds).toContain("risk-on easing");
+    expect(dds).toContain("global tightening / risk-off");
+    expect(dds).toContain("safe-haven / growth scare");
+    expect(dds).toContain("rotation / reflation / mixed");
   });
 
-  it("configures regime quadrant numeric domains to include zero", () => {
-    expect(domainIncludingZero([0.2, 0.5, 1.1])).toEqual([0, 1.1]);
-    expect(domainIncludingZero([-1.1, -0.5, -0.2])).toEqual([-1.1, 0]);
-    expect(domainIncludingZero([-0.7, 0.4, 1.2])).toEqual([-0.7, 1.2]);
+  it("does not import from recharts after the W3C ECharts rebuild", () => {
+    // The rebuild swaps Recharts for ECharts via EChartPanel. Asserted at the
+    // module level so it stays loud if someone re-introduces a Recharts import.
+    const container = render(<RegimeQuadrantChart />);
+    expect(container.querySelector(".recharts-wrapper")).toBeNull();
+    expect(container.querySelector("[role='radiogroup']")).not.toBeNull();
   });
 
   it("starts responsive charts with positive dimensions", () => {

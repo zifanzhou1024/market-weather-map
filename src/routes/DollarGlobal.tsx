@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import DollarPressureHero from "../components/charts/DollarPressureHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus } from "../lib/data";
 import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
@@ -56,6 +59,15 @@ export default function DollarGlobal() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="dollar_global" />
+          {/* SLOT:dollar_global_primary_chart */}
+          {broadDollar && broadDollar.observations.length > 0 ? (
+            <DollarPressureHero broadDollar={broadDollar} />
+          ) : (
+            <section className="panel chart-panel" aria-label="Dollar pressure">
+              <p>Dollar pressure chart unavailable until broad-dollar data is active.</p>
+            </section>
+          )}
           <InterpretationPanel
             label="Dollar pressure read"
             notes={["FX series can be stale around holidays and should be checked against freshness status."]}
@@ -63,7 +75,6 @@ export default function DollarGlobal() {
             summary="The broad dollar, USDJPY, and EURUSD provide global dollar-pressure context for Market Weather and Fragility."
             supports={["Dollar easing can reduce global liquidity pressure."]}
           />
-          <DataGapPanel status={data.status} seriesIds={dollarSeriesIds} />
           <section className="metric-grid" aria-label="Dollar and global metrics">
             {data.series.map((series) => (
               <MetricCard
@@ -90,7 +101,10 @@ export default function DollarGlobal() {
               <p>Featured chart unavailable until source data is available.</p>
             </section>
           )}
-          <DataStatusTable seriesIds={dollarSeriesIds} status={data.status} />
+          <RouteDataFooter route="dollar_global">
+            <DataGapPanel status={data.status} seriesIds={dollarSeriesIds} />
+            <DataStatusTable seriesIds={dollarSeriesIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>

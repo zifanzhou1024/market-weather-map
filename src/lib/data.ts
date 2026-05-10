@@ -3,6 +3,9 @@ import type {
   DataStatusFile,
   DerivedSeriesFile,
   MacroCalendarFile,
+  PageInsightsFile,
+  RatesDashboardFile,
+  RegimeDashboardFile,
   RegimeReplayFile,
   RegimeScoreFile,
   RegimeSnapshotFile,
@@ -12,7 +15,8 @@ import type {
   SeriesCatalogEntry,
   SignalPriorityFile,
   SourceRegistryFile,
-  TimeSeriesFile
+  TimeSeriesFile,
+  VolatilityDashboardFile
 } from "./types";
 
 const baseUrl = (import.meta as ImportMeta & { env: { BASE_URL: string } }).env.BASE_URL.replace(
@@ -45,6 +49,25 @@ export async function loadJson<T>(path: string): Promise<T> {
   }
 
   return (await response.json()) as T;
+}
+
+/**
+ * Permissive sibling of `loadJson`. Returns `null` when the file is absent
+ * (HTTP 404 / `DataLoadError` with status 404). Other failure modes —
+ * non-404 HTTP errors, JSON parse failures, invalid paths — still throw
+ * so callers can keep loud feedback for malformed payloads. Use this for
+ * derived JSONs that may not yet be generated (graceful degradation),
+ * not for required core datasets.
+ */
+export async function loadJsonOrNull<T>(path: string): Promise<T | null> {
+  try {
+    return await loadJson<T>(path);
+  } catch (error) {
+    if (error instanceof DataLoadError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 }
 
 export function loadCatalog(): Promise<SeriesCatalogEntry[]> {
@@ -109,4 +132,20 @@ export function loadMacroCalendar(): Promise<MacroCalendarFile> {
 
 export function loadSignalPriority(): Promise<SignalPriorityFile> {
   return loadJson<SignalPriorityFile>("/data/derived/signal_priority.json");
+}
+
+export function loadPageInsights(): Promise<PageInsightsFile | null> {
+  return loadJsonOrNull<PageInsightsFile>("/data/derived/page_insights.json");
+}
+
+export function loadVolatilityDashboard(): Promise<VolatilityDashboardFile | null> {
+  return loadJsonOrNull<VolatilityDashboardFile>("/data/derived/volatility_dashboard.json");
+}
+
+export function loadRatesDashboard(): Promise<RatesDashboardFile | null> {
+  return loadJsonOrNull<RatesDashboardFile>("/data/derived/rates_dashboard.json");
+}
+
+export function loadRegimeDashboard(): Promise<RegimeDashboardFile | null> {
+  return loadJsonOrNull<RegimeDashboardFile>("/data/derived/regime_dashboard.json");
 }

@@ -17,6 +17,14 @@ MODULES = [
     "scripts.transform.compute_percentiles",
     "scripts.transform.compute_regime_score",
     "scripts.transform.build_signal_priority",
+    # Wave-1 derived dashboards (consume signal_priority + series). Run
+    # after upstream data is generated so the safe-update path preserves
+    # prior good JSON if any builder fails. Run BEFORE schema validation
+    # so malformed output is caught by the gate.
+    "scripts.transform.build_page_insights",
+    "scripts.transform.build_volatility_dashboard",
+    "scripts.transform.build_rates_dashboard",
+    "scripts.transform.build_regime_dashboard",
     "scripts.generate_macro_calendar",
     "scripts.validate.validate_schema",
     "scripts.validate.validate_freshness",

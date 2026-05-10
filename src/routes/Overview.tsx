@@ -11,6 +11,7 @@ import MarketBriefHeader from "../components/MarketBriefHeader";
 import MetricCard from "../components/MetricCard";
 import MissingSignalPanel from "../components/MissingSignalPanel";
 import OverviewDecisionCard from "../components/OverviewDecisionCard";
+import RouteDataFooter from "../components/RouteDataFooter";
 import ScoreCard from "../components/ScoreCard";
 import ScoreContributionHeatmap from "../components/ScoreContributionHeatmap";
 import SignalList from "../components/SignalList";
@@ -317,7 +318,6 @@ export default function Overview() {
                   />
                 </section>
                 <ConfidenceBreakdown dataQuality={dataQuality} />
-                <DataGapPanel status={data.status} />
               </>
             );
           })()}
@@ -330,7 +330,10 @@ export default function Overview() {
               />
             ))}
           </section>
-          <DataStatusTable seriesIds={overviewSeriesIds} status={data.status} />
+          <RouteDataFooter>
+            <DataGapPanel status={data.status} />
+            <DataStatusTable seriesIds={overviewSeriesIds} status={data.status} />
+          </RouteDataFooter>
         </>
       ) : null}
     </main>

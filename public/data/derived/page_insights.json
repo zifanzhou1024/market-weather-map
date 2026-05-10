@@ -1,0 +1,195 @@
+{
+  "date": "2026-05-08",
+  "generated_at_utc": "2026-05-10T14:23:51Z",
+  "method_version": "phase8-pr1-page-insights-v1",
+  "routes": {
+    "commodities": {
+      "confidence": 0.99,
+      "freshness_notes": [],
+      "primary_warning": {
+        "confidence": 0.99,
+        "freshness_status": "ok",
+        "id": "commodities_inflation_impulse",
+        "label": "Commodities inflation impulse",
+        "message": "Commodity inflation impulse is elevated.",
+        "severity": 48.17,
+        "source_status": "free_public",
+        "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
+      },
+      "state": "risk",
+      "title": "Commodities",
+      "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
+    },
+    "credit": {
+      "confidence": 0.99,
+      "freshness_notes": [],
+      "primary_support": {
+        "confidence": 0.99,
+        "freshness_status": "ok",
+        "id": "credit_spreads",
+        "label": "Credit spreads",
+        "message": "Credit spread pressure is contained.",
+        "severity": 48.61,
+        "source_status": "free_public",
+        "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
+      },
+      "state": "support",
+      "title": "Credit",
+      "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
+    },
+    "dollar_global": {
+      "confidence": 0.99,
+      "freshness_notes": [
+        "Broad dollar is stale."
+      ],
+      "primary_support": {
+        "confidence": 0.99,
+        "freshness_status": "stale",
+        "id": "broad_dollar",
+        "label": "Broad dollar",
+        "message": "The broad dollar backdrop is easing.",
+        "severity": 76.98,
+        "source_status": "free_public",
+        "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
+      },
+      "state": "support",
+      "title": "Dollar / Global",
+      "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
+    },
+    "fragility": {
+      "confidence": 0.985,
+      "freshness_notes": [
+        "MOVE Index (bond volatility) is unavailable.",
+        "Cboe SKEW is unavailable.",
+        "VX futures curve is unavailable."
+      ],
+      "primary_support": {
+        "confidence": 0.98,
+        "freshness_status": "ok",
+        "id": "vix_curve",
+        "label": "VIX curve state",
+        "message": "VIX curve is contango-proxy and calm.",
+        "severity": 50.0,
+        "source_status": "free_public",
+        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      },
+      "state": "support",
+      "title": "Fragility / shock risk",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+    },
+    "growth": {
+      "confidence": 0.99,
+      "freshness_notes": [
+        "Consumer balance sheet is stale."
+      ],
+      "primary_support": {
+        "confidence": 0.99,
+        "freshness_status": "ok",
+        "id": "labor",
+        "label": "Labor cycle",
+        "message": "Labor cycle is firm.",
+        "severity": 68.16,
+        "source_status": "free_public",
+        "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
+      },
+      "state": "support",
+      "title": "Growth",
+      "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
+    },
+    "inflation": {
+      "confidence": 0.99,
+      "freshness_notes": [],
+      "primary_warning": {
+        "confidence": 0.99,
+        "freshness_status": "ok",
+        "id": "inflation",
+        "label": "Inflation pressure",
+        "message": "Inflation pressure remains elevated.",
+        "severity": 100.0,
+        "source_status": "free_public",
+        "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
+      },
+      "state": "risk",
+      "title": "Inflation",
+      "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
+    },
+    "liquidity": {
+      "confidence": 0.99,
+      "freshness_notes": [],
+      "primary_warning": {
+        "confidence": 0.99,
+        "freshness_status": "ok",
+        "id": "net_liquidity",
+        "label": "Net liquidity",
+        "message": "Net liquidity is draining.",
+        "severity": 27.49,
+        "source_status": "free_public",
+        "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+      },
+      "state": "risk",
+      "title": "Liquidity",
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+    },
+    "rates": {
+      "confidence": 0.99,
+      "freshness_notes": [
+        "10Y term premium (ACM) is unavailable."
+      ],
+      "primary_warning": {
+        "confidence": 0.99,
+        "freshness_status": "ok",
+        "id": "real_yields",
+        "label": "10Y real yields",
+        "message": "Real yields are elevated and pressuring valuations.",
+        "severity": 46.04,
+        "source_status": "free_public",
+        "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
+      },
+      "state": "risk",
+      "title": "Rates",
+      "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
+    },
+    "sentiment": {
+      "confidence": 0.99,
+      "freshness_notes": [
+        "S&P 500 benchmark (SPX) is unavailable.",
+        "Put/call ratio (total) is unavailable.",
+        "Put/call ratio (SPXW / 0DTE) is unavailable."
+      ],
+      "primary_warning": {
+        "confidence": 0.99,
+        "freshness_status": "ok",
+        "id": "sentiment_positioning",
+        "label": "S&P 500 positioning",
+        "message": "Leveraged-money S&P 500 positioning is crowded.",
+        "severity": 28.76,
+        "source_status": "free_public",
+        "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
+      },
+      "state": "risk",
+      "title": "Sentiment",
+      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
+    },
+    "volatility": {
+      "confidence": 0.985,
+      "freshness_notes": [
+        "MOVE Index (bond volatility) is unavailable.",
+        "Cboe SKEW is unavailable.",
+        "VX futures curve is unavailable."
+      ],
+      "primary_support": {
+        "confidence": 0.98,
+        "freshness_status": "ok",
+        "id": "vix_curve",
+        "label": "VIX curve state",
+        "message": "VIX curve is contango-proxy and calm.",
+        "severity": 50.0,
+        "source_status": "free_public",
+        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      },
+      "state": "support",
+      "title": "Volatility",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+    }
+  }
+}

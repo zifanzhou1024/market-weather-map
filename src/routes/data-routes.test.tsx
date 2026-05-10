@@ -8,8 +8,11 @@ import App from "../App";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
+  RatesDashboardFile,
+  RegimeDashboardFile,
   RegimeReplayFile,
   RegimeSnapshotFile,
+  RegimeWindowPoint,
   ScoreSummaryFile,
   ScoreHistoryFile,
   ShockRiskSnapshotFile,
@@ -17,7 +20,8 @@ import type {
   SeriesCatalogEntry,
   SeriesFrequency,
   SignalPriorityFile,
-  TimeSeriesFile
+  TimeSeriesFile,
+  VolatilityDashboardFile
 } from "../lib/types";
 
 vi.mock("../components/TimeSeriesChart", () => ({
@@ -263,8 +267,11 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
     "/data/derived/score_history.json": scoreHistory,
     "/data/derived/score_summary.json": scoreSummary,
     "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
+    "/data/derived/regime_dashboard.json": regimeDashboard,
     "/data/derived/regime_snapshot.json": regimeSnapshot,
+    "/data/derived/rates_dashboard.json": ratesDashboard,
     "/data/derived/signal_priority.json": signalPriority,
+    "/data/derived/volatility_dashboard.json": volatilityDashboard,
     "/data/derived/us10y_minus_us2y.json": {
       ...derivedFile("us10y_minus_us2y", 0.42),
       depends_on: ["us10y", "us2y"],
@@ -1555,6 +1562,180 @@ const signalPriority: SignalPriorityFile = {
   ]
 };
 
+const volatilityDashboard: VolatilityDashboardFile = {
+  date: "2026-05-08",
+  generated_at_utc: "2026-05-10T15:00:10Z",
+  method_version: "w1a-volatility-dashboard-v1",
+  latest_curve: [
+    { tenor: "9D", value: 14.32, percentile_5y: 28.5 },
+    { tenor: "30D", value: 16.18, percentile_5y: 42.1 },
+    { tenor: "3M", value: 18.05, percentile_5y: 51.4 }
+  ],
+  ratio_history: [
+    { date: "2026-04-30", vix9d_vix: 0.85, vix_vix3m: 0.84 },
+    { date: "2026-05-01", vix9d_vix: 0.83, vix_vix3m: 0.83 },
+    { date: "2026-05-04", vix9d_vix: 0.91, vix_vix3m: 0.87 },
+    { date: "2026-05-05", vix9d_vix: 0.84, vix_vix3m: 0.83 },
+    { date: "2026-05-06", vix9d_vix: 0.85, vix_vix3m: 0.85 },
+    { date: "2026-05-07", vix9d_vix: 0.85, vix_vix3m: 0.84 },
+    { date: "2026-05-08", vix9d_vix: 0.83, vix_vix3m: 0.84 }
+  ],
+  hidden_stress: [
+    {
+      date: "2026-05-04",
+      vix_value: 14.5,
+      vvix_value: 87.2,
+      vix_percentile: 28.5,
+      vvix_percentile: 45.1,
+      hidden_stress_score: 16.6,
+      state: "watch"
+    },
+    {
+      date: "2026-05-05",
+      vix_value: 14.1,
+      vvix_value: 86.8,
+      vix_percentile: 27.8,
+      vvix_percentile: 44.2,
+      hidden_stress_score: 16.4,
+      state: "watch"
+    },
+    {
+      date: "2026-05-06",
+      vix_value: 14.3,
+      vvix_value: 88.1,
+      vix_percentile: 28.2,
+      vvix_percentile: 46.0,
+      hidden_stress_score: 17.8,
+      state: "watch"
+    },
+    {
+      date: "2026-05-07",
+      vix_value: 14.2,
+      vvix_value: 87.9,
+      vix_percentile: 28.0,
+      vvix_percentile: 45.7,
+      hidden_stress_score: 17.7,
+      state: "watch"
+    },
+    {
+      date: "2026-05-08",
+      vix_value: 14.32,
+      vvix_value: 88.6,
+      vix_percentile: 28.5,
+      vvix_percentile: 46.4,
+      hidden_stress_score: 17.9,
+      state: "watch"
+    }
+  ],
+  thresholds: {
+    vix9d_vix_calm: 0.95,
+    vix9d_vix_stress: 1.05,
+    vix_vix3m_calm: 0.95,
+    vix_vix3m_stress: 1.0,
+    hidden_stress_watch: 15.0,
+    hidden_stress_elevated: 30.0
+  }
+};
+
+const ratesDashboard: RatesDashboardFile = {
+  date: "2026-05-08",
+  generated_at_utc: "2026-05-10T15:00:10Z",
+  method_version: "w1a-rates-dashboard-v1",
+  yield_change_windows: {
+    "1M": {
+      nominal_10y_bps: 12,
+      real_yield_10y_bps: 0,
+      breakeven_10y_bps: 11,
+      driver: "breakeven"
+    },
+    "3M": {
+      nominal_10y_bps: 19,
+      real_yield_10y_bps: 8,
+      breakeven_10y_bps: 10,
+      driver: "balanced"
+    },
+    "6M": {
+      nominal_10y_bps: 31,
+      real_yield_10y_bps: 15,
+      breakeven_10y_bps: 15,
+      driver: "balanced"
+    },
+    "1Y": {
+      nominal_10y_bps: 5,
+      real_yield_10y_bps: -12,
+      breakeven_10y_bps: 19,
+      driver: "breakeven"
+    }
+  },
+  current_decomposition: {
+    nominal_10y_pct: 4.41,
+    real_yield_10y_pct: 1.96,
+    breakeven_10y_pct: 2.45
+  },
+  curve_snapshots: {
+    current: [
+      { tenor: "2Y", value: 3.92 },
+      { tenor: "10Y", value: 4.41 },
+      { tenor: "20Y", value: 4.84 },
+      { tenor: "30Y", value: 4.97 }
+    ],
+    one_month_ago: [
+      { tenor: "2Y", value: 3.95 },
+      { tenor: "10Y", value: 4.29 },
+      { tenor: "20Y", value: 4.7 },
+      { tenor: "30Y", value: 4.81 }
+    ],
+    three_months_ago: [
+      { tenor: "2Y", value: 4.02 },
+      { tenor: "10Y", value: 4.22 },
+      { tenor: "20Y", value: 4.6 },
+      { tenor: "30Y", value: 4.72 }
+    ],
+    one_year_ago: [
+      { tenor: "2Y", value: 3.83 },
+      { tenor: "10Y", value: 4.36 },
+      { tenor: "20Y", value: 4.84 },
+      { tenor: "30Y", value: 4.83 }
+    ]
+  },
+  decomposition_history: [
+    { date: "2026-05-06", nominal_pct: 4.39, real_pct: 1.94, breakeven_pct: 2.45 },
+    { date: "2026-05-07", nominal_pct: 4.4, real_pct: 1.95, breakeven_pct: 2.45 },
+    { date: "2026-05-08", nominal_pct: 4.41, real_pct: 1.96, breakeven_pct: 2.45 }
+  ]
+};
+
+function regimeDashboardWindow(count: number, seed: number): RegimeWindowPoint[] {
+  const points: RegimeWindowPoint[] = [];
+  const start = new Date("2026-03-01").getTime();
+  const oneDay = 24 * 60 * 60 * 1000;
+  for (let i = 0; i < count; i += 1) {
+    const date = new Date(start + i * oneDay).toISOString().slice(0, 10);
+    points.push({
+      date,
+      real_yield_change_bps: Math.sin((i + seed) / 5) * 20,
+      dollar_change_pct: Math.cos((i + seed) / 7) * 1.5,
+      vix_percentile: ((i * 6 + seed) % 100),
+      credit_change_bps: Math.cos(i / 4) * 25,
+      fragility_score: 0.2,
+      regime: i % 2 === 0 ? "risk_on_easing" : "rotation_reflation"
+    });
+  }
+  return points;
+}
+
+const regimeDashboard: RegimeDashboardFile = {
+  date: "2026-05-08",
+  generated_at_utc: "2026-05-10T15:30:00Z",
+  method_version: "w1a-regime-dashboard-v1",
+  thresholds: { real_yield_neutral_bps: 5.0, dollar_neutral_pct: 0.5 },
+  windows: {
+    "20D": regimeDashboardWindow(20, 1),
+    "60D": regimeDashboardWindow(60, 2),
+    "120D": regimeDashboardWindow(120, 3)
+  }
+};
+
 const malformedShockRiskRowSnapshot = {
   ...shockRiskSnapshot,
   active_signals: [
@@ -2066,6 +2247,41 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("0.42 percentage points");
   });
 
+  it("rates route renders the W3B waterfall, curve-comparison, and decomposition-stack charts from the dashboard fixture", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/rates"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Yield change waterfall");
+
+    // Primary chart slot
+    expect(container.textContent).toContain("Yield change waterfall");
+    // Secondary slot, both charts
+    expect(container.textContent).toContain("Yield curve comparison");
+    expect(container.textContent).toContain("Yield decomposition (current)");
+    // Legacy Recharts tertiary history retained below the new charts.
+    expect(container.textContent).toContain("Yield decomposition history");
+  });
+
+  it("rates route renders a loading placeholder when the rates dashboard file is missing", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/rates_dashboard.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/rates"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Interactive rates view loading");
+    expect(container.textContent).toContain("Interactive rates view loading");
+    // Legacy decomposition history still renders so the route degrades gracefully.
+    expect(container.textContent).toContain("Yield decomposition history");
+  });
+
   it("renders the growth route with growth and labor risk sections", async () => {
     mockStaticFetch({
       "/data/catalog/series_catalog.json": catalog,
@@ -2424,6 +2640,40 @@ describe("data-backed routes", () => {
     expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
   });
 
+  it("volatility route renders the W3 term-structure, ratio-history, and hidden-stress charts from the dashboard fixture", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/volatility"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Volatility curve (proxy)");
+
+    // Term-structure (proxy preserved).
+    expect(container.textContent).toContain("Volatility curve (proxy)");
+    // Ratio history shell shows both ratio labels in its legend.
+    expect(container.textContent).toContain("Volatility ratio history");
+    // Hidden stress shell.
+    expect(container.textContent).toContain("Hidden options stress");
+  });
+
+  it("volatility route renders an interactive view loading placeholder when the dashboard 404s", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/volatility_dashboard.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/volatility"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Interactive volatility view loading");
+    expect(container.textContent).toContain("Interactive volatility view loading");
+    // Legacy multi-series chart still renders as a fallback.
+    expect(container.textContent).toContain("VIX term-structure proxy");
+  });
+
   it("surfaces net liquidity and reserve balances on liquidity", async () => {
     mockStaticFetch(routeFetchFiles());
 
@@ -2519,6 +2769,26 @@ describe("data-backed routes", () => {
     expect(fetch).toHaveBeenCalledWith("/data/events/macro_calendar.json");
   });
 
+  it("tactical route swaps the legacy VIX curve + volatility complex tiles for the W3 compact charts", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/short-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Short-Term Market Reaction");
+
+    // Compact tiles render via EChartPanel: "Volatility curve" and "Hidden options stress"
+    // are the titles emitted by the new charts in compact mode.
+    expect(container.textContent).toContain("Volatility curve");
+    expect(container.textContent).toContain("Hidden options stress");
+    // Compact mode suppresses the full-shell "proxy" parenthetical so the
+    // tile title stays terse — the surrounding 6-tile chrome supplies its
+    // own context.
+    expect(container.textContent).not.toContain("Volatility curve (proxy)");
+  });
+
   it("renders short-term credit pulse unavailable state when HY minus IG OAS is missing", async () => {
     const files: Record<string, unknown> = routeFetchFiles();
     delete files["/data/derived/hy_minus_ig_oas.json"];
@@ -2559,6 +2829,10 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Generated candidate diagnostic");
     expect(container.textContent).toContain("Not scored");
     expect(container.textContent).toContain("not ICE MOVE");
+    // Load-bearing caveat: the full literal must render verbatim (asserted
+    // by substring) so the bond-volatility chart can never be mistaken for
+    // the licensed ICE MOVE index after future refactors.
+    expect(container.textContent).toContain("is NOT the licensed ICE MOVE Index");
     expect(container.textContent).toContain("Trend window 3 observations");
     expect(container.textContent).toContain("Latest 8.70 basis points on 2026-05-03");
     expect(container.textContent).toContain("Gated stress");
@@ -2742,6 +3016,40 @@ describe("data-backed routes", () => {
     const factCards = Array.from(container.querySelectorAll(".horizon-header__facts .metric-card"));
     const realYieldsFact = factCards.find((card) => card.textContent?.includes("Real yields"));
     expect(realYieldsFact?.textContent).toContain("N/A");
+  });
+
+  it("long-term macro route renders the W3B YieldDecompositionStackChart from the rates dashboard fixture", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/long-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Long-Term Macro / Allocation Climate");
+    await waitForContent(container, "Yield decomposition (current)");
+
+    // The new ECharts stack chart renders from current_decomposition.
+    expect(container.textContent).toContain("Yield decomposition (current)");
+    // Legacy Recharts decomposition history still renders below.
+    expect(container.textContent).toContain("Yield decomposition");
+  });
+
+  it("long-term macro route renders a graceful loading placeholder for the macro yield slot when rates_dashboard is missing", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/rates_dashboard.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/long-term"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Long-Term Macro / Allocation Climate");
+    await waitForContent(container, "Current-decomposition view loading");
+    expect(container.textContent).toContain("Current-decomposition view loading");
+    // Legacy decomposition is still present.
+    expect(container.textContent).toContain("Yield decomposition");
   });
 
   it("renders the regime map route", async () => {
@@ -3060,5 +3368,238 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Net liquidity");
     expect(container.textContent).toContain("0.0 neutral fallbacks");
     expect(container.textContent).toContain("breakeven_10y can confirm commodity inflation pressure");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// W2-13: cross-route IA consistency. Verifies that every route file follows
+// the hero + slot + footer pattern from the spec slot map. JSX comments are
+// stripped at render time so we scan the source files directly.
+// ---------------------------------------------------------------------------
+
+import { readFileSync, readdirSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __routesDir = dirname(__filename);
+
+// All 18 route source files (every file under src/routes/ except the test).
+const ALL_ROUTE_FILES = readdirSync(__routesDir)
+  .filter((name) => name.endsWith(".tsx") && name !== "data-routes.test.tsx")
+  .sort();
+
+// Routes that consume PageInsightHero (the 12 single-domain content routes).
+// LongTermMacroClimate keeps HorizonScoreHeader instead; Overview, Tactical,
+// Calendar, Methodology, HistoricalRegimeReplay also do NOT get a hero.
+const SINGLE_DOMAIN_ROUTES = [
+  "Rates.tsx",
+  "Volatility.tsx",
+  "RegimeMap.tsx",
+  "Credit.tsx",
+  "Liquidity.tsx",
+  "DollarGlobal.tsx",
+  "Commodities.tsx",
+  "Inflation.tsx",
+  "Growth.tsx",
+  "Housing.tsx",
+  "Sentiment.tsx",
+  "FragilityShockRisk.tsx"
+];
+
+// Spec slot map (Wave 2 design § "Slot map reference").
+// 14 routes total carry slot comments; 5 routes carry 2 each (10) + 9 routes
+// carry 1 each = 19 slot markers.
+const EXPECTED_SLOTS_BY_ROUTE: Record<string, string[]> = {
+  "Rates.tsx": ["rates_primary_chart", "rates_secondary_charts"],
+  "Volatility.tsx": ["volatility_primary_chart", "volatility_secondary_charts"],
+  "RegimeMap.tsx": ["regime_primary_chart"],
+  "LongTermMacroClimate.tsx": ["macro_regime_chart", "macro_yield_chart"],
+  "Credit.tsx": ["credit_primary_chart"],
+  "Liquidity.tsx": ["liquidity_primary_chart"],
+  "DollarGlobal.tsx": ["dollar_global_primary_chart"],
+  "Commodities.tsx": ["commodities_primary_chart"],
+  "Inflation.tsx": ["inflation_primary_chart"],
+  "Growth.tsx": ["growth_primary_chart"],
+  "Housing.tsx": ["housing_primary_chart"],
+  "Sentiment.tsx": ["sentiment_primary_chart"],
+  "FragilityShockRisk.tsx": ["fragility_primary_chart", "fragility_pre_metrics_slot"],
+  "TacticalTradingWeather.tsx": ["tactical_vol_curve_slot", "tactical_vol_complex_slot"]
+};
+
+function readRouteSource(filename: string): string {
+  return readFileSync(join(__routesDir, filename), "utf8");
+}
+
+describe("W2-13: cross-route IA consistency", () => {
+  it("discovers exactly 18 route source files (sanity check on the inventory)", () => {
+    expect(ALL_ROUTE_FILES).toHaveLength(18);
+  });
+
+  it.each(ALL_ROUTE_FILES)(
+    "%s imports and uses <RouteDataFooter> so the page ends with the data footer",
+    (file) => {
+      const source = readRouteSource(file);
+      expect(source).toMatch(/import\s+RouteDataFooter\s+from\s+"\.\.\/components\/RouteDataFooter"/);
+      expect(source).toMatch(/<RouteDataFooter/);
+    }
+  );
+
+  it.each(ALL_ROUTE_FILES)(
+    "%s places <RouteDataFooter> after all <DataGapPanel>, <DataStatusTable>, <CandidateDiagnosticPanel> usages (source-gated panels live in the footer)",
+    (file) => {
+      const source = readRouteSource(file);
+      const footerIdx = source.search(/<RouteDataFooter/);
+      // The footer must appear at least once.
+      expect(footerIdx).toBeGreaterThan(-1);
+
+      const restrictedComponents = [
+        "DataGapPanel",
+        "DataStatusTable",
+        "CandidateDiagnosticPanel"
+      ];
+      for (const component of restrictedComponents) {
+        // Match `<DataGapPanel` JSX usages (open tags) but ignore the import line.
+        const usageRegex = new RegExp(`<${component}\\b`, "g");
+        const matches: number[] = [];
+        let m: RegExpExecArray | null;
+        while ((m = usageRegex.exec(source)) !== null) matches.push(m.index);
+        for (const index of matches) {
+          if (index < footerIdx) {
+            throw new Error(
+              `${file}: <${component} ...> usage at offset ${index} is above <RouteDataFooter at offset ${footerIdx}; data-transparency panels must live inside the footer.`
+            );
+          }
+        }
+      }
+    }
+  );
+
+  it.each(SINGLE_DOMAIN_ROUTES)(
+    "%s renders <PageInsightHero ...> in the route body (single-domain routes get a hero)",
+    (file) => {
+      const source = readRouteSource(file);
+      expect(source).toMatch(/import\s+PageInsightHero\s+from\s+"\.\.\/components\/PageInsightHero"/);
+      expect(source).toMatch(/<PageInsightHero\s+route=/);
+    }
+  );
+
+  it("non-hero routes do NOT import PageInsightHero (keeps the IA boundary explicit)", () => {
+    const heroless = ALL_ROUTE_FILES.filter((file) => !SINGLE_DOMAIN_ROUTES.includes(file));
+    for (const file of heroless) {
+      const source = readRouteSource(file);
+      expect(source).not.toMatch(/<PageInsightHero/);
+    }
+  });
+
+  it.each(Object.keys(EXPECTED_SLOTS_BY_ROUTE))(
+    "%s contains exactly the slot-comment markers the spec slot map says it should",
+    (file) => {
+      const source = readRouteSource(file);
+      const expectedSlots = EXPECTED_SLOTS_BY_ROUTE[file];
+      for (const slotId of expectedSlots) {
+        const markerPattern = new RegExp(`\\{/\\* SLOT:${slotId} \\*/\\}`);
+        expect(source).toMatch(markerPattern);
+      }
+    }
+  );
+
+  it("total slot count across all 14 routes equals 19 (5 routes x 2 + 9 routes x 1)", () => {
+    let total = 0;
+    for (const slots of Object.values(EXPECTED_SLOTS_BY_ROUTE)) {
+      total += slots.length;
+    }
+    expect(total).toBe(19);
+    expect(Object.keys(EXPECTED_SLOTS_BY_ROUTE)).toHaveLength(14);
+  });
+
+  it("TacticalTradingWeather wraps its two vol slots with open + close markers (W3 swap convention)", () => {
+    const source = readRouteSource("TacticalTradingWeather.tsx");
+    // Both vol slots use open + close marker pairs so vol-charts-agent can
+    // swap the wrapped JSX atomically in Wave 3.
+    expect(source).toMatch(/\{\/\* SLOT:tactical_vol_curve_slot \*\/\}/);
+    expect(source).toMatch(/\{\/\* \/SLOT:tactical_vol_curve_slot \*\/\}/);
+    expect(source).toMatch(/\{\/\* SLOT:tactical_vol_complex_slot \*\/\}/);
+    expect(source).toMatch(/\{\/\* \/SLOT:tactical_vol_complex_slot \*\/\}/);
+  });
+
+  it("FragilityShockRisk's primary chart slot precedes the existing <ShockRiskContributionChart /> JSX", () => {
+    const source = readRouteSource("FragilityShockRisk.tsx");
+    const slotIdx = source.indexOf("{/* SLOT:fragility_primary_chart */}");
+    const chartIdx = source.indexOf("<ShockRiskContributionChart");
+    expect(slotIdx).toBeGreaterThan(-1);
+    expect(chartIdx).toBeGreaterThan(-1);
+    expect(slotIdx).toBeLessThan(chartIdx);
+  });
+
+  it("FragilityShockRisk's pre-metrics slot sits between <TailRiskReadinessMatrix /> and <section className=\"score-grid\">", () => {
+    const source = readRouteSource("FragilityShockRisk.tsx");
+    const tailIdx = source.indexOf("<TailRiskReadinessMatrix");
+    const slotIdx = source.indexOf("{/* SLOT:fragility_pre_metrics_slot */}");
+    const scoreGridIdx = source.indexOf('className="score-grid"');
+    expect(tailIdx).toBeGreaterThan(-1);
+    expect(slotIdx).toBeGreaterThan(tailIdx);
+    expect(scoreGridIdx).toBeGreaterThan(slotIdx);
+  });
+
+  it("FragilityShockRisk preserves the load-bearing 'is NOT the licensed ICE MOVE Index' caveat verbatim in BondVolatilityProxyChart", () => {
+    // Verifies the constraint in W2-7: substring match on the chart source
+    // file. Tested independently of the rendered DOM because the literal lives
+    // in the chart component, which the route always renders.
+    const chartSource = readFileSync(
+      join(__routesDir, "..", "components", "BondVolatilityProxyChart.tsx"),
+      "utf8"
+    );
+    expect(chartSource).toContain("is NOT the licensed ICE MOVE Index");
+  });
+
+  it("HistoricalRegimeReplayPanel keeps the '20-observation changes' literal at line 79 (correct per METHODOLOGY)", () => {
+    const panelSource = readFileSync(
+      join(__routesDir, "..", "components", "HistoricalRegimeReplayPanel.tsx"),
+      "utf8"
+    );
+    const lines = panelSource.split("\n");
+    // line index 78 == line 79 (1-indexed) in the file.
+    expect(lines[78]).toContain("20-observation changes");
+  });
+
+  it("RegimeQuadrantChart no longer imports from recharts after W3C rebuild", () => {
+    // W3C rebuilds RegimeQuadrantChart in ECharts via EChartPanel; recharts is
+    // out of the dependency graph for this file.
+    const chartSource = readFileSync(
+      join(__routesDir, "..", "components", "RegimeQuadrantChart.tsx"),
+      "utf8"
+    );
+    expect(chartSource).not.toMatch(/from\s+"recharts"/);
+    expect(chartSource).toContain("EChartPanel");
+  });
+
+  it("RegimeQuadrantChart drops the misleading '20-observation change' literal (W3C)", () => {
+    const chartSource = readFileSync(
+      join(__routesDir, "..", "components", "RegimeQuadrantChart.tsx"),
+      "utf8"
+    );
+    expect(chartSource).not.toContain("20-observation change");
+  });
+
+  it("RegimeMap fills regime_primary_chart slot with <RegimeQuadrantChart /> (no legacy trail prop)", () => {
+    const source = readRouteSource("RegimeMap.tsx");
+    const slotIdx = source.indexOf("{/* SLOT:regime_primary_chart */}");
+    const chartIdx = source.indexOf("<RegimeQuadrantChart");
+    expect(slotIdx).toBeGreaterThan(-1);
+    expect(chartIdx).toBeGreaterThan(slotIdx);
+    // After W3C, the rebuilt chart self-loads from regime_dashboard.json — no
+    // `trail` prop is wired in the route any more.
+    expect(source).not.toMatch(/<RegimeQuadrantChart\s+trail=/);
+  });
+
+  it("LongTermMacroClimate fills macro_regime_chart slot with <MacroRegimeQuadrant /> (no trail prop)", () => {
+    const source = readRouteSource("LongTermMacroClimate.tsx");
+    const slotIdx = source.indexOf("{/* SLOT:macro_regime_chart */}");
+    const chartIdx = source.indexOf("<MacroRegimeQuadrant");
+    expect(slotIdx).toBeGreaterThan(-1);
+    expect(chartIdx).toBeGreaterThan(slotIdx);
+    // After W3C, MacroRegimeQuadrant self-loads — no `trail` prop is wired.
+    expect(source).not.toMatch(/<MacroRegimeQuadrant\s+trail=/);
   });
 });
