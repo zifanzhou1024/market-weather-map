@@ -14,6 +14,7 @@ import LiquidityPulsePanel from "../components/LiquidityPulsePanel";
 import type { MultiSeriesChartSeries } from "../components/MultiSeriesChart";
 import OptionsSentimentPanel from "../components/OptionsSentimentPanel";
 import RatesPressureChart from "../components/RatesPressureChart";
+import RouteDataFooter from "../components/RouteDataFooter";
 import SignalChecklist from "../components/SignalChecklist";
 import TopSignalList from "../components/TopSignalList";
 import VixCurveProxyChart from "../components/VixCurveProxyChart";
@@ -233,15 +234,19 @@ export default function TacticalTradingWeather() {
             className="tactical-charts"
             aria-label="Short-term tactical charts: volatility, rates, credit, liquidity, dollar, and event risk"
           >
+            {/* SLOT:tactical_vol_curve_slot */}
             <VixCurveProxyChart
               vix9d={findSeries(data.series, "vix9d")}
               vix={findSeries(data.series, "vix")}
               vix3m={findSeries(data.series, "vix3m")}
             />
+            {/* /SLOT:tactical_vol_curve_slot */}
+            {/* SLOT:tactical_vol_complex_slot */}
             <VolatilityComplexChart
               vix={findSeries(data.series, "vix")}
               vvix={findSeries(data.series, "vvix")}
             />
+            {/* /SLOT:tactical_vol_complex_slot */}
             <CreditStressMatrix
               highYieldOas={findSeries(data.series, "high_yield_oas")}
               investmentGradeOas={findSeries(data.series, "investment_grade_oas")}
@@ -281,14 +286,16 @@ export default function TacticalTradingWeather() {
             snapshot={data.snapshot}
           />
           <LiquidityPulsePanel catalog={data.catalog} netLiquidity={findDerived(data.derived, "net_liquidity")} />
-          <OptionsSentimentPanel items={candidateItems(data.catalog, data.status, optionCandidateIds)} />
-          <EventRiskPanel
-            calendar={data.calendar}
-            items={candidateItems(data.catalog, data.status, ["event_opex"])}
-          />
-          <VixFuturesReadinessPanel items={candidateItems(data.catalog, data.status, vxCandidateIds)} />
-          <DataGapPanel seriesIds={tacticalStatusIds} status={data.status} />
-          <DataStatusTable seriesIds={tacticalStatusIds} status={data.status} />
+          <RouteDataFooter>
+            <OptionsSentimentPanel items={candidateItems(data.catalog, data.status, optionCandidateIds)} />
+            <EventRiskPanel
+              calendar={data.calendar}
+              items={candidateItems(data.catalog, data.status, ["event_opex"])}
+            />
+            <VixFuturesReadinessPanel items={candidateItems(data.catalog, data.status, vxCandidateIds)} />
+            <DataGapPanel seriesIds={tacticalStatusIds} status={data.status} />
+            <DataStatusTable seriesIds={tacticalStatusIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>
