@@ -10,6 +10,7 @@ import MacroClimateHeatmap from "../components/MacroClimateHeatmap";
 import MacroCyclePanel from "../components/MacroCyclePanel";
 import MacroRegimeQuadrant from "../components/MacroRegimeQuadrant";
 import MetricCard from "../components/MetricCard";
+import RouteDataFooter from "../components/RouteDataFooter";
 import ScoreCard from "../components/ScoreCard";
 import StrategicSourceGapMatrix from "../components/StrategicSourceGapMatrix";
 import StrategicSourceGapsPanel from "../components/StrategicSourceGapsPanel";
@@ -269,17 +270,8 @@ export default function LongTermMacroClimate() {
               ))}
             </section>
           </section>
-          <CandidateDiagnosticPanel
-            catalog={data.catalog}
-            diagnosticIds={macroDiagnosticIds}
-            eyebrow="Official/public diagnostics"
-            series={data.diagnosticSeries}
-            status={data.status}
-            summary="These generated static diagnostics are sourced from official/public paths and shown for context only."
-            title="Generated official diagnostics"
-          />
-          <StrategicSourceGapMatrix />
-          <StrategicSourceGapsPanel />
+          {/* SLOT:macro_regime_chart */}
+          {/* SLOT:macro_yield_chart */}
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
           {macroGroups.map((group) => (
             <section className="route-stack" key={group.label}>
@@ -318,8 +310,21 @@ export default function LongTermMacroClimate() {
               ) : null;
             })}
           </section>
-          <DataGapPanel seriesIds={macroStatusIds} status={data.status} />
-          <DataStatusTable seriesIds={macroStatusIds} status={data.status} />
+          <RouteDataFooter>
+            <CandidateDiagnosticPanel
+              catalog={data.catalog}
+              diagnosticIds={macroDiagnosticIds}
+              eyebrow="Official/public diagnostics"
+              series={data.diagnosticSeries}
+              status={data.status}
+              summary="These generated static diagnostics are sourced from official/public paths and shown for context only."
+              title="Generated official diagnostics"
+            />
+            <StrategicSourceGapMatrix />
+            <StrategicSourceGapsPanel />
+            <DataGapPanel seriesIds={macroStatusIds} status={data.status} />
+            <DataStatusTable seriesIds={macroStatusIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>
