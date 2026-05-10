@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CreditSpreadMatrixHero from "../components/charts/CreditSpreadMatrixHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -77,6 +78,16 @@ export default function Credit() {
   }, []);
 
   const financialStress = data?.series.find((series) => series.series_id === "financial_stress");
+  const hyOasSeries = data?.series.find((series) => series.series_id === "high_yield_oas");
+  const igOasSeries = data?.series.find((series) => series.series_id === "investment_grade_oas");
+  const bbbOasSeries = data?.series.find((series) => series.series_id === "bbb_oas");
+  const heroDataReady =
+    hyOasSeries && igOasSeries && bbbOasSeries && data?.hyMinusIgOas;
+  const heroHasObservations =
+    heroDataReady &&
+    (hyOasSeries.observations.length > 0 ||
+      igOasSeries.observations.length > 0 ||
+      bbbOasSeries.observations.length > 0);
 
   return (
     <main className="page-shell">
@@ -94,6 +105,18 @@ export default function Credit() {
         <div className="route-stack">
           <PageInsightHero route="credit" />
           {/* SLOT:credit_primary_chart */}
+          {heroDataReady && heroHasObservations ? (
+            <CreditSpreadMatrixHero
+              hyOas={hyOasSeries}
+              igOas={igOasSeries}
+              bbbOas={bbbOasSeries}
+              hyMinusIgOas={data.hyMinusIgOas}
+            />
+          ) : (
+            <section className="panel chart-panel" aria-label="Credit spread matrix">
+              <p>Credit spread matrix unavailable until HY, IG, and BBB OAS data are active.</p>
+            </section>
+          )}
           <InterpretationPanel
             label="Credit stress and banking liquidity"
             summary="Credit spreads, stress indexes, and banking aggregates show whether funding stress is concentrated in risky credit or spreading through the banking system."
