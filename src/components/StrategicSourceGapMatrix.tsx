@@ -149,7 +149,7 @@ export default function StrategicSourceGapMatrix() {
                     className="strategic-source-gap-importance"
                     aria-label={`Importance ${row.importance} of 5`}
                   >
-                    {importanceDots(row.importance)}
+                    <span aria-hidden="true">{importanceDots(row.importance)}</span>
                   </span>
                   <span className="strategic-source-gap-badge strategic-source-gap-badge--gated">
                     {row.status}

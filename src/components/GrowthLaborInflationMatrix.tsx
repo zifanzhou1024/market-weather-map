@@ -19,17 +19,24 @@ function isFiniteNumber(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
+function noteMatchesBucket(note: string, bucket: string): boolean {
+  const trimmed = note.trim().toLowerCase();
+  const target = bucket.toLowerCase();
+  if (!trimmed.startsWith(target)) return false;
+  const next = trimmed.charAt(target.length);
+  return next === "" || /[^a-z]/.test(next);
+}
+
 function pickReadLine(
   bucket: string,
   supports: string[],
   risks: string[]
 ): string | null {
-  const needle = bucket.toLowerCase();
   for (const note of supports) {
-    if (typeof note === "string" && note.toLowerCase().includes(needle)) return note;
+    if (typeof note === "string" && noteMatchesBucket(note, bucket)) return note;
   }
   for (const note of risks) {
-    if (typeof note === "string" && note.toLowerCase().includes(needle)) return note;
+    if (typeof note === "string" && noteMatchesBucket(note, bucket)) return note;
   }
   return null;
 }

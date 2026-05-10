@@ -178,6 +178,7 @@ export default function MacroClimateHeatmap({ scoreSummary }: MacroClimateHeatma
     () => buildMacroClimateHeatmapPayload(scoreSummary),
     [scoreSummary]
   );
+  const option = useMemo(() => buildOption(payload), [payload]);
 
   if (payload.bucketKeys.length === 0) {
     return (
@@ -195,7 +196,7 @@ export default function MacroClimateHeatmap({ scoreSummary }: MacroClimateHeatma
       title="Macro Climate bucket contribution"
       description="Macro Climate buckets ranked by weighted contribution: red is risk pressure, green is support."
       state="ready"
-      option={buildOption(payload)}
+      option={option}
       ariaLabel="Heatmap of Macro Climate bucket scores and weighted contributions, ranked by weighted contribution"
     />
   );

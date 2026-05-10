@@ -192,6 +192,15 @@ describe("MacroClimateHeatmap", () => {
     const payload = buildMacroClimateHeatmapPayload(summary);
     expect(payload.axisLabels).toEqual(["Consumer balance sheet"]);
   });
+
+  it("humanises a single-word bucket key by capitalising the first letter only", () => {
+    const summary = makeScoreSummary({
+      bucket_scores: { growth: 25 },
+      bucket_weights: { growth: 0.18 }
+    });
+    const payload = buildMacroClimateHeatmapPayload(summary);
+    expect(payload.axisLabels).toEqual(["Growth"]);
+  });
 });
 
 function makeTrail(
@@ -286,6 +295,42 @@ describe("MacroRegimeQuadrant", () => {
     expect(latest?.date).toBe("2026-05-08");
     expect(points.filter((p) => p.isLatest).length).toBe(1);
   });
+
+  it("latest point is the last FINITE entry, not the last raw entry", () => {
+    // Last raw entry has a non-finite dollar_change and must be dropped.
+    // The second-to-last raw entry (2026-05-05) is the last finite entry, so
+    // its date should be flagged as the latest point.
+    const trail: RegimeSnapshotFile["quadrant_trail"] = [
+      {
+        date: "2026-05-01",
+        dollar_change: 0.5,
+        real_yield_change: 0.1,
+        nominal_yield_change: 0.2,
+        vix_percentile: 25
+      },
+      {
+        date: "2026-05-05",
+        dollar_change: -0.3,
+        real_yield_change: -0.2,
+        nominal_yield_change: -0.1,
+        vix_percentile: 60
+      },
+      {
+        date: "2026-05-08",
+        dollar_change: Number.NaN,
+        // @ts-expect-error null is part of the runtime contract
+        real_yield_change: null,
+        nominal_yield_change: 0.5,
+        vix_percentile: 80
+      }
+    ];
+    const points = buildQuadrantPoints(trail);
+    expect(points.length).toBe(2);
+    const latest = points.find((p) => p.isLatest);
+    expect(latest?.date).toBe("2026-05-05");
+    expect(latest?.date).not.toBe("2026-05-08");
+    expect(points.filter((p) => p.isLatest).length).toBe(1);
+  });
 });
 
 describe("GrowthLaborInflationMatrix", () => {
@@ -332,6 +377,31 @@ describe("GrowthLaborInflationMatrix", () => {
     const cards = Array.from(c.querySelectorAll(".growth-labor-inflation-card"));
     const growthCard = cards.find((card) => (card.textContent ?? "").startsWith("Growth"));
     expect(growthCard?.textContent ?? "").toContain("No bucket-specific note in the latest read.");
+  });
+
+  it("does not cross-attribute a note that mentions another bucket name mid-sentence", () => {
+    // The note STARTS with "Inflation" so it must surface only on the inflation
+    // card. The growth card must NOT pick it up just because the word "growth"
+    // appears later in the sentence.
+    const summary = makeScoreSummary({
+      top_supports: ["Inflation pressure constrains growth opportunities."],
+      top_risks: []
+    });
+    const c = render(<GrowthLaborInflationMatrix scoreSummary={summary} />);
+    const cards = Array.from(c.querySelectorAll(".growth-labor-inflation-card"));
+    const growthCard = cards.find((card) => (card.textContent ?? "").startsWith("Growth"));
+    const inflationCard = cards.find((card) =>
+      (card.textContent ?? "").startsWith("Inflation")
+    );
+    expect(growthCard?.textContent ?? "").not.toContain(
+      "Inflation pressure constrains growth opportunities."
+    );
+    expect(growthCard?.textContent ?? "").toContain(
+      "No bucket-specific note in the latest read."
+    );
+    expect(inflationCard?.textContent ?? "").toContain(
+      "Inflation pressure constrains growth opportunities."
+    );
   });
 });
 

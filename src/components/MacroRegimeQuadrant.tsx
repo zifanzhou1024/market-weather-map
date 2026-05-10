@@ -154,6 +154,7 @@ function buildOption(points: QuadrantPoint[]) {
 
 export default function MacroRegimeQuadrant({ trail }: MacroRegimeQuadrantProps) {
   const points = useMemo(() => buildQuadrantPoints(trail), [trail]);
+  const option = useMemo(() => buildOption(points), [points]);
 
   if (points.length === 0) {
     return (
@@ -172,7 +173,7 @@ export default function MacroRegimeQuadrant({ trail }: MacroRegimeQuadrantProps)
       title="Macro regime quadrant trail"
       description="Recent strategic backdrop: real-yield change vs dollar change. Quadrants show whether the policy/USD regime tightens, eases, or rotates."
       state="ready"
-      option={buildOption(points)}
+      option={option}
       ariaLabel="Scatter plot of recent real-yield change vs dollar change, colored by VIX percentile"
       height={360}
     />
