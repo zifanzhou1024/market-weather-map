@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
+import BondVolatilityProxyChart from "../components/BondVolatilityProxyChart";
 import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
 import DataGapPanel from "../components/DataGapPanel";
 import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
+import HiddenStressMismatchPanel from "../components/HiddenStressMismatchPanel";
 import HiddenStressSummary from "../components/HiddenStressSummary";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MismatchWarningPanel from "../components/MismatchWarningPanel";
 import ScoreCard from "../components/ScoreCard";
+import ShockRiskContributionChart from "../components/ShockRiskContributionChart";
 import ShockRiskDashboard from "../components/ShockRiskDashboard";
 import ShockRiskReadHeader from "../components/ShockRiskReadHeader";
 import TailRiskPanel from "../components/TailRiskPanel";
+import TailRiskReadinessMatrix from "../components/TailRiskReadinessMatrix";
 import {
   loadCatalog,
   loadDataStatus,
@@ -113,6 +117,12 @@ export default function FragilityShockRisk() {
             shockSnapshot={data.shockSnapshot}
             status={data.status}
           />
+          <ShockRiskContributionChart activeSignals={data.shockSnapshot.active_signals} />
+          <HiddenStressMismatchPanel warnings={data.shockSnapshot.mismatch_warnings} />
+          <BondVolatilityProxyChart
+            series={data.diagnosticSeries.find((entry) => entry.series_id === "bond_volatility_proxy")}
+          />
+          <TailRiskReadinessMatrix status={data.status} />
           <HiddenStressSummary shockSnapshot={data.shockSnapshot} />
           <InterpretationPanel
             caveats={data.scoreSummary.scores.fragility.missing_or_stale_notes}
