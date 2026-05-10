@@ -4,6 +4,8 @@ import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
 import { loadCatalog, loadDataStatus, loadDerivedSeries, loadRegimeSnapshot } from "../lib/data";
@@ -120,6 +122,9 @@ export default function Rates() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="rates" />
+          {/* SLOT:rates_primary_chart */}
+          {/* SLOT:rates_secondary_charts */}
           <InterpretationPanel
             label="Rates and policy read"
             notes={["Real-yield and breakeven data are daily market-implied context, not policy forecasts."]}
@@ -135,16 +140,6 @@ export default function Rates() {
               `Nominal-yield direction: ${directionLabel(data.snapshot.regime.nominal_yield_direction)}`
             ]}
             summary={`Yield driver: ${yieldDriverLabel(data.snapshot.regime.yield_driver)}`}
-          />
-          <DataGapPanel status={data.status} seriesIds={ratesSeriesIds.concat(["us10y_minus_us2y"])} />
-          <CandidateDiagnosticPanel
-            catalog={data.catalog}
-            diagnosticIds={treasurySupplyDiagnosticIds}
-            eyebrow="Official/public diagnostics"
-            series={data.diagnosticSeries}
-            status={data.status}
-            summary="FiscalData Treasury supply rows are generated as static candidate diagnostics for rates context only."
-            title="Treasury supply diagnostics"
           />
           <section className="metric-grid" aria-label="Rates metrics">
             {data.series.map((series) => (
@@ -174,7 +169,19 @@ export default function Rates() {
             </section>
           )}
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
-          <DataStatusTable seriesIds={ratesSeriesIds} status={data.status} />
+          <RouteDataFooter route="rates">
+            <DataGapPanel status={data.status} seriesIds={ratesSeriesIds.concat(["us10y_minus_us2y"])} />
+            <CandidateDiagnosticPanel
+              catalog={data.catalog}
+              diagnosticIds={treasurySupplyDiagnosticIds}
+              eyebrow="Official/public diagnostics"
+              series={data.diagnosticSeries}
+              status={data.status}
+              summary="FiscalData Treasury supply rows are generated as static candidate diagnostics for rates context only."
+              title="Treasury supply diagnostics"
+            />
+            <DataStatusTable seriesIds={ratesSeriesIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>
