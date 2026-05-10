@@ -2012,3 +2012,204 @@ code {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.growth-labor-inflation-matrix {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px 18px;
+  margin: 16px 0 24px;
+}
+
+.growth-labor-inflation-matrix > header {
+  margin: 0 0 14px;
+}
+
+.growth-labor-inflation-matrix > header h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  color: #344238;
+}
+
+.growth-labor-inflation-matrix > header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.growth-labor-inflation-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.growth-labor-inflation-card {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.growth-labor-inflation-card-heading {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.growth-labor-inflation-card .gli-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 6px;
+}
+
+.growth-labor-inflation-card .gli-stat:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.growth-labor-inflation-card .gli-stat-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.growth-labor-inflation-card .gli-stat-value {
+  color: #233029;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.growth-labor-inflation-read {
+  margin: 4px 0 0;
+  color: #344238;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 760px) {
+  .growth-labor-inflation-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.strategic-source-gap-matrix {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px 18px;
+  margin: 16px 0 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.strategic-source-gap-matrix > header {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.strategic-source-gap-matrix > header h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  color: #344238;
+}
+
+.strategic-source-gap-matrix > header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.strategic-source-gap-group {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px 12px;
+}
+
+.strategic-source-gap-group-heading {
+  margin: 0 0 8px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.strategic-source-gap-row-wrapper {
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+.strategic-source-gap-group > .strategic-source-gap-row-wrapper:first-of-type {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+.strategic-source-gap-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.strategic-source-gap-label {
+  color: #233029;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.strategic-source-gap-importance {
+  color: #344238;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
+.strategic-source-gap-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #f0eee5;
+  color: var(--muted);
+}
+
+.strategic-source-gap-badge--gated {
+  background: #fbf0e2;
+  border-color: #d6a86a;
+  color: #c08b32;
+}
+
+.strategic-source-gap-unlock {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 760px) {
+  .strategic-source-gap-matrix {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
