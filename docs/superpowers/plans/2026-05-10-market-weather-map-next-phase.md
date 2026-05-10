@@ -441,12 +441,12 @@ Before merging W1:
 
 **Briefing prompt:**
 
-> You are `ia-shell-agent` in Wave 2. Build `PageInsightHero` and `RouteDataFooter`, then apply the IA pattern to all 17 routes per the slot map in the spec. You are the sole owner of route refactors this wave; W3 and W4 will fill the slots you insert.
+> You are `ia-shell-agent` in Wave 2. Build `PageInsightHero` and `RouteDataFooter`, then apply the IA pattern to all 18 routes (every file under `src/routes/*.tsx` excluding `data-routes.test.tsx`) per the slot map in the spec. You are the sole owner of route refactors this wave; W3 and W4 will fill the slots you insert.
 >
 > Read first:
 > - `docs/superpowers/specs/2026-05-10-market-weather-map-next-phase-design.md` Wave 2 section. The slot map enumerates exactly which slots go in which routes.
 > - Existing route patterns: `src/routes/Overview.tsx` (`MarketBriefHeader` + signal section + tail) and `src/routes/TacticalTradingWeather.tsx` (`HorizonScoreHeader` + signal + 6-tile section + tail).
-> - PR 6 pattern in `src/routes/FragilityShockRisk.tsx`: read header → `ShockRiskContributionChart` → `HiddenStressMismatchPanel` → `BondVolatilityProxyChart` (NOT-MOVE caveat verbatim) → `TailRiskReadinessMatrix` → metric cards → tail.
+> - PR 6 pattern in `src/routes/FragilityShockRisk.tsx`: read header → existing body components (`DataQualityBanner`, `HiddenStressSummary`, `InterpretationPanel`, `ShockRiskDashboard`, `ShockRiskContributionChart`, `HiddenStressMismatchPanel`, `BondVolatilityProxyChart` with NOT-MOVE caveat verbatim, `TailRiskReadinessMatrix`) → metric cards → tail. Full canonical body inventory + exact ordering is enumerated in W2-7; that section is authoritative.
 > - W1's new loaders in `src/lib/data.ts` and types in `src/lib/types.ts` (`PageInsight`, `RouteInsight`, `RouteKey`).
 >
 > **Slot convention:** insert exact JSX comment markers like `{/* SLOT:rates_primary_chart */}`. W3/W4 will replace these comments with chart JSX via exact-string match — do not surround with extra whitespace or modify the marker format.
@@ -565,7 +565,7 @@ npm run build
 - [ ] Every route ends with `<RouteDataFooter>`. No `DataGapPanel`/`DataStatusTable`/`CandidateDiagnosticPanel`/readiness/source-gap/static-feed-freshness panels exist outside `<RouteDataFooter>`.
 - [ ] Slot comments match the spec slot map exactly (case, underscores).
 - [ ] `Overview.tsx`, `TacticalTradingWeather.tsx`, `Calendar.tsx`, `Methodology.tsx`, `HistoricalRegimeReplay.tsx` content order above the tail is unchanged.
-- [ ] FragilityShockRisk preserves PR 6 body order; "not MOVE" caveat literal present.
+- [ ] FragilityShockRisk preserves PR 6 body order; the load-bearing literal `"is NOT the licensed ICE MOVE Index"` (longer caveat from `BondVolatilityProxyChart.tsx`) is asserted by W2-7's test, not just the short "not MOVE" shorthand.
 - [ ] HistoricalRegimeReplay's "20-observation changes" string at line 79 is unchanged.
 - [ ] `npm test` and `npm run build` pass.
 
@@ -1077,12 +1077,15 @@ grep -rn "SLOT:" src/                               # all slots are filled (none
 grep -rn "20-observation" src/                      # only HistoricalRegimeReplayPanel.tsx should match
 grep -rn "20-observation change\b" src/             # NO matches expected (singular form removed)
 
-# Tone — descriptive only. Allow horizon names (short_term/short-term/Short-Term/long-term/Long-Term),
-# JSX target= attributes, the existing adviceTerms regex guard, and the existing
-# "No trade recommendations" literal in HistoricalRegimeReplayPanel.tsx.
+# Tone — descriptive only. Allow horizon names (short_term, short-term/Short-term/Short-Term;
+# long-term/Long-term/Long-Term; short-dated/short-end), JSX target= attributes, the existing
+# adviceTerms regex guard, and the existing "No trade recommendations" literal in
+# HistoricalRegimeReplayPanel.tsx. Use case-insensitive `grep -vi` for horizon names since the
+# codebase uses mixed casing (e.g., "Short-term" with capital S, lowercase t).
 grep -rEni "\b(buy|sell|short|target|stop|recommend)\b" src/components/ src/routes/ \
-  | grep -v "test\|short_term\|short-term\|Short-Term\|target=\|adviceTerms\|No trade recommendations\|long-term\|Long-Term"
+  | grep -vi "test\|short_term\|short-term\|short-dated\|short-end\|target=\|adviceterms\|no trade recommendations\|long-term"
 # Triage any remaining matches manually — the allow-list above is for known false positives.
+# Expected output on a clean tree: zero matches.
 ```
 
   Document each grep result in the verification report. Flag any unexpected matches.
