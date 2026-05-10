@@ -17,7 +17,8 @@ import type {
   SeriesCatalogEntry,
   SeriesFrequency,
   SignalPriorityFile,
-  TimeSeriesFile
+  TimeSeriesFile,
+  VolatilityDashboardFile
 } from "../lib/types";
 
 vi.mock("../components/TimeSeriesChart", () => ({
@@ -265,6 +266,7 @@ function routeFetchFiles(overrides: Record<string, unknown> = {}) {
     "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
     "/data/derived/regime_snapshot.json": regimeSnapshot,
     "/data/derived/signal_priority.json": signalPriority,
+    "/data/derived/volatility_dashboard.json": volatilityDashboard,
     "/data/derived/us10y_minus_us2y.json": {
       ...derivedFile("us10y_minus_us2y", 0.42),
       depends_on: ["us10y", "us2y"],
@@ -1555,6 +1557,81 @@ const signalPriority: SignalPriorityFile = {
   ]
 };
 
+const volatilityDashboard: VolatilityDashboardFile = {
+  date: "2026-05-08",
+  generated_at_utc: "2026-05-10T15:00:10Z",
+  method_version: "w1a-volatility-dashboard-v1",
+  latest_curve: [
+    { tenor: "9D", value: 14.32, percentile_5y: 28.5 },
+    { tenor: "30D", value: 16.18, percentile_5y: 42.1 },
+    { tenor: "3M", value: 18.05, percentile_5y: 51.4 }
+  ],
+  ratio_history: [
+    { date: "2026-04-30", vix9d_vix: 0.85, vix_vix3m: 0.84 },
+    { date: "2026-05-01", vix9d_vix: 0.83, vix_vix3m: 0.83 },
+    { date: "2026-05-04", vix9d_vix: 0.91, vix_vix3m: 0.87 },
+    { date: "2026-05-05", vix9d_vix: 0.84, vix_vix3m: 0.83 },
+    { date: "2026-05-06", vix9d_vix: 0.85, vix_vix3m: 0.85 },
+    { date: "2026-05-07", vix9d_vix: 0.85, vix_vix3m: 0.84 },
+    { date: "2026-05-08", vix9d_vix: 0.83, vix_vix3m: 0.84 }
+  ],
+  hidden_stress: [
+    {
+      date: "2026-05-04",
+      vix_value: 14.5,
+      vvix_value: 87.2,
+      vix_percentile: 28.5,
+      vvix_percentile: 45.1,
+      hidden_stress_score: 16.6,
+      state: "watch"
+    },
+    {
+      date: "2026-05-05",
+      vix_value: 14.1,
+      vvix_value: 86.8,
+      vix_percentile: 27.8,
+      vvix_percentile: 44.2,
+      hidden_stress_score: 16.4,
+      state: "watch"
+    },
+    {
+      date: "2026-05-06",
+      vix_value: 14.3,
+      vvix_value: 88.1,
+      vix_percentile: 28.2,
+      vvix_percentile: 46.0,
+      hidden_stress_score: 17.8,
+      state: "watch"
+    },
+    {
+      date: "2026-05-07",
+      vix_value: 14.2,
+      vvix_value: 87.9,
+      vix_percentile: 28.0,
+      vvix_percentile: 45.7,
+      hidden_stress_score: 17.7,
+      state: "watch"
+    },
+    {
+      date: "2026-05-08",
+      vix_value: 14.32,
+      vvix_value: 88.6,
+      vix_percentile: 28.5,
+      vvix_percentile: 46.4,
+      hidden_stress_score: 17.9,
+      state: "watch"
+    }
+  ],
+  thresholds: {
+    vix9d_vix_calm: 0.95,
+    vix9d_vix_stress: 1.05,
+    vix_vix3m_calm: 0.95,
+    vix_vix3m_stress: 1.0,
+    hidden_stress_watch: 15.0,
+    hidden_stress_elevated: 30.0
+  }
+};
+
 const malformedShockRiskRowSnapshot = {
   ...shockRiskSnapshot,
   active_signals: [
@@ -2422,6 +2499,40 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("VX1 futures");
     expect(container.textContent).toContain("VX1 futures source remains under terms review.");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
+  });
+
+  it("volatility route renders the W3 term-structure, ratio-history, and hidden-stress charts from the dashboard fixture", async () => {
+    mockStaticFetch(routeFetchFiles());
+
+    const container = render(
+      <MemoryRouter initialEntries={["/volatility"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Volatility curve (proxy)");
+
+    // Term-structure (proxy preserved).
+    expect(container.textContent).toContain("Volatility curve (proxy)");
+    // Ratio history shell shows both ratio labels in its legend.
+    expect(container.textContent).toContain("Volatility ratio history");
+    // Hidden stress shell.
+    expect(container.textContent).toContain("Hidden options stress");
+  });
+
+  it("volatility route renders an interactive view loading placeholder when the dashboard 404s", async () => {
+    const files: Record<string, unknown> = routeFetchFiles();
+    delete files["/data/derived/volatility_dashboard.json"];
+    mockStaticFetch(files);
+
+    const container = render(
+      <MemoryRouter initialEntries={["/volatility"]}>
+        <App />
+      </MemoryRouter>
+    );
+    await waitForContent(container, "Interactive volatility view loading");
+    expect(container.textContent).toContain("Interactive volatility view loading");
+    // Legacy multi-series chart still renders as a fallback.
+    expect(container.textContent).toContain("VIX term-structure proxy");
   });
 
   it("surfaces net liquidity and reserve balances on liquidity", async () => {
