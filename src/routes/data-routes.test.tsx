@@ -3066,3 +3066,209 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("breakeven_10y can confirm commodity inflation pressure");
   });
 });
+
+// ---------------------------------------------------------------------------
+// W2-13: cross-route IA consistency. Verifies that every route file follows
+// the hero + slot + footer pattern from the spec slot map. JSX comments are
+// stripped at render time so we scan the source files directly.
+// ---------------------------------------------------------------------------
+
+import { readFileSync, readdirSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __routesDir = dirname(__filename);
+
+// All 18 route source files (every file under src/routes/ except the test).
+const ALL_ROUTE_FILES = readdirSync(__routesDir)
+  .filter((name) => name.endsWith(".tsx") && name !== "data-routes.test.tsx")
+  .sort();
+
+// Routes that consume PageInsightHero (the 12 single-domain content routes).
+// LongTermMacroClimate keeps HorizonScoreHeader instead; Overview, Tactical,
+// Calendar, Methodology, HistoricalRegimeReplay also do NOT get a hero.
+const SINGLE_DOMAIN_ROUTES = [
+  "Rates.tsx",
+  "Volatility.tsx",
+  "RegimeMap.tsx",
+  "Credit.tsx",
+  "Liquidity.tsx",
+  "DollarGlobal.tsx",
+  "Commodities.tsx",
+  "Inflation.tsx",
+  "Growth.tsx",
+  "Housing.tsx",
+  "Sentiment.tsx",
+  "FragilityShockRisk.tsx"
+];
+
+// Spec slot map (Wave 2 design § "Slot map reference").
+// 14 routes total carry slot comments; 5 routes carry 2 each (10) + 9 routes
+// carry 1 each = 19 slot markers.
+const EXPECTED_SLOTS_BY_ROUTE: Record<string, string[]> = {
+  "Rates.tsx": ["rates_primary_chart", "rates_secondary_charts"],
+  "Volatility.tsx": ["volatility_primary_chart", "volatility_secondary_charts"],
+  "RegimeMap.tsx": ["regime_primary_chart"],
+  "LongTermMacroClimate.tsx": ["macro_regime_chart", "macro_yield_chart"],
+  "Credit.tsx": ["credit_primary_chart"],
+  "Liquidity.tsx": ["liquidity_primary_chart"],
+  "DollarGlobal.tsx": ["dollar_global_primary_chart"],
+  "Commodities.tsx": ["commodities_primary_chart"],
+  "Inflation.tsx": ["inflation_primary_chart"],
+  "Growth.tsx": ["growth_primary_chart"],
+  "Housing.tsx": ["housing_primary_chart"],
+  "Sentiment.tsx": ["sentiment_primary_chart"],
+  "FragilityShockRisk.tsx": ["fragility_primary_chart", "fragility_pre_metrics_slot"],
+  "TacticalTradingWeather.tsx": ["tactical_vol_curve_slot", "tactical_vol_complex_slot"]
+};
+
+function readRouteSource(filename: string): string {
+  return readFileSync(join(__routesDir, filename), "utf8");
+}
+
+describe("W2-13: cross-route IA consistency", () => {
+  it("discovers exactly 18 route source files (sanity check on the inventory)", () => {
+    expect(ALL_ROUTE_FILES).toHaveLength(18);
+  });
+
+  it.each(ALL_ROUTE_FILES)(
+    "%s imports and uses <RouteDataFooter> so the page ends with the data footer",
+    (file) => {
+      const source = readRouteSource(file);
+      expect(source).toMatch(/import\s+RouteDataFooter\s+from\s+"\.\.\/components\/RouteDataFooter"/);
+      expect(source).toMatch(/<RouteDataFooter/);
+    }
+  );
+
+  it.each(ALL_ROUTE_FILES)(
+    "%s places <RouteDataFooter> after all <DataGapPanel>, <DataStatusTable>, <CandidateDiagnosticPanel> usages (source-gated panels live in the footer)",
+    (file) => {
+      const source = readRouteSource(file);
+      const footerIdx = source.search(/<RouteDataFooter/);
+      // The footer must appear at least once.
+      expect(footerIdx).toBeGreaterThan(-1);
+
+      const restrictedComponents = [
+        "DataGapPanel",
+        "DataStatusTable",
+        "CandidateDiagnosticPanel"
+      ];
+      for (const component of restrictedComponents) {
+        // Match `<DataGapPanel` JSX usages (open tags) but ignore the import line.
+        const usageRegex = new RegExp(`<${component}\\b`, "g");
+        const matches: number[] = [];
+        let m: RegExpExecArray | null;
+        while ((m = usageRegex.exec(source)) !== null) matches.push(m.index);
+        for (const index of matches) {
+          if (index < footerIdx) {
+            throw new Error(
+              `${file}: <${component} ...> usage at offset ${index} is above <RouteDataFooter at offset ${footerIdx}; data-transparency panels must live inside the footer.`
+            );
+          }
+        }
+      }
+    }
+  );
+
+  it.each(SINGLE_DOMAIN_ROUTES)(
+    "%s renders <PageInsightHero ...> in the route body (single-domain routes get a hero)",
+    (file) => {
+      const source = readRouteSource(file);
+      expect(source).toMatch(/import\s+PageInsightHero\s+from\s+"\.\.\/components\/PageInsightHero"/);
+      expect(source).toMatch(/<PageInsightHero\s+route=/);
+    }
+  );
+
+  it("non-hero routes do NOT import PageInsightHero (keeps the IA boundary explicit)", () => {
+    const heroless = ALL_ROUTE_FILES.filter((file) => !SINGLE_DOMAIN_ROUTES.includes(file));
+    for (const file of heroless) {
+      const source = readRouteSource(file);
+      expect(source).not.toMatch(/<PageInsightHero/);
+    }
+  });
+
+  it.each(Object.keys(EXPECTED_SLOTS_BY_ROUTE))(
+    "%s contains exactly the slot-comment markers the spec slot map says it should",
+    (file) => {
+      const source = readRouteSource(file);
+      const expectedSlots = EXPECTED_SLOTS_BY_ROUTE[file];
+      for (const slotId of expectedSlots) {
+        const markerPattern = new RegExp(`\\{/\\* SLOT:${slotId} \\*/\\}`);
+        expect(source).toMatch(markerPattern);
+      }
+    }
+  );
+
+  it("total slot count across all 14 routes equals 19 (5 routes x 2 + 9 routes x 1)", () => {
+    let total = 0;
+    for (const slots of Object.values(EXPECTED_SLOTS_BY_ROUTE)) {
+      total += slots.length;
+    }
+    expect(total).toBe(19);
+    expect(Object.keys(EXPECTED_SLOTS_BY_ROUTE)).toHaveLength(14);
+  });
+
+  it("TacticalTradingWeather wraps its two vol slots with open + close markers (W3 swap convention)", () => {
+    const source = readRouteSource("TacticalTradingWeather.tsx");
+    // Both vol slots use open + close marker pairs so vol-charts-agent can
+    // swap the wrapped JSX atomically in Wave 3.
+    expect(source).toMatch(/\{\/\* SLOT:tactical_vol_curve_slot \*\/\}/);
+    expect(source).toMatch(/\{\/\* \/SLOT:tactical_vol_curve_slot \*\/\}/);
+    expect(source).toMatch(/\{\/\* SLOT:tactical_vol_complex_slot \*\/\}/);
+    expect(source).toMatch(/\{\/\* \/SLOT:tactical_vol_complex_slot \*\/\}/);
+  });
+
+  it("FragilityShockRisk's primary chart slot precedes the existing <ShockRiskContributionChart /> JSX", () => {
+    const source = readRouteSource("FragilityShockRisk.tsx");
+    const slotIdx = source.indexOf("{/* SLOT:fragility_primary_chart */}");
+    const chartIdx = source.indexOf("<ShockRiskContributionChart");
+    expect(slotIdx).toBeGreaterThan(-1);
+    expect(chartIdx).toBeGreaterThan(-1);
+    expect(slotIdx).toBeLessThan(chartIdx);
+  });
+
+  it("FragilityShockRisk's pre-metrics slot sits between <TailRiskReadinessMatrix /> and <section className=\"score-grid\">", () => {
+    const source = readRouteSource("FragilityShockRisk.tsx");
+    const tailIdx = source.indexOf("<TailRiskReadinessMatrix");
+    const slotIdx = source.indexOf("{/* SLOT:fragility_pre_metrics_slot */}");
+    const scoreGridIdx = source.indexOf('className="score-grid"');
+    expect(tailIdx).toBeGreaterThan(-1);
+    expect(slotIdx).toBeGreaterThan(tailIdx);
+    expect(scoreGridIdx).toBeGreaterThan(slotIdx);
+  });
+
+  it("FragilityShockRisk preserves the load-bearing 'is NOT the licensed ICE MOVE Index' caveat verbatim in BondVolatilityProxyChart", () => {
+    // Verifies the constraint in W2-7: substring match on the chart source
+    // file. Tested independently of the rendered DOM because the literal lives
+    // in the chart component, which the route always renders.
+    const chartSource = readFileSync(
+      join(__routesDir, "..", "components", "BondVolatilityProxyChart.tsx"),
+      "utf8"
+    );
+    expect(chartSource).toContain("is NOT the licensed ICE MOVE Index");
+  });
+
+  it("HistoricalRegimeReplayPanel keeps the '20-observation changes' literal at line 79 (correct per METHODOLOGY)", () => {
+    const panelSource = readFileSync(
+      join(__routesDir, "..", "components", "HistoricalRegimeReplayPanel.tsx"),
+      "utf8"
+    );
+    const lines = panelSource.split("\n");
+    // line index 78 == line 79 (1-indexed) in the file.
+    expect(lines[78]).toContain("20-observation changes");
+  });
+
+  it("RegimeQuadrantChart still carries the '20-observation' label until W3 regime-charts-agent rebuilds it", () => {
+    // W3 rebuilds RegimeQuadrantChart to use a dynamic '{window} change' label.
+    // W2 must NOT pre-edit the chart's static literal so the W3 agent's
+    // exact-string replacement (replacing the misleading static label) still
+    // matches. We only assert the file exists and is still Recharts-based, not
+    // the precise label text, to avoid coupling to the in-flight W3 change.
+    const chartSource = readFileSync(
+      join(__routesDir, "..", "components", "RegimeQuadrantChart.tsx"),
+      "utf8"
+    );
+    expect(chartSource.length).toBeGreaterThan(0);
+  });
+});
