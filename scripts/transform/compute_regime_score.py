@@ -654,9 +654,26 @@ def _direction_message(label: str, direction: str) -> str:
 
 
 def _build_quadrant_trail(series_by_id: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
-    dates = _matched_observation_dates(series_by_id, ["broad_dollar", "real_yield_10y", "us10y"])[-20:]
-    if not dates:
+    """Build the legacy quadrant trail with TRUE 20-business-day lookback.
+
+    DEPRECATED: prefer ``regime_dashboard.json windows.20D`` (built by
+    ``scripts.transform.build_regime_dashboard``). This field is preserved
+    for back-compat with consumers that still read regime_snapshot.json,
+    but new code should consume the new file. The previous implementation
+    used sequential daily deltas, which contradicted the chart label
+    ("20-observation change"); this fix replaces each point's deltas with
+    the true window-lookback value.
+    """
+    LOOKBACK = 20
+    matched = _matched_observation_dates(series_by_id, ["broad_dollar", "real_yield_10y", "us10y"])
+    if len(matched) <= LOOKBACK:
         return []
+    # Take the last 20 dates as the visible trail window, using the date
+    # that occurs LOOKBACK observations earlier in the matched series as
+    # the lookback anchor for each visible point.
+    visible_dates = matched[-LOOKBACK:]
+    visible_indices = list(range(len(matched) - LOOKBACK, len(matched)))
+
     dollar = _series_values_by_date(series_by_id["broad_dollar"])
     real_yield = _series_values_by_date(series_by_id["real_yield_10y"])
     nominal = _series_values_by_date(series_by_id["us10y"])
@@ -668,23 +685,25 @@ def _build_quadrant_trail(series_by_id: dict[str, dict[str, Any]]) -> list[dict[
     credit = _series_values_by_date(series_by_id.get(credit_series_id, {}))
 
     trail = []
-    previous_date = None
-    for date in dates:
+    for date, idx in zip(visible_dates, visible_indices, strict=False):
+        anchor_idx = idx - LOOKBACK
+        if anchor_idx < 0:
+            continue
+        anchor_date = matched[anchor_idx]
         row = {
             "date": date,
-            "dollar_change": round(dollar[date] - dollar[previous_date], 4) if previous_date else 0.0,
-            "real_yield_change": round(real_yield[date] - real_yield[previous_date], 4) if previous_date else 0.0,
-            "nominal_yield_change": round(nominal[date] - nominal[previous_date], 4) if previous_date else 0.0,
+            "dollar_change": round(dollar[date] - dollar[anchor_date], 4),
+            "real_yield_change": round(real_yield[date] - real_yield[anchor_date], 4),
+            "nominal_yield_change": round(nominal[date] - nominal[anchor_date], 4),
         }
         percentile = vix_percentiles.get(date)
         row["vix_percentile"] = float(percentile) if _finite_number(percentile) else None
         row["credit_change"] = (
-            round(credit[date] - credit[previous_date], 4)
-            if previous_date and date in credit and previous_date in credit
+            round(credit[date] - credit[anchor_date], 4)
+            if date in credit and anchor_date in credit
             else None
         )
         trail.append(row)
-        previous_date = date
     return trail
 
 
