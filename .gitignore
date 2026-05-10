@@ -146,6 +146,10 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
+# tsc -b emits these from vite.config.ts via tsconfig.node.json (composite build)
+vite.config.js
+vite.config.d.ts
+
 # Local implementation worktrees
 .worktrees/
 

@@ -10,6 +10,7 @@ import type {
   ScoreSummaryFile,
   ShockRiskSnapshotFile,
   SeriesCatalogEntry,
+  SignalPriorityFile,
   SourceRegistryFile,
   TimeSeriesFile
 } from "./types";
@@ -104,4 +105,8 @@ export function loadScoreHistory(): Promise<ScoreHistoryFile> {
 
 export function loadMacroCalendar(): Promise<MacroCalendarFile> {
   return loadJson<MacroCalendarFile>("/data/events/macro_calendar.json");
+}
+
+export function loadSignalPriority(): Promise<SignalPriorityFile> {
+  return loadJson<SignalPriorityFile>("/data/derived/signal_priority.json");
 }

@@ -11,6 +11,7 @@ import LiquidityPulsePanel from "../components/LiquidityPulsePanel";
 import type { MultiSeriesChartSeries } from "../components/MultiSeriesChart";
 import OptionsSentimentPanel from "../components/OptionsSentimentPanel";
 import SignalChecklist from "../components/SignalChecklist";
+import TopSignalList from "../components/TopSignalList";
 import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
 import VolatilityTermStructurePanel from "../components/VolatilityTermStructurePanel";
 import { scoreLabel } from "../lib/horizon";
@@ -19,7 +20,8 @@ import {
   loadDataStatus,
   loadMacroCalendar,
   loadRegimeSnapshot,
-  loadScoreSummary
+  loadScoreSummary,
+  loadSignalPriority
 } from "../lib/data";
 import type {
   DataStatusFile,
@@ -28,6 +30,7 @@ import type {
   RegimeSnapshotFile,
   ScoreSummaryFile,
   SeriesCatalogEntry,
+  SignalPriorityFile,
   TimeSeriesFile
 } from "../lib/types";
 import { loadRouteDerivedSeries, loadRouteSeries } from "./routeSeries";
@@ -67,6 +70,7 @@ interface RouteState {
   derived: DerivedSeriesFile[];
   scoreSummary: ScoreSummaryFile;
   series: TimeSeriesFile[];
+  signalPriority: SignalPriorityFile | null;
   snapshot: RegimeSnapshotFile;
   status: DataStatusFile;
 }
@@ -127,11 +131,12 @@ export default function TacticalTradingWeather() {
 
     async function loadTacticalTradingWeather() {
       try {
-        const [catalog, status, scoreSummary, snapshot, calendar] = await Promise.all([
+        const [catalog, status, scoreSummary, snapshot, signalPriority, calendar] = await Promise.all([
           loadCatalog(),
           loadDataStatus(),
           loadScoreSummary(),
           loadRegimeSnapshot(),
+          loadSignalPriority().catch(() => null),
           loadMacroCalendar()
         ]);
         const [series, derived] = await Promise.all([
@@ -141,7 +146,7 @@ export default function TacticalTradingWeather() {
           })
         ]);
         if (active) {
-          setData({ calendar, catalog, derived, scoreSummary, series, snapshot, status });
+          setData({ calendar, catalog, derived, scoreSummary, series, signalPriority, snapshot, status });
         }
       } catch (loadError) {
         if (active) {
@@ -187,6 +192,31 @@ export default function TacticalTradingWeather() {
             supports={data.scoreSummary.scores.market_weather.top_supports}
             title="Current Tactical Read"
           />
+          {data.signalPriority ? (
+            <section
+              className="signal-priority-grid"
+              aria-label="Tactical top active warnings, supports, and missing high-value signals"
+            >
+              <TopSignalList
+                title="Top Active Warnings"
+                emptyText="No top active tactical warnings in the current snapshot."
+                variant="warning"
+                signals={data.signalPriority.top_warnings}
+              />
+              <TopSignalList
+                title="Top Active Supports"
+                emptyText="No top active tactical supports in the current snapshot."
+                variant="support"
+                signals={data.signalPriority.top_supports}
+              />
+              <TopSignalList
+                title="Missing High-Value Signals"
+                emptyText="All high-value tactical signals have an active source."
+                variant="missing"
+                signals={data.signalPriority.missing_high_value_signals}
+              />
+            </section>
+          ) : null}
           <div className="section-heading">
             <h3>Daily checklist</h3>
           </div>
