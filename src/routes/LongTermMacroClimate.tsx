@@ -249,7 +249,6 @@ export default function LongTermMacroClimate() {
             title="Current Long-Term Read"
           />
           <MacroClimateHeatmap scoreSummary={data.scoreSummary} />
-          <MacroRegimeQuadrant trail={data.snapshot.quadrant_trail} />
           <GrowthLaborInflationMatrix scoreSummary={data.scoreSummary} />
           <InterpretationPanel
             label="Strategic regime summary"
@@ -286,6 +285,7 @@ export default function LongTermMacroClimate() {
             </section>
           </section>
           {/* SLOT:macro_regime_chart */}
+          <MacroRegimeQuadrant />
           {/* SLOT:macro_yield_chart */}
           {data.ratesDashboard ? (
             <YieldDecompositionStackChart data={data.ratesDashboard.current_decomposition} />
