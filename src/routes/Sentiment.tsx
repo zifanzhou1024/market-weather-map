@@ -3,6 +3,8 @@ import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
+import PageInsightHero from "../components/PageInsightHero";
+import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
 import { loadCatalog, loadDataStatus, loadSeries } from "../lib/data";
 import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
@@ -58,6 +60,8 @@ export default function Sentiment() {
       ) : null}
       {data ? (
         <div className="route-stack">
+          <PageInsightHero route="sentiment" />
+          {/* SLOT:sentiment_primary_chart */}
           <InterpretationPanel
             label="Active data is positioning only"
             notes={[
@@ -83,8 +87,10 @@ export default function Sentiment() {
               series={leveragedMoney}
             />
           ) : null}
-          <DataGapPanel seriesIds={sentimentSeriesIds} status={data.status} />
-          <DataStatusTable seriesIds={sentimentSeriesIds} status={data.status} />
+          <RouteDataFooter route="sentiment">
+            <DataGapPanel seriesIds={sentimentSeriesIds} status={data.status} />
+            <DataStatusTable seriesIds={sentimentSeriesIds} status={data.status} />
+          </RouteDataFooter>
         </div>
       ) : null}
     </main>
