@@ -29,6 +29,17 @@ python -m scripts.validate.validate_freshness
 
 For data-only changes, also run `python -m scripts.update_data` to confirm the safe-update path (it preserves prior good JSON and records failures in `public/data/status/data_status.json`).
 
+## Local Python (per worktree)
+
+CI uses `setup-python@v5`, so `python` resolves there. Locally, the environment only has `python3` and Homebrew's Python is externally managed. Each worktree uses its own venv:
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+```
+
+Run Python commands as `.venv/bin/python -m ...` locally (or activate the venv). The verification block above is written with `python -m ...` to match CI — substitute `.venv/bin/python` locally.
+
 ## Layout
 
 - Specs and plans: `docs/superpowers/specs/`, `docs/superpowers/plans/` (filenames dated `YYYY-MM-DD-...`).
