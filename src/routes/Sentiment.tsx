@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import SentimentPositioningHero from "../components/charts/SentimentPositioningHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -44,6 +45,7 @@ export default function Sentiment() {
     };
   }, []);
 
+  const assetManager = data?.series.find((series) => series.series_id === "cftc_sp500_asset_mgr_net");
   const leveragedMoney = data?.series.find((series) => series.series_id === "cftc_sp500_lev_money_net");
 
   return (
@@ -62,6 +64,12 @@ export default function Sentiment() {
         <div className="route-stack">
           <PageInsightHero route="sentiment" />
           {/* SLOT:sentiment_primary_chart */}
+          {assetManager && leveragedMoney ? (
+            <SentimentPositioningHero
+              assetManagerNet={assetManager}
+              leveragedMoneyNet={leveragedMoney}
+            />
+          ) : null}
           <InterpretationPanel
             label="Active data is positioning only"
             notes={[
