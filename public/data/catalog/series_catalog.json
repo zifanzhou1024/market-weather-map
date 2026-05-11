@@ -3227,5 +3227,32 @@
     "source_url": "https://www.newyorkfed.org/research/data_indicators/term-premia-tabs",
     "terms_status": "review_each_series",
     "units": "percent"
+  },
+  {
+    "access_status": "authenticated_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "TradingView TVC:MOVE series; authenticated candidate pending review per docs/source_reviews/tradingview_authenticated_candidates.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "tradingview_move_candidate",
+    "max_stale_days": 3,
+    "name": "ICE BofA MOVE Index via TradingView (candidate)",
+    "notes": "Authenticated TradingView candidate for the ICE BofA MOVE Index (bond volatility). Not treated as the official ICE MOVE feed; sourced from TradingView's TVC data via rongardF/tvdatafeed. Not active until a source review approves redistribution; see docs/source_reviews/tradingview_authenticated_candidates.md.",
+    "preferred_chart": "line",
+    "provider_id": "tradingview",
+    "public": false,
+    "public_redistribution_allowed": false,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": true,
+    "score_status": "candidate",
+    "source": "TradingView",
+    "source_url": "https://www.tradingview.com/symbols/TVC-MOVE/",
+    "terms_status": "review_needed",
+    "units": "index"
   }
 ]

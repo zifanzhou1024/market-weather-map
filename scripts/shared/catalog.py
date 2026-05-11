@@ -1836,6 +1836,50 @@ CANDIDATE_SERIES_PHASE_A: list[dict[str, object]] = [
 ]
 
 
+# Phase C TradingView authenticated-candidate series.
+# Access requires a TradingView account credential (injected via GitHub Actions
+# secrets; see scripts/shared/config.py). Data lands in public/data/candidates/
+# only and never enters active scoring. Each PR C2/C3/C4 appends one entry here.
+# Symbol and exchange confirmed by live probe 2026-05-11 against commit
+# rongardF/tvdatafeed@e6f6aaa7de43.
+TRADINGVIEW_CANDIDATE_SERIES: list[dict[str, object]] = [
+    {
+        "id": "tradingview_move_candidate",
+        "name": "ICE BofA MOVE Index via TradingView (candidate)",
+        "category": "volatility",
+        "source": "TradingView",
+        "provider_id": "tradingview",
+        "source_url": "https://www.tradingview.com/symbols/TVC-MOVE/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "index",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 3,
+        "notes": (
+            "Authenticated TradingView candidate for the ICE BofA MOVE Index "
+            "(bond volatility). Not treated as the official ICE MOVE feed; "
+            "sourced from TradingView's TVC data via rongardF/tvdatafeed. "
+            "Not active until a source review approves redistribution; "
+            "see docs/source_reviews/tradingview_authenticated_candidates.md."
+        ),
+        "citation_notes": (
+            "TradingView TVC:MOVE series; authenticated candidate pending review "
+            "per docs/source_reviews/tradingview_authenticated_candidates.md."
+        ),
+        "access_status": "authenticated_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": False,
+        "requires_secret": True,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+]
+
+
 # Phase B official sources — fully reviewed, active-scoring entries.
 # Each Phase-B PR (B1, B2, ...) appends one entry here.
 # Phase B official sources reuse the provider-level governance() helper since all entries share free_public_active provider defaults.
@@ -1996,6 +2040,7 @@ def catalog_entries() -> list[dict[str, object]]:
     )
     entries.extend(entry.copy() for entry in CANDIDATE_SERIES_PHASE_A)
     entries.extend(entry.copy() for entry in OFFICIAL_SOURCE_SERIES_PHASE_B)
+    entries.extend(entry.copy() for entry in TRADINGVIEW_CANDIDATE_SERIES)
     # Series-level access_status overrides applied after entry assembly.
     # Some series cannot be classified accurately from the provider row alone
     # (e.g. ice_indices' MOVE feed is restricted_vendor while other ICE
