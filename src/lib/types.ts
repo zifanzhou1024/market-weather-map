@@ -33,6 +33,14 @@ export type AccessStatus =
   | "restricted_vendor"
   | "unavailable";
 
+// Subset of AccessStatus values that the active-scoring predicate accepts.
+// Using Extract<> means a future rename in AccessStatus produces a TS error
+// at every callsite instead of silent drift.
+export type ActiveAccessStatus = Extract<
+  AccessStatus,
+  "free_public_active" | "proxy_only"
+>;
+
 export const ACCESS_STATUS_VALUES: readonly AccessStatus[] = [
   "free_public_active",
   "free_public_candidate",
@@ -445,8 +453,8 @@ export interface SignalActiveEntry {
   // Projected from the underlying series catalog so downstream consumers
   // (e.g. PageInsightHero / build_page_insights) can apply the active-scoring
   // gating predicate without re-loading the catalog. Always a member of the
-  // active-eligible AccessStatus subset ("free_public_active" | "proxy_only").
-  access_status?: "free_public_active" | "proxy_only";
+  // active-eligible AccessStatus subset (see ActiveAccessStatus).
+  access_status?: ActiveAccessStatus;
   message: string;
   why_it_matters: string;
 }
@@ -529,7 +537,7 @@ export interface SignalRef {
   source_status: SignalRefSourceStatus;
   // Forwarded from the upstream SignalActiveEntry so consumers can apply
   // the active-scoring gating predicate without re-loading the catalog.
-  access_status?: "free_public_active" | "proxy_only";
+  access_status?: ActiveAccessStatus;
 }
 
 export interface RouteInsight {

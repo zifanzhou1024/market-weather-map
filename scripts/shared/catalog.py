@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from scripts.shared.access_status import DERIVATION_TABLE as _DERIVATION_TABLE
+from scripts.shared.access_status import DERIVATION_TABLE
 from scripts.shared.io import data_dir
 from scripts.shared.source_registry import source_registry_entries
 
@@ -17,7 +17,7 @@ _LEGACY_ACCESS_STATUS_MAP = {
 
 # Series-level access_status overrides applied inside catalog_entries().
 # Each row overrides whatever access_status the provider-level governance()
-# populated, plus re-derives the flag fields via _DERIVATION_TABLE.
+# populated, plus re-derives the flag fields via DERIVATION_TABLE.
 # Notes:
 #   - sp500_index and skew_index naturally resolve to terms_review_needed
 #     via their providers; no override needed.
@@ -44,7 +44,7 @@ def governance(
 
     access_status is authoritative. score_status, active_scoring_allowed,
     public_redistribution_allowed, and requires_secret are derived from
-    access_status via _DERIVATION_TABLE.
+    access_status via DERIVATION_TABLE.
 
     Legacy callsites that pass only score_status (no access_status) get
     a sensible default derived from the registry's access_status and
@@ -56,12 +56,12 @@ def governance(
     # Legacy SourceAccessStatus values map to the new AccessStatus enum so
     # callsites that still pass string literals like "free_public" keep working.
     resolved_access = _LEGACY_ACCESS_STATUS_MAP.get(raw_access, raw_access)
-    if resolved_access not in _DERIVATION_TABLE:
+    if resolved_access not in DERIVATION_TABLE:
         raise ValueError(
             f"unknown access_status {resolved_access!r} for provider {provider_id!r}; "
-            f"expected one of {list(_DERIVATION_TABLE)}"
+            f"expected one of {list(DERIVATION_TABLE)}"
         )
-    derived_score, active_scoring, public_redist, derived_secret = _DERIVATION_TABLE[resolved_access]
+    derived_score, active_scoring, public_redist, derived_secret = DERIVATION_TABLE[resolved_access]
     return {
         "provider_id": provider_id,
         "access_status": resolved_access,
@@ -1947,7 +1947,7 @@ def catalog_entries() -> list[dict[str, object]]:
         if series_id in _SERIES_ACCESS_STATUS_OVERRIDES:
             new_access = _SERIES_ACCESS_STATUS_OVERRIDES[series_id]
             derived_score, active_scoring, public_redist, derived_secret = (
-                _DERIVATION_TABLE[new_access]
+                DERIVATION_TABLE[new_access]
             )
             entry["access_status"] = new_access
             entry["score_status"] = derived_score
@@ -1964,7 +1964,7 @@ def catalog_entries() -> list[dict[str, object]]:
             and entry.get("score_status") == "candidate"
         ):
             derived_score, active_scoring, public_redist, derived_secret = (
-                _DERIVATION_TABLE["free_public_candidate"]
+                DERIVATION_TABLE["free_public_candidate"]
             )
             entry["access_status"] = "free_public_candidate"
             # score_status stays "candidate" (matches derived_score here).

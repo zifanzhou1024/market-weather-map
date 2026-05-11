@@ -9,7 +9,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from scripts.shared import io as shared_io
-from scripts.shared.access_status import DERIVATION_TABLE as _DERIVATION_TABLE
+from scripts.shared.access_status import DERIVATION_TABLE
 from scripts.shared.catalog import available_catalog_entries
 from scripts.shared.io import data_dir, series_path
 from scripts.validate.validate_candidate_isolation import (
@@ -21,7 +21,7 @@ class SchemaError(RuntimeError):
     """Raised when catalog entries violate AccessStatus schema rules."""
 
 
-_ALLOWED_ACCESS_STATUSES = frozenset(_DERIVATION_TABLE)
+_ALLOWED_ACCESS_STATUSES = frozenset(DERIVATION_TABLE)
 
 _REQUIRED_FLAGS = ("active_scoring_allowed", "public_redistribution_allowed", "requires_secret")
 
@@ -1081,7 +1081,7 @@ def _check_entry(entry_id: str, entry: dict, source: str) -> list[str]:
             errs.append(f"{source} entry {entry_id!r}: missing required field {flag!r}")
     if errs:
         return errs
-    expected_active, expected_redist, expected_secret = _DERIVATION_TABLE[access][1:]
+    expected_active, expected_redist, expected_secret = DERIVATION_TABLE[access][1:]
     if entry["active_scoring_allowed"] != expected_active:
         errs.append(
             f"{source} entry {entry_id!r}: active_scoring_allowed={entry['active_scoring_allowed']!r} "

@@ -629,3 +629,37 @@ def test_is_active_scoring_allowed_predicate_truth_table():
     # Missing field fails closed.
     assert allow({}) is False
     assert allow({"access_status": None}) is False
+
+
+def test_aggregate_access_status_mixed_case_proxy_wins():
+    """Mixed-case rule: any underlying proxy_only forces aggregate=proxy_only.
+
+    proxy_only is the strictest active-eligible class because it limits
+    public redistribution beyond what the underlying public data already
+    grants. The aggregator must surface that constraint even when only one
+    of N underlying series carries proxy_only — the SignalActiveEntry it
+    projects onto inherits the tightest contract.
+    """
+    aggregate = build_signal_priority._aggregate_access_status
+    catalog = {
+        "series_a": {"access_status": "proxy_only"},
+        "series_b": {"access_status": "free_public_active"},
+    }
+    assert aggregate(catalog, ("series_a", "series_b")) == "proxy_only"
+    # Order-independence: same inputs in reverse order must yield the same answer.
+    assert aggregate(catalog, ("series_b", "series_a")) == "proxy_only"
+
+
+def test_aggregate_access_status_all_free_public_active():
+    """All free_public_active underliers project to free_public_active.
+
+    Complements the mixed-case test above: when no underlying series
+    carries the stricter proxy_only class, the aggregate stays
+    free_public_active.
+    """
+    aggregate = build_signal_priority._aggregate_access_status
+    catalog = {
+        "series_a": {"access_status": "free_public_active"},
+        "series_b": {"access_status": "free_public_active"},
+    }
+    assert aggregate(catalog, ("series_a", "series_b")) == "free_public_active"

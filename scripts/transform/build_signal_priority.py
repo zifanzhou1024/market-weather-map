@@ -41,11 +41,11 @@ FRESHNESS_MULTIPLIER = {
     "terms_review_needed": 0.0,
 }
 
-# ACTIVE_ACCESS_STATUSES and is_active_scoring_allowed are re-exported from
-# scripts.shared.access_status — the project's single source of truth for the
-# active-scoring contract. Keep the local names available so existing callers
-# (and test imports like build_signal_priority.is_active_scoring_allowed)
-# continue to resolve through this module.
+# Re-exported for test imports; canonical home is access_status.py. Keeping the
+# names resolvable via this module preserves call sites like
+# ``build_signal_priority.is_active_scoring_allowed`` without forcing tests to
+# reach across modules. SIGNAL_CATALOG / MISSING_CATALOG / METHOD_VERSION are
+# the engine's own surface, listed alongside for a single explicit __all__.
 __all__ = [
     "ACTIVE_ACCESS_STATUSES",
     "is_active_scoring_allowed",
@@ -353,6 +353,10 @@ def _all_underlying_series_active(
     non-blocking — the freshness aggregator already handles unavailability.
     Only series_ids that DO appear in the catalog and carry a candidate
     ``access_status`` block the entry from active outputs.
+
+    Note: ``series_ids`` here is the catalog entry's ``freshness_keys`` tuple;
+    by convention each freshness key is also the catalog series_id, which is
+    why this iteration doubles as the access-status check.
     """
     for series_id in series_ids:
         catalog_entry = catalog.get(series_id)
@@ -430,9 +434,10 @@ def _evaluate_catalog_entry(
 
     # ``source_status`` keeps its literal "active" narrow per the
     # SignalActiveEntry TypeScript contract — every entry that survives the
-    # gating predicate above is active by construction. ``access_status``
-    # is projected so downstream consumers (build_page_insights) can apply
-    # the same active-scoring predicate without re-loading the catalog.
+    # gating predicate above is active by construction.
+    # ``access_status`` is projected from the underlying catalog so downstream
+    # consumers (build_page_insights) can apply the active-scoring predicate
+    # without re-loading the catalog.
     access_status = _aggregate_access_status(series_catalog, catalog_entry["freshness_keys"])
     return {
         "id": catalog_entry["id"],
