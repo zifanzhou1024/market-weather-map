@@ -18,6 +18,7 @@ MODULES_INGEST_EXISTING = [
 # Phase B / official-sources-agent appends entries here.
 MODULES_INGEST_PHASE_B_OFFICIAL: list[str] = [
     "scripts.ingest.fetch_bea_personal_saving_rate",
+    "scripts.ingest.fetch_shiller_cape",
 ]
 
 # Phase B / cboe-candidate-agent appends entries here.

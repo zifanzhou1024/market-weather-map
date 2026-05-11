@@ -38,7 +38,7 @@ STRATEGIC_CANDIDATE_IDS = (
     "treasury_net_issuance",
     "treasury_auction_tail",
     "treasury_bid_to_cover",
-    "cape_ratio",
+    # cape_ratio promoted to free_public_active / active scoring by PR B2; removed from candidates.
     "forward_pe",
     "equity_risk_premium",
     "earnings_revision_breadth",
