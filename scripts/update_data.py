@@ -8,11 +8,26 @@ from scripts.shared.io import data_dir
 from scripts.shared.safe_update import restore_snapshot, snapshot_tree, write_failed_update_status
 
 
-MODULES = [
+MODULES_INGEST_EXISTING = [
     "scripts.ingest.fetch_cboe",
     "scripts.ingest.fetch_fred_csv",
     "scripts.ingest.fetch_treasury",
     "scripts.ingest.fetch_cftc",
+]
+
+# Phase B / official-sources-agent appends entries here.
+MODULES_INGEST_PHASE_B_OFFICIAL: list[str] = []
+
+# Phase B / cboe-candidate-agent appends entries here.
+MODULES_INGEST_PHASE_B_CBOE: list[str] = []
+
+# Phase B / sentiment-candidate-agent appends entries here.
+MODULES_INGEST_PHASE_B_SENTIMENT: list[str] = []
+
+# Phase C / tradingview-candidate-agent appends entries here.
+MODULES_INGEST_PHASE_C_TRADINGVIEW: list[str] = []
+
+MODULES_TRANSFORM_EXISTING = [
     "scripts.transform.normalize_series",
     "scripts.transform.compute_percentiles",
     "scripts.transform.compute_regime_score",
@@ -26,9 +41,28 @@ MODULES = [
     "scripts.transform.build_rates_dashboard",
     "scripts.transform.build_regime_dashboard",
     "scripts.generate_macro_calendar",
+]
+
+# Phase B may append entries (e.g. treasury_supply_pressure).
+MODULES_TRANSFORM_PHASE_B: list[str] = []
+
+MODULES_VALIDATE = [
     "scripts.validate.validate_schema",
     "scripts.validate.validate_freshness",
+    # Task A8 will make validate_schema transitively run validate_candidate_isolation
+    # so a separate entry here is intentionally omitted.
 ]
+
+MODULES = (
+    MODULES_INGEST_EXISTING
+    + MODULES_INGEST_PHASE_B_OFFICIAL
+    + MODULES_INGEST_PHASE_B_CBOE
+    + MODULES_INGEST_PHASE_B_SENTIMENT
+    + MODULES_INGEST_PHASE_C_TRADINGVIEW
+    + MODULES_TRANSFORM_EXISTING
+    + MODULES_TRANSFORM_PHASE_B
+    + MODULES_VALIDATE
+)
 
 
 def run_module(module: str) -> None:

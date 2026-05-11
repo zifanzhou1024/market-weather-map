@@ -1,6 +1,7 @@
 [
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "volatility",
     "citation_notes": "Cboe public historical index data; displayed with source caveats.",
     "endpoint_url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
@@ -14,9 +15,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "Cboe",
     "source_url": "https://www.cboe.com/us/indices/dashboard/",
@@ -28,7 +31,8 @@
     ]
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "volatility",
     "citation_notes": "Cboe public historical index data; displayed with source caveats.",
     "endpoint_url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VVIX_History.csv",
@@ -42,10 +46,12 @@
     "preferred_chart": "line",
     "provider_id": "cboe",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "tail_risk",
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "Cboe",
     "source_url": "https://www.cboe.com/us/indices/dashboard/",
@@ -57,7 +63,8 @@
     ]
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "volatility",
     "citation_notes": "Cboe public historical index data; displayed with source caveats.",
     "endpoint_url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX9D_History.csv",
@@ -71,9 +78,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "Cboe",
     "source_url": "https://www.cboe.com/us/indices/dashboard/",
@@ -85,7 +94,8 @@
     ]
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "volatility",
     "citation_notes": "Cboe public historical index data; displayed with source caveats.",
     "endpoint_url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX3M_History.csv",
@@ -99,9 +109,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "Cboe",
     "source_url": "https://www.cboe.com/us/indices/dashboard/",
@@ -113,7 +125,8 @@
     ]
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "rates",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2",
@@ -127,9 +140,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "nominal_yield"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DGS2",
@@ -137,7 +152,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "rates",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10",
@@ -151,9 +167,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "nominal_yield"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DGS10",
@@ -161,7 +179,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "rates",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS20",
@@ -175,9 +194,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "nominal_yield"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DGS20",
@@ -185,7 +206,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "rates",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS30",
@@ -199,9 +221,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "nominal_yield"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DGS30",
@@ -209,7 +233,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "liquidity",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL",
@@ -223,9 +248,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/WALCL",
@@ -233,7 +260,8 @@
     "units": "millions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "liquidity",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD",
@@ -247,9 +275,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/RRPONTSYD",
@@ -257,7 +287,8 @@
     "units": "billions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "liquidity",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN",
@@ -271,9 +302,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/WTREGEN",
@@ -281,7 +314,8 @@
     "units": "millions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "liquidity",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=SOFR",
@@ -295,9 +329,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/SOFR",
@@ -305,7 +341,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=STLFSI4",
@@ -319,9 +356,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/STLFSI4",
@@ -329,7 +368,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=NFCI",
@@ -343,9 +383,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/NFCI",
@@ -353,7 +395,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "commodities",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO",
@@ -367,9 +410,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "commodity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DCOILWTICO",
@@ -377,7 +422,8 @@
     "units": "usd_per_barrel"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "commodities",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILBRENTEU",
@@ -391,9 +437,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "commodity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DCOILBRENTEU",
@@ -401,7 +449,8 @@
     "units": "usd_per_barrel"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "commodities",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PMAIZMTUSDM",
@@ -415,9 +464,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "commodity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/PMAIZMTUSDM",
@@ -425,7 +476,8 @@
     "units": "usd_per_metric_ton"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "commodities",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PWHEAMTUSDM",
@@ -439,9 +491,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "commodity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/PWHEAMTUSDM",
@@ -449,7 +503,8 @@
     "units": "usd_per_metric_ton"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "commodities",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSOYBUSDM",
@@ -463,9 +518,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "commodity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/PSOYBUSDM",
@@ -473,7 +530,8 @@
     "units": "usd_per_metric_ton"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "Active via FRED graph CSV; source-specific citation and terms review required for ICE BofA OAS data.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLH0A0HYM2",
@@ -487,9 +545,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/BAMLH0A0HYM2",
@@ -497,7 +557,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "Active via FRED graph CSV; source-specific citation and terms review required for ICE BofA OAS data.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLC0A0CM",
@@ -511,9 +572,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/BAMLC0A0CM",
@@ -521,7 +584,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "Active via FRED graph CSV; source-specific citation and terms review required for ICE BofA OAS data.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLC0A4CBBB",
@@ -535,9 +599,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/BAMLC0A4CBBB",
@@ -545,7 +611,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "rates",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DFII10",
@@ -559,9 +626,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "real_yield"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DFII10",
@@ -569,7 +638,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "rates",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DFII5",
@@ -583,9 +653,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "real_yield"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DFII5",
@@ -593,7 +665,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "inflation",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10YIE",
@@ -607,9 +680,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "inflation_expectation"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/T10YIE",
@@ -617,7 +692,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "inflation",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T5YIE",
@@ -631,9 +707,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "inflation_expectation"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/T5YIE",
@@ -641,7 +719,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "inflation",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T5YIFR",
@@ -655,9 +734,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "inflation_expectation"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/T5YIFR",
@@ -665,7 +746,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "growth",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CFNAI",
@@ -679,9 +761,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "growth"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/CFNAI",
@@ -689,7 +773,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "growth",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CFNAIMA3",
@@ -703,9 +788,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "growth"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/CFNAIMA3",
@@ -713,7 +800,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "growth",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRSFS",
@@ -727,9 +815,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "growth"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/RRSFS",
@@ -737,7 +827,8 @@
     "units": "millions_chained_2017_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "growth",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=INDPRO",
@@ -751,9 +842,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "growth"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/INDPRO",
@@ -761,7 +854,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "growth",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGORDER",
@@ -775,9 +869,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "growth"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DGORDER",
@@ -785,7 +881,8 @@
     "units": "millions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "housing",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=HOUST",
@@ -799,9 +896,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "housing"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/HOUST",
@@ -809,7 +908,8 @@
     "units": "thousands_saar"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "housing",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PERMIT",
@@ -823,9 +923,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "housing"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/PERMIT",
@@ -833,7 +935,8 @@
     "units": "thousands_saar"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "housing",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=MORTGAGE30US",
@@ -847,9 +950,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "housing"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/MORTGAGE30US",
@@ -857,7 +962,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=TDSP",
@@ -871,9 +977,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/TDSP",
@@ -881,7 +989,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CDSP",
@@ -895,9 +1004,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/CDSP",
@@ -905,7 +1016,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DRCCLACBS",
@@ -919,9 +1031,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DRCCLACBS",
@@ -929,7 +1043,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "labor",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
@@ -943,9 +1058,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "labor"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/UNRATE",
@@ -953,7 +1070,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "labor",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
@@ -967,9 +1085,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "labor"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/PAYEMS",
@@ -977,7 +1097,8 @@
     "units": "thousands"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "labor",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=ICSA",
@@ -991,9 +1112,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "labor"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/ICSA",
@@ -1001,7 +1124,8 @@
     "units": "number"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "labor",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=SAHMREALTIME",
@@ -1015,9 +1139,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "labor"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/SAHMREALTIME",
@@ -1025,7 +1151,8 @@
     "units": "percentage_points"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "inflation",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPIAUCSL",
@@ -1039,9 +1166,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "inflation_expectation"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/CPIAUCSL",
@@ -1049,7 +1178,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "inflation",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPILFESL",
@@ -1063,9 +1193,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "inflation_expectation"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/CPILFESL",
@@ -1073,7 +1205,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "inflation",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
@@ -1087,9 +1220,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "inflation_expectation"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/PCEPILFE",
@@ -1097,7 +1232,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "inflation",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PPIFIS",
@@ -1111,9 +1247,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "inflation_expectation"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/PPIFIS",
@@ -1121,7 +1259,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "dollar",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS",
@@ -1135,9 +1274,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "dollar"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DTWEXBGS",
@@ -1145,7 +1286,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "dollar",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DEXJPUS",
@@ -1159,9 +1301,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "dollar"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DEXJPUS",
@@ -1169,7 +1313,8 @@
     "units": "jpy_per_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "dollar",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DEXUSEU",
@@ -1183,9 +1328,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "dollar"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DEXUSEU",
@@ -1193,7 +1340,8 @@
     "units": "usd_per_eur"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "liquidity",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WRESBAL",
@@ -1207,9 +1355,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/WRESBAL",
@@ -1217,7 +1367,8 @@
     "units": "millions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=TOTBKCR",
@@ -1231,10 +1382,12 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "banking",
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/TOTBKCR",
@@ -1242,7 +1395,8 @@
     "units": "billions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=TOTLL",
@@ -1256,10 +1410,12 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "banking",
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/TOTLL",
@@ -1267,7 +1423,8 @@
     "units": "billions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "credit",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=BUSLOANS",
@@ -1281,10 +1438,12 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "banking",
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/BUSLOANS",
@@ -1292,7 +1451,8 @@
     "units": "billions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
     "category": "credit",
     "citation_notes": "Board of Governors/FRED H.8 C&I loan series; candidate diagnostic generated as static JSON with source citation requested.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=TOTCI",
@@ -1306,10 +1466,12 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "banking",
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/TOTCI",
@@ -1317,7 +1479,8 @@
     "units": "billions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
     "category": "growth",
     "citation_notes": "Federal Reserve Bank of Philadelphia/FRED MBOS current general activity diffusion index; regional survey proxy only, not ISM PMI or S&P Global PMI.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=GACDFSA066MSFRBPHI",
@@ -1331,9 +1494,11 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "growth"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/GACDFSA066MSFRBPHI",
@@ -1341,7 +1506,8 @@
     "units": "diffusion_index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
     "category": "credit",
     "citation_notes": "Board of Governors/FRED SLOOS series; candidate diagnostic generated as static JSON with source citation requested.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DRTSCILM",
@@ -1355,10 +1521,12 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "banking",
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DRTSCILM",
@@ -1366,7 +1534,8 @@
     "units": "net_percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
     "category": "credit",
     "citation_notes": "Board of Governors/FRED SLOOS series; candidate diagnostic generated as static JSON with source citation requested.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DRTSCIS",
@@ -1380,10 +1549,12 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "banking",
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DRTSCIS",
@@ -1391,7 +1562,8 @@
     "units": "net_percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
     "category": "credit",
     "citation_notes": "Board of Governors/FRED SLOOS series; candidate diagnostic generated as static JSON with source citation requested.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DRSDCILM",
@@ -1405,10 +1577,12 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "banking",
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DRSDCILM",
@@ -1416,7 +1590,8 @@
     "units": "net_percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
     "category": "rates",
     "citation_notes": "Board of Governors/FRED Kim-Wright term-premium series; FRED page requests citation and flags source-specific sharing notes.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=THREEFYTP10",
@@ -1430,9 +1605,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "nominal_yield"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/THREEFYTP10",
@@ -1440,7 +1617,8 @@
     "units": "percent"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "liquidity",
     "citation_notes": "FRED graph CSV endpoint; review source-specific citation and copyright fields.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DPSACBW027SBOG",
@@ -1454,10 +1632,12 @@
     "preferred_chart": "line",
     "provider_id": "fred",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "banking",
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DPSACBW027SBOG",
@@ -1465,7 +1645,8 @@
     "units": "billions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "sentiment",
     "citation_notes": "Public CFTC historical compressed report transformed into derived positioning context.",
     "endpoint_url": "https://www.cftc.gov/files/dea/history/fut_fin_txt_2026.zip",
@@ -1479,9 +1660,11 @@
     "preferred_chart": "line",
     "provider_id": "cftc",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "CFTC",
     "source_url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/HistoricalCompressed/index.htm",
@@ -1489,7 +1672,8 @@
     "units": "percent_open_interest"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "sentiment",
     "citation_notes": "Public CFTC historical compressed report transformed into derived positioning context.",
     "endpoint_url": "https://www.cftc.gov/files/dea/history/fut_fin_txt_2026.zip",
@@ -1503,9 +1687,11 @@
     "preferred_chart": "line",
     "provider_id": "cftc",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "active",
     "source": "CFTC",
     "source_url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/HistoricalCompressed/index.htm",
@@ -1514,6 +1700,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "growth",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1527,9 +1714,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "growth"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "ISM",
     "source_url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/",
@@ -1537,7 +1726,8 @@
     "units": "index"
   },
   {
-    "access_status": "terms_review_needed",
+    "access_status": "restricted_vendor",
+    "active_scoring_allowed": false,
     "category": "volatility",
     "citation_notes": "MOVE Index access and static redistribution require source review before active ingestion.",
     "endpoint_url": null,
@@ -1551,9 +1741,11 @@
     "preferred_chart": "line",
     "provider_id": "ice_indices",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "bond_volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "ICE Data Indices",
     "source_url": "https://developer.ice.com/fixed-income-data-services/catalog/ice-data-indices-move-index",
@@ -1562,6 +1754,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "volatility",
     "citation_notes": "Put-call data requires access, automation, attribution, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1575,10 +1768,12 @@
     "preferred_chart": "line",
     "provider_id": "cboe_options",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "tail_risk",
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Options Market Statistics",
     "source_url": "https://www.cboe.com/markets/us/options/market_statistics/",
@@ -1587,6 +1782,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1600,9 +1796,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/SP500",
@@ -1610,7 +1808,8 @@
     "units": "index"
   },
   {
-    "access_status": "free_public",
+    "access_status": "proxy_only",
+    "active_scoring_allowed": true,
     "category": "volatility",
     "citation_notes": "Derived from active public Treasury-yield data; diagnostic only and not a substitute for licensed MOVE.",
     "endpoint_url": "/data/derived/bond_volatility_proxy.json",
@@ -1624,10 +1823,12 @@
     "preferred_chart": "line",
     "provider_id": "derived",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "bond_volatility"
     ],
-    "score_status": "candidate",
+    "requires_secret": false,
+    "score_status": "active",
     "source": "Derived",
     "source_url": "/data/series/us10y.json",
     "terms_status": "ok",
@@ -1635,6 +1836,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Put-call data requires access, automation, attribution, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1648,9 +1850,11 @@
     "preferred_chart": "line",
     "provider_id": "cboe_options",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Options Market Statistics",
     "source_url": "https://www.cboe.com/markets/us/options/market_statistics/",
@@ -1659,6 +1863,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Put-call data requires access, automation, attribution, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1672,9 +1877,11 @@
     "preferred_chart": "line",
     "provider_id": "cboe_options",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Options Market Statistics",
     "source_url": "https://www.cboe.com/markets/us/options/market_statistics/",
@@ -1683,6 +1890,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Put-call data requires access, automation, attribution, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1696,9 +1904,11 @@
     "preferred_chart": "line",
     "provider_id": "cboe_options",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Options Market Statistics",
     "source_url": "https://www.cboe.com/markets/us/options/market_statistics/",
@@ -1707,6 +1917,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Put-call data requires access, automation, attribution, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1720,9 +1931,11 @@
     "preferred_chart": "line",
     "provider_id": "cboe_options",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Options Market Statistics",
     "source_url": "https://www.cboe.com/markets/us/options/market_statistics/",
@@ -1731,6 +1944,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Put-call data requires access, automation, attribution, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1744,10 +1958,12 @@
     "preferred_chart": "line",
     "provider_id": "cboe_options",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment",
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Options Market Statistics",
     "source_url": "https://www.cboe.com/markets/us/options/market_statistics/",
@@ -1756,6 +1972,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Put-call data requires access, automation, attribution, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1769,9 +1986,11 @@
     "preferred_chart": "line",
     "provider_id": "cboe_options",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Options Market Statistics",
     "source_url": "https://www.cboe.com/markets/us/options/market_statistics/",
@@ -1780,6 +1999,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Put-call data requires access, automation, attribution, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1793,9 +2013,11 @@
     "preferred_chart": "line",
     "provider_id": "cboe_options",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Options Market Statistics",
     "source_url": "https://www.cboe.com/markets/us/options/market_statistics/",
@@ -1804,6 +2026,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "volatility",
     "citation_notes": "VIX futures curve data requires access and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1817,9 +2040,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe_futures",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Futures Exchange",
     "source_url": "https://www.cboe.com/us/futures/",
@@ -1828,6 +2053,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "volatility",
     "citation_notes": "VIX futures curve data requires access and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1841,9 +2067,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe_futures",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Futures Exchange",
     "source_url": "https://www.cboe.com/us/futures/",
@@ -1852,6 +2080,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "volatility",
     "citation_notes": "VIX futures curve data requires access and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1865,9 +2094,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe_futures",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Futures Exchange",
     "source_url": "https://www.cboe.com/us/futures/",
@@ -1876,6 +2107,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "volatility",
     "citation_notes": "VIX futures curve data requires access and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1889,9 +2121,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe_futures",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Futures Exchange",
     "source_url": "https://www.cboe.com/us/futures/",
@@ -1900,6 +2134,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "volatility",
     "citation_notes": "VIX futures curve data requires access and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1913,9 +2148,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe_futures",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Futures Exchange",
     "source_url": "https://www.cboe.com/us/futures/",
@@ -1924,6 +2161,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "volatility",
     "citation_notes": "VIX futures curve data requires access and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1937,9 +2175,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe_futures",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Futures Exchange",
     "source_url": "https://www.cboe.com/us/futures/",
@@ -1948,6 +2188,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "volatility",
     "citation_notes": "VIX futures curve data requires access and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1961,9 +2202,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe_futures",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Futures Exchange",
     "source_url": "https://www.cboe.com/us/futures/",
@@ -1972,6 +2215,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "volatility",
     "citation_notes": "VIX futures curve data requires access and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -1985,9 +2229,11 @@
     "preferred_chart": "curve",
     "provider_id": "cboe_futures",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Cboe Futures Exchange",
     "source_url": "https://www.cboe.com/us/futures/",
@@ -1996,6 +2242,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Economic calendar sources require access, attribution, automation, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2009,9 +2256,11 @@
     "preferred_chart": "line",
     "provider_id": "economic_calendar",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Economic Release Calendar",
     "source_url": "",
@@ -2020,6 +2269,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Economic calendar sources require access, attribution, automation, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2033,9 +2283,11 @@
     "preferred_chart": "line",
     "provider_id": "economic_calendar",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Economic Release Calendar",
     "source_url": "",
@@ -2044,6 +2296,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Economic calendar sources require access, attribution, automation, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2057,9 +2310,11 @@
     "preferred_chart": "line",
     "provider_id": "economic_calendar",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Economic Release Calendar",
     "source_url": "",
@@ -2068,6 +2323,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Treasury auction schedules require source-specific access, attribution, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2081,10 +2337,12 @@
     "preferred_chart": "line",
     "provider_id": "treasury_calendar",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment",
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Treasury Auction Calendar",
     "source_url": "",
@@ -2093,6 +2351,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Economic calendar sources require access, attribution, automation, and redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2106,10 +2365,12 @@
     "preferred_chart": "line",
     "provider_id": "economic_calendar",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment",
       "volatility"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Economic Release Calendar",
     "source_url": "",
@@ -2118,6 +2379,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "growth",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2131,9 +2393,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "growth"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "ISM",
     "source_url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/",
@@ -2142,6 +2406,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "rates",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2155,9 +2420,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "nominal_yield"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "New York Fed",
     "source_url": "https://www.newyorkfed.org/research/data_indicators/term-premia-tabs",
@@ -2166,6 +2433,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "rates",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2179,9 +2447,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "nominal_yield"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "U.S. Treasury",
     "source_url": "https://www.treasurydirect.gov/auctions/announcements-data-results/",
@@ -2190,6 +2460,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "rates",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2203,9 +2474,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "nominal_yield"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "U.S. Treasury",
     "source_url": "https://www.treasurydirect.gov/auctions/announcements-data-results/",
@@ -2214,6 +2487,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "rates",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2227,9 +2501,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "nominal_yield"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "U.S. Treasury",
     "source_url": "https://www.treasurydirect.gov/auctions/announcements-data-results/",
@@ -2238,6 +2514,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2251,9 +2528,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Valuation Provider",
     "source_url": "https://www.multpl.com/",
@@ -2262,6 +2541,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2275,9 +2555,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Valuation Provider",
     "source_url": "https://www.multpl.com/",
@@ -2286,6 +2568,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2299,9 +2582,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Valuation Provider",
     "source_url": "https://www.multpl.com/",
@@ -2310,6 +2595,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "sentiment",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2323,9 +2609,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "sentiment"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "Earnings Data Provider",
     "source_url": "https://www.spglobal.com/spdji/en/",
@@ -2334,6 +2622,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "growth",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPIC96",
@@ -2347,9 +2636,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "growth"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/DSPIC96",
@@ -2358,6 +2649,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "growth",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSAVERT",
@@ -2371,9 +2663,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "growth"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/PSAVERT",
@@ -2382,6 +2676,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "credit",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=TOTALSL",
@@ -2395,9 +2690,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/TOTALSL",
@@ -2406,6 +2703,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "credit",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=REVOLSL",
@@ -2419,9 +2717,11 @@
     "preferred_chart": "line",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "credit"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FRED",
     "source_url": "https://fred.stlouisfed.org/series/REVOLSL",
@@ -2429,7 +2729,8 @@
     "units": "millions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
     "category": "liquidity",
     "citation_notes": "U.S. Treasury FiscalData Monthly Treasury Statement table 1; generated as static non-scoring context.",
     "endpoint_url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/mts/mts_table_1",
@@ -2444,9 +2745,11 @@
     "preferred_chart": "line",
     "provider_id": "fiscaldata",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FiscalData",
     "source_url": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
@@ -2454,7 +2757,8 @@
     "units": "millions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
     "category": "liquidity",
     "citation_notes": "U.S. Treasury FiscalData Monthly Treasury Statement table 1; generated as static non-scoring context.",
     "endpoint_url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/mts/mts_table_1",
@@ -2469,9 +2773,11 @@
     "preferred_chart": "line",
     "provider_id": "fiscaldata",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FiscalData",
     "source_url": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
@@ -2479,7 +2785,8 @@
     "units": "millions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
     "category": "liquidity",
     "citation_notes": "U.S. Treasury FiscalData Monthly Treasury Statement table 1; generated as static non-scoring context.",
     "endpoint_url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/mts/mts_table_1",
@@ -2494,9 +2801,11 @@
     "preferred_chart": "line",
     "provider_id": "fiscaldata",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FiscalData",
     "source_url": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
@@ -2505,6 +2814,7 @@
   },
   {
     "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
     "category": "rates",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
@@ -2518,9 +2828,11 @@
     "preferred_chart": "decomposition",
     "provider_id": "terms_review",
     "public": false,
+    "public_redistribution_allowed": false,
     "regime_role": [
       "nominal_yield"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FiscalData",
     "source_url": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
@@ -2528,7 +2840,8 @@
     "units": "millions_usd"
   },
   {
-    "access_status": "free_public",
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
     "category": "rates",
     "citation_notes": "U.S. Treasury FiscalData Treasury Securities Auctions Data; generated as static non-scoring context.",
     "endpoint_url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/auctions_query",
@@ -2543,14 +2856,349 @@
     "preferred_chart": "decomposition",
     "provider_id": "fiscaldata",
     "public": true,
+    "public_redistribution_allowed": true,
     "regime_role": [
       "nominal_yield",
       "liquidity"
     ],
+    "requires_secret": false,
     "score_status": "candidate",
     "source": "FiscalData",
     "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
     "terms_status": "review_each_series",
     "units": "millions_usd"
+  },
+  {
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "put_call_total_candidate",
+    "max_stale_days": 7,
+    "name": "Cboe Total Put/Call Ratio (candidate)",
+    "notes": "Candidate Cboe total put/call options ratio. Not active until source review approves redistribution; see docs/source_reviews/cboe_put_call.md.",
+    "preferred_chart": "line",
+    "provider_id": "cboe_options",
+    "public": false,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "Cboe",
+    "source_url": "https://www.cboe.com/us/options/market_statistics/daily/",
+    "terms_status": "review_needed",
+    "units": "ratio"
+  },
+  {
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "put_call_index_candidate",
+    "max_stale_days": 7,
+    "name": "Cboe Index Put/Call Ratio (candidate)",
+    "notes": "Candidate Cboe index-options put/call ratio. Not active until source review approves redistribution; see docs/source_reviews/cboe_put_call.md.",
+    "preferred_chart": "line",
+    "provider_id": "cboe_options",
+    "public": false,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "Cboe",
+    "source_url": "https://www.cboe.com/us/options/market_statistics/daily/?dt=index",
+    "terms_status": "review_needed",
+    "units": "ratio"
+  },
+  {
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "put_call_equity_candidate",
+    "max_stale_days": 7,
+    "name": "Cboe Equity Put/Call Ratio (candidate)",
+    "notes": "Candidate Cboe equity-options put/call ratio. Not active until source review approves redistribution; see docs/source_reviews/cboe_put_call.md.",
+    "preferred_chart": "line",
+    "provider_id": "cboe_options",
+    "public": false,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "Cboe",
+    "source_url": "https://www.cboe.com/us/options/market_statistics/daily/?dt=equity",
+    "terms_status": "review_needed",
+    "units": "ratio"
+  },
+  {
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "put_call_vix_candidate",
+    "max_stale_days": 7,
+    "name": "Cboe VIX Options Put/Call Ratio (candidate)",
+    "notes": "Candidate Cboe VIX-options put/call ratio. Not active until source review approves redistribution; see docs/source_reviews/cboe_put_call.md.",
+    "preferred_chart": "line",
+    "provider_id": "cboe_options",
+    "public": false,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "Cboe",
+    "source_url": "https://www.cboe.com/us/options/market_statistics/daily/?dt=vix",
+    "terms_status": "review_needed",
+    "units": "ratio"
+  },
+  {
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "put_call_spxw_candidate",
+    "max_stale_days": 7,
+    "name": "Cboe SPXW Put/Call Ratio (candidate)",
+    "notes": "Candidate Cboe SPXW (weekly SPX) put/call ratio. Not active until source review approves redistribution; see docs/source_reviews/cboe_put_call.md.",
+    "preferred_chart": "line",
+    "provider_id": "cboe_options",
+    "public": false,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "Cboe",
+    "source_url": "https://www.cboe.com/us/options/market_statistics/daily/?dt=spxw",
+    "terms_status": "review_needed",
+    "units": "ratio"
+  },
+  {
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Cboe Futures Exchange VIX futures; candidate pending review per docs/source_reviews/vix_futures_curve.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "vx1_candidate",
+    "max_stale_days": 7,
+    "name": "Cboe VX1 Front-Month VIX Futures (candidate)",
+    "notes": "Candidate Cboe VX1 front-month VIX futures settle. Not active until source review approves redistribution; see docs/source_reviews/vix_futures_curve.md.",
+    "preferred_chart": "line",
+    "provider_id": "cboe_futures",
+    "public": false,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "Cboe Futures Exchange",
+    "source_url": "https://www.cboe.com/us/futures/market_statistics/historical_data/",
+    "terms_status": "review_needed",
+    "units": "index",
+    "value_columns": [
+      "SETTLE"
+    ]
+  },
+  {
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Cboe Futures Exchange VIX futures; candidate pending review per docs/source_reviews/vix_futures_curve.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "vx2_candidate",
+    "max_stale_days": 7,
+    "name": "Cboe VX2 Second-Month VIX Futures (candidate)",
+    "notes": "Candidate Cboe VX2 second-month VIX futures settle. Not active until source review approves redistribution; see docs/source_reviews/vix_futures_curve.md.",
+    "preferred_chart": "line",
+    "provider_id": "cboe_futures",
+    "public": false,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "Cboe Futures Exchange",
+    "source_url": "https://www.cboe.com/us/futures/market_statistics/historical_data/",
+    "terms_status": "review_needed",
+    "units": "index",
+    "value_columns": [
+      "SETTLE"
+    ]
+  },
+  {
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Cboe Futures Exchange VIX futures; candidate pending review per docs/source_reviews/vix_futures_curve.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "vx3_candidate",
+    "max_stale_days": 7,
+    "name": "Cboe VX3 Third-Month VIX Futures (candidate)",
+    "notes": "Candidate Cboe VX3 third-month VIX futures settle. Not active until source review approves redistribution; see docs/source_reviews/vix_futures_curve.md.",
+    "preferred_chart": "line",
+    "provider_id": "cboe_futures",
+    "public": false,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "Cboe Futures Exchange",
+    "source_url": "https://www.cboe.com/us/futures/market_statistics/historical_data/",
+    "terms_status": "review_needed",
+    "units": "index",
+    "value_columns": [
+      "SETTLE"
+    ]
+  },
+  {
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Derived from candidate Cboe VIX futures; pending review per docs/source_reviews/vix_futures_curve.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "supportive",
+    "horizon": "tactical",
+    "id": "vx_front_spread_candidate",
+    "max_stale_days": 7,
+    "name": "Cboe VX2-VX1 Front Spread (candidate)",
+    "notes": "Candidate VX2 minus VX1 spread derived from VIX futures candidate inputs. Not active until source review approves redistribution; see docs/source_reviews/vix_futures_curve.md.",
+    "preferred_chart": "line",
+    "provider_id": "cboe_futures",
+    "public": false,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "Derived",
+    "source_url": "https://www.cboe.com/us/futures/market_statistics/historical_data/",
+    "terms_status": "review_needed",
+    "units": "index_points"
+  },
+  {
+    "access_status": "free_public_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Derived from candidate Cboe VIX futures; pending review per docs/source_reviews/vix_futures_curve.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "supportive",
+    "horizon": "tactical",
+    "id": "vx_contango_score_candidate",
+    "max_stale_days": 7,
+    "name": "Cboe VIX Futures Contango Score (candidate)",
+    "notes": "Candidate normalized contango score derived from VX1/VX2 candidate inputs. Not active until source review approves redistribution; see docs/source_reviews/vix_futures_curve.md.",
+    "preferred_chart": "line",
+    "provider_id": "cboe_futures",
+    "public": false,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "Derived",
+    "source_url": "https://www.cboe.com/us/futures/market_statistics/historical_data/",
+    "terms_status": "review_needed",
+    "units": "score"
+  },
+  {
+    "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
+    "category": "sentiment",
+    "citation_notes": "NAAIM Exposure Index; candidate pending review per docs/source_reviews/aaii_naaim.md.",
+    "endpoint_url": "",
+    "frequency": "weekly",
+    "higher_is": "contextual",
+    "horizon": "tactical",
+    "id": "naaim_exposure_candidate",
+    "max_stale_days": 14,
+    "name": "NAAIM Exposure Index (candidate)",
+    "notes": "Candidate NAAIM Exposure Index of active-manager equity exposure. Not active until source review approves redistribution; see docs/source_reviews/aaii_naaim.md.",
+    "preferred_chart": "line",
+    "provider_id": "naaim",
+    "public": false,
+    "public_redistribution_allowed": false,
+    "regime_role": [
+      "sentiment"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "NAAIM",
+    "source_url": "https://www.naaim.org/programs/naaim-exposure-index/",
+    "terms_status": "review_needed",
+    "units": "percent"
+  },
+  {
+    "access_status": "terms_review_needed",
+    "active_scoring_allowed": false,
+    "category": "sentiment",
+    "citation_notes": "AAII Investor Sentiment Survey; candidate pending review per docs/source_reviews/aaii_naaim.md.",
+    "endpoint_url": "",
+    "frequency": "weekly",
+    "higher_is": "contextual",
+    "horizon": "tactical",
+    "id": "aaii_sentiment_candidate",
+    "max_stale_days": 14,
+    "name": "AAII Investor Sentiment Survey (candidate)",
+    "notes": "Candidate AAII Investor Sentiment Survey bull/bear/neutral percentages. Not active until source review approves redistribution; see docs/source_reviews/aaii_naaim.md.",
+    "preferred_chart": "line",
+    "provider_id": "aaii",
+    "public": false,
+    "public_redistribution_allowed": false,
+    "regime_role": [
+      "sentiment"
+    ],
+    "requires_secret": false,
+    "score_status": "candidate",
+    "source": "AAII",
+    "source_url": "https://www.aaii.com/sentimentsurvey",
+    "terms_status": "review_needed",
+    "units": "percent"
   }
 ]

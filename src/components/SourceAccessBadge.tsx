@@ -6,10 +6,13 @@ interface SourceAccessBadgeProps {
 }
 
 const accessLabels: Record<SourceAccessStatus, string> = {
-  free_public: "Free public",
-  restricted: "Restricted",
+  free_public_active: "Free public",
+  free_public_candidate: "Free public (candidate)",
   terms_review_needed: "Terms review needed",
-  unavailable: "Unavailable"
+  authenticated_candidate: "Authenticated candidate",
+  proxy_only: "Proxy",
+  restricted_vendor: "Restricted vendor",
+  unavailable: "Unavailable",
 };
 
 const termsLabels: Record<SourceTermsStatus, string> = {
@@ -17,7 +20,8 @@ const termsLabels: Record<SourceTermsStatus, string> = {
   restricted: "Restricted",
   review_each_series: "Review each series",
   review_needed: "Review needed",
-  unknown: "Terms unknown"
+  unknown: "Terms unknown",
+  authenticated_review: "Authenticated review",
 };
 
 function formatFallback(value: string | undefined) {

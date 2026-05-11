@@ -329,7 +329,13 @@ test("type contracts support monthly public data and update metadata", () => {
     higher_is: "riskier",
     public: true,
     max_stale_days: 75,
-    notes: "Monthly global corn price from FRED graph CSV."
+    notes: "Monthly global corn price from FRED graph CSV.",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   };
 
   const status: DataStatusFile = {
@@ -348,7 +354,7 @@ test("type contracts support monthly public data and update metadata", () => {
 
 test("type contracts support phase 3 source governance and score summary", () => {
   const catalogEntry: SeriesCatalogEntry = {
-    access_status: "free_public",
+    access_status: "free_public_active",
     category: "growth",
     citation_notes: "FRED graph CSV, review source-specific citation fields.",
     endpoint_url: "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CFNAI",
@@ -364,16 +370,21 @@ test("type contracts support phase 3 source governance and score summary", () =>
     source: "FRED",
     source_url: "https://fred.stlouisfed.org/series/CFNAI",
     terms_status: "review_each_series",
-    units: "index"
+    units: "index",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   };
 
   const registry: SourceRegistryFile = {
     fred: {
-      access_status: "free_public",
+      access_status: "free_public_active",
       base_url: "https://fred.stlouisfed.org",
       name: "Federal Reserve Economic Data",
       notes: "No-secret graph CSV endpoints; review each hosted series.",
       requires_secret: false,
+      active_scoring_allowed: true,
+      public_redistribution_allowed: true,
       terms_status: "review_each_series",
       update_cadence: "varies_by_series"
     }

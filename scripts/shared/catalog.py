@@ -2,24 +2,75 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
+from scripts.shared.access_status import DERIVATION_TABLE
 from scripts.shared.io import data_dir
 from scripts.shared.source_registry import source_registry_entries
+
+_LEGACY_ACCESS_STATUS_MAP = {
+    # Maps old 4-value SourceAccessStatus to the new 7-value AccessStatus
+    # so legacy registry rows that haven't been upgraded yet still resolve.
+    "free_public":         "free_public_active",
+    "terms_review_needed": "terms_review_needed",
+    "restricted":          "restricted_vendor",
+    "unavailable":         "unavailable",
+}
+
+# Series-level access_status overrides applied inside catalog_entries().
+# Each row overrides whatever access_status the provider-level governance()
+# populated, plus re-derives the flag fields via DERIVATION_TABLE.
+# Notes:
+#   - sp500_index and skew_index naturally resolve to terms_review_needed
+#     via their providers; no override needed.
+#   - move_index is promoted from terms_review_needed to restricted_vendor
+#     to reflect its ICE-licensed dataset.
+#   - bond_volatility_proxy is a derived series; proxy_only marks it as
+#     active-scoring-eligible without claiming public redistribution rights
+#     beyond what FRED already grants for the underlying US10Y data.
+_SERIES_ACCESS_STATUS_OVERRIDES: dict[str, str] = {
+    "move_index": "restricted_vendor",
+    "bond_volatility_proxy": "proxy_only",
+}
 
 
 def governance(
     provider_id: str,
-    score_status: str = "active",
+    score_status: str | None = None,
     access_status: str | None = None,
     terms_status: str | None = None,
     citation_notes: str | None = None,
+    requires_secret: bool | None = None,
 ) -> dict[str, object]:
+    """Build the governance sub-fields on a catalog entry.
+
+    access_status is authoritative. score_status, active_scoring_allowed,
+    public_redistribution_allowed, and requires_secret are derived from
+    access_status via DERIVATION_TABLE.
+
+    Legacy callsites that pass only score_status (no access_status) get
+    a sensible default derived from the registry's access_status and
+    the legacy mapping table. New callsites should pass access_status
+    explicitly; this is enforced by tests after migration.
+    """
     registry = source_registry_entries()[provider_id]
+    raw_access = access_status if access_status is not None else str(registry["access_status"])
+    # Legacy SourceAccessStatus values map to the new AccessStatus enum so
+    # callsites that still pass string literals like "free_public" keep working.
+    resolved_access = _LEGACY_ACCESS_STATUS_MAP.get(raw_access, raw_access)
+    if resolved_access not in DERIVATION_TABLE:
+        raise ValueError(
+            f"unknown access_status {resolved_access!r} for provider {provider_id!r}; "
+            f"expected one of {list(DERIVATION_TABLE)}"
+        )
+    derived_score, active_scoring, public_redist, derived_secret = DERIVATION_TABLE[resolved_access]
     return {
         "provider_id": provider_id,
-        "access_status": access_status or str(registry["access_status"]),
+        "access_status": resolved_access,
         "terms_status": terms_status or str(registry["terms_status"]),
-        "score_status": score_status,
+        "score_status": score_status if score_status is not None else derived_score,
         "citation_notes": citation_notes or str(registry["notes"]),
+        "active_scoring_allowed": active_scoring,
+        "public_redistribution_allowed": public_redist,
+        "requires_secret": requires_secret if requires_secret is not None else derived_secret,
     }
 
 
@@ -1510,6 +1561,318 @@ CANDIDATE_SERIES = [
 ]
 
 
+# Phase A pre-adds already-reviewed candidate series whose source reviews exist
+# today (docs/source_reviews/cboe_put_call.md, vix_futures_curve.md,
+# aaii_naaim.md). Entries are appended into catalog_entries() so they pass
+# through the post-pass override loop for governance-field consistency.
+# All entries are candidate-class and never enter active scoring.
+CANDIDATE_SERIES_PHASE_A: list[dict[str, object]] = [
+    {
+        "id": "put_call_total_candidate",
+        "name": "Cboe Total Put/Call Ratio (candidate)",
+        "category": "volatility",
+        "source": "Cboe",
+        "provider_id": "cboe_options",
+        "source_url": "https://www.cboe.com/us/options/market_statistics/daily/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Cboe total put/call options ratio. Not active until source review approves redistribution; see docs/source_reviews/cboe_put_call.md.",
+        "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "put_call_index_candidate",
+        "name": "Cboe Index Put/Call Ratio (candidate)",
+        "category": "volatility",
+        "source": "Cboe",
+        "provider_id": "cboe_options",
+        "source_url": "https://www.cboe.com/us/options/market_statistics/daily/?dt=index",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Cboe index-options put/call ratio. Not active until source review approves redistribution; see docs/source_reviews/cboe_put_call.md.",
+        "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "put_call_equity_candidate",
+        "name": "Cboe Equity Put/Call Ratio (candidate)",
+        "category": "volatility",
+        "source": "Cboe",
+        "provider_id": "cboe_options",
+        "source_url": "https://www.cboe.com/us/options/market_statistics/daily/?dt=equity",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Cboe equity-options put/call ratio. Not active until source review approves redistribution; see docs/source_reviews/cboe_put_call.md.",
+        "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "put_call_vix_candidate",
+        "name": "Cboe VIX Options Put/Call Ratio (candidate)",
+        "category": "volatility",
+        "source": "Cboe",
+        "provider_id": "cboe_options",
+        "source_url": "https://www.cboe.com/us/options/market_statistics/daily/?dt=vix",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Cboe VIX-options put/call ratio. Not active until source review approves redistribution; see docs/source_reviews/cboe_put_call.md.",
+        "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "put_call_spxw_candidate",
+        "name": "Cboe SPXW Put/Call Ratio (candidate)",
+        "category": "volatility",
+        "source": "Cboe",
+        "provider_id": "cboe_options",
+        "source_url": "https://www.cboe.com/us/options/market_statistics/daily/?dt=spxw",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Cboe SPXW (weekly SPX) put/call ratio. Not active until source review approves redistribution; see docs/source_reviews/cboe_put_call.md.",
+        "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "vx1_candidate",
+        "name": "Cboe VX1 Front-Month VIX Futures (candidate)",
+        "category": "volatility",
+        "source": "Cboe Futures Exchange",
+        "provider_id": "cboe_futures",
+        "source_url": "https://www.cboe.com/us/futures/market_statistics/historical_data/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "index",
+        "value_columns": ["SETTLE"],
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Cboe VX1 front-month VIX futures settle. Not active until source review approves redistribution; see docs/source_reviews/vix_futures_curve.md.",
+        "citation_notes": "Cboe Futures Exchange VIX futures; candidate pending review per docs/source_reviews/vix_futures_curve.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "vx2_candidate",
+        "name": "Cboe VX2 Second-Month VIX Futures (candidate)",
+        "category": "volatility",
+        "source": "Cboe Futures Exchange",
+        "provider_id": "cboe_futures",
+        "source_url": "https://www.cboe.com/us/futures/market_statistics/historical_data/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "index",
+        "value_columns": ["SETTLE"],
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Cboe VX2 second-month VIX futures settle. Not active until source review approves redistribution; see docs/source_reviews/vix_futures_curve.md.",
+        "citation_notes": "Cboe Futures Exchange VIX futures; candidate pending review per docs/source_reviews/vix_futures_curve.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "vx3_candidate",
+        "name": "Cboe VX3 Third-Month VIX Futures (candidate)",
+        "category": "volatility",
+        "source": "Cboe Futures Exchange",
+        "provider_id": "cboe_futures",
+        "source_url": "https://www.cboe.com/us/futures/market_statistics/historical_data/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "index",
+        "value_columns": ["SETTLE"],
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Cboe VX3 third-month VIX futures settle. Not active until source review approves redistribution; see docs/source_reviews/vix_futures_curve.md.",
+        "citation_notes": "Cboe Futures Exchange VIX futures; candidate pending review per docs/source_reviews/vix_futures_curve.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "vx_front_spread_candidate",
+        "name": "Cboe VX2-VX1 Front Spread (candidate)",
+        "category": "volatility",
+        "source": "Derived",
+        "provider_id": "cboe_futures",
+        "source_url": "https://www.cboe.com/us/futures/market_statistics/historical_data/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "index_points",
+        "higher_is": "supportive",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate VX2 minus VX1 spread derived from VIX futures candidate inputs. Not active until source review approves redistribution; see docs/source_reviews/vix_futures_curve.md.",
+        "citation_notes": "Derived from candidate Cboe VIX futures; pending review per docs/source_reviews/vix_futures_curve.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "vx_contango_score_candidate",
+        "name": "Cboe VIX Futures Contango Score (candidate)",
+        "category": "volatility",
+        "source": "Derived",
+        "provider_id": "cboe_futures",
+        "source_url": "https://www.cboe.com/us/futures/market_statistics/historical_data/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "score",
+        "higher_is": "supportive",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate normalized contango score derived from VX1/VX2 candidate inputs. Not active until source review approves redistribution; see docs/source_reviews/vix_futures_curve.md.",
+        "citation_notes": "Derived from candidate Cboe VIX futures; pending review per docs/source_reviews/vix_futures_curve.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "naaim_exposure_candidate",
+        "name": "NAAIM Exposure Index (candidate)",
+        "category": "sentiment",
+        "source": "NAAIM",
+        "provider_id": "naaim",
+        "source_url": "https://www.naaim.org/programs/naaim-exposure-index/",
+        "endpoint_url": "",
+        "frequency": "weekly",
+        "units": "percent",
+        "higher_is": "contextual",
+        "public": False,
+        "max_stale_days": 14,
+        "notes": "Candidate NAAIM Exposure Index of active-manager equity exposure. Not active until source review approves redistribution; see docs/source_reviews/aaii_naaim.md.",
+        "citation_notes": "NAAIM Exposure Index; candidate pending review per docs/source_reviews/aaii_naaim.md.",
+        "access_status": "terms_review_needed",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": False,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["sentiment"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "aaii_sentiment_candidate",
+        "name": "AAII Investor Sentiment Survey (candidate)",
+        "category": "sentiment",
+        "source": "AAII",
+        "provider_id": "aaii",
+        "source_url": "https://www.aaii.com/sentimentsurvey",
+        "endpoint_url": "",
+        "frequency": "weekly",
+        "units": "percent",
+        "higher_is": "contextual",
+        "public": False,
+        "max_stale_days": 14,
+        "notes": "Candidate AAII Investor Sentiment Survey bull/bear/neutral percentages. Not active until source review approves redistribution; see docs/source_reviews/aaii_naaim.md.",
+        "citation_notes": "AAII Investor Sentiment Survey; candidate pending review per docs/source_reviews/aaii_naaim.md.",
+        "access_status": "terms_review_needed",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": False,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["sentiment"],
+        "preferred_chart": "line",
+    },
+]
+
+
 def fred_endpoint(fred_id: str) -> str:
     return f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
 
@@ -1573,6 +1936,42 @@ def catalog_entries() -> list[dict[str, object]]:
             for series in CANDIDATE_SERIES
         ]
     )
+    entries.extend(entry.copy() for entry in CANDIDATE_SERIES_PHASE_A)
+    # Post-pass 1: series-level access_status overrides. Some series cannot
+    # be classified accurately from the provider row alone (e.g. ice_indices'
+    # MOVE feed is restricted_vendor while other ICE candidates remain
+    # terms_review_needed; bond_volatility_proxy is a derived series whose
+    # public_redistribution_allowed flag must follow its FRED-derived inputs).
+    for entry in entries:
+        series_id = entry.get("id")
+        if series_id in _SERIES_ACCESS_STATUS_OVERRIDES:
+            new_access = _SERIES_ACCESS_STATUS_OVERRIDES[series_id]
+            derived_score, active_scoring, public_redist, derived_secret = (
+                DERIVATION_TABLE[new_access]
+            )
+            entry["access_status"] = new_access
+            entry["score_status"] = derived_score
+            entry["active_scoring_allowed"] = active_scoring
+            entry["public_redistribution_allowed"] = public_redist
+            entry["requires_secret"] = derived_secret
+    # Post-pass 2: reconcile entries that emerged with the legacy
+    # "free_public_active + score_status=candidate" combination. The new
+    # AccessStatus enum models this as free_public_candidate so the
+    # active_scoring_allowed flag stays consistent with score_status.
+    for entry in entries:
+        if (
+            entry.get("access_status") == "free_public_active"
+            and entry.get("score_status") == "candidate"
+        ):
+            derived_score, active_scoring, public_redist, derived_secret = (
+                DERIVATION_TABLE["free_public_candidate"]
+            )
+            entry["access_status"] = "free_public_candidate"
+            # score_status stays "candidate" (matches derived_score here).
+            entry["score_status"] = derived_score
+            entry["active_scoring_allowed"] = active_scoring
+            entry["public_redistribution_allowed"] = public_redist
+            entry["requires_secret"] = derived_secret
     return entries
 
 

@@ -117,7 +117,13 @@ export default function Rates() {
         public: true,
         source: data.curve.source,
         source_url: data.curve.source_url,
-        units: data.curve.units
+        units: data.curve.units,
+        access_status: "free_public_active",
+        terms_status: "ok",
+        score_status: "active",
+        active_scoring_allowed: true,
+        public_redistribution_allowed: true,
+        requires_secret: false
       }
     : undefined;
 

@@ -461,3 +461,205 @@ def test_validate_signal_priority_file_rejects_active_entry_with_gated_source(tm
 
     with pytest.raises(ValueError, match="source_status"):
         validate_schema.validate_signal_priority_file()
+
+
+# ---------------------------------------------------------------------------
+# access_status gating predicate (defense layer 1)
+#
+# These tests exercise the new ``is_active_scoring_allowed`` predicate that
+# replaces the pre-A1 ``GATED_STATUSES`` set. The predicate reads
+# ``access_status`` from the catalog entry and admits only
+# ``free_public_active`` and ``proxy_only``; every other AccessStatus is
+# candidate-class and must be excluded from top_warnings / top_supports.
+# ---------------------------------------------------------------------------
+
+
+def _baseline_catalog(
+    overrides: dict[str, dict[str, object]] | None = None,
+) -> dict[str, dict[str, object]]:
+    """Build a series_catalog dict mirroring the data_status fixture.
+
+    Every series_id referenced by SIGNAL_CATALOG.freshness_keys is marked
+    ``free_public_active`` by default so the baseline matches the
+    pre-gating behaviour (all curated SIGNAL_CATALOG entries pass through).
+    Tests can override individual ids to inject candidate access_status
+    values and verify the predicate excludes the affected SIGNAL_CATALOG
+    entry from active outputs.
+    """
+    active_ids = set()
+    for entry in build_signal_priority.SIGNAL_CATALOG:
+        active_ids.update(entry["freshness_keys"])
+    catalog = {
+        series_id: {
+            "id": series_id,
+            "access_status": "free_public_active",
+            "active_scoring_allowed": True,
+        }
+        for series_id in active_ids
+    }
+    if overrides:
+        for key, override in overrides.items():
+            base = catalog.get(key, {"id": key})
+            catalog[key] = {**base, **override}
+    return catalog
+
+
+def test_signal_priority_excludes_terms_review_needed_from_primary_slots():
+    """A terms_review_needed series must NEVER appear in top_warnings / top_supports.
+
+    We force every ``vix_complex`` underlying series (vix, vvix, vix9d,
+    vix3m) to ``terms_review_needed`` in the synthetic catalog. The
+    SIGNAL_CATALOG entry's bucket score in the baseline fixture
+    (volatility_tail_risk = 23.94, a support direction) would normally
+    surface vix_complex in top_supports; the gating predicate must block it.
+    """
+    inputs = _baseline_inputs(
+        series_catalog=_baseline_catalog(
+            {
+                "vix": {"access_status": "terms_review_needed", "active_scoring_allowed": False},
+                "vvix": {"access_status": "terms_review_needed", "active_scoring_allowed": False},
+                "vix9d": {"access_status": "terms_review_needed", "active_scoring_allowed": False},
+                "vix3m": {"access_status": "terms_review_needed", "active_scoring_allowed": False},
+            }
+        )
+    )
+    snapshot = build_signal_priority.build_signal_priority_snapshot(**inputs)
+
+    active_ids = {entry["id"] for entry in snapshot["top_warnings"]}
+    active_ids.update(entry["id"] for entry in snapshot["top_supports"])
+    assert "vix_complex" not in active_ids, (
+        "vix_complex must be excluded from primary slots when its underlying "
+        "series carry access_status=terms_review_needed"
+    )
+
+
+def test_signal_priority_excludes_authenticated_candidate_from_primary_slots():
+    """An authenticated_candidate series must NEVER appear in top_warnings / top_supports.
+
+    authenticated_candidate is the AccessStatus reserved for sources that
+    require auth (e.g. FRED API key) but have not yet been promoted via
+    a source-review PR. The gating predicate must treat it as candidate-class.
+    """
+    inputs = _baseline_inputs(
+        series_catalog=_baseline_catalog(
+            {
+                "high_yield_oas": {
+                    "access_status": "authenticated_candidate",
+                    "active_scoring_allowed": False,
+                },
+                "investment_grade_oas": {
+                    "access_status": "authenticated_candidate",
+                    "active_scoring_allowed": False,
+                },
+                "bbb_oas": {
+                    "access_status": "authenticated_candidate",
+                    "active_scoring_allowed": False,
+                },
+            }
+        )
+    )
+    snapshot = build_signal_priority.build_signal_priority_snapshot(**inputs)
+
+    active_ids = {entry["id"] for entry in snapshot["top_warnings"]}
+    active_ids.update(entry["id"] for entry in snapshot["top_supports"])
+    assert "credit_spreads" not in active_ids, (
+        "credit_spreads must be excluded from primary slots when its underlying "
+        "series carry access_status=authenticated_candidate"
+    )
+
+
+def test_signal_priority_includes_proxy_only_in_active_outputs():
+    """proxy_only series (e.g. bond_volatility_proxy) MAY appear in top_warnings / top_supports.
+
+    proxy_only is the AccessStatus for derived series that are
+    active-scoring-eligible (active_scoring_allowed=True) without inheriting
+    public redistribution rights beyond their underlying public data. The
+    gating predicate must admit proxy_only just like free_public_active.
+
+    This test verifies the predicate's inclusion side rather than the
+    exclusion side: switching credit_spreads' underlying series to
+    proxy_only should NOT exclude it from active outputs (compare with the
+    authenticated_candidate test above which uses the same SIGNAL_CATALOG
+    entry).
+    """
+    inputs = _baseline_inputs(
+        series_catalog=_baseline_catalog(
+            {
+                "high_yield_oas": {
+                    "access_status": "proxy_only",
+                    "active_scoring_allowed": True,
+                },
+                "investment_grade_oas": {
+                    "access_status": "proxy_only",
+                    "active_scoring_allowed": True,
+                },
+                "bbb_oas": {
+                    "access_status": "proxy_only",
+                    "active_scoring_allowed": True,
+                },
+            }
+        )
+    )
+    snapshot = build_signal_priority.build_signal_priority_snapshot(**inputs)
+
+    active_ids = {entry["id"] for entry in snapshot["top_warnings"]}
+    active_ids.update(entry["id"] for entry in snapshot["top_supports"])
+    assert "credit_spreads" in active_ids, (
+        "credit_spreads must surface in primary slots when its underlying "
+        "series carry access_status=proxy_only (proxy_only is active-eligible)"
+    )
+
+
+def test_is_active_scoring_allowed_predicate_truth_table():
+    """The predicate must admit exactly free_public_active and proxy_only.
+
+    Pinning the truth table here makes future AccessStatus changes
+    intentional: anyone adding a new enum value must either update this
+    test (and the ACTIVE_ACCESS_STATUSES frozenset) or accept the
+    fail-closed default.
+    """
+    allow = build_signal_priority.is_active_scoring_allowed
+    assert allow({"access_status": "free_public_active"}) is True
+    assert allow({"access_status": "proxy_only"}) is True
+    assert allow({"access_status": "free_public_candidate"}) is False
+    assert allow({"access_status": "terms_review_needed"}) is False
+    assert allow({"access_status": "authenticated_candidate"}) is False
+    assert allow({"access_status": "restricted_vendor"}) is False
+    assert allow({"access_status": "unavailable"}) is False
+    # Missing field fails closed.
+    assert allow({}) is False
+    assert allow({"access_status": None}) is False
+
+
+def test_aggregate_access_status_mixed_case_proxy_wins():
+    """Mixed-case rule: any underlying proxy_only forces aggregate=proxy_only.
+
+    proxy_only is the strictest active-eligible class because it limits
+    public redistribution beyond what the underlying public data already
+    grants. The aggregator must surface that constraint even when only one
+    of N underlying series carries proxy_only — the SignalActiveEntry it
+    projects onto inherits the tightest contract.
+    """
+    aggregate = build_signal_priority._aggregate_access_status
+    catalog = {
+        "series_a": {"access_status": "proxy_only"},
+        "series_b": {"access_status": "free_public_active"},
+    }
+    assert aggregate(catalog, ("series_a", "series_b")) == "proxy_only"
+    # Order-independence: same inputs in reverse order must yield the same answer.
+    assert aggregate(catalog, ("series_b", "series_a")) == "proxy_only"
+
+
+def test_aggregate_access_status_all_free_public_active():
+    """All free_public_active underliers project to free_public_active.
+
+    Complements the mixed-case test above: when no underlying series
+    carries the stricter proxy_only class, the aggregate stays
+    free_public_active.
+    """
+    aggregate = build_signal_priority._aggregate_access_status
+    catalog = {
+        "series_a": {"access_status": "free_public_active"},
+        "series_b": {"access_status": "free_public_active"},
+    }
+    assert aggregate(catalog, ("series_a", "series_b")) == "free_public_active"

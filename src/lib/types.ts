@@ -24,18 +24,53 @@ export type SeriesCategory =
   | "dollar"
   | "banking";
 
-export type SourceAccessStatus =
-  | "free_public"
+export type AccessStatus =
+  | "free_public_active"
+  | "free_public_candidate"
   | "terms_review_needed"
-  | "restricted"
+  | "authenticated_candidate"
+  | "proxy_only"
+  | "restricted_vendor"
   | "unavailable";
+
+// Subset of AccessStatus values that the active-scoring predicate accepts.
+// Using Extract<> means a future rename in AccessStatus produces a TS error
+// at every callsite instead of silent drift.
+export type ActiveAccessStatus = Extract<
+  AccessStatus,
+  "free_public_active" | "proxy_only"
+>;
+
+export const ACCESS_STATUS_VALUES: readonly AccessStatus[] = [
+  "free_public_active",
+  "free_public_candidate",
+  "terms_review_needed",
+  "authenticated_candidate",
+  "proxy_only",
+  "restricted_vendor",
+  "unavailable",
+] as const;
+
+export interface AccessFlags {
+  access_status: AccessStatus;
+  requires_secret: boolean;
+  active_scoring_allowed: boolean;
+  public_redistribution_allowed: boolean;
+}
+
+/**
+ * @deprecated Use `AccessStatus` directly. This alias is preserved so legacy
+ * consumers continue to compile; new code should not reference SourceAccessStatus.
+ */
+export type SourceAccessStatus = AccessStatus;
 
 export type SourceTermsStatus =
   | "ok"
   | "review_each_series"
   | "review_needed"
   | "restricted"
-  | "unknown";
+  | "unknown"
+  | "authenticated_review";
 
 export type ScoreStatus = "active" | "candidate" | "unavailable";
 
@@ -89,6 +124,8 @@ export interface SourceRegistryEntry {
   base_url: string;
   requires_secret: boolean;
   access_status: SourceAccessStatus;
+  active_scoring_allowed: boolean;
+  public_redistribution_allowed: boolean;
   terms_status: SourceTermsStatus;
   update_cadence: string;
   notes: string;
@@ -160,9 +197,13 @@ export interface SeriesCatalogEntry {
   max_stale_days: number;
   notes: string;
   citation_notes?: string;
-  access_status?: SourceAccessStatus;
-  terms_status?: SourceTermsStatus;
-  score_status?: ScoreStatus;
+  // Governance fields — ALL required after Phase A migration.
+  access_status: SourceAccessStatus;          // was optional
+  terms_status: SourceTermsStatus;            // was optional
+  score_status: ScoreStatus;                  // was optional; derived alias
+  active_scoring_allowed: boolean;            // new
+  public_redistribution_allowed: boolean;     // new
+  requires_secret: boolean;                   // new
   horizon?: Horizon;
   regime_role?: RegimeRole[];
   preferred_chart?: PreferredChart;
@@ -409,6 +450,11 @@ export interface SignalActiveEntry {
   confidence: number;
   freshness_status: SignalFreshnessStatus;
   source_status: "active";
+  // Projected from the underlying series catalog so downstream consumers
+  // (e.g. PageInsightHero / build_page_insights) can apply the active-scoring
+  // gating predicate without re-loading the catalog. Always a member of the
+  // active-eligible AccessStatus subset (see ActiveAccessStatus).
+  access_status?: ActiveAccessStatus;
   message: string;
   why_it_matters: string;
 }
@@ -489,6 +535,9 @@ export interface SignalRef {
   freshness_status: SignalFreshnessStatus;
   confidence: number;
   source_status: SignalRefSourceStatus;
+  // Forwarded from the upstream SignalActiveEntry so consumers can apply
+  // the active-scoring gating predicate without re-loading the catalog.
+  access_status?: ActiveAccessStatus;
 }
 
 export interface RouteInsight {

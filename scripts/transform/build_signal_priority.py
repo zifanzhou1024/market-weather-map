@@ -10,12 +10,24 @@ The engine is descriptive only. It does not forecast or recommend trades. It
 does not promote candidate sources into active scoring; gated sources surface
 in ``missing_high_value_signals`` and are excluded from active warnings and
 supports.
+
+Gating contract (defense layer 1 — see candidate-isolation guard in
+``docs/superpowers/specs/2026-05-10-data-source-and-focus-pattern-expansion-design.md``):
+a series may enter the primary slots (``top_warnings``, ``top_supports``)
+only if its ``access_status`` is in :data:`ACTIVE_ACCESS_STATUSES`. Candidate
+classes (``free_public_candidate``, ``terms_review_needed``,
+``authenticated_candidate``, ``restricted_vendor``, ``unavailable``) may
+still surface in ``missing_high_value_signals`` for transparency but never
+in active arrays. ``SignalActiveEntry.source_status`` keeps its literal
+``"active"`` narrow post-gating — every entry that survives is active by
+construction.
 """
 from __future__ import annotations
 
 import json
 from typing import Any, Iterable
 
+from scripts.shared.access_status import ACTIVE_ACCESS_STATUSES, is_active_scoring_allowed
 from scripts.shared.io import data_dir, utc_now_iso, write_json
 
 
@@ -28,6 +40,20 @@ FRESHNESS_MULTIPLIER = {
     "unavailable": 0.0,
     "terms_review_needed": 0.0,
 }
+
+# Re-exported for test imports; canonical home is access_status.py. Keeping the
+# names resolvable via this module preserves call sites like
+# ``build_signal_priority.is_active_scoring_allowed`` without forcing tests to
+# reach across modules. SIGNAL_CATALOG / MISSING_CATALOG / METHOD_VERSION are
+# the engine's own surface, listed alongside for a single explicit __all__.
+__all__ = [
+    "ACTIVE_ACCESS_STATUSES",
+    "is_active_scoring_allowed",
+    "build_signal_priority_snapshot",
+    "SIGNAL_CATALOG",
+    "MISSING_CATALOG",
+    "METHOD_VERSION",
+]
 
 
 # Each entry maps to ONE underlying score path so we don't double-count the
@@ -316,10 +342,62 @@ def _aggregate_freshness(status: dict[str, dict[str, Any]], keys: Iterable[str])
     return "ok"
 
 
+def _all_underlying_series_active(
+    catalog: dict[str, dict[str, Any]],
+    series_ids: Iterable[str],
+) -> bool:
+    """True iff every series_id present in ``catalog`` is active-scoring-allowed.
+
+    Series ids that are absent from the catalog (e.g. legacy keys, derived
+    aggregates exposed only in ``data_status.json``) are treated as
+    non-blocking — the freshness aggregator already handles unavailability.
+    Only series_ids that DO appear in the catalog and carry a candidate
+    ``access_status`` block the entry from active outputs.
+
+    Note: ``series_ids`` here is the catalog entry's ``freshness_keys`` tuple;
+    by convention each freshness key is also the catalog series_id, which is
+    why this iteration doubles as the access-status check.
+    """
+    for series_id in series_ids:
+        catalog_entry = catalog.get(series_id)
+        if catalog_entry is None:
+            continue
+        if not is_active_scoring_allowed(catalog_entry):
+            return False
+    return True
+
+
+def _aggregate_access_status(
+    catalog: dict[str, dict[str, Any]] | None,
+    series_ids: Iterable[str],
+) -> str:
+    """Project an aggregate access_status onto a SignalActiveEntry.
+
+    Every series_id reached here has already passed
+    :func:`_all_underlying_series_active`, so the aggregate is guaranteed to
+    be a member of :data:`ACTIVE_ACCESS_STATUSES`. If any underlying series
+    carries ``proxy_only``, the aggregate is ``proxy_only`` — proxy-only is
+    the strictest active-eligible class (it limits public redistribution
+    beyond the underlying public data). Otherwise the aggregate is
+    ``free_public_active``. When no catalog is provided (legacy / test path),
+    the projection defaults to ``free_public_active``.
+    """
+    if catalog is None:
+        return "free_public_active"
+    for series_id in series_ids:
+        entry = catalog.get(series_id)
+        if entry is None:
+            continue
+        if entry.get("access_status") == "proxy_only":
+            return "proxy_only"
+    return "free_public_active"
+
+
 def _evaluate_catalog_entry(
     catalog_entry: dict[str, Any],
     score_summary: dict[str, Any],
     status: dict[str, dict[str, Any]],
+    series_catalog: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any] | None:
     family_key, bucket_key = catalog_entry["score_path"]
     family = score_summary["scores"].get(family_key)
@@ -327,6 +405,15 @@ def _evaluate_catalog_entry(
         return None
     bucket_score = family.get("bucket_scores", {}).get(bucket_key)
     if bucket_score is None:
+        return None
+
+    # Defense layer 1: drop the entry if any underlying series carries a
+    # candidate-class access_status. The SIGNAL_CATALOG is curated, but the
+    # explicit guard prevents silent leaks if a series is later
+    # reclassified to terms_review_needed/authenticated_candidate/etc.
+    if series_catalog is not None and not _all_underlying_series_active(
+        series_catalog, catalog_entry["freshness_keys"]
+    ):
         return None
 
     direction = _direction_for(float(bucket_score))
@@ -345,6 +432,13 @@ def _evaluate_catalog_entry(
 
     priority = importance * severity * freshness_multiplier * confidence
 
+    # ``source_status`` keeps its literal "active" narrow per the
+    # SignalActiveEntry TypeScript contract — every entry that survives the
+    # gating predicate above is active by construction.
+    # ``access_status`` is projected from the underlying catalog so downstream
+    # consumers (build_page_insights) can apply the active-scoring predicate
+    # without re-loading the catalog.
+    access_status = _aggregate_access_status(series_catalog, catalog_entry["freshness_keys"])
     return {
         "id": catalog_entry["id"],
         "label": catalog_entry["label"],
@@ -359,6 +453,7 @@ def _evaluate_catalog_entry(
         "confidence": round(confidence, 2),
         "freshness_status": freshness_status,
         "source_status": "active",
+        "access_status": access_status,
         "message": message,
         "why_it_matters": catalog_entry["why_it_matters"],
     }
@@ -367,6 +462,7 @@ def _evaluate_catalog_entry(
 def _missing_high_value_signals(
     shock_snapshot: dict[str, Any],
     status: dict[str, dict[str, Any]],
+    series_catalog: dict[str, dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     gap_status_by_id: dict[str, str] = {}
     gap_message_by_id: dict[str, str] = {}
@@ -381,13 +477,19 @@ def _missing_high_value_signals(
     for catalog_entry in MISSING_CATALOG:
         data_status_key = catalog_entry["data_status_key"]
         status_entry = status.get(data_status_key, {})
+        # The catalog's access_status is the authoritative signal that a
+        # source has been promoted into active scoring; promoted sources
+        # don't belong in the missing list.
+        if series_catalog is not None:
+            series_catalog_entry = series_catalog.get(data_status_key)
+            if series_catalog_entry is not None and is_active_scoring_allowed(
+                series_catalog_entry
+            ):
+                continue
         source_status = (
             gap_status_by_id.get(data_status_key)
             or str(status_entry.get("status", "unavailable"))
         )
-        if source_status == "ok":
-            # Source has been promoted; it should not be in the missing list.
-            continue
         message = gap_message_by_id.get(data_status_key) or str(
             status_entry.get(
                 "message",
@@ -450,17 +552,34 @@ def build_signal_priority_snapshot(
     regime_snapshot: dict[str, Any],
     status: dict[str, dict[str, Any]],
     generated_at_utc: str,
+    series_catalog: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Build the descriptive signal-priority snapshot.
 
     All inputs are already-generated static JSON payloads; this function does
     not fetch external data.
+
+    Args:
+        series_catalog: Optional ``{series_id: catalog_entry}`` mapping used
+            to apply the active-scoring gating predicate
+            (:func:`is_active_scoring_allowed`). When provided, every entry
+            in ``top_warnings``/``top_supports`` is guaranteed to source
+            only from series with ``access_status`` in
+            :data:`ACTIVE_ACCESS_STATUSES`. When omitted, the curated
+            SIGNAL_CATALOG alone gates the active arrays (every production
+            caller passes ``series_catalog``; the default exists only for
+            simpler test setups).
     """
     overall_read = _overall_read(score_summary, regime_snapshot)
 
     evaluated = []
     for catalog_entry in SIGNAL_CATALOG:
-        entry = _evaluate_catalog_entry(catalog_entry, score_summary, status)
+        entry = _evaluate_catalog_entry(
+            catalog_entry,
+            score_summary,
+            status,
+            series_catalog=series_catalog,
+        )
         if entry is None:
             continue
         evaluated.append(entry)
@@ -476,7 +595,11 @@ def build_signal_priority_snapshot(
         reverse=True,
     )[:TOP_N]
 
-    missing = _missing_high_value_signals(shock_snapshot, status)
+    missing = _missing_high_value_signals(
+        shock_snapshot,
+        status,
+        series_catalog=series_catalog,
+    )
 
     return {
         "date": str(score_summary.get("date", "")),
@@ -489,6 +612,18 @@ def build_signal_priority_snapshot(
     }
 
 
+def _load_series_catalog() -> dict[str, dict[str, Any]]:
+    """Load ``catalog/series_catalog.json`` as a ``{series_id: entry}`` dict.
+
+    Used by :func:`main` to pass authoritative ``access_status`` data into
+    the gating predicate. Tests mock this by passing ``series_catalog``
+    directly to :func:`build_signal_priority_snapshot`.
+    """
+    catalog_path = data_dir() / "catalog" / "series_catalog.json"
+    raw = json.loads(catalog_path.read_text(encoding="utf-8"))
+    return {str(entry["id"]): entry for entry in raw}
+
+
 def main() -> None:
     derived = data_dir() / "derived"
     status_path = data_dir() / "status" / "data_status.json"
@@ -498,6 +633,7 @@ def main() -> None:
     regime_snapshot = json.loads((derived / "regime_snapshot.json").read_text(encoding="utf-8"))
     status_payload = json.loads(status_path.read_text(encoding="utf-8"))
     series_status = status_payload.get("series", {})
+    series_catalog = _load_series_catalog()
 
     snapshot = build_signal_priority_snapshot(
         score_summary=score_summary,
@@ -505,6 +641,7 @@ def main() -> None:
         regime_snapshot=regime_snapshot,
         status=series_status,
         generated_at_utc=utc_now_iso(),
+        series_catalog=series_catalog,
     )
 
     write_json(derived / "signal_priority.json", snapshot)

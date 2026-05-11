@@ -7,9 +7,10 @@ warnings/supports onto twelve canonical route keys consumed by the new
 
 For each route, the highest-priority risk signal becomes
 ``primary_warning`` and the highest-priority support signal becomes
-``primary_support``. Source-gated signals
-(``source_status in {terms_review_needed, candidate}``) are excluded
-from primary slots — gating is the project's strongest invariant.
+``primary_support``. Candidate-class signals are excluded from primary
+slots via :func:`is_active_scoring_allowed` — gating is the project's
+strongest invariant and the same predicate runs upstream in
+``build_signal_priority``.
 
 Tone is descriptive only; the ``why_it_matters`` text comes verbatim
 from the underlying ranked signal so it inherits the existing tone
@@ -21,13 +22,11 @@ import json
 from collections.abc import Iterable
 from typing import Any
 
+from scripts.shared.access_status import ACTIVE_ACCESS_STATUSES, is_active_scoring_allowed
 from scripts.shared.io import data_dir, utc_now_iso, write_json
 
 
 METHOD_VERSION = "phase8-pr1-page-insights-v1"
-
-# Source-gated statuses that must NEVER populate a primary slot.
-GATED_STATUSES = frozenset({"terms_review_needed", "candidate"})
 
 # Severity threshold above which a support-only route is labelled
 # "support" rather than "calm". Severity in this project is the absolute
@@ -122,7 +121,7 @@ def _signal_routes(entry: dict[str, Any]) -> tuple[str, ...]:
 
 def _to_signal_ref(entry: dict[str, Any]) -> dict[str, Any]:
     """Project a ranked signal entry onto the SignalRef schema for the hero."""
-    return {
+    ref: dict[str, Any] = {
         "id": str(entry["id"]),
         "label": str(entry["label"]),
         "message": str(entry["message"]),
@@ -132,6 +131,12 @@ def _to_signal_ref(entry: dict[str, Any]) -> dict[str, Any]:
         "confidence": float(entry["confidence"]),
         "source_status": _project_source_status(entry),
     }
+    # Preserve the upstream access_status when present so the
+    # candidate-isolation validator and any downstream consumer can apply
+    # the same active-scoring predicate without re-loading the catalog.
+    if "access_status" in entry:
+        ref["access_status"] = str(entry["access_status"])
+    return ref
 
 
 def _project_source_status(entry: dict[str, Any]) -> str:
@@ -150,6 +155,22 @@ def _project_source_status(entry: dict[str, Any]) -> str:
     return status
 
 
+def _is_primary_eligible(entry: dict[str, Any]) -> bool:
+    """Gate predicate for primary-slot eligibility.
+
+    Defers to :func:`scripts.shared.access_status.is_active_scoring_allowed`
+    when the entry carries ``access_status`` (the canonical contract). When
+    ``access_status`` is absent — which can happen for synthetic fixtures or
+    pre-A10 signal_priority.json snapshots that don't yet project it — fall
+    back to the upstream ``source_status: "active"`` literal as a
+    defense-in-depth check. Anything else is candidate-class.
+    """
+    access_status = entry.get("access_status")
+    if access_status is not None:
+        return access_status in ACTIVE_ACCESS_STATUSES
+    return str(entry.get("source_status", "")) == "active"
+
+
 def _select_primary(
     entries: Iterable[dict[str, Any]],
     direction: str,
@@ -157,14 +178,14 @@ def _select_primary(
 ) -> dict[str, Any] | None:
     """Pick the highest-priority active signal for ``direction`` in ``route``.
 
-    Excludes source-gated signals — they can never populate a primary slot.
+    Excludes candidate-class signals — they can never populate a primary slot.
     """
     best: dict[str, Any] | None = None
     best_priority = float("-inf")
     for entry in entries:
         if entry.get("direction") != direction:
             continue
-        if str(entry.get("source_status", "")) in GATED_STATUSES:
+        if not _is_primary_eligible(entry):
             continue
         if route not in _signal_routes(entry):
             continue
@@ -176,15 +197,14 @@ def _select_primary(
 
 
 def _route_signals(payload: dict[str, Any], route: str) -> list[dict[str, Any]]:
-    """All non-gated active signals from top_warnings + top_supports that map
+    """All active-eligible signals from top_warnings + top_supports that map
     to ``route``."""
     signals = list(payload.get("top_warnings", []) or [])
     signals.extend(payload.get("top_supports", []) or [])
     return [
         entry
         for entry in signals
-        if route in _signal_routes(entry)
-        and str(entry.get("source_status", "")) not in GATED_STATUSES
+        if route in _signal_routes(entry) and _is_primary_eligible(entry)
     ]
 
 

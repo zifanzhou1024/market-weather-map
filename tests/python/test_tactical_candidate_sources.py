@@ -51,7 +51,9 @@ OFFICIAL_PUBLIC_DIAGNOSTIC_IDS = (
     "sloos_large_firm_demand",
     "ci_loans_weekly",
     "term_premium_kw_10y",
-    "bond_volatility_proxy",
+    # bond_volatility_proxy was previously listed here as a candidate;
+    # Task A4 reclassifies it to proxy_only (active scoring), so it is now
+    # covered by the dedicated test in test_catalog.py.
     "monthly_treasury_receipts",
     "monthly_treasury_outlays",
     "monthly_treasury_deficit_surplus",
@@ -74,9 +76,9 @@ def test_shock_risk_candidate_sources_are_gated():
     registry = source_registry_entries()
     entries = entries_by_id()
 
-    assert registry["ice_indices"]["access_status"] == "terms_review_needed"
+    assert registry["ice_indices"]["access_status"] == "restricted_vendor"
     assert entries["move_index"]["score_status"] == "candidate"
-    assert entries["move_index"]["access_status"] == "terms_review_needed"
+    assert entries["move_index"]["access_status"] == "restricted_vendor"
     assert entries["move_index"]["regime_role"] == ["bond_volatility"]
 
     assert entries["skew_index"]["score_status"] == "candidate"
@@ -138,6 +140,6 @@ def test_official_public_diagnostics_remain_candidate_only():
     for series_id in OFFICIAL_PUBLIC_DIAGNOSTIC_IDS:
         entry = entries[series_id]
         assert entry["score_status"] == "candidate"
-        assert entry["access_status"] == "free_public"
+        assert entry["access_status"] == "free_public_candidate"
         assert entry["public"] is True
         assert entry["frequency"] in SUPPORTED_FRONTEND_FREQUENCIES
