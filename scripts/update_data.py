@@ -19,6 +19,7 @@ MODULES_INGEST_EXISTING = [
 MODULES_INGEST_PHASE_B_OFFICIAL: list[str] = [
     "scripts.ingest.fetch_bea_personal_saving_rate",
     "scripts.ingest.fetch_shiller_cape",
+    "scripts.ingest.fetch_nyfed_acm_term_premium",
 ]
 
 # Phase B / cboe-candidate-agent appends entries here.

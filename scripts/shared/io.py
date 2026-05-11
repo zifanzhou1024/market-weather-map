@@ -117,13 +117,14 @@ def _download_requests(url: str) -> list[Request]:
     return [custom, provider_default]
 
 
-def download_text(url: str) -> str:
+def _download_raw(url: str, *, timeout: int = 30) -> bytes:
+    """Download URL and return raw bytes; tries custom UA first, falls back to default."""
     host = urlparse(url).netloc
     last_error: TimeoutError | None = None
     for request in _download_requests(url):
         try:
-            with urlopen(request, timeout=30) as response:
-                return response.read().decode("utf-8-sig")
+            with urlopen(request, timeout=timeout) as response:
+                return response.read()
         except TimeoutError as error:
             last_error = error
             if request.get_header("User-agent") is not None and host:
@@ -131,3 +132,13 @@ def download_text(url: str) -> str:
     if last_error is not None:
         raise last_error
     raise RuntimeError("download failed without an exception")
+
+
+def download_text(url: str, *, timeout: int = 30) -> str:
+    """Download URL and return text (UTF-8, BOM-stripped)."""
+    return _download_raw(url, timeout=timeout).decode("utf-8-sig")
+
+
+def download_bytes(url: str, *, timeout: int = 30) -> bytes:
+    """Download URL and return raw bytes; for binary formats such as .xls."""
+    return _download_raw(url, timeout=timeout)

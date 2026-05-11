@@ -15,7 +15,7 @@ Static GitHub Pages dashboard. Vite + React + TypeScript frontend reads JSON und
 
 A source moves from `terms_review_needed` to `free_public` only after `docs/source_reviews/<name>.md` documents access, automation, attribution, redistribution, and cadence — and a corresponding promotion PR. Until then, the source may surface in readiness UI but must NOT enter active scores, regime labels, checklists, or confidence.
 
-Currently gated, do not promote without an updated review: ICE MOVE, Cboe SKEW, Cboe put/call, Cboe/CFE VX futures curve, NY Fed ACM term premium. See `docs/source_reviews/`.
+Currently gated, do not promote without an updated review: ICE MOVE, Cboe SKEW, Cboe put/call, Cboe/CFE VX futures curve. See `docs/source_reviews/`.
 
 ## Verification before claiming done
 

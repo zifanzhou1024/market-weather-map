@@ -2410,33 +2410,6 @@
     "category": "rates",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": null,
-    "frequency": "daily",
-    "higher_is": "riskier",
-    "horizon": "strategic",
-    "id": "term_premium_acm_10y",
-    "max_stale_days": 14,
-    "name": "10-Year ACM Term Premium",
-    "notes": "Candidate term-premium input; requires model attribution and static redistribution review before ingestion.",
-    "preferred_chart": "decomposition",
-    "provider_id": "terms_review",
-    "public": false,
-    "public_redistribution_allowed": false,
-    "regime_role": [
-      "nominal_yield"
-    ],
-    "requires_secret": false,
-    "score_status": "candidate",
-    "source": "New York Fed",
-    "source_url": "https://www.newyorkfed.org/research/data_indicators/term-premia-tabs",
-    "terms_status": "review_needed",
-    "units": "percent"
-  },
-  {
-    "access_status": "terms_review_needed",
-    "active_scoring_allowed": false,
-    "category": "rates",
-    "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
-    "endpoint_url": null,
     "frequency": "monthly",
     "higher_is": "riskier",
     "horizon": "strategic",
@@ -3227,5 +3200,32 @@
     "source_url": "/data/series/treasury_auction_supply.json",
     "terms_status": "ok",
     "units": "ratio"
+  },
+  {
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
+    "category": "rates",
+    "citation_notes": "Adrian, Crump, and Moench 10-year term-premium estimates, Federal Reserve Bank of New York.",
+    "endpoint_url": "https://www.newyorkfed.org/medialibrary/media/research/data_indicators/ACMTermPremium.xls",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "strategic",
+    "id": "term_premium_acm_10y",
+    "max_stale_days": 14,
+    "name": "10-Year ACM Term Premium",
+    "notes": "Adrian-Crump-Moench 10-year zero-coupon Treasury term-premium estimate; sourced from NY Fed's published ACM Term Premium spreadsheet.",
+    "preferred_chart": "line",
+    "provider_id": "ny_fed",
+    "public": true,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "nominal_yield"
+    ],
+    "requires_secret": false,
+    "score_status": "active",
+    "source": "Federal Reserve Bank of New York",
+    "source_url": "https://www.newyorkfed.org/research/data_indicators/term-premia-tabs",
+    "terms_status": "review_each_series",
+    "units": "percent"
   }
 ]

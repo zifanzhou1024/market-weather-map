@@ -1,6 +1,6 @@
 {
   "date": "2026-05-08",
-  "generated_at_utc": "2026-05-11T04:15:19Z",
+  "generated_at_utc": "2026-05-11T07:50:57Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -68,17 +68,6 @@
       "message": "Candidate source requires access or terms review before scoring.",
       "source_status": "terms_review_needed",
       "why_it_matters": "True VX futures curve shape is the gold standard for volatility-curve diagnosis."
-    },
-    {
-      "category": "rates",
-      "group": "Rates",
-      "horizon": "long_term",
-      "id": "term_premium_acm_10y",
-      "importance": 3,
-      "label": "10Y term premium (ACM)",
-      "message": "Candidate source requires access or terms review before scoring.",
-      "source_status": "terms_review_needed",
-      "why_it_matters": "Term premium decomposes long yields into expected rates and risk premium."
     }
   ],
   "overall_read": {
