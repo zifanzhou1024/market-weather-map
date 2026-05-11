@@ -109,7 +109,7 @@ STRATEGIC_IDS = {
     "treasury_net_issuance", "treasury_auction_tail", "treasury_bid_to_cover",
     "monthly_treasury_receipts", "monthly_treasury_outlays",
     "monthly_treasury_deficit_surplus", "treasury_auction_supply",
-    "cape_ratio", "forward_pe", "equity_risk_premium", "earnings_revision_breadth",
+    "forward_pe", "equity_risk_premium", "earnings_revision_breadth",
 }
 
 REGIME_ROLES_BY_ID = {
@@ -1265,19 +1265,6 @@ STRATEGIC_SOURCE_GATE_SERIES = [
         higher_is="supportive",
     ),
     tactical_candidate_series(
-        "cape_ratio",
-        "CAPE Ratio",
-        "sentiment",
-        "Valuation Provider",
-        VALUATION_SOURCE_URL,
-        "monthly",
-        "ratio",
-        45,
-        "Candidate valuation input; requires source choice, methodology, and redistribution review before ingestion.",
-        "terms_review",
-        higher_is="riskier",
-    ),
-    tactical_candidate_series(
         "forward_pe",
         "Forward P/E",
         "sentiment",
@@ -1866,6 +1853,28 @@ CANDIDATE_SERIES_PHASE_A: list[dict[str, object]] = [
 # Each Phase-B PR (B1, B2, ...) appends one entry here.
 # Phase B official sources reuse the provider-level governance() helper since all entries share free_public_active provider defaults.
 OFFICIAL_SOURCE_SERIES_PHASE_B: list[dict[str, object]] = [
+    {
+        "id": "cape_ratio",
+        "name": "Shiller CAPE Ratio",
+        "category": "sentiment",
+        "source": "Robert Shiller / multpl.com",
+        "source_url": "http://www.econ.yale.edu/~shiller/data.htm",
+        "endpoint_url": "https://www.multpl.com/shiller-pe/table/by-month",
+        "frequency": "monthly",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": True,
+        "max_stale_days": 45,  # multpl.com updates monthly; 45 days tolerates one missed update
+        "notes": "Cyclically Adjusted Price-to-Earnings ratio (S&P 500), monthly. Fetched from multpl.com mirror of Shiller's methodology; Yale .xls stale since 2023-10-17.",
+        "horizon": "strategic",
+        "regime_role": ["sentiment"],
+        "preferred_chart": "line",
+        **governance(
+            "multpl_shiller",
+            score_status="active",
+            citation_notes="Cyclically Adjusted P/E ratio from Robert Shiller, Yale University, via multpl.com mirror.",
+        ),
+    },
     {
         "id": "personal_saving_rate",
         "name": "U.S. Personal Saving Rate",
