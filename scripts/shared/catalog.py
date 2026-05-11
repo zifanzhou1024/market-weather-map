@@ -1897,6 +1897,28 @@ OFFICIAL_SOURCE_SERIES_PHASE_B: list[dict[str, object]] = [
             citation_notes="U.S. Bureau of Economic Analysis, Personal Saving Rate [PSAVERT], via FRED. Free public.",
         ),
     },
+    {
+        "id": "treasury_supply_pressure",
+        "name": "Treasury Supply Pressure",
+        "category": "rates",
+        "source": "Derived",
+        "source_url": "/data/series/treasury_auction_supply.json",
+        "endpoint_url": "/data/derived/treasury_supply_pressure.json",
+        "frequency": "weekly",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": True,
+        "max_stale_days": 14,  # weekly input; 14 days = ~2 missed weekly auctions
+        "notes": "30-day trailing Treasury auction sum as ratio to trailing-year average. Composed from treasury_auction_supply.",
+        "horizon": "tactical",
+        "regime_role": ["nominal_yield"],
+        "preferred_chart": "line",
+        **governance(
+            "derived",
+            score_status="active",
+            citation_notes="Computed from public Treasury auction announcements via FiscalData; methodology in scripts/transform/build_treasury_supply_pressure.py.",
+        ),
+    },
 ]
 
 

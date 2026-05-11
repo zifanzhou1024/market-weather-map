@@ -3200,5 +3200,32 @@
     "source_url": "https://fred.stlouisfed.org/series/PSAVERT",
     "terms_status": "review_each_series",
     "units": "percent"
+  },
+  {
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
+    "category": "rates",
+    "citation_notes": "Computed from public Treasury auction announcements via FiscalData; methodology in scripts/transform/build_treasury_supply_pressure.py.",
+    "endpoint_url": "/data/derived/treasury_supply_pressure.json",
+    "frequency": "weekly",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "treasury_supply_pressure",
+    "max_stale_days": 14,
+    "name": "Treasury Supply Pressure",
+    "notes": "30-day trailing Treasury auction sum as ratio to trailing-year average. Composed from treasury_auction_supply.",
+    "preferred_chart": "line",
+    "provider_id": "derived",
+    "public": true,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "nominal_yield"
+    ],
+    "requires_secret": false,
+    "score_status": "active",
+    "source": "Derived",
+    "source_url": "/data/series/treasury_auction_supply.json",
+    "terms_status": "ok",
+    "units": "ratio"
   }
 ]

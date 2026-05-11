@@ -46,8 +46,10 @@ MODULES_TRANSFORM_EXISTING = [
     "scripts.generate_macro_calendar",
 ]
 
-# Phase B may append entries (e.g. treasury_supply_pressure).
-MODULES_TRANSFORM_PHASE_B: list[str] = []
+# Phase B transform modules.
+MODULES_TRANSFORM_PHASE_B: list[str] = [
+    "scripts.transform.build_treasury_supply_pressure",
+]
 
 MODULES_VALIDATE = [
     "scripts.validate.validate_schema",
