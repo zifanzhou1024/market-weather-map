@@ -61,16 +61,16 @@ def governance(
             f"unknown access_status {resolved_access!r} for provider {provider_id!r}; "
             f"expected one of {list(DERIVATION_TABLE)}"
         )
-    derived_score, active_scoring, public_redist, derived_secret = DERIVATION_TABLE[resolved_access]
+    derivation = DERIVATION_TABLE[resolved_access]
     return {
         "provider_id": provider_id,
         "access_status": resolved_access,
         "terms_status": terms_status or str(registry["terms_status"]),
-        "score_status": score_status if score_status is not None else derived_score,
+        "score_status": score_status if score_status is not None else derivation.score_status,
         "citation_notes": citation_notes or str(registry["notes"]),
-        "active_scoring_allowed": active_scoring,
-        "public_redistribution_allowed": public_redist,
-        "requires_secret": requires_secret if requires_secret is not None else derived_secret,
+        "active_scoring_allowed": derivation.active_scoring_allowed,
+        "public_redistribution_allowed": derivation.public_redistribution_allowed,
+        "requires_secret": requires_secret if requires_secret is not None else derivation.requires_secret,
     }
 
 
@@ -1946,14 +1946,12 @@ def catalog_entries() -> list[dict[str, object]]:
         series_id = entry.get("id")
         if series_id in _SERIES_ACCESS_STATUS_OVERRIDES:
             new_access = _SERIES_ACCESS_STATUS_OVERRIDES[series_id]
-            derived_score, active_scoring, public_redist, derived_secret = (
-                DERIVATION_TABLE[new_access]
-            )
+            derivation = DERIVATION_TABLE[new_access]
             entry["access_status"] = new_access
-            entry["score_status"] = derived_score
-            entry["active_scoring_allowed"] = active_scoring
-            entry["public_redistribution_allowed"] = public_redist
-            entry["requires_secret"] = derived_secret
+            entry["score_status"] = derivation.score_status
+            entry["active_scoring_allowed"] = derivation.active_scoring_allowed
+            entry["public_redistribution_allowed"] = derivation.public_redistribution_allowed
+            entry["requires_secret"] = derivation.requires_secret
     # Post-pass 2: reconcile entries that emerged with the legacy
     # "free_public_active + score_status=candidate" combination. The new
     # AccessStatus enum models this as free_public_candidate so the
@@ -1963,15 +1961,13 @@ def catalog_entries() -> list[dict[str, object]]:
             entry.get("access_status") == "free_public_active"
             and entry.get("score_status") == "candidate"
         ):
-            derived_score, active_scoring, public_redist, derived_secret = (
-                DERIVATION_TABLE["free_public_candidate"]
-            )
+            derivation = DERIVATION_TABLE["free_public_candidate"]
             entry["access_status"] = "free_public_candidate"
-            # score_status stays "candidate" (matches derived_score here).
-            entry["score_status"] = derived_score
-            entry["active_scoring_allowed"] = active_scoring
-            entry["public_redistribution_allowed"] = public_redist
-            entry["requires_secret"] = derived_secret
+            # score_status stays "candidate" (matches derivation.score_status here).
+            entry["score_status"] = derivation.score_status
+            entry["active_scoring_allowed"] = derivation.active_scoring_allowed
+            entry["public_redistribution_allowed"] = derivation.public_redistribution_allowed
+            entry["requires_secret"] = derivation.requires_secret
     return entries
 
 

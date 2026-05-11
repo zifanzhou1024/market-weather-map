@@ -94,7 +94,7 @@ def test_governance_legacy_literal_as_kwarg_resolves():
 
 
 def test_governance_raises_for_unknown_access_status():
-    """Unknown access_status values (not in _DERIVATION_TABLE and not in _LEGACY_ACCESS_STATUS_MAP)
+    """Unknown access_status values (not in DERIVATION_TABLE and not in _LEGACY_ACCESS_STATUS_MAP)
     must raise ValueError. The error message names the offending value and lists valid options."""
     with pytest.raises(ValueError, match="unknown access_status"):
         governance("fred", access_status="not_a_valid_status")
