@@ -19,11 +19,7 @@ import tempfile
 from datetime import datetime, timezone
 
 from scripts.shared import io as shared_io
-from scripts.shared.config import (
-    authenticated_candidates_enabled,
-    secret,
-    tradingview_credentials_available,
-)
+from scripts.shared.config import secret, tradingview_credentials_available
 
 SERIES_ID = "tradingview_move_candidate"
 TV_SYMBOL = "MOVE"
@@ -74,25 +70,18 @@ def main() -> None:
         print(f"{SERIES_ID}: secrets missing or disabled; skipping.")
         return
 
-    try:
-        from tvDatafeed import Interval  # type: ignore  # noqa: F401
-    except ImportError:
-        print(f"{SERIES_ID}: tvdatafeed library not installed; skipping.")
-        return
-
-    # Point any on-disk session cache at a temp directory so it never lands in
-    # the repo root or home directory. The isolation test enforces this.
-    os.environ.setdefault(
-        "TVDATAFEED_CACHE_DIR", tempfile.mkdtemp(prefix="tv_cache_")
-    )
+    if "TVDATAFEED_CACHE_DIR" not in os.environ:
+        # Point any on-disk session cache at a temp directory so it never lands
+        # in the repo root or home directory. The isolation test enforces this.
+        os.environ["TVDATAFEED_CACHE_DIR"] = tempfile.mkdtemp(prefix="tv_cache_")
 
     try:
+        from tvDatafeed import Interval  # type: ignore
         tv = _build_tv_client()
-        from tvDatafeed import Interval as _Interval  # type: ignore
         df = tv.get_hist(
             symbol=TV_SYMBOL,
             exchange=TV_EXCHANGE,
-            interval=_Interval.in_daily,
+            interval=Interval.in_daily,
             n_bars=N_BARS,
         )
     except Exception as exc:
