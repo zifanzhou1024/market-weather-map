@@ -472,25 +472,19 @@ def _missing_high_value_signals(
     for catalog_entry in MISSING_CATALOG:
         data_status_key = catalog_entry["data_status_key"]
         status_entry = status.get(data_status_key, {})
-        # Prefer the catalog's access_status as the authoritative signal that
-        # a source has been promoted into active scoring. Fall back to
-        # data_status when no catalog is provided (legacy / test paths).
+        # The catalog's access_status is the authoritative signal that a
+        # source has been promoted into active scoring; promoted sources
+        # don't belong in the missing list.
         if series_catalog is not None:
             series_catalog_entry = series_catalog.get(data_status_key)
             if series_catalog_entry is not None and is_active_scoring_allowed(
                 series_catalog_entry
             ):
-                # Source has been promoted; it should not be in the missing list.
                 continue
         source_status = (
             gap_status_by_id.get(data_status_key)
             or str(status_entry.get("status", "unavailable"))
         )
-        if series_catalog is None and source_status == "ok":
-            # Legacy fallback: when no catalog is supplied, gate on data_status
-            # alone (preserves pre-A9 behaviour for any caller that hasn't
-            # been updated yet).
-            continue
         message = gap_message_by_id.get(data_status_key) or str(
             status_entry.get(
                 "message",
@@ -566,9 +560,10 @@ def build_signal_priority_snapshot(
             (:func:`is_active_scoring_allowed`). When provided, every entry
             in ``top_warnings``/``top_supports`` is guaranteed to source
             only from series with ``access_status`` in
-            :data:`ACTIVE_ACCESS_STATUSES`. When omitted, the legacy
-            curation-only gating applies (kept for backward compatibility
-            with callers and tests that have not yet been updated).
+            :data:`ACTIVE_ACCESS_STATUSES`. When omitted, the curated
+            SIGNAL_CATALOG alone gates the active arrays (every production
+            caller passes ``series_catalog``; the default exists only for
+            simpler test setups).
     """
     overall_read = _overall_read(score_summary, regime_snapshot)
 
