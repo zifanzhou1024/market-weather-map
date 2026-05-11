@@ -117,14 +117,13 @@ def _download_requests(url: str) -> list[Request]:
     return [custom, provider_default]
 
 
-def _download_raw(url: str, *, timeout: int = 30) -> bytes:
-    """Fetch `url` and return raw bytes, trying UA variants with fallback logic."""
+def download_text(url: str) -> str:
     host = urlparse(url).netloc
     last_error: TimeoutError | None = None
     for request in _download_requests(url):
         try:
-            with urlopen(request, timeout=timeout) as response:
-                return response.read()
+            with urlopen(request, timeout=30) as response:
+                return response.read().decode("utf-8-sig")
         except TimeoutError as error:
             last_error = error
             if request.get_header("User-agent") is not None and host:
@@ -132,17 +131,3 @@ def _download_raw(url: str, *, timeout: int = 30) -> bytes:
     if last_error is not None:
         raise last_error
     raise RuntimeError("download failed without an exception")
-
-
-def download_text(url: str, *, timeout: int = 30) -> str:
-    return _download_raw(url, timeout=timeout).decode("utf-8-sig")
-
-
-def download_bytes(url: str, *, timeout: int = 30) -> bytes:
-    """Fetch `url` and return raw bytes (for binary formats such as XLS).
-
-    Mirrors download_text's UA-fallback resilience: tries the custom
-    User-Agent first, then falls back to the provider default for hosts
-    that reject custom agents.
-    """
-    return _download_raw(url, timeout=timeout)
