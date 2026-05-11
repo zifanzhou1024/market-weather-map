@@ -31,19 +31,32 @@ gating contract this module anchors.
 """
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, NamedTuple
 
 
-# (score_status, active_scoring_allowed, public_redistribution_allowed, requires_secret)
+class Derivation(NamedTuple):
+    """Governance flags derived from a single ``access_status`` value.
+
+    Field order matches the historical 4-tuple shape; consumers should
+    reference fields by name (``derivation.active_scoring_allowed``) so a
+    future reorder produces an attribute error instead of silent breakage.
+    """
+
+    score_status: str
+    active_scoring_allowed: bool
+    public_redistribution_allowed: bool
+    requires_secret: bool
+
+
 # Single source of truth for the AccessStatus enum's derived governance flags.
-DERIVATION_TABLE: dict[str, tuple[str, bool, bool, bool]] = {
-    "free_public_active":      ("active",    True,  True,  False),
-    "free_public_candidate":   ("candidate", False, True,  False),
-    "terms_review_needed":     ("candidate", False, False, False),
-    "authenticated_candidate": ("candidate", False, False, True),
-    "proxy_only":              ("active",    True,  True,  False),
-    "restricted_vendor":       ("candidate", False, False, False),
-    "unavailable":             ("candidate", False, False, False),
+DERIVATION_TABLE: dict[str, Derivation] = {
+    "free_public_active":      Derivation("active",    True,  True,  False),
+    "free_public_candidate":   Derivation("candidate", False, True,  False),
+    "terms_review_needed":     Derivation("candidate", False, False, False),
+    "authenticated_candidate": Derivation("candidate", False, False, True),
+    "proxy_only":              Derivation("active",    True,  True,  False),
+    "restricted_vendor":       Derivation("candidate", False, False, False),
+    "unavailable":             Derivation("candidate", False, False, False),
 }
 
 
@@ -52,8 +65,8 @@ DERIVATION_TABLE: dict[str, tuple[str, bool, bool, bool]] = {
 # edit (this table) to propagate to every consumer.
 ACTIVE_ACCESS_STATUSES: frozenset[str] = frozenset(
     status
-    for status, (_score, active, _redist, _secret) in DERIVATION_TABLE.items()
-    if active
+    for status, derivation in DERIVATION_TABLE.items()
+    if derivation.active_scoring_allowed
 )
 
 

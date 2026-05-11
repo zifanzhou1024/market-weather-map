@@ -239,6 +239,7 @@ def test_state_derivation_mixed_when_both_warning_and_support_present():
         },
         "top_supports": [
             {
+                "access_status": "free_public_active",
                 "category": "credit",
                 "confidence": 0.9,
                 "direction": "support",
@@ -258,6 +259,7 @@ def test_state_derivation_mixed_when_both_warning_and_support_present():
         ],
         "top_warnings": [
             {
+                "access_status": "free_public_active",
                 "category": "credit",
                 "confidence": 0.9,
                 "direction": "risk",

@@ -1081,22 +1081,22 @@ def _check_entry(entry_id: str, entry: dict, source: str) -> list[str]:
             errs.append(f"{source} entry {entry_id!r}: missing required field {flag!r}")
     if errs:
         return errs
-    expected_active, expected_redist, expected_secret = DERIVATION_TABLE[access][1:]
-    if entry["active_scoring_allowed"] != expected_active:
+    derivation = DERIVATION_TABLE[access]
+    if entry["active_scoring_allowed"] != derivation.active_scoring_allowed:
         errs.append(
             f"{source} entry {entry_id!r}: active_scoring_allowed={entry['active_scoring_allowed']!r} "
-            f"inconsistent with access_status={access!r} (expected {expected_active})"
+            f"inconsistent with access_status={access!r} (expected {derivation.active_scoring_allowed})"
         )
-    if entry["public_redistribution_allowed"] != expected_redist:
+    if entry["public_redistribution_allowed"] != derivation.public_redistribution_allowed:
         errs.append(
             f"{source} entry {entry_id!r}: public_redistribution_allowed="
             f"{entry['public_redistribution_allowed']!r} inconsistent with access_status="
-            f"{access!r} (expected {expected_redist})"
+            f"{access!r} (expected {derivation.public_redistribution_allowed})"
         )
-    if entry["requires_secret"] != expected_secret:
+    if entry["requires_secret"] != derivation.requires_secret:
         errs.append(
             f"{source} entry {entry_id!r}: requires_secret={entry['requires_secret']!r} "
-            f"inconsistent with access_status={access!r} (expected {expected_secret})"
+            f"inconsistent with access_status={access!r} (expected {derivation.requires_secret})"
         )
     return errs
 

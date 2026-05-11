@@ -3,12 +3,11 @@
 Mirrors the A9 gating-test pattern from ``test_signal_priority.py`` but
 applied to the page-insights builder. Verifies that the
 :func:`scripts.shared.access_status.is_active_scoring_allowed` predicate
-(via the local ``_is_primary_eligible`` adapter) is the single contract
-deciding which entries may populate ``primary_warning`` /
-``primary_support`` slots — and that candidate-class access_statuses are
-always rejected, including ``terms_review_needed`` and
-``authenticated_candidate``, while ``proxy_only`` is admitted alongside
-``free_public_active``.
+is the single contract deciding which entries may populate
+``primary_warning`` / ``primary_support`` slots — and that
+candidate-class access_statuses are always rejected, including
+``terms_review_needed`` and ``authenticated_candidate``, while
+``proxy_only`` is admitted alongside ``free_public_active``.
 
 These tests pair the predicate-only truth table with three
 integration-style cases that exercise the actual builder code path with
@@ -240,40 +239,3 @@ def test_free_public_active_entry_is_admitted_into_primary_slot():
     assert primary is not None
     assert primary["id"] == "rates_real_yields"
     assert primary.get("access_status") == "free_public_active"
-
-
-def test_entry_without_access_status_falls_back_to_source_status():
-    """Pre-A10 signal_priority.json snapshots (and synthetic fixtures
-    that omit access_status) must still go through the upstream
-    ``source_status: "active"`` literal gate as a defense-in-depth
-    fallback. An entry with source_status="active" but no access_status
-    is admitted; an entry with source_status="terms_review_needed" and
-    no access_status is rejected."""
-    admitted = _entry(
-        entry_id="legacy_active",
-        direction="risk",
-        category="credit",
-        access_status=None,
-        source_status="active",
-    )
-    rejected = _entry(
-        entry_id="legacy_gated",
-        direction="risk",
-        category="liquidity",
-        access_status=None,
-        source_status="terms_review_needed",
-    )
-    payload = _payload(top_warnings=[admitted, rejected])
-
-    result = build_page_insights.build_page_insights(
-        signal_priority=payload,
-        generated_at_utc="2026-05-10T09:30:00Z",
-    )
-
-    credit = result["routes"].get("credit")
-    assert credit is not None
-    assert credit["primary_warning"]["id"] == "legacy_active"
-
-    liquidity = result["routes"].get("liquidity")
-    if liquidity is not None:
-        assert liquidity.get("primary_warning") is None

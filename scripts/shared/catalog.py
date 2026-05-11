@@ -61,16 +61,16 @@ def governance(
             f"unknown access_status {resolved_access!r} for provider {provider_id!r}; "
             f"expected one of {list(DERIVATION_TABLE)}"
         )
-    derived_score, active_scoring, public_redist, derived_secret = DERIVATION_TABLE[resolved_access]
+    derivation = DERIVATION_TABLE[resolved_access]
     return {
         "provider_id": provider_id,
         "access_status": resolved_access,
         "terms_status": terms_status or str(registry["terms_status"]),
-        "score_status": score_status if score_status is not None else derived_score,
+        "score_status": score_status if score_status is not None else derivation.score_status,
         "citation_notes": citation_notes or str(registry["notes"]),
-        "active_scoring_allowed": active_scoring,
-        "public_redistribution_allowed": public_redist,
-        "requires_secret": requires_secret if requires_secret is not None else derived_secret,
+        "active_scoring_allowed": derivation.active_scoring_allowed,
+        "public_redistribution_allowed": derivation.public_redistribution_allowed,
+        "requires_secret": requires_secret if requires_secret is not None else derivation.requires_secret,
     }
 
 
@@ -865,7 +865,7 @@ FRED_SERIES = [
         "max_stale_days": 14,
         "notes": "Generated non-scoring weekly H.8 C&I loan diagnostic from FRED TOTCI; used to inspect business-loans freshness without changing active scores.",
         "score_status": "candidate",
-        "access_status": "free_public",
+        "access_status": "free_public_candidate",
         "terms_status": "review_each_series",
         "generate_static": True,
         "citation_notes": "Board of Governors/FRED H.8 C&I loan series; candidate diagnostic generated as static JSON with source citation requested.",
@@ -881,7 +881,7 @@ FRED_SERIES = [
         "max_stale_days": 45,
         "notes": "Generated non-scoring regional Fed survey proxy from Philadelphia Fed MBOS via FRED; not ISM PMI or S&P Global PMI.",
         "score_status": "candidate",
-        "access_status": "free_public",
+        "access_status": "free_public_candidate",
         "terms_status": "review_each_series",
         "generate_static": True,
         "citation_notes": "Federal Reserve Bank of Philadelphia/FRED MBOS current general activity diffusion index; regional survey proxy only, not ISM PMI or S&P Global PMI.",
@@ -897,7 +897,7 @@ FRED_SERIES = [
         "max_stale_days": 120,
         "notes": "Generated non-scoring SLOOS lending-standards diagnostic from FRED; positive values indicate net tightening.",
         "score_status": "candidate",
-        "access_status": "free_public",
+        "access_status": "free_public_candidate",
         "terms_status": "review_each_series",
         "generate_static": True,
         "citation_notes": "Board of Governors/FRED SLOOS series; candidate diagnostic generated as static JSON with source citation requested.",
@@ -913,7 +913,7 @@ FRED_SERIES = [
         "max_stale_days": 120,
         "notes": "Generated non-scoring SLOOS small-firm lending-standards diagnostic from FRED; positive values indicate net tightening.",
         "score_status": "candidate",
-        "access_status": "free_public",
+        "access_status": "free_public_candidate",
         "terms_status": "review_each_series",
         "generate_static": True,
         "citation_notes": "Board of Governors/FRED SLOOS series; candidate diagnostic generated as static JSON with source citation requested.",
@@ -929,7 +929,7 @@ FRED_SERIES = [
         "max_stale_days": 120,
         "notes": "Generated non-scoring SLOOS loan-demand diagnostic from FRED; positive values indicate stronger demand.",
         "score_status": "candidate",
-        "access_status": "free_public",
+        "access_status": "free_public_candidate",
         "terms_status": "review_each_series",
         "generate_static": True,
         "citation_notes": "Board of Governors/FRED SLOOS series; candidate diagnostic generated as static JSON with source citation requested.",
@@ -945,7 +945,7 @@ FRED_SERIES = [
         "max_stale_days": 14,
         "notes": "Generated non-scoring Kim-Wright term-premium diagnostic from FRED; kept separate from gated NY Fed ACM term premium.",
         "score_status": "candidate",
-        "access_status": "free_public",
+        "access_status": "free_public_candidate",
         "terms_status": "review_each_series",
         "generate_static": True,
         "citation_notes": "Board of Governors/FRED Kim-Wright term-premium series; FRED page requests citation and flags source-specific sharing notes.",
@@ -1479,6 +1479,7 @@ CANDIDATE_SERIES = [
         "generate_static": True,
         **governance(
             "fiscaldata",
+            access_status="free_public_candidate",
             score_status="candidate",
             citation_notes="U.S. Treasury FiscalData Monthly Treasury Statement table 1; generated as static non-scoring context.",
         ),
@@ -1499,6 +1500,7 @@ CANDIDATE_SERIES = [
         "generate_static": True,
         **governance(
             "fiscaldata",
+            access_status="free_public_candidate",
             score_status="candidate",
             citation_notes="U.S. Treasury FiscalData Monthly Treasury Statement table 1; generated as static non-scoring context.",
         ),
@@ -1519,6 +1521,7 @@ CANDIDATE_SERIES = [
         "generate_static": True,
         **governance(
             "fiscaldata",
+            access_status="free_public_candidate",
             score_status="candidate",
             citation_notes="U.S. Treasury FiscalData Monthly Treasury Statement table 1; generated as static non-scoring context.",
         ),
@@ -1554,6 +1557,7 @@ CANDIDATE_SERIES = [
         "generate_static": True,
         **governance(
             "fiscaldata",
+            access_status="free_public_candidate",
             score_status="candidate",
             citation_notes="U.S. Treasury FiscalData Treasury Securities Auctions Data; generated as static non-scoring context.",
         ),
@@ -1937,41 +1941,22 @@ def catalog_entries() -> list[dict[str, object]]:
         ]
     )
     entries.extend(entry.copy() for entry in CANDIDATE_SERIES_PHASE_A)
-    # Post-pass 1: series-level access_status overrides. Some series cannot
-    # be classified accurately from the provider row alone (e.g. ice_indices'
-    # MOVE feed is restricted_vendor while other ICE candidates remain
-    # terms_review_needed; bond_volatility_proxy is a derived series whose
-    # public_redistribution_allowed flag must follow its FRED-derived inputs).
+    # Series-level access_status overrides applied after entry assembly.
+    # Some series cannot be classified accurately from the provider row alone
+    # (e.g. ice_indices' MOVE feed is restricted_vendor while other ICE
+    # candidates remain terms_review_needed; bond_volatility_proxy is a
+    # derived series whose public_redistribution_allowed flag must follow
+    # its FRED-derived inputs).
     for entry in entries:
         series_id = entry.get("id")
         if series_id in _SERIES_ACCESS_STATUS_OVERRIDES:
             new_access = _SERIES_ACCESS_STATUS_OVERRIDES[series_id]
-            derived_score, active_scoring, public_redist, derived_secret = (
-                DERIVATION_TABLE[new_access]
-            )
+            derivation = DERIVATION_TABLE[new_access]
             entry["access_status"] = new_access
-            entry["score_status"] = derived_score
-            entry["active_scoring_allowed"] = active_scoring
-            entry["public_redistribution_allowed"] = public_redist
-            entry["requires_secret"] = derived_secret
-    # Post-pass 2: reconcile entries that emerged with the legacy
-    # "free_public_active + score_status=candidate" combination. The new
-    # AccessStatus enum models this as free_public_candidate so the
-    # active_scoring_allowed flag stays consistent with score_status.
-    for entry in entries:
-        if (
-            entry.get("access_status") == "free_public_active"
-            and entry.get("score_status") == "candidate"
-        ):
-            derived_score, active_scoring, public_redist, derived_secret = (
-                DERIVATION_TABLE["free_public_candidate"]
-            )
-            entry["access_status"] = "free_public_candidate"
-            # score_status stays "candidate" (matches derived_score here).
-            entry["score_status"] = derived_score
-            entry["active_scoring_allowed"] = active_scoring
-            entry["public_redistribution_allowed"] = public_redist
-            entry["requires_secret"] = derived_secret
+            entry["score_status"] = derivation.score_status
+            entry["active_scoring_allowed"] = derivation.active_scoring_allowed
+            entry["public_redistribution_allowed"] = derivation.public_redistribution_allowed
+            entry["requires_secret"] = derivation.requires_secret
     return entries
 
 

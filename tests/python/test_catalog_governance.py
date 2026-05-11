@@ -78,7 +78,7 @@ def test_governance_derivation_table_for_every_enum_value(monkeypatch):
 def test_governance_legacy_literal_as_kwarg_resolves():
     """Legacy 4-value SourceAccessStatus values are translated when passed as the access_status kwarg.
 
-    Required because scripts/shared/catalog.py:1587 passes
+    Required because the FRED_SERIES loop in scripts/shared/catalog.py passes
     access_status=str(series.get("access_status", "free_public")) — the literal
     "free_public" would otherwise raise ValueError after the 7-value enum migration.
     """
@@ -94,7 +94,7 @@ def test_governance_legacy_literal_as_kwarg_resolves():
 
 
 def test_governance_raises_for_unknown_access_status():
-    """Unknown access_status values (not in _DERIVATION_TABLE and not in _LEGACY_ACCESS_STATUS_MAP)
+    """Unknown access_status values (not in DERIVATION_TABLE and not in _LEGACY_ACCESS_STATUS_MAP)
     must raise ValueError. The error message names the offending value and lists valid options."""
     with pytest.raises(ValueError, match="unknown access_status"):
         governance("fred", access_status="not_a_valid_status")
