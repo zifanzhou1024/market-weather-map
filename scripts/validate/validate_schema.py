@@ -8,8 +8,41 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from scripts.shared import io as shared_io
 from scripts.shared.catalog import available_catalog_entries
 from scripts.shared.io import data_dir, series_path
+from scripts.validate.validate_candidate_isolation import (
+    CandidateIsolationError,
+    run as run_candidate_isolation,
+)
+
+
+class SchemaError(RuntimeError):
+    """Raised when catalog entries violate AccessStatus schema rules."""
+
+
+_ALLOWED_ACCESS_STATUSES = {
+    "free_public_active",
+    "free_public_candidate",
+    "terms_review_needed",
+    "authenticated_candidate",
+    "proxy_only",
+    "restricted_vendor",
+    "unavailable",
+}
+
+# (active_scoring_allowed, public_redistribution_allowed, requires_secret)
+_DERIVATION = {
+    "free_public_active":      (True,  True,  False),
+    "free_public_candidate":   (False, True,  False),
+    "terms_review_needed":     (False, False, False),
+    "authenticated_candidate": (False, False, True),
+    "proxy_only":              (True,  True,  False),
+    "restricted_vendor":       (False, False, False),
+    "unavailable":             (False, False, False),
+}
+
+_REQUIRED_FLAGS = ("active_scoring_allowed", "public_redistribution_allowed", "requires_secret")
 
 
 REQUIRED_SERIES_FIELDS = {
@@ -1056,6 +1089,57 @@ def validate_status_file() -> None:
         _validate_status_last_observation_matches_payload(path, str(series_id), status)
 
 
+def _check_entry(entry_id: str, entry: dict, source: str) -> list[str]:
+    errs: list[str] = []
+    access = entry.get("access_status")
+    if access not in _ALLOWED_ACCESS_STATUSES:
+        errs.append(f"{source} entry {entry_id!r}: access_status={access!r} not in allowed enum")
+        return errs
+    for flag in _REQUIRED_FLAGS:
+        if flag not in entry:
+            errs.append(f"{source} entry {entry_id!r}: missing required field {flag!r}")
+    if errs:
+        return errs
+    expected_active, expected_redist, expected_secret = _DERIVATION[access]
+    if entry["active_scoring_allowed"] != expected_active:
+        errs.append(
+            f"{source} entry {entry_id!r}: active_scoring_allowed={entry['active_scoring_allowed']!r} "
+            f"inconsistent with access_status={access!r} (expected {expected_active})"
+        )
+    if entry["public_redistribution_allowed"] != expected_redist:
+        errs.append(
+            f"{source} entry {entry_id!r}: public_redistribution_allowed="
+            f"{entry['public_redistribution_allowed']!r} inconsistent with access_status="
+            f"{access!r} (expected {expected_redist})"
+        )
+    if entry["requires_secret"] != expected_secret:
+        errs.append(
+            f"{source} entry {entry_id!r}: requires_secret={entry['requires_secret']!r} "
+            f"inconsistent with access_status={access!r} (expected {expected_secret})"
+        )
+    return errs
+
+
+def check_access_status_enum() -> None:
+    """Validate AccessStatus enum + derived-flag consistency in catalog files.
+
+    Raises:
+        SchemaError: when any source_registry or series_catalog entry uses an
+            access_status outside the 7-value enum, has inconsistent derived
+            flags, or is missing one of the three required flag fields.
+    """
+    root = shared_io.data_dir()
+    errs: list[str] = []
+    registry = json.loads((root / "catalog" / "source_registry.json").read_text(encoding="utf-8"))
+    for entry_id, entry in registry.items():
+        errs.extend(_check_entry(entry_id, entry, "source_registry"))
+    series = json.loads((root / "catalog" / "series_catalog.json").read_text(encoding="utf-8"))
+    for entry in series:
+        errs.extend(_check_entry(entry.get("id", "<unknown>"), entry, "series_catalog"))
+    if errs:
+        raise SchemaError("AccessStatus enum violations:\n  " + "\n  ".join(errs))
+
+
 def main() -> None:
     for entry in available_catalog_entries():
         validate_series_file(str(entry["id"]))
@@ -1072,6 +1156,8 @@ def main() -> None:
     validate_rates_dashboard_file()
     validate_regime_dashboard_file()
     validate_status_file()
+    check_access_status_enum()
+    run_candidate_isolation()
 
 
 if __name__ == "__main__":
