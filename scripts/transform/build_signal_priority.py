@@ -27,6 +27,7 @@ from __future__ import annotations
 import json
 from typing import Any, Iterable
 
+from scripts.shared.access_status import ACTIVE_ACCESS_STATUSES, is_active_scoring_allowed
 from scripts.shared.io import data_dir, utc_now_iso, write_json
 
 
@@ -40,28 +41,19 @@ FRESHNESS_MULTIPLIER = {
     "terms_review_needed": 0.0,
 }
 
-# AccessStatus values that grant active-scoring eligibility. Anything outside
-# this set (free_public_candidate, terms_review_needed,
-# authenticated_candidate, restricted_vendor, unavailable) is candidate-class
-# and must be excluded from top_warnings / top_supports. Kept in sync with
-# ``scripts.validate.validate_candidate_isolation.ACTIVE_ACCESS_STATUSES``
-# and ``scripts.shared.catalog._DERIVATION_TABLE``.
-ACTIVE_ACCESS_STATUSES: frozenset[str] = frozenset({"free_public_active", "proxy_only"})
-
-
-def is_active_scoring_allowed(entry: dict[str, Any]) -> bool:
-    """Return True iff the catalog entry is allowed to enter active outputs.
-
-    Reads ``access_status`` from the entry dict. Used to gate primary slots
-    (``top_warnings``, ``top_supports``); candidate-class series may still
-    appear in ``missing_high_value_signals`` for transparency.
-
-    Accepts either a catalog entry (which carries ``access_status``
-    directly) or any RankedEntry projection that mirrors that field. An
-    entry without ``access_status`` is treated as not-allowed (fail-closed
-    default — the predicate's job is to prevent silent leaks).
-    """
-    return entry.get("access_status") in ACTIVE_ACCESS_STATUSES
+# ACTIVE_ACCESS_STATUSES and is_active_scoring_allowed are re-exported from
+# scripts.shared.access_status — the project's single source of truth for the
+# active-scoring contract. Keep the local names available so existing callers
+# (and test imports like build_signal_priority.is_active_scoring_allowed)
+# continue to resolve through this module.
+__all__ = [
+    "ACTIVE_ACCESS_STATUSES",
+    "is_active_scoring_allowed",
+    "build_signal_priority_snapshot",
+    "SIGNAL_CATALOG",
+    "MISSING_CATALOG",
+    "METHOD_VERSION",
+]
 
 
 # Each entry maps to ONE underlying score path so we don't double-count the
@@ -371,6 +363,32 @@ def _all_underlying_series_active(
     return True
 
 
+def _aggregate_access_status(
+    catalog: dict[str, dict[str, Any]] | None,
+    series_ids: Iterable[str],
+) -> str:
+    """Project an aggregate access_status onto a SignalActiveEntry.
+
+    Every series_id reached here has already passed
+    :func:`_all_underlying_series_active`, so the aggregate is guaranteed to
+    be a member of :data:`ACTIVE_ACCESS_STATUSES`. If any underlying series
+    carries ``proxy_only``, the aggregate is ``proxy_only`` — proxy-only is
+    the strictest active-eligible class (it limits public redistribution
+    beyond the underlying public data). Otherwise the aggregate is
+    ``free_public_active``. When no catalog is provided (legacy / test path),
+    the projection defaults to ``free_public_active``.
+    """
+    if catalog is None:
+        return "free_public_active"
+    for series_id in series_ids:
+        entry = catalog.get(series_id)
+        if entry is None:
+            continue
+        if entry.get("access_status") == "proxy_only":
+            return "proxy_only"
+    return "free_public_active"
+
+
 def _evaluate_catalog_entry(
     catalog_entry: dict[str, Any],
     score_summary: dict[str, Any],
@@ -412,7 +430,10 @@ def _evaluate_catalog_entry(
 
     # ``source_status`` keeps its literal "active" narrow per the
     # SignalActiveEntry TypeScript contract — every entry that survives the
-    # gating predicate above is active by construction.
+    # gating predicate above is active by construction. ``access_status``
+    # is projected so downstream consumers (build_page_insights) can apply
+    # the same active-scoring predicate without re-loading the catalog.
+    access_status = _aggregate_access_status(series_catalog, catalog_entry["freshness_keys"])
     return {
         "id": catalog_entry["id"],
         "label": catalog_entry["label"],
@@ -427,6 +448,7 @@ def _evaluate_catalog_entry(
         "confidence": round(confidence, 2),
         "freshness_status": freshness_status,
         "source_status": "active",
+        "access_status": access_status,
         "message": message,
         "why_it_matters": catalog_entry["why_it_matters"],
     }

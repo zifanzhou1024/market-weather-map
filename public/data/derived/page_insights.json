@@ -1,12 +1,13 @@
 {
   "date": "2026-05-08",
-  "generated_at_utc": "2026-05-10T14:23:51Z",
+  "generated_at_utc": "2026-05-11T04:15:19Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
       "confidence": 0.99,
       "freshness_notes": [],
       "primary_warning": {
+        "access_status": "free_public_active",
         "confidence": 0.99,
         "freshness_status": "ok",
         "id": "commodities_inflation_impulse",
@@ -24,6 +25,7 @@
       "confidence": 0.99,
       "freshness_notes": [],
       "primary_support": {
+        "access_status": "free_public_active",
         "confidence": 0.99,
         "freshness_status": "ok",
         "id": "credit_spreads",
@@ -43,6 +45,7 @@
         "Broad dollar is stale."
       ],
       "primary_support": {
+        "access_status": "free_public_active",
         "confidence": 0.99,
         "freshness_status": "stale",
         "id": "broad_dollar",
@@ -64,6 +67,7 @@
         "VX futures curve is unavailable."
       ],
       "primary_support": {
+        "access_status": "free_public_active",
         "confidence": 0.98,
         "freshness_status": "ok",
         "id": "vix_curve",
@@ -83,6 +87,7 @@
         "Consumer balance sheet is stale."
       ],
       "primary_support": {
+        "access_status": "free_public_active",
         "confidence": 0.99,
         "freshness_status": "ok",
         "id": "labor",
@@ -100,6 +105,7 @@
       "confidence": 0.99,
       "freshness_notes": [],
       "primary_warning": {
+        "access_status": "free_public_active",
         "confidence": 0.99,
         "freshness_status": "ok",
         "id": "inflation",
@@ -117,6 +123,7 @@
       "confidence": 0.99,
       "freshness_notes": [],
       "primary_warning": {
+        "access_status": "free_public_active",
         "confidence": 0.99,
         "freshness_status": "ok",
         "id": "net_liquidity",
@@ -136,6 +143,7 @@
         "10Y term premium (ACM) is unavailable."
       ],
       "primary_warning": {
+        "access_status": "free_public_active",
         "confidence": 0.99,
         "freshness_status": "ok",
         "id": "real_yields",
@@ -157,6 +165,7 @@
         "Put/call ratio (SPXW / 0DTE) is unavailable."
       ],
       "primary_warning": {
+        "access_status": "free_public_active",
         "confidence": 0.99,
         "freshness_status": "ok",
         "id": "sentiment_positioning",
@@ -178,6 +187,7 @@
         "VX futures curve is unavailable."
       ],
       "primary_support": {
+        "access_status": "free_public_active",
         "confidence": 0.98,
         "freshness_status": "ok",
         "id": "vix_curve",

@@ -442,6 +442,11 @@ export interface SignalActiveEntry {
   confidence: number;
   freshness_status: SignalFreshnessStatus;
   source_status: "active";
+  // Projected from the underlying series catalog so downstream consumers
+  // (e.g. PageInsightHero / build_page_insights) can apply the active-scoring
+  // gating predicate without re-loading the catalog. Always a member of the
+  // active-eligible AccessStatus subset ("free_public_active" | "proxy_only").
+  access_status?: "free_public_active" | "proxy_only";
   message: string;
   why_it_matters: string;
 }
@@ -522,6 +527,9 @@ export interface SignalRef {
   freshness_status: SignalFreshnessStatus;
   confidence: number;
   source_status: SignalRefSourceStatus;
+  // Forwarded from the upstream SignalActiveEntry so consumers can apply
+  // the active-scoring gating predicate without re-loading the catalog.
+  access_status?: "free_public_active" | "proxy_only";
 }
 
 export interface RouteInsight {
