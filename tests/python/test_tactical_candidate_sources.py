@@ -138,6 +138,6 @@ def test_official_public_diagnostics_remain_candidate_only():
     for series_id in OFFICIAL_PUBLIC_DIAGNOSTIC_IDS:
         entry = entries[series_id]
         assert entry["score_status"] == "candidate"
-        assert entry["access_status"] == "free_public"
+        assert entry["access_status"] == "free_public_active"
         assert entry["public"] is True
         assert entry["frequency"] in SUPPORTED_FRONTEND_FREQUENCIES

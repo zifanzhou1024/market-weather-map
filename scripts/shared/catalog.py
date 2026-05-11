@@ -6,20 +6,65 @@ from scripts.shared.io import data_dir
 from scripts.shared.source_registry import source_registry_entries
 
 
+_DERIVATION_TABLE = {
+    "free_public_active":      ("active",    True,  True,  False),
+    "free_public_candidate":   ("candidate", False, True,  False),
+    "terms_review_needed":     ("candidate", False, False, False),
+    "authenticated_candidate": ("candidate", False, False, True),
+    "proxy_only":              ("active",    True,  True,  False),
+    "restricted_vendor":       ("candidate", False, False, False),
+    "unavailable":             ("candidate", False, False, False),
+}
+
+_LEGACY_ACCESS_STATUS_MAP = {
+    # Maps old 4-value SourceAccessStatus to the new 7-value AccessStatus
+    # so legacy registry rows that haven't been upgraded yet still resolve.
+    "free_public":         "free_public_active",
+    "terms_review_needed": "terms_review_needed",
+    "restricted":          "restricted_vendor",
+    "unavailable":         "unavailable",
+}
+
+
 def governance(
     provider_id: str,
-    score_status: str = "active",
+    score_status: str | None = None,
     access_status: str | None = None,
     terms_status: str | None = None,
     citation_notes: str | None = None,
+    requires_secret: bool | None = None,
 ) -> dict[str, object]:
+    """Build the governance sub-fields on a catalog entry.
+
+    access_status is authoritative. score_status, active_scoring_allowed,
+    public_redistribution_allowed, and requires_secret are derived from
+    access_status via _DERIVATION_TABLE.
+
+    Legacy callsites that pass only score_status (no access_status) get
+    a sensible default derived from the registry's access_status and
+    the legacy mapping table. New callsites should pass access_status
+    explicitly; this is enforced by tests after migration.
+    """
     registry = source_registry_entries()[provider_id]
+    raw_access = access_status if access_status is not None else str(registry["access_status"])
+    # Legacy SourceAccessStatus values map to the new AccessStatus enum so
+    # callsites that still pass string literals like "free_public" keep working.
+    resolved_access = _LEGACY_ACCESS_STATUS_MAP.get(raw_access, raw_access)
+    if resolved_access not in _DERIVATION_TABLE:
+        raise ValueError(
+            f"unknown access_status {resolved_access!r} for provider {provider_id!r}; "
+            f"expected one of {list(_DERIVATION_TABLE)}"
+        )
+    derived_score, active_scoring, public_redist, derived_secret = _DERIVATION_TABLE[resolved_access]
     return {
         "provider_id": provider_id,
-        "access_status": access_status or str(registry["access_status"]),
+        "access_status": resolved_access,
         "terms_status": terms_status or str(registry["terms_status"]),
-        "score_status": score_status,
+        "score_status": score_status if score_status is not None else derived_score,
         "citation_notes": citation_notes or str(registry["notes"]),
+        "active_scoring_allowed": active_scoring,
+        "public_redistribution_allowed": public_redist,
+        "requires_secret": requires_secret if requires_secret is not None else derived_secret,
     }
 
 

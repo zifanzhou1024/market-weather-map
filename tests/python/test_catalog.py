@@ -147,7 +147,7 @@ def test_catalog_entries_include_phase3_governance_fields():
 
     vix = entries["vix"]
     assert vix["provider_id"] == "cboe"
-    assert vix["access_status"] == "free_public"
+    assert vix["access_status"] == "free_public_active"
     assert vix["terms_status"] == "ok"
     assert vix["score_status"] == "active"
     assert isinstance(vix["citation_notes"], str)
@@ -186,7 +186,7 @@ def test_catalog_entries_include_phase3_active_fred_macro_series():
     for series_id, fred_id in PHASE3_FRED_SERIES.items():
         entry = entries[series_id]
         assert entry["provider_id"] == "fred"
-        assert entry["access_status"] == "free_public"
+        assert entry["access_status"] == "free_public_active"
         assert entry["score_status"] == "active"
         assert entry["endpoint_url"].endswith(fred_id)
 
@@ -207,7 +207,7 @@ def test_phase4_catalog_contains_active_housing_sources():
         assert entry["endpoint_url"] == f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
         assert entry["public"] is True
         assert entry["score_status"] == "active"
-        assert entry["access_status"] == "free_public"
+        assert entry["access_status"] == "free_public_active"
         assert entry["terms_status"] == "review_each_series"
 
 
@@ -227,7 +227,7 @@ def test_phase4_catalog_contains_active_consumer_balance_sheet_sources():
         assert entry["endpoint_url"] == f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
         assert entry["public"] is True
         assert entry["score_status"] == "active"
-        assert entry["access_status"] == "free_public"
+        assert entry["access_status"] == "free_public_active"
         assert entry["horizon"] == "strategic"
 
 
@@ -274,7 +274,7 @@ def test_official_public_diagnostic_candidates_are_generated_but_not_active():
         assert entry["source_url"] == f"https://fred.stlouisfed.org/series/{fred_id}"
         assert entry["endpoint_url"] == f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
         assert entry["public"] is True
-        assert entry["access_status"] == "free_public"
+        assert entry["access_status"] == "free_public_active"
         assert entry["terms_status"] == "review_each_series"
         assert entry["score_status"] == "candidate"
         assert entry["horizon"] == horizon
@@ -303,7 +303,7 @@ def test_treasury_supply_diagnostics_are_generated_candidates_not_active():
         assert entry["source_url"] == source_url
         assert entry["endpoint_url"]
         assert entry["public"] is True
-        assert entry["access_status"] == "free_public"
+        assert entry["access_status"] == "free_public_active"
         assert entry["terms_status"] == "review_each_series"
         assert entry["score_status"] == "candidate"
         assert entry["generate_static"] is True
@@ -320,7 +320,7 @@ def test_derived_bond_volatility_proxy_candidate_catalog_row_is_non_scoring():
     assert entry["source"] == "Derived"
     assert entry["source_url"] == "/data/series/us10y.json"
     assert entry["endpoint_url"] == "/data/derived/bond_volatility_proxy.json"
-    assert entry["access_status"] == "free_public"
+    assert entry["access_status"] == "free_public_active"
     assert entry["terms_status"] == "ok"
     assert entry["score_status"] == "candidate"
     assert entry["public"] is True
@@ -363,7 +363,7 @@ def test_catalog_entries_include_expanded_cboe_volatility_series():
     for series_id, filename in expected_files.items():
         entry = entries[series_id]
         assert entry["provider_id"] == "cboe"
-        assert entry["access_status"] == "free_public"
+        assert entry["access_status"] == "free_public_active"
         assert entry["score_status"] == "active"
         assert str(entry["endpoint_url"]).endswith(filename)
         assert tuple(entry["value_columns"]) == expected_value_columns[series_id]
