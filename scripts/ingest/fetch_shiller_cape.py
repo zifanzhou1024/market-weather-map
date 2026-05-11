@@ -1,11 +1,9 @@
 """Fetch Shiller CAPE Ratio from Yale Excel file."""
 from __future__ import annotations
 
-import urllib.request
-
 import xlrd
 
-from scripts.shared.io import series_path, utc_now_iso, write_json
+from scripts.shared.io import download_bytes, series_path, utc_now_iso, write_json
 
 ENDPOINT = "http://www.econ.yale.edu/~shiller/data/ie_data.xls"
 SERIES_ID = "cape_ratio"
@@ -58,18 +56,26 @@ def extract_cape_observations(rows: list[list[object]], *, header_row_index: int
     return observations
 
 
+def find_header_row_index(rows: list[list[object]]) -> int:
+    """Locate the row in the Data sheet that contains both 'Date' and CAPE_HEADER.
+
+    Raises ValueError if no such row exists.
+    """
+    for i, row in enumerate(rows):
+        stripped = [str(c).strip() for c in row]
+        if "Date" in stripped and CAPE_HEADER in stripped:
+            return i
+    raise ValueError(f"Shiller XLS: no header row found containing 'Date' and '{CAPE_HEADER}'")
+
+
 def main() -> None:
-    with urllib.request.urlopen(ENDPOINT, timeout=30) as response:  # noqa: S310
-        raw_bytes = response.read()
+    raw_bytes = download_bytes(ENDPOINT)
     book = xlrd.open_workbook(file_contents=raw_bytes)
     sheet = book.sheet_by_name(SHEET_NAME)
     rows = [sheet.row_values(i) for i in range(sheet.nrows)]
     # Locate header row dynamically: scan for the first row containing both "Date" and CAPE_HEADER.
     # Shiller's "Data" sheet has a multi-row preamble before the actual column headers.
-    header_row_index = next(
-        i for i, row in enumerate(rows)
-        if "Date" in (str(c).strip() for c in row) and CAPE_HEADER in (str(c).strip() for c in row)
-    )
+    header_row_index = find_header_row_index(rows)
     observations = extract_cape_observations(rows, header_row_index=header_row_index)
     write_json(
         series_path(SERIES_ID),
