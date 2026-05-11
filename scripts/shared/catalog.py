@@ -1419,21 +1419,6 @@ CANDIDATE_SERIES = [
         **governance("terms_review", score_status="candidate"),
     },
     {
-        "id": "personal_saving_rate",
-        "name": "Personal Saving Rate",
-        "category": "growth",
-        "source": "FRED",
-        "source_url": "https://fred.stlouisfed.org/series/PSAVERT",
-        "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSAVERT",
-        "frequency": "monthly",
-        "units": "percent",
-        "higher_is": "supportive",
-        "public": False,
-        "max_stale_days": 45,
-        "notes": "Candidate consumer balance-sheet input; source treatment and scoring design deferred.",
-        **governance("terms_review", score_status="candidate"),
-    },
-    {
         "id": "total_consumer_credit",
         "name": "Total Consumer Credit",
         "category": "credit",
@@ -1877,6 +1862,37 @@ CANDIDATE_SERIES_PHASE_A: list[dict[str, object]] = [
 ]
 
 
+# Phase B official sources — fully reviewed, active-scoring entries.
+# Each Phase-B PR (B1, B2, ...) appends one entry here.
+OFFICIAL_SOURCE_SERIES_PHASE_B: list[dict[str, object]] = [
+    {
+        "id": "personal_saving_rate",
+        "name": "U.S. Personal Saving Rate",
+        "category": "growth",
+        "source": "BEA / FRED",
+        "provider_id": "bea",
+        "source_url": "https://fred.stlouisfed.org/series/PSAVERT",
+        "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSAVERT",
+        "frequency": "monthly",
+        "units": "percent",
+        "higher_is": "supportive",
+        "public": True,
+        "max_stale_days": 60,
+        "notes": "Monthly U.S. personal saving rate; reflects share of disposable income saved.",
+        "citation_notes": "U.S. Bureau of Economic Analysis, Personal Saving Rate [PSAVERT], via FRED. Free public.",
+        "access_status": "free_public_active",
+        "score_status": "active",
+        "terms_status": "review_each_series",
+        "active_scoring_allowed": True,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "strategic",
+        "regime_role": ["growth"],
+        "preferred_chart": "line",
+    },
+]
+
+
 def fred_endpoint(fred_id: str) -> str:
     return f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
 
@@ -1941,6 +1957,7 @@ def catalog_entries() -> list[dict[str, object]]:
         ]
     )
     entries.extend(entry.copy() for entry in CANDIDATE_SERIES_PHASE_A)
+    entries.extend(entry.copy() for entry in OFFICIAL_SOURCE_SERIES_PHASE_B)
     # Series-level access_status overrides applied after entry assembly.
     # Some series cannot be classified accurately from the provider row alone
     # (e.g. ice_indices' MOVE feed is restricted_vendor while other ICE
