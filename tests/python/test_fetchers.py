@@ -23,7 +23,7 @@ def test_catalog_includes_active_public_fred_oas_sources():
 def test_normalize_fred_rows_requires_expected_fred_column():
     rows = [{"observation_date": "2026-04-30", "OTHER": "1.25"}]
 
-    with pytest.raises(ValueError, match="missing expected FRED column DGS10"):
+    with pytest.raises(ValueError, match="missing expected observation_date/DGS10 columns for DGS10"):
         normalize_fred_rows(rows, "DGS10")
 
 

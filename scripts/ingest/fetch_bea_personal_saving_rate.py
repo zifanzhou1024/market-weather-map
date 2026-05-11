@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from scripts.shared.io import (
     download_text,
+    normalize_two_column_csv,
     parse_csv_rows,
-    parse_float,
     series_path,
     utc_now_iso,
     write_json,
@@ -15,26 +15,12 @@ SERIES_ID = "personal_saving_rate"
 
 
 def normalize_rows(rows: list[dict[str, str]]) -> list[dict[str, object]]:
-    if not rows:
-        raise ValueError("no rows returned for PSAVERT")
-    if "DATE" not in rows[0] or "VALUE" not in rows[0]:
-        raise ValueError("missing expected DATE/VALUE columns in FRED CSV")
-    observations: list[dict[str, object]] = []
-    for row in rows:
-        raw_date = row.get("DATE")
-        try:
-            value = parse_float(row.get("VALUE"))
-        except ValueError as error:
-            raise ValueError(f"invalid numeric value for PSAVERT: {row.get('VALUE')}") from error
-        if value is None:
-            continue
-        if not raw_date:
-            raise ValueError("missing DATE for PSAVERT row")
-        observations.append({"date": raw_date.strip(), "value": value})
-    if not observations:
-        raise ValueError("no observations parsed for PSAVERT")
-    observations.sort(key=lambda item: str(item["date"]))
-    return observations
+    return normalize_two_column_csv(
+        rows,
+        date_column="DATE",
+        value_column="VALUE",
+        label="PSAVERT",
+    )
 
 
 def main() -> None:
