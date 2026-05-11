@@ -1,3 +1,9 @@
 pytest>=8,<9
 # xlrd<2.0 required: xlrd 2.0 dropped .xls support; NY Fed ACM publishes legacy .xls
 xlrd>=1.2,<2.0
+# Phase C TradingView authenticated-candidate path; see
+# docs/source_reviews/tradingview_authenticated_candidates.md
+# TradingView Python client is pinned in PR C2 alongside the first fetcher,
+# after validating the exact package name and version range on PyPI.
+pandas>=2.2,<3
+requests>=2.32,<3

@@ -32,6 +32,16 @@ jobs:
       - name: Fetch, transform, score, and validate data
         id: data-update
         continue-on-error: true
+        env:
+          # TradingView authenticated-candidate path (Phase C). Each variable
+          # falls back to an empty string when the secret is unset, so the
+          # workflow keeps running on forks and in repos without these
+          # secrets populated. See
+          # docs/source_reviews/tradingview_authenticated_candidates.md
+          # and scripts/shared/config.py for governance.
+          TRADINGVIEW_USERNAME: ${{ secrets.TRADINGVIEW_USERNAME }}
+          TRADINGVIEW_PASSWORD: ${{ secrets.TRADINGVIEW_PASSWORD }}
+          ENABLE_AUTHENTICATED_CANDIDATES: ${{ secrets.ENABLE_AUTHENTICATED_CANDIDATES }}
         run: python -m scripts.update_data
 
       - name: Commit data updates

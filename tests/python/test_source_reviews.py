@@ -24,6 +24,7 @@ REQUIRED_REVIEW_FILES = {
     "regional_fed_surveys_as_pmi_proxy.md",
     "sloos.md",
     "term_premium.md",
+    "tradingview_authenticated_candidates.md",
     "treasury_auctions.md",
     "treasury_fiscal_supply.md",
     "valuation_erp_earnings.md",
