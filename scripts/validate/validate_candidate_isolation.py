@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from scripts.shared import io as shared_io
+from scripts.shared.access_status import ACTIVE_ACCESS_STATUSES
 
 
 # Active-output files whose ``id`` references must be active-class only.
@@ -46,11 +47,6 @@ EXEMPT_KEYS_BY_FILE: dict[str, frozenset[str]] = {
     "derived/page_insights.json": frozenset({"freshness_notes"}),
     "derived/score_summary.json": frozenset({"missing_or_stale_notes"}),
 }
-
-# AccessStatus values that grant active-scoring eligibility. Anything else
-# (free_public_candidate, terms_review_needed, authenticated_candidate,
-# restricted_vendor, unavailable) is candidate-class.
-ACTIVE_ACCESS_STATUSES: frozenset[str] = frozenset({"free_public_active", "proxy_only"})
 
 
 class CandidateIsolationError(RuntimeError):

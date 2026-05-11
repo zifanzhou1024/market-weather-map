@@ -2,19 +2,9 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
+from scripts.shared.access_status import DERIVATION_TABLE as _DERIVATION_TABLE
 from scripts.shared.io import data_dir
 from scripts.shared.source_registry import source_registry_entries
-
-
-_DERIVATION_TABLE = {
-    "free_public_active":      ("active",    True,  True,  False),
-    "free_public_candidate":   ("candidate", False, True,  False),
-    "terms_review_needed":     ("candidate", False, False, False),
-    "authenticated_candidate": ("candidate", False, False, True),
-    "proxy_only":              ("active",    True,  True,  False),
-    "restricted_vendor":       ("candidate", False, False, False),
-    "unavailable":             ("candidate", False, False, False),
-}
 
 _LEGACY_ACCESS_STATUS_MAP = {
     # Maps old 4-value SourceAccessStatus to the new 7-value AccessStatus
