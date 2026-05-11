@@ -11,6 +11,54 @@ from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 
+def normalize_two_column_csv(
+    rows: list[dict[str, str]],
+    *,
+    date_column: str,
+    value_column: str,
+    label: str,
+    require_iso_date: bool = True,
+) -> list[dict[str, object]]:
+    """Normalize a two-column CSV (date + numeric value) into TimeSeriesFile observations.
+
+    Raises ValueError with `label` in the message on shape/content problems.
+    Returns observations sorted by date ascending; rows whose value parses to None are skipped.
+    """
+    if not rows:
+        raise ValueError(f"no rows returned for {label}")
+    if date_column not in rows[0] or value_column not in rows[0]:
+        raise ValueError(
+            f"missing expected {date_column}/{value_column} columns for {label}; got {list(rows[0])}"
+        )
+    observations: list[dict[str, object]] = []
+    for row in rows:
+        raw_date = row.get(date_column)
+        raw_value = row.get(value_column)
+        try:
+            value = parse_float(raw_value)
+        except ValueError as error:
+            raise ValueError(
+                f"invalid numeric value for {label}: {raw_value}"
+            ) from error
+        if value is None:
+            continue
+        if not raw_date:
+            raise ValueError(f"missing {date_column} for {label} row")
+        date_text = raw_date.strip()
+        if require_iso_date:
+            try:
+                datetime.strptime(date_text, "%Y-%m-%d")
+            except ValueError as error:
+                raise ValueError(
+                    f"invalid ISO date for {label}: {raw_date}"
+                ) from error
+        observations.append({"date": date_text, "value": value})
+    if not observations:
+        raise ValueError(f"no observations parsed for {label}")
+    observations.sort(key=lambda item: str(item["date"]))
+    return observations
+
+
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 

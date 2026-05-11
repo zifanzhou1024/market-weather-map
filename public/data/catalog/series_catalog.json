@@ -2650,33 +2650,6 @@
   {
     "access_status": "terms_review_needed",
     "active_scoring_allowed": false,
-    "category": "growth",
-    "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
-    "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSAVERT",
-    "frequency": "monthly",
-    "higher_is": "supportive",
-    "horizon": "strategic",
-    "id": "personal_saving_rate",
-    "max_stale_days": 45,
-    "name": "Personal Saving Rate",
-    "notes": "Candidate consumer balance-sheet input; source treatment and scoring design deferred.",
-    "preferred_chart": "line",
-    "provider_id": "terms_review",
-    "public": false,
-    "public_redistribution_allowed": false,
-    "regime_role": [
-      "growth"
-    ],
-    "requires_secret": false,
-    "score_status": "candidate",
-    "source": "FRED",
-    "source_url": "https://fred.stlouisfed.org/series/PSAVERT",
-    "terms_status": "review_needed",
-    "units": "percent"
-  },
-  {
-    "access_status": "terms_review_needed",
-    "active_scoring_allowed": false,
     "category": "credit",
     "citation_notes": "Useful sources that require access, terms, licensing, citation, or redistribution review before automated publication.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=TOTALSL",
@@ -3199,6 +3172,33 @@
     "source": "AAII",
     "source_url": "https://www.aaii.com/sentimentsurvey",
     "terms_status": "review_needed",
+    "units": "percent"
+  },
+  {
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
+    "category": "growth",
+    "citation_notes": "U.S. Bureau of Economic Analysis, Personal Saving Rate [PSAVERT], via FRED. Free public.",
+    "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSAVERT",
+    "frequency": "monthly",
+    "higher_is": "supportive",
+    "horizon": "strategic",
+    "id": "personal_saving_rate",
+    "max_stale_days": 60,
+    "name": "U.S. Personal Saving Rate",
+    "notes": "Monthly U.S. personal saving rate; reflects share of disposable income saved.",
+    "preferred_chart": "line",
+    "provider_id": "bea",
+    "public": true,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "growth"
+    ],
+    "requires_secret": false,
+    "score_status": "active",
+    "source": "BEA / FRED",
+    "source_url": "https://fred.stlouisfed.org/series/PSAVERT",
+    "terms_status": "review_each_series",
     "units": "percent"
   }
 ]
