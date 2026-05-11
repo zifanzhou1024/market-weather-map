@@ -74,9 +74,9 @@ def test_shock_risk_candidate_sources_are_gated():
     registry = source_registry_entries()
     entries = entries_by_id()
 
-    assert registry["ice_indices"]["access_status"] == "terms_review_needed"
+    assert registry["ice_indices"]["access_status"] == "restricted_vendor"
     assert entries["move_index"]["score_status"] == "candidate"
-    assert entries["move_index"]["access_status"] == "terms_review_needed"
+    assert entries["move_index"]["access_status"] == "restricted_vendor"
     assert entries["move_index"]["regime_role"] == ["bond_volatility"]
 
     assert entries["skew_index"]["score_status"] == "candidate"
