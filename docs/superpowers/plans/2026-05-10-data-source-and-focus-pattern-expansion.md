@@ -826,25 +826,33 @@ The canonical derivation table at the top of Chunk 1 applies here as well.
 
 ---
 
-### Task A4: Migrate `series_catalog.json` (105 entries — automated migration)
+### Task A4: Migrate `series_catalog.json` (via Python catalog + regeneration)
 
 **Dependencies:** Tasks A1 (types), A2 (factory), A3 (registry reclassification).
 
 **Files:**
-- Modify: `public/data/catalog/series_catalog.json` (105 entries)
-- Create: `scripts/migrations/migrate_series_catalog_access_status.py` (one-shot migration script)
+- Modify: `scripts/shared/catalog.py` (add an `_OVERRIDES` map applied inside `catalog_entries()` for the 4 series-level overrides)
+- Modify (regenerated): `public/data/catalog/series_catalog.json` (written by `scripts/transform/normalize_series.py:31` from `catalog_entries()`)
 - Test: `tests/python/test_series_catalog_migration.py` (new)
 
 **Spec reference:** §"Series-level migration".
 
-**Why:** Manual editing of 105 JSON entries is error-prone. A deterministic migration script + a fixture test makes the migration reproducible and auditable.
+**Why:** Manual editing of 105 JSON entries is futile — `series_catalog.json` is regenerated from `catalog_entries()` in `scripts/shared/catalog.py:1521` (verified 2026-05-10). The next `update_data` run rewrites the file from the Python source.
 
-**Current data shape (verified 2026-05-10):** all 105 entries fall into one of three `(access_status, score_status)` pairs:
-- `(free_public, active)` — 56 entries
-- `(free_public, candidate)` — 11 entries
-- `(terms_review_needed, candidate)` — 38 entries
+After Task A2 + A3 land, simply REGENERATING `series_catalog.json` migrates 105 entries correctly via the legacy-mapping path: `governance()` translates `"free_public"` → `"free_public_active"` and `"terms_review_needed"` stays as-is. The new flag fields (`active_scoring_allowed`, `public_redistribution_allowed`, `requires_secret`) get populated automatically.
 
-No other combinations exist. The mapping table in the migration script covers all three; the safety-net branch should not fire on real data, but stays in as a guard for accidental future drift.
+The remaining work is the 4 series-level overrides, which need an explicit Python mechanism in `catalog.py`.
+
+**Current data shape (verified 2026-05-10):** 105 entries cover three legacy combinations:
+- `(free_public, active)` — 56 entries → `free_public_active`
+- `(free_public, candidate)` — 11 entries → `free_public_candidate`
+- `(terms_review_needed, candidate)` — 38 entries → `terms_review_needed` (unchanged)
+
+Plus the 4 series-level overrides:
+- `sp500_index` → `terms_review_needed` (already correct; no override needed)
+- `move_index` → `restricted_vendor` (override needed; currently inherits `terms_review_needed`)
+- `skew_index` → `terms_review_needed` (already correct)
+- `bond_volatility_proxy` → `proxy_only` (override needed; currently inherits `free_public_active` from `derived` provider)
 
 - [ ] **Step 1: Write the failing test**
 
@@ -925,143 +933,103 @@ def test_no_unmapped_combinations():
 Run: `.venv/bin/python -m pytest tests/python/test_series_catalog_migration.py -v`
 Expected: FAIL.
 
-- [ ] **Step 3: Write the migration script**
+- [ ] **Step 3: Add `_SERIES_ACCESS_STATUS_OVERRIDES` to `scripts/shared/catalog.py`**
 
-Create `scripts/migrations/__init__.py` (empty) and `scripts/migrations/migrate_series_catalog_access_status.py`:
+Open `scripts/shared/catalog.py`. Add near the top of the file (after imports, before `governance()`):
 
 ```python
-"""One-shot migration for series_catalog.json's access_status field.
-
-Run with: .venv/bin/python -m scripts.migrations.migrate_series_catalog_access_status
-
-Idempotent: re-running on an already-migrated file is a no-op.
-"""
-from __future__ import annotations
-
-import json
-import sys
-from pathlib import Path
-
-CATALOG = Path("public/data/catalog/series_catalog.json")
-
-DERIVATION_TABLE = {
-    "free_public_active":      {"score_status": "active",    "active_scoring_allowed": True,  "public_redistribution_allowed": True,  "requires_secret": False},
-    "free_public_candidate":   {"score_status": "candidate", "active_scoring_allowed": False, "public_redistribution_allowed": True,  "requires_secret": False},
-    "terms_review_needed":     {"score_status": "candidate", "active_scoring_allowed": False, "public_redistribution_allowed": False, "requires_secret": False},
-    "authenticated_candidate": {"score_status": "candidate", "active_scoring_allowed": False, "public_redistribution_allowed": False, "requires_secret": True},
-    "proxy_only":              {"score_status": "active",    "active_scoring_allowed": True,  "public_redistribution_allowed": True,  "requires_secret": False},
-    "restricted_vendor":       {"score_status": "candidate", "active_scoring_allowed": False, "public_redistribution_allowed": False, "requires_secret": False},
-    "unavailable":             {"score_status": "candidate", "active_scoring_allowed": False, "public_redistribution_allowed": False, "requires_secret": False},
+# Series-level access_status overrides applied inside catalog_entries().
+# Each row overrides whatever access_status the provider-level governance()
+# would have populated, plus re-derives the flag fields via _DERIVATION_TABLE.
+_SERIES_ACCESS_STATUS_OVERRIDES: dict[str, str] = {
+    "move_index": "restricted_vendor",
+    "bond_volatility_proxy": "proxy_only",
+    # sp500_index and skew_index naturally resolve to terms_review_needed
+    # via their providers, no override needed.
 }
-
-# Default mapping from (old access_status, old score_status) to new access_status.
-DEFAULT_MAPPING: dict[tuple[str, str], str] = {
-    ("free_public", "active"):              "free_public_active",
-    ("free_public", "candidate"):           "free_public_candidate",
-    ("terms_review_needed", "candidate"):   "terms_review_needed",
-}
-
-# Series-level overrides (apply after the default mapping).
-OVERRIDES = {
-    "sp500_index":            "terms_review_needed",
-    "move_index":             "restricted_vendor",
-    "skew_index":             "terms_review_needed",
-    "bond_volatility_proxy":  "proxy_only",
-}
-
-
-def migrate_entry(entry: dict) -> dict:
-    series_id = entry.get("id", "<unknown>")
-    old_access = entry.get("access_status", "")
-    old_score = entry.get("score_status", "")
-
-    # If already migrated, return unchanged.
-    if old_access in DERIVATION_TABLE:
-        new_access = old_access
-    elif (old_access, old_score) in DEFAULT_MAPPING:
-        new_access = DEFAULT_MAPPING[(old_access, old_score)]
-    elif old_access == "terms_review_needed" and old_score == "active":
-        raise ValueError(
-            f"impossible (terms_review_needed, active) row for {series_id}"
-        )
-    else:
-        # Safety net per spec.
-        print(
-            f"WARN: unmapped (access_status={old_access!r}, score_status={old_score!r}) "
-            f"for {series_id}; defaulting to terms_review_needed + candidate.",
-            file=sys.stderr,
-        )
-        new_access = "terms_review_needed"
-
-    # Apply explicit series-level override.
-    if series_id in OVERRIDES:
-        new_access = OVERRIDES[series_id]
-
-    flags = DERIVATION_TABLE[new_access]
-    return {
-        **entry,
-        "access_status": new_access,
-        "score_status": flags["score_status"],
-        "active_scoring_allowed": flags["active_scoring_allowed"],
-        "public_redistribution_allowed": flags["public_redistribution_allowed"],
-        "requires_secret": flags["requires_secret"],
-    }
-
-
-def main() -> int:
-    entries = json.loads(CATALOG.read_text())
-    migrated = [migrate_entry(entry) for entry in entries]
-    CATALOG.write_text(json.dumps(migrated, indent=2) + "\n")
-    print(f"Migrated {len(migrated)} entries in {CATALOG}.")
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
 ```
 
-- [ ] **Step 4: Run the migration**
+- [ ] **Step 4: Apply the overrides + re-derive flags inside `catalog_entries()`**
 
-Run: `.venv/bin/python -m scripts.migrations.migrate_series_catalog_access_status`
-Expected stdout: `Migrated 105 entries in public/data/catalog/series_catalog.json.`
-Any WARN lines on stderr indicate fallback rows that hit the safety-net branch — investigate before continuing.
+Find `catalog_entries()` (around line 1521). At the END of the function, after all entries are appended, apply the overrides via a single post-pass. Add this block immediately before the function's `return entries`:
 
-- [ ] **Step 5: Run the migration tests**
+```python
+for entry in entries:
+    series_id = entry.get("id")
+    if series_id in _SERIES_ACCESS_STATUS_OVERRIDES:
+        new_access = _SERIES_ACCESS_STATUS_OVERRIDES[series_id]
+        derived_score, active_scoring, public_redist, derived_secret = _DERIVATION_TABLE[new_access]
+        entry["access_status"] = new_access
+        entry["score_status"] = derived_score
+        entry["active_scoring_allowed"] = active_scoring
+        entry["public_redistribution_allowed"] = public_redist
+        entry["requires_secret"] = derived_secret
+```
+
+This re-uses Task A2's `_DERIVATION_TABLE`. The override path mirrors the provider-level resolution in `governance()`, ensuring every entry has consistent flags.
+
+- [ ] **Step 5: Regenerate `public/data/catalog/series_catalog.json` from the Python source**
+
+```bash
+.venv/bin/python -c "
+import json
+from pathlib import Path
+from scripts.shared.catalog import catalog_entries
+out = Path('public/data/catalog/series_catalog.json')
+out.write_text(json.dumps(catalog_entries(), indent=2) + '\n')
+print('Regenerated', out, 'with', len(catalog_entries()), 'entries.')
+"
+```
+
+Expected: `Regenerated public/data/catalog/series_catalog.json with 105 entries.`
+
+- [ ] **Step 6: Run the migration tests**
 
 Run: `.venv/bin/python -m pytest tests/python/test_series_catalog_migration.py -v`
 Expected: PASS.
 
-- [ ] **Step 6: Spot-check the diff**
+- [ ] **Step 7: Run all existing tests**
+
+Run: `.venv/bin/python -m pytest tests/python -v`
+Expected: PASS. Update any assertion-value mismatches in `test_catalog.py` per Task A2 Step 6 guidance.
+
+- [ ] **Step 8: Spot-check the diff**
 
 Run: `git diff public/data/catalog/series_catalog.json | head -80`
-Confirm: a typical entry's `access_status` changed from `"free_public"` to `"free_public_active"`, and the three new flag fields are present. `sp500_index`, `move_index`, `skew_index`, and `bond_volatility_proxy` got their override values.
+Confirm: a typical entry's `access_status` changed from `"free_public"` to `"free_public_active"`, and the three new flag fields are present. `move_index` is now `restricted_vendor`, `bond_volatility_proxy` is now `proxy_only`. `sp500_index` and `skew_index` remain `terms_review_needed`.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
-git add public/data/catalog/series_catalog.json scripts/migrations/ tests/python/test_series_catalog_migration.py
-git commit -m "feat(catalog): migrate all 105 series_catalog entries to AccessStatus
+git status --short
+git add scripts/shared/catalog.py public/data/catalog/series_catalog.json tests/python/test_series_catalog_migration.py
+# Only add test_catalog.py if you updated assertion-value literals in Step 7.
+git commit -m "feat(catalog): migrate series_catalog entries to AccessStatus
 
-Apply the access_status migration via a deterministic, idempotent
-script. score_status is retained as a derived alias. Series-level
-overrides applied for sp500_index (terms_review_needed),
-move_index (restricted_vendor), skew_index (terms_review_needed),
-and bond_volatility_proxy (proxy_only)."
+Migration leverages Task A2's _LEGACY_ACCESS_STATUS_MAP for the 67
+'free_public' entries (auto-translated to free_public_active /
+free_public_candidate by governance()) plus a small
+_SERIES_ACCESS_STATUS_OVERRIDES map for two series-level exceptions
+(move_index -> restricted_vendor, bond_volatility_proxy ->
+proxy_only). sp500_index and skew_index naturally resolve to
+terms_review_needed via their provider entries. score_status is
+retained as derived alias on every entry."
 ```
 
 ---
 
-### Task A5: Append 12 already-reviewed candidate series entries to `series_catalog.json`
+### Task A5: Append 12 already-reviewed candidate series entries (Python catalog + regeneration)
 
 **Dependencies:** Task A4 (series_catalog migration must have finished so the file is on the new schema).
 
 **Files:**
-- Modify: `public/data/catalog/series_catalog.json` (append 12 new entries at the end)
+- Modify: `scripts/shared/catalog.py` (define a `CANDIDATE_SERIES_PHASE_A` list constant; extend `catalog_entries()` to include it)
+- Modify (regenerated): `public/data/catalog/series_catalog.json`
 - Test: `tests/python/test_series_catalog_candidate_entries.py` (new)
 
 **Spec reference:** §"`series_catalog.json` ownership — split by source-review presence", first table (phase A entries).
 
-**Why:** Adding these entries up front lets the candidate-isolation validator from task A8 reject leaks even before phase B/C land their candidate-file ingest scripts.
+**Why:** Adding these entries up front lets the candidate-isolation validator from Task A7 reject leaks even before phase B/C land their candidate-file ingest scripts. The entries are appended in Python (the source of truth) so they survive `update_data` regeneration.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1103,9 +1071,58 @@ def test_all_phase_a_candidate_entries_present():
 Run: `.venv/bin/python -m pytest tests/python/test_series_catalog_candidate_entries.py -v`
 Expected: FAIL (entries missing).
 
-- [ ] **Step 3: Append the 12 candidate entries**
+- [ ] **Step 3: Define `CANDIDATE_SERIES_PHASE_A` in `scripts/shared/catalog.py`**
 
-Open `public/data/catalog/series_catalog.json`. Append the following entries at the end of the array (before the closing `]`). Each entry follows the existing schema — adapt fields like `name`, `category`, `frequency`, `endpoint_url` to be plausible for the underlying source. Use `endpoint_url: ""` if the ingest script lands it later. Each entry MUST carry `access_status`, `requires_secret`, `active_scoring_allowed`, `public_redistribution_allowed`, `score_status` (derived alias).
+Open `scripts/shared/catalog.py`. Add a new module-level constant near the other SERIES constants (e.g. after `TACTICAL_IDS` or alongside `FRED_SERIES`):
+
+```python
+CANDIDATE_SERIES_PHASE_A: list[dict[str, object]] = [
+    # Filled in by the dict literals shown in Step 4 below.
+]
+```
+
+Then extend `catalog_entries()` to include this list. At the end of `catalog_entries()`, BEFORE the override loop added in Task A4 Step 4, add:
+
+```python
+entries.extend(entry.copy() for entry in CANDIDATE_SERIES_PHASE_A)
+```
+
+The `.copy()` matches the existing pattern at line 1522 (`[series.copy() for series in CBOE_INDEX_SERIES]`).
+
+- [ ] **Step 4: Populate `CANDIDATE_SERIES_PHASE_A` with the 12 candidate entries**
+
+Each entry is a self-contained dict — no `governance()` call needed because the flag fields are written explicitly. Below is the canonical first entry; replicate the pattern with field-value substitutions for the remaining 11 entries.
+
+```python
+CANDIDATE_SERIES_PHASE_A: list[dict[str, object]] = [
+    {
+        "id": "put_call_total_candidate",
+        "name": "Cboe Total Put/Call Ratio (candidate)",
+        "category": "volatility",
+        "source": "Cboe",
+        "provider_id": "cboe_options",
+        "source_url": "https://www.cboe.com/markets/us/options/market_statistics/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": "Candidate Cboe options market statistics. Not active until source review approves redistribution.",
+        "citation_notes": "Cboe options market statistics; candidate pending review per docs/source_reviews/cboe_put_call.md.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    # ... 11 more entries; see field-value table below.
+]
+```
 
 Example for one Cboe put/call entry:
 
@@ -1150,27 +1167,43 @@ Replicate this pattern for all 12 entries, varying `id`, `name`, `provider_id`, 
 
 - `aaii_sentiment_candidate` — `provider_id: "aaii"`, `category: "sentiment"`, `frequency: "weekly"`, `units: "percent"`. Same flag values as NAAIM (`terms_review_needed`).
 
-- [ ] **Step 4: Run the candidate-entries test**
+- [ ] **Step 5: Regenerate `series_catalog.json` from the Python source**
+
+```bash
+.venv/bin/python -c "
+import json
+from pathlib import Path
+from scripts.shared.catalog import catalog_entries
+out = Path('public/data/catalog/series_catalog.json')
+out.write_text(json.dumps(catalog_entries(), indent=2) + '\n')
+print('Regenerated', out, 'with', len(catalog_entries()), 'entries.')
+"
+```
+
+Expected: `Regenerated public/data/catalog/series_catalog.json with 117 entries.` (105 existing + 12 candidate appends = 117).
+
+- [ ] **Step 6: Run the candidate-entries test**
 
 Run: `.venv/bin/python -m pytest tests/python/test_series_catalog_candidate_entries.py -v`
 Expected: PASS.
 
-- [ ] **Step 5: Run the migration test to confirm no regression**
+- [ ] **Step 7: Run the migration test to confirm no regression**
 
 Run: `.venv/bin/python -m pytest tests/python/test_series_catalog_migration.py tests/python/test_series_catalog_candidate_entries.py -v`
 Expected: PASS for both.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
-git add public/data/catalog/series_catalog.json tests/python/test_series_catalog_candidate_entries.py
+git add scripts/shared/catalog.py public/data/catalog/series_catalog.json tests/python/test_series_catalog_candidate_entries.py
 git commit -m "feat(catalog): append 12 already-reviewed candidate series entries
 
-Add 5 Cboe put/call + 5 VX (vx1-3 + vx_front_spread +
-vx_contango_score) + naaim_exposure_candidate +
-aaii_sentiment_candidate entries to series_catalog.json. All marked
-as candidate-class; never enter active scoring. Reviews already
-exist (cboe_put_call.md, vix_futures_curve.md, aaii_naaim.md)."
+Add CANDIDATE_SERIES_PHASE_A list constant with 5 Cboe put/call + 5
+VX (vx1-3 + vx_front_spread + vx_contango_score) +
+naaim_exposure_candidate + aaii_sentiment_candidate entries; extend
+catalog_entries() to include them. All marked as candidate-class;
+never enter active scoring. Reviews already exist (cboe_put_call.md,
+vix_futures_curve.md, aaii_naaim.md). JSON regenerated."
 ```
 
 ---
@@ -2264,4 +2297,1086 @@ EOF
 Phase A is the gate. Do not start phases B / C / D until Phase A is merged.
 
 ---
+
+## Chunk 4: Phase B — official-sources-agent (tasks BO1–BO8)
+
+**Branch:** `feat/data-source-phase-b-official`
+**Worktree:** `.worktrees/phaseB-official`
+**Spec reference:** §"Phase B" → `official-sources-agent`.
+**Owns:** new ingest scripts for BEA, Shiller CAPE, NY Fed ACM; new transform for treasury supply pressure; three new source-review docs.
+**Depends on:** Phase A merged to `main`. Rebase this branch onto post-merge `main` before starting.
+
+### Python-source-first pattern (used by every Phase B/C agent)
+
+For new series, append entries to `scripts/shared/catalog.py` (not directly to JSON). The `update_data` pipeline regenerates `public/data/catalog/series_catalog.json`. The pattern established in Phase A Task A5:
+
+1. Define a per-agent list constant in `catalog.py` (e.g. `OFFICIAL_SOURCE_SERIES_PHASE_B`).
+2. Extend `catalog_entries()` to include the new list.
+3. Each entry sets `access_status`, `score_status`, `active_scoring_allowed`, `public_redistribution_allowed`, `requires_secret` explicitly per the derivation table.
+4. Regenerate JSON via the one-liner from Task A4 Step 5.
+
+### Worktree bootstrap
+
+```bash
+git worktree add .worktrees/phaseB-official -b feat/data-source-phase-b-official origin/main
+cd .worktrees/phaseB-official
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+```
+
+---
+
+### Task BO1: Write source-review docs
+
+**Dependencies:** none.
+
+**Files:**
+- Create: `docs/source_reviews/bea_personal_saving_rate.md`
+- Create: `docs/source_reviews/shiller_cape.md`
+- Modify: `docs/source_reviews/ny_fed_acm_term_premium.md` (re-review with documented endpoint)
+
+**Spec reference:** §"`official-sources-agent`" sub-bullets.
+
+- [ ] **Step 1: Write `bea_personal_saving_rate.md`**
+
+Follow the structure of existing source reviews (e.g. `docs/source_reviews/sloos.md`). Include:
+- Source owner: U.S. Bureau of Economic Analysis.
+- Official page: https://www.bea.gov/data/income-saving/personal-saving-rate (and FRED mirror at https://fred.stlouisfed.org/series/PSAVERT).
+- Data format: monthly, percent of disposable income.
+- Automated download: approved via FRED graph CSV endpoint (`https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSAVERT`).
+- Static JSON redistribution: approved (BEA data is in the public domain).
+- Attribution: "U.S. Bureau of Economic Analysis, Personal Saving Rate [PSAVERT], via FRED."
+- Decision: `access_status: free_public_active`, `score_status: active`.
+
+- [ ] **Step 2: Write `shiller_cape.md`**
+
+- Source owner: Robert Shiller / Yale; mirror at multpl.com.
+- Official page: http://www.econ.yale.edu/~shiller/data.htm.
+- Data format: monthly CAPE ratio.
+- Automated download: approved if from Shiller's hosted XLS or multpl.com mirror.
+- Static JSON redistribution: approved (Shiller data is broadly public).
+- Attribution: "Cyclically Adjusted P/E ratio from Robert Shiller, Yale University."
+- Decision: `access_status: free_public_active`, `score_status: active`.
+
+- [ ] **Step 3: Update `ny_fed_acm_term_premium.md`**
+
+Replace the existing "Decision" section. Document the endpoint at `https://www.newyorkfed.org/medialibrary/media/research/data_indicators/ACMTermPremium.xls` (or the current canonical URL — verify on the NY Fed page).
+
+Either:
+- (a) Conclude `access_status: free_public_candidate` if endpoint is stable but redistribution requires further review. Output goes to `candidates/`.
+- (b) Conclude `access_status: free_public_active` if redistribution is approved.
+
+Default: (a). The ingest script in Task BO5 outputs to `candidates/` regardless.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add docs/source_reviews/bea_personal_saving_rate.md docs/source_reviews/shiller_cape.md docs/source_reviews/ny_fed_acm_term_premium.md
+git commit -m "docs(source-reviews): add BEA + Shiller CAPE reviews; re-review NY Fed ACM
+
+BEA personal saving rate and Shiller CAPE concluded free_public_active.
+NY Fed ACM term premium remains free_public_candidate pending
+redistribution review."
+```
+
+---
+
+### Task BO2: Add new series catalog entries to `scripts/shared/catalog.py`
+
+**Dependencies:** Phase A merged (catalog.py now uses the new `_DERIVATION_TABLE`).
+
+**Files:**
+- Modify: `scripts/shared/catalog.py`
+- Modify (regenerated): `public/data/catalog/series_catalog.json`
+- Test: `tests/python/test_official_sources_catalog_entries.py` (new)
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/python/test_official_sources_catalog_entries.py`:
+
+```python
+import json
+from pathlib import Path
+
+CATALOG = Path("public/data/catalog/series_catalog.json")
+
+EXPECTED = {
+    "personal_saving_rate":          ("free_public_active",    "bea"),
+    "cape_ratio":                    ("free_public_active",    "multpl_shiller"),
+    "ny_fed_acm_term_premium_candidate": ("free_public_candidate", "ny_fed"),
+}
+
+
+def test_official_source_entries_present():
+    entries = {e["id"]: e for e in json.loads(CATALOG.read_text())}
+    for series_id, (access, provider) in EXPECTED.items():
+        assert series_id in entries, series_id
+        assert entries[series_id]["access_status"] == access
+        assert entries[series_id]["provider_id"] == provider
+```
+
+- [ ] **Step 2: Define `OFFICIAL_SOURCE_SERIES_PHASE_B` in `catalog.py`**
+
+Add the list with three dict literals (analogous to `CANDIDATE_SERIES_PHASE_A`):
+
+```python
+OFFICIAL_SOURCE_SERIES_PHASE_B: list[dict[str, object]] = [
+    {
+        "id": "personal_saving_rate",
+        "name": "U.S. Personal Saving Rate",
+        "category": "growth",
+        "source": "BEA / FRED",
+        "provider_id": "bea",
+        "source_url": "https://fred.stlouisfed.org/series/PSAVERT",
+        "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSAVERT",
+        "frequency": "monthly",
+        "units": "percent",
+        "higher_is": "supportive",
+        "public": True,
+        "max_stale_days": 60,
+        "notes": "Monthly U.S. personal saving rate; reflects share of disposable income saved.",
+        "citation_notes": "U.S. Bureau of Economic Analysis, Personal Saving Rate [PSAVERT], via FRED. Free public.",
+        "access_status": "free_public_active",
+        "score_status": "active",
+        "terms_status": "review_each_series",
+        "active_scoring_allowed": True,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "strategic",
+        "regime_role": ["growth"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "cape_ratio",
+        "name": "Shiller CAPE Ratio",
+        "category": "sentiment",
+        "source": "Robert Shiller / Yale",
+        "provider_id": "multpl_shiller",
+        "source_url": "http://www.econ.yale.edu/~shiller/data.htm",
+        "endpoint_url": "",
+        "frequency": "monthly",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": True,
+        "max_stale_days": 45,
+        "notes": "Cyclically Adjusted Price-to-Earnings ratio (S&P 500), monthly.",
+        "citation_notes": "Cyclically Adjusted P/E ratio from Robert Shiller, Yale University.",
+        "access_status": "free_public_active",
+        "score_status": "active",
+        "terms_status": "review_each_series",
+        "active_scoring_allowed": True,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "strategic",
+        "regime_role": ["sentiment"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "ny_fed_acm_term_premium_candidate",
+        "name": "NY Fed ACM 10-Year Term Premium (candidate)",
+        "category": "rates",
+        "source": "Federal Reserve Bank of New York",
+        "provider_id": "ny_fed",
+        "source_url": "https://www.newyorkfed.org/research/data_indicators/term-premia-tabs",
+        "endpoint_url": "",
+        "frequency": "monthly",
+        "units": "percent",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 45,
+        "notes": "Adrian-Crump-Moench 10Y term premium; candidate pending redistribution review.",
+        "citation_notes": "NY Fed ACM term-premium estimates; candidate.",
+        "access_status": "free_public_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_each_series",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "horizon": "strategic",
+        "regime_role": ["real_yield"],
+        "preferred_chart": "line",
+    },
+]
+```
+
+Extend `catalog_entries()` to include this list (after `CANDIDATE_SERIES_PHASE_A`):
+
+```python
+entries.extend(entry.copy() for entry in OFFICIAL_SOURCE_SERIES_PHASE_B)
+```
+
+- [ ] **Step 3: Regenerate JSON + run tests**
+
+```bash
+.venv/bin/python -c "import json; from pathlib import Path; from scripts.shared.catalog import catalog_entries; Path('public/data/catalog/series_catalog.json').write_text(json.dumps(catalog_entries(), indent=2) + '\n'); print(len(catalog_entries()), 'entries')"
+.venv/bin/python -m pytest tests/python/test_official_sources_catalog_entries.py -v
+```
+
+Expected: 120 entries (105 base + 12 phase A candidates + 3 official sources); PASS.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add scripts/shared/catalog.py public/data/catalog/series_catalog.json tests/python/test_official_sources_catalog_entries.py
+git commit -m "feat(catalog): add Phase B official-source series entries
+
+personal_saving_rate and cape_ratio (free_public_active);
+ny_fed_acm_term_premium_candidate (free_public_candidate)."
+```
+
+---
+
+### Task BO3: Implement `fetch_bea_personal_saving_rate.py`
+
+**Dependencies:** Task BO1 (source review), BO2 (catalog entry).
+
+**Files:**
+- Create: `scripts/ingest/fetch_bea_personal_saving_rate.py`
+- Modify: `scripts/update_data.py` (append `"scripts.ingest.fetch_bea_personal_saving_rate"` to `MODULES_INGEST_PHASE_B_OFFICIAL`)
+- Modify: `scripts/validate/validate_schema.py` (add schema check for the new series file)
+- Modify: `scripts/validate/validate_freshness.py` (add freshness expectation)
+- Test: `tests/python/test_fetch_bea.py` (new)
+
+- [ ] **Step 1: Read the existing FRED CSV fetcher**
+
+Run: `grep -n "def \|fred" scripts/ingest/fetch_fred_csv.py | head -20`
+Use its pattern (CSV download, normalize, write TimeSeriesFile JSON) as the template.
+
+- [ ] **Step 2: Write the failing test (fixture-driven)**
+
+Create `tests/python/test_fetch_bea.py`:
+
+```python
+from pathlib import Path
+
+import pytest
+
+from scripts.ingest import fetch_bea_personal_saving_rate as mod
+
+
+def test_parse_fred_csv_basic(tmp_path: Path):
+    csv_text = "DATE,VALUE\n2024-01-01,5.2\n2024-02-01,5.4\n"
+    fixture = tmp_path / "psavert.csv"
+    fixture.write_text(csv_text)
+    series_file = mod.parse_csv(fixture)
+    assert series_file["series_id"] == "personal_saving_rate"
+    assert series_file["frequency"] == "monthly"
+    assert series_file["units"] == "percent"
+    obs = series_file["observations"]
+    assert len(obs) == 2
+    assert obs[0]["date"] == "2024-01-01" and obs[0]["value"] == 5.2
+```
+
+- [ ] **Step 3: Implement the ingest module**
+
+Create `scripts/ingest/fetch_bea_personal_saving_rate.py` modelled on `scripts/ingest/fetch_fred_csv.py`. Key bits:
+
+```python
+"""Fetch BEA Personal Saving Rate (PSAVERT) from FRED."""
+from __future__ import annotations
+
+import csv
+from datetime import datetime, timezone
+from pathlib import Path
+
+import requests
+
+from scripts.shared.io import data_dir, write_json
+
+ENDPOINT = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSAVERT"
+SERIES_ID = "personal_saving_rate"
+
+
+def parse_csv(path: Path) -> dict:
+    rows = []
+    with path.open() as fh:
+        for row in csv.DictReader(fh):
+            try:
+                rows.append({"date": row["DATE"], "value": float(row["VALUE"])})
+            except (KeyError, ValueError):
+                continue
+    return {
+        "series_id": SERIES_ID,
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "source": "BEA / FRED",
+        "source_url": "https://fred.stlouisfed.org/series/PSAVERT",
+        "frequency": "monthly",
+        "units": "percent",
+        "observations": rows,
+    }
+
+
+def main() -> None:
+    out = data_dir() / "series" / f"{SERIES_ID}.json"
+    response = requests.get(ENDPOINT, timeout=30)
+    response.raise_for_status()
+    tmp = data_dir() / "series" / f"{SERIES_ID}.csv.tmp"
+    tmp.write_text(response.text)
+    payload = parse_csv(tmp)
+    tmp.unlink()
+    write_json(out, payload)
+    print(f"Wrote {out} with {len(payload['observations'])} observations.")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+- [ ] **Step 4: Append to MODULES sub-list**
+
+Edit `scripts/update_data.py`:
+
+```python
+MODULES_INGEST_PHASE_B_OFFICIAL: list[str] = [
+    "scripts.ingest.fetch_bea_personal_saving_rate",
+]
+```
+
+- [ ] **Step 5: Add schema + freshness rules**
+
+Add to `scripts/validate/validate_schema.py` (in the existing per-series check loop or a new helper):
+
+```python
+# personal_saving_rate: monthly TimeSeriesFile shape
+_check_time_series_file(data_dir() / "series" / "personal_saving_rate.json", expected_frequency="monthly")
+```
+
+Add to `scripts/validate/validate_freshness.py`:
+
+```python
+EXPECTED_FRESHNESS["personal_saving_rate"] = timedelta(days=60)
+```
+
+(Match the exact pattern of existing entries in that file.)
+
+- [ ] **Step 6: Run test + verification**
+
+```bash
+.venv/bin/python -m pytest tests/python/test_fetch_bea.py -v
+.venv/bin/python -m scripts.validate.validate_schema
+```
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add scripts/ingest/fetch_bea_personal_saving_rate.py scripts/update_data.py scripts/validate/validate_schema.py scripts/validate/validate_freshness.py tests/python/test_fetch_bea.py
+git commit -m "feat(ingest): add BEA personal saving rate ingest from FRED CSV"
+```
+
+---
+
+### Task BO4: Implement `fetch_shiller_cape.py`
+
+**Dependencies:** Task BO1, BO2.
+
+**Files:**
+- Create: `scripts/ingest/fetch_shiller_cape.py`
+- Modify: `scripts/update_data.py` (append to `MODULES_INGEST_PHASE_B_OFFICIAL`)
+- Modify: `scripts/validate/validate_schema.py`, `scripts/validate/validate_freshness.py`
+- Test: `tests/python/test_fetch_shiller_cape.py` (new)
+
+Follows the same shape as BO3. Endpoint: Shiller's XLS at http://www.econ.yale.edu/~shiller/data/ie_data.xls (verify on the canonical page). Use `openpyxl` to read; emit monthly CAPE ratio. Output to `public/data/series/cape_ratio.json`.
+
+Add `openpyxl>=3.1,<4` to `requirements.txt` if not already present.
+
+Steps mirror BO3:
+- [ ] Write failing test with a small fixture XLS or a mocked DataFrame
+- [ ] Implement ingest module
+- [ ] Append to MODULES_INGEST_PHASE_B_OFFICIAL
+- [ ] Schema + freshness
+- [ ] Run + verify
+- [ ] Commit
+
+---
+
+### Task BO5: Implement `fetch_nyfed_acm_term_premium.py`
+
+**Dependencies:** Task BO1, BO2.
+
+**Files:**
+- Create: `scripts/ingest/fetch_nyfed_acm_term_premium.py`
+- Modify: `scripts/update_data.py` (append to `MODULES_INGEST_PHASE_B_OFFICIAL`)
+- Modify: `scripts/validate/validate_schema.py`, `scripts/validate/validate_freshness.py`
+- Test: `tests/python/test_fetch_nyfed_acm.py` (new)
+
+**Output path is different from BO3/BO4.** Because `access_status` is `free_public_candidate`, the output goes to `public/data/candidates/ny_fed_acm_term_premium_candidate.json` — NOT to `series/`.
+
+The output JSON carries `access_status: "free_public_candidate"`, `active_scoring_allowed: false`, `public_redistribution_allowed: true`, `requires_secret: false`. The fetch follows the pattern from BO3.
+
+Steps mirror BO3 with the candidate output path.
+
+---
+
+### Task BO6: Implement `build_treasury_supply_pressure.py`
+
+**Dependencies:** existing `public/data/series/treasury_auction_supply.json`.
+
+**Files:**
+- Create: `scripts/transform/build_treasury_supply_pressure.py`
+- Modify: `scripts/update_data.py` (append to `MODULES_TRANSFORM_PHASE_B`)
+- Modify: validators
+- Test: `tests/python/test_build_treasury_supply_pressure.py` (new)
+
+Read `treasury_auction_supply.json`. Compute a derived "supply pressure" metric: rolling 30-day sum of auction amounts as a percent of trailing year average. Output to `public/data/derived/treasury_supply_pressure.json` with `access_status: free_public_active`.
+
+Steps mirror BO3 with a transform instead of ingest.
+
+---
+
+### Task BO7: Verification + PR
+
+- [ ] Run base gate (`pytest`, `npm test`, `npm run build`, `validate_schema`, `validate_freshness`, `validate_candidate_isolation`)
+- [ ] Run `update_data` smoke test (network-conditional)
+- [ ] Confirm all four new outputs exist and validate
+- [ ] Commit any remaining changes
+- [ ] Open PR titled "Phase B: official-sources-agent"
+
+---
+
+## Chunk 5: Phase B — cboe-candidate-agent + sentiment-candidate-agent
+
+**Branches:** `feat/data-source-phase-b-cboe-candidate` AND `feat/data-source-phase-b-sentiment-candidate` (two separate PRs, same chunk for review economy).
+**Depends on:** Phase A merged.
+
+These two agents own disjoint files. Each agent runs the steps in its own worktree branch.
+
+### Worktree bootstrap (run separately for each branch)
+
+```bash
+git worktree add .worktrees/phaseB-cboe -b feat/data-source-phase-b-cboe-candidate origin/main
+git worktree add .worktrees/phaseB-sentiment -b feat/data-source-phase-b-sentiment-candidate origin/main
+```
+
+---
+
+### Task BC1: cboe-candidate-agent — fetch Cboe put/call CSV
+
+**Files:**
+- Create: `scripts/ingest/fetch_cboe_put_call.py`
+- Modify: `scripts/update_data.py` (`MODULES_INGEST_PHASE_B_CBOE`)
+- Test: `tests/python/test_fetch_cboe_put_call.py`
+
+Fetches Cboe options market statistics CSV (verify endpoint on the Cboe market statistics page). Writes five candidate files under `public/data/candidates/`:
+- `put_call_total_candidate.json`
+- `put_call_index_candidate.json`
+- `put_call_equity_candidate.json`
+- `put_call_vix_candidate.json`
+- `put_call_spxw_candidate.json`
+
+Each file carries `access_status: "free_public_candidate"`, `active_scoring_allowed: false`, `public_redistribution_allowed: true`, `requires_secret: false`. Series catalog entries were pre-added by Phase A Task A5.
+
+Steps mirror Task BO3 with 5 outputs.
+
+---
+
+### Task BC2: cboe-candidate-agent — fetch Cboe VX settlements
+
+**Files:**
+- Create: `scripts/ingest/fetch_cboe_vx_settlements.py`
+- Create: `scripts/transform/build_vx_curve_context.py` (computes vx_front_spread, vx_contango_score)
+- Modify: `scripts/update_data.py`
+- Test: `tests/python/test_fetch_cboe_vx.py`, `tests/python/test_build_vx_curve_context.py`
+
+Fetches VX1/VX2/VX3 settlement data from Cboe Futures. Writes:
+- `vx1_candidate.json`, `vx2_candidate.json`, `vx3_candidate.json` (ingest)
+- `vx_front_spread_candidate.json`, `vx_contango_score_candidate.json` (transform)
+
+All five carry the same `free_public_candidate` flag set as BC1.
+
+---
+
+### Task BC3: cboe-candidate-agent — verification + PR
+
+- [ ] Run base + extended gate
+- [ ] Confirm 10 candidate files validate
+- [ ] PR titled "Phase B: cboe-candidate-agent"
+
+---
+
+### Task BS1: sentiment-candidate-agent — implement NAAIM ingest (ingest only, no committed JSON)
+
+**Files:**
+- Create: `scripts/ingest/fetch_naaim_candidate.py`
+- Modify: `scripts/update_data.py` (`MODULES_INGEST_PHASE_B_SENTIMENT`)
+- Test: `tests/python/test_fetch_naaim.py`
+
+Per the spec's Option A decision, the ingest script lands but no candidate JSON is committed (NAAIM is `terms_review_needed`, so `public_redistribution_allowed: false`). The ingest script runs in CI, writes to a local file, but the file is gitignored (add `public/data/candidates/naaim_exposure_candidate.json` to `.gitignore` if not already).
+
+Steps:
+- [ ] Write fetch logic for NAAIM XLS
+- [ ] Add the candidates filename to `.gitignore` under `public/data/candidates/naaim_*`
+- [ ] Append to MODULES
+- [ ] Test that the fetch runs cleanly with a fixture XLS
+- [ ] Commit (only the script + .gitignore + test; no JSON)
+
+---
+
+### Task BS2: sentiment-candidate-agent — implement AAII ingest (ingest only)
+
+Same shape as BS1 for AAII. Output `aaii_sentiment_candidate.json` is also gitignored.
+
+---
+
+### Task BS3: sentiment-candidate-agent — verification + PR
+
+- [ ] Run base gate
+- [ ] Confirm no NAAIM/AAII JSON in `public/data/candidates/`
+- [ ] PR titled "Phase B: sentiment-candidate-agent"
+
+---
+
+## Chunk 6: Phase C — TradingView authenticated candidates (tasks C1–C8)
+
+**Branch:** `feat/data-source-phase-c-tradingview`
+**Worktree:** `.worktrees/phaseC`
+**Depends on:** Phase A merged.
+
+### Worktree bootstrap
+
+```bash
+git worktree add .worktrees/phaseC -b feat/data-source-phase-c-tradingview origin/main
+cd .worktrees/phaseC
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+```
+
+---
+
+### Task C1: Write source-review doc
+
+**Files:**
+- Create: `docs/source_reviews/tradingview_authenticated_candidates.md`
+
+Pin the TradingView client (e.g. `tvdatafeed-fork>=1.5,<2`) and document:
+- access_status: authenticated_candidate
+- requires_secret: true
+- public_redistribution_allowed: false (but file is committed; see spec's note)
+- Cache dir: must be set under `tempfile.gettempdir()` via env var
+- Exception scrubbing: must strip credentials from error messages
+
+Commit.
+
+---
+
+### Task C2: Add `scripts/shared/config.py` secret helpers
+
+**Files:**
+- Create: `scripts/shared/config.py`
+- Test: `tests/python/test_config_secrets.py`
+
+- [ ] Write the failing test that exercises `secret()`, `authenticated_candidates_enabled()`, and `tradingview_credentials_available()` against monkeypatched env values.
+
+- [ ] Implement the module per the spec's §"Secret helpers" code block:
+
+```python
+import os
+
+
+def secret(name: str) -> str | None:
+    value = os.environ.get(name)
+    return value.strip() if value and value.strip() else None
+
+
+def authenticated_candidates_enabled() -> bool:
+    return os.environ.get("ENABLE_AUTHENTICATED_CANDIDATES", "").lower() == "true"
+
+
+def tradingview_credentials_available() -> bool:
+    return (
+        authenticated_candidates_enabled()
+        and secret("TRADINGVIEW_USERNAME") is not None
+        and secret("TRADINGVIEW_PASSWORD") is not None
+    )
+```
+
+Helpers never log values. Test asserts behavior across all enabled/disabled combinations.
+
+- [ ] Commit.
+
+---
+
+### Task C3: Update `requirements.txt`
+
+**Files:**
+- Modify: `requirements.txt`
+
+Append:
+
+```
+pandas>=2.2,<3
+requests>=2.32,<3
+tvdatafeed-fork>=1.5,<2
+```
+
+Verify: `.venv/bin/pip install -r requirements.txt` succeeds.
+
+Commit.
+
+---
+
+### Task C4: Add catalog entries for 3 TV candidates
+
+**Files:**
+- Modify: `scripts/shared/catalog.py` (add `TRADINGVIEW_CANDIDATE_SERIES`)
+- Modify (regenerated): `public/data/catalog/series_catalog.json`
+- Test: `tests/python/test_tradingview_catalog_entries.py`
+
+Follow Phase A Task A5 pattern. Three entries (`tradingview_move_candidate`, `tradingview_put_call_candidate`, `tradingview_vx_curve_candidate`) with `access_status: "authenticated_candidate"`, `requires_secret: true`, `provider_id: "tradingview"`.
+
+Regenerate JSON; commit.
+
+---
+
+### Task C5: Implement `fetch_tradingview_move.py`
+
+**Files:**
+- Create: `scripts/ingest/fetch_tradingview_move.py`
+- Modify: `scripts/update_data.py` (`MODULES_INGEST_PHASE_C_TRADINGVIEW`)
+- Test: integration test (mocks TV client)
+
+Implement per the spec's §"Ingest scripts" code block. Top-level guard:
+
+```python
+from scripts.shared.config import tradingview_credentials_available, secret
+
+def main():
+    if not tradingview_credentials_available():
+        print("TradingView candidates disabled or secrets missing; skipping.")
+        return
+    try:
+        import tvDatafeed  # or chosen library
+    except ImportError:
+        print("WARN: TradingView library not installed; skipping.")
+        return
+    # set cache dir under /tmp
+    import os, tempfile
+    os.environ.setdefault("TVDATAFEED_CACHE_DIR", tempfile.mkdtemp(prefix="tv_cache_"))
+    try:
+        # fetch MOVE-like series via TV
+        ...
+    except Exception as exc:
+        # SCRUB credentials from error message
+        msg = _scrub_credentials(str(exc))
+        print(f"WARN: TradingView fetch failed: {msg}")
+        return
+    # write public/data/candidates/tradingview_move_candidate.json
+    ...
+```
+
+Where `_scrub_credentials()` removes any substring containing `secret("TRADINGVIEW_USERNAME")` or `secret("TRADINGVIEW_PASSWORD")`.
+
+Commit.
+
+---
+
+### Task C6: Implement `fetch_tradingview_put_call.py` and `fetch_tradingview_vx_curve.py`
+
+Same pattern as C5. Three TV ingest scripts in total.
+
+---
+
+### Task C7: Add `tests/python/test_secrets_isolation.py`
+
+**Files:**
+- Create: `tests/python/test_secrets_isolation.py`
+
+Per the spec's §"Secret-isolation test" section:
+
+1. `secret()` strips and returns None for empty values.
+2. `tradingview_credentials_available()` is False without env vars.
+3. **Allowlist check:** secret-name strings appear only in the allowlist files (`.github/workflows/update-data.yml`, `scripts/shared/config.py`, `scripts/ingest/fetch_tradingview_*.py`, `docs/source_reviews/tradingview_authenticated_candidates.md`, `tests/python/test_secrets_isolation.py`, this plan + spec docs). Implementation: enumerate `grep -rE ...` matches, subtract allowlist, assert empty.
+4. **Secret-VALUE leak check:** set fake env values (`os.environ["TRADINGVIEW_USERNAME"] = "fake-user-token-abc123"` etc.); invoke each TV ingest script in a sandbox; assert the fake value never appears in any committed file under `public/`, `docs/`, `scripts/`, nor in `caplog` output.
+5. Cache-path-under-tempdir check.
+
+Commit.
+
+---
+
+### Task C8: Update `.github/workflows/update-data.yml` env block
+
+**Files:**
+- Modify: `.github/workflows/update-data.yml`
+
+Add to the existing data-fetch step's `env:` block:
+
+```yaml
+env:
+  # ...existing keys preserved...
+  TRADINGVIEW_USERNAME: ${{ secrets.TRADINGVIEW_USERNAME }}
+  TRADINGVIEW_PASSWORD: ${{ secrets.TRADINGVIEW_PASSWORD }}
+  ENABLE_AUTHENTICATED_CANDIDATES: ${{ secrets.ENABLE_AUTHENTICATED_CANDIDATES }}
+```
+
+No other workflow changes (no new step, no new job, no schedule change).
+
+Commit.
+
+---
+
+### Task C9: Phase C verification + PR
+
+- [ ] Run base + extended gate including `test_secrets_isolation.py`
+- [ ] Confirm secret-NAME allowlist check passes
+- [ ] Confirm secret-VALUE leak test passes against fake env values
+- [ ] Confirm cache-dir under `/tmp`
+- [ ] PR titled "Phase C: TradingView authenticated candidates"
+
+---
+
+## Chunk 7: Phase D — FocusBlock + page focus audit (tasks D1–D9)
+
+**Branch:** `feat/data-source-phase-d-focus-block`
+**Worktree:** `.worktrees/phaseD`
+**Depends on:** Phase A merged. Phase B/C may or may not be merged — Phase D defensively handles absent candidate files.
+
+### Worktree bootstrap
+
+```bash
+git worktree add .worktrees/phaseD -b feat/data-source-phase-d-focus-block origin/main
+cd .worktrees/phaseD
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+npm install
+```
+
+---
+
+### Task D1: Add `SectionId` and `SectionInsight` types
+
+**Files:**
+- Modify: `src/lib/types.ts`
+
+Append after the existing `RouteInsight` interface:
+
+```ts
+export type SectionId =
+  | "volatility_complex"
+  | "rates_pressure"
+  | "regime_drivers"
+  | "positioning_vs_candidate_sentiment"
+  | "tactical_stress_board";
+
+export interface SectionInsight {
+  id: SectionId;
+  eyebrow: string;
+  question: string;        // ≤ 120 chars
+  answer: string;          // 60-200 chars
+  why?: string;            // ≤ 200 chars
+  risk?: string;           // ≤ 120 chars
+  support?: string;        // ≤ 120 chars
+  caveat?: string;         // ≤ 200 chars
+  freshness_status: SignalFreshnessStatus;
+}
+```
+
+Extend `RouteInsight`:
+
+```ts
+export interface RouteInsight {
+  // existing fields preserved
+  sections?: SectionInsight[];
+}
+```
+
+Build + commit.
+
+---
+
+### Task D2: Create `src/components/FocusBlock.tsx` + test
+
+**Files:**
+- Create: `src/components/FocusBlock.tsx`
+- Create: `src/components/FocusBlock.test.tsx`
+
+- [ ] Write failing vitest covering both variants, all field combinations, freshness-stale styling.
+
+- [ ] Implement the component per the spec's §"Component spec":
+
+```tsx
+import { SignalFreshnessStatus } from "../lib/types";
+
+type FocusBlockProps = {
+  variant: "section" | "compact";
+  eyebrow?: string;
+  question: string;
+  answer: string;
+  why?: string;
+  risk?: string;
+  support?: string;
+  caveat?: string;
+  freshnessStatus?: SignalFreshnessStatus;
+  ariaLabel?: string;
+};
+
+export default function FocusBlock(props: FocusBlockProps) {
+  const isStale = props.freshnessStatus && props.freshnessStatus !== "ok";
+  const className = `focus-block focus-block--${props.variant}` + (isStale ? " focus-block--stale" : "");
+  return (
+    <section className={className} aria-label={props.ariaLabel ?? props.question}>
+      {props.eyebrow && <p className="focus-block__eyebrow">{props.eyebrow}</p>}
+      <h2 className="focus-block__question">{props.question}</h2>
+      <p className="focus-block__answer">{props.answer}</p>
+      {props.why && <p className="focus-block__why">{props.why}</p>}
+      <dl className="focus-block__signals">
+        {props.risk && <><dt>Risk</dt><dd>{props.risk}</dd></>}
+        {props.support && <><dt>Support</dt><dd>{props.support}</dd></>}
+      </dl>
+      {props.caveat && <p className="focus-block__caveat">{props.caveat}</p>}
+    </section>
+  );
+}
+```
+
+- [ ] Add CSS in `src/components/FocusBlock.css` (or the existing component CSS file).
+- [ ] Run vitest; commit.
+
+---
+
+### Task D3: Extend `build_page_insights.py` with `SECTION_CATALOG`
+
+**Files:**
+- Modify: `scripts/transform/build_page_insights.py`
+- Test: extend existing test or create `tests/python/test_section_catalog.py`
+
+Add a `SECTION_CATALOG: dict[RouteKey, list[SectionTemplate]]` constant with the 5 placements. Each template has:
+- Static `eyebrow`, `question`.
+- A Python derivation function that reads from existing derived JSONs and returns `answer`, `why`, `risk`, `support`, `caveat`, `freshness_status`.
+
+Fallback rule: if underlying data file is absent, return `freshness_status: "unavailable"` with answer "Data not yet active for this section." Omit `why`/`risk`/`support`/`caveat`.
+
+The build appends each populated `SectionInsight` to `route.sections`. Frontend renders.
+
+Commit.
+
+---
+
+### Task D4: Extend `validate_schema.py` with `SectionId` enum check
+
+**Files:**
+- Modify: `scripts/validate/validate_schema.py`
+
+Add a new function `check_section_insight_schema()` that:
+- Iterates `page_insights.json[routes][*][sections][*]`.
+- Asserts `id` is in the `SectionId` enum.
+- Asserts character-length pins on each text field (`question ≤ 120`, `answer 60-200`, etc.).
+- Asserts `freshness_status` is in `SignalFreshnessStatus`.
+
+Call this function from the validate_schema main entry point AFTER `check_access_status_enum()`. This is the append-only edit pattern (Phase A and Phase D both write to validate_schema.py in separate functions).
+
+Commit.
+
+---
+
+### Task D5: Insert 5 FocusBlock placements in routes
+
+**Files:**
+- Modify: `src/routes/Volatility.tsx` (above the primary/secondary chart slots)
+- Modify: `src/routes/Rates.tsx`
+- Modify: `src/routes/RegimeMap.tsx`
+- Modify: `src/routes/Sentiment.tsx`
+- Modify: `src/routes/TacticalTradingWeather.tsx` (above the 6-tile section)
+
+For each route, find the FocusBlock placement location per the audit grid. Insert:
+
+```tsx
+import FocusBlock from "../components/FocusBlock";
+// ...
+{routeInsight?.sections?.find((s) => s.id === "volatility_complex") && (
+  <FocusBlock
+    variant="section"
+    {...routeInsight.sections.find((s) => s.id === "volatility_complex")!}
+  />
+)}
+```
+
+(Use the appropriate `SectionId` for each route.)
+
+No other route changes. No shell or hero changes.
+
+Run vitest, run `npm run build`. Commit per route.
+
+---
+
+### Task D6: Create vitest fixtures at `src/__fixtures__/page_insights/`
+
+**Files:**
+- Create: `src/__fixtures__/page_insights/<route>_complete.json` (5 routes)
+- Create: `src/__fixtures__/page_insights/<route>_minimal.json` (5 routes)
+- Create: `src/__fixtures__/page_insights/<route>_unavailable.json` (5 routes)
+
+15 fixture files total. Each fixture is a partial `PageInsightsFile` with one route's `sections` populated for the test scenario. Use them in Task D5's route component tests.
+
+Commit.
+
+---
+
+### Task D7: Create `tests/python/test_page_insights_duplicate_reads.py`
+
+**Files:**
+- Create: `tests/python/test_page_insights_duplicate_reads.py`
+
+The duplicate-text check per spec's verification gate:
+
+```python
+import json
+import re
+from pathlib import Path
+
+PAGE_INSIGHTS = Path("public/data/derived/page_insights.json")
+
+
+def _normalize(s: str) -> str:
+    return re.sub(r"\s+", " ", s.lower()).strip()[:80]
+
+
+def test_no_duplicate_reads_within_route():
+    data = json.loads(PAGE_INSIGHTS.read_text())
+    for route_key, route in data.get("routes", {}).items():
+        reads = []
+        if route.get("why_it_matters"):
+            reads.append(("why_it_matters", _normalize(route["why_it_matters"])))
+        for section in route.get("sections") or []:
+            reads.append((f"sections.{section['id']}.answer", _normalize(section.get("answer", ""))))
+        # Pairwise distinct
+        seen = {}
+        for label, text in reads:
+            if not text:
+                continue
+            assert text not in seen, (
+                f"route {route_key}: read {label!r} duplicates {seen[text]!r}: {text!r}"
+            )
+            seen[text] = label
+```
+
+Run; expect PASS against current `page_insights.json` (sections may be empty before D3 lands; if so, the test trivially passes).
+
+Commit.
+
+---
+
+### Task D8: Phase D verification + PR
+
+- [ ] Run base + extended gate
+- [ ] Run vitest
+- [ ] Confirm FocusBlock renders in all 5 routes when fixture provides sections
+- [ ] Confirm graceful fallback when sections are absent
+- [ ] Confirm duplicate-text test passes
+- [ ] PR titled "Phase D: FocusBlock + page focus audit"
+
+---
+
+## Chunk 8: Phase QA + handoff
+
+**Branch:** Not a new branch; QA runs against the merged state after Phase A, Phase B (3 PRs), Phase C, and Phase D all merge into `main`.
+
+---
+
+### Task QA1: Run base gate against merged `main`
+
+```bash
+.venv/bin/python -m pytest tests/python -v
+npm test
+npm run build
+.venv/bin/python -m scripts.validate.validate_schema
+.venv/bin/python -m scripts.validate.validate_freshness
+.venv/bin/python -m scripts.validate.validate_candidate_isolation
+```
+
+All must pass.
+
+---
+
+### Task QA2: Confirm candidate isolation across all merged phases
+
+Run grep checks per spec §"Verification gate":
+
+```bash
+# No candidate series_id in any active output file:
+.venv/bin/python -m scripts.validate.validate_candidate_isolation
+
+# No file in candidates/ carries active_scoring_allowed: true:
+python -c "
+import json
+from pathlib import Path
+for f in Path('public/data/candidates').glob('*.json'):
+    data = json.loads(f.read_text())
+    assert data.get('active_scoring_allowed') is False, f
+print('All candidate files isolated.')
+"
+```
+
+---
+
+### Task QA3: Confirm no secret leaks
+
+Run the allowlist check + value-leak test (both implemented in Phase C Task C7):
+
+```bash
+.venv/bin/python -m pytest tests/python/test_secrets_isolation.py -v
+```
+
+---
+
+### Task QA4: Confirm duplicate-text check passes
+
+```bash
+.venv/bin/python -m pytest tests/python/test_page_insights_duplicate_reads.py -v
+```
+
+---
+
+### Task QA5: Run network-conditional smoke test
+
+```bash
+.venv/bin/python -m scripts.update_data
+```
+
+Confirm every new module path appears in the run output and produces a valid JSON file (or gracefully skips if secrets/network unavailable).
+
+---
+
+### Task QA6: Write verification report
+
+**Files:**
+- Create: `docs/superpowers/plans/2026-05-10-data-source-and-focus-pattern-expansion-verification.md`
+
+Use the template from the May-10 verification report (`docs/superpowers/plans/2026-05-10-market-weather-map-next-phase-verification.md`):
+
+- Header (date, branch, what's verified).
+- Per-task confirmation table.
+- Per-acceptance-criterion confirmation table from the spec's §"Acceptance summary".
+- Open follow-ups (SP500 sublicensing path, Cboe / VX promotion review timing, VIX maturity expansion, NAAIM/AAII promotion review).
+
+Commit the verification report to `main`.
+
+---
+
+### Task QA7: Update CLAUDE.md gating note
+
+**Files:**
+- Modify: `CLAUDE.md` ("Source gating" section)
+
+Reflect that:
+- `AccessStatus` is now 7-value.
+- Cboe put/call, VX futures, NAAIM/AAII have candidate ingest paths producing files in `public/data/candidates/`.
+- TradingView authenticated candidates are accepted under the `authenticated_candidate` access tier; secrets injected via `${{ secrets.* }}` in the workflow.
+
+---
+
+## Execution handoff
+
+**The plan is ready for `superpowers:subagent-driven-development`.**
+
+Dispatch order:
+
+1. **Phase A** (Chunks 1–3): single agent on `feat/data-source-phase-a-governance` working through tasks A1 → A13. Merge to `main` before continuing.
+
+2. **Phase B / C / D in parallel** (Chunks 4–7): four worktrees, four agents, four PRs. Each agent works through its own task list. Each PR merges independently into `main`. The phases do not interact at the file level after Phase A's contract is in place.
+
+3. **Phase QA** (Chunk 8): single agent against the merged `main` after all B/C/D PRs merge. Writes the verification report.
+
+Throughout, follow @superpowers:test-driven-development (write failing test before implementation), @superpowers:verification-before-completion (run the verification command before claiming done), and @superpowers:requesting-code-review (request a code-review subagent before opening any PR).
+
+If any task's verification step fails, follow @superpowers:systematic-debugging — do not bypass the check; do not skip ahead.
+
 
