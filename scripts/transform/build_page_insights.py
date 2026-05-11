@@ -22,7 +22,7 @@ import json
 from collections.abc import Iterable
 from typing import Any
 
-from scripts.shared.access_status import ACTIVE_ACCESS_STATUSES, is_active_scoring_allowed
+from scripts.shared.access_status import is_active_scoring_allowed
 from scripts.shared.io import data_dir, utc_now_iso, write_json
 
 
@@ -155,22 +155,6 @@ def _project_source_status(entry: dict[str, Any]) -> str:
     return status
 
 
-def _is_primary_eligible(entry: dict[str, Any]) -> bool:
-    """Gate predicate for primary-slot eligibility.
-
-    Defers to :func:`scripts.shared.access_status.is_active_scoring_allowed`
-    when the entry carries ``access_status`` (the canonical contract). When
-    ``access_status`` is absent — which can happen for synthetic fixtures or
-    pre-A10 signal_priority.json snapshots that don't yet project it — fall
-    back to the upstream ``source_status: "active"`` literal as a
-    defense-in-depth check. Anything else is candidate-class.
-    """
-    access_status = entry.get("access_status")
-    if access_status is not None:
-        return access_status in ACTIVE_ACCESS_STATUSES
-    return str(entry.get("source_status", "")) == "active"
-
-
 def _select_primary(
     entries: Iterable[dict[str, Any]],
     direction: str,
@@ -185,7 +169,7 @@ def _select_primary(
     for entry in entries:
         if entry.get("direction") != direction:
             continue
-        if not _is_primary_eligible(entry):
+        if not is_active_scoring_allowed(entry):
             continue
         if route not in _signal_routes(entry):
             continue
@@ -204,7 +188,7 @@ def _route_signals(payload: dict[str, Any], route: str) -> list[dict[str, Any]]:
     return [
         entry
         for entry in signals
-        if route in _signal_routes(entry) and _is_primary_eligible(entry)
+        if route in _signal_routes(entry) and is_active_scoring_allowed(entry)
     ]
 
 

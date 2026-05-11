@@ -12,14 +12,29 @@
       "label": "MOVE Index (bond volatility)",
       "message": "Candidate source requires access or terms review before scoring.",
       "source_status": "terms_review_needed",
-      "why_it_matters": "Bond-volatility moves can pressure markets even when equity volatility is calm."
+      "why_it_matters": "Bond-volatility moves can pressure markets even when equity volatility is calm.",
+      "access_status": "restricted_vendor"
     }
   ],
   "overall_read": {
-    "fragility": { "confidence": 0.95, "label": "Low Fragility", "score": 30.0 },
-    "long_term": { "confidence": 0.95, "label": "Mixed", "score": 5.0 },
-    "regime": { "label": "Mixed" },
-    "short_term": { "confidence": 0.95, "label": "Mixed", "score": 1.0 }
+    "fragility": {
+      "confidence": 0.95,
+      "label": "Low Fragility",
+      "score": 30.0
+    },
+    "long_term": {
+      "confidence": 0.95,
+      "label": "Mixed",
+      "score": 5.0
+    },
+    "regime": {
+      "label": "Mixed"
+    },
+    "short_term": {
+      "confidence": 0.95,
+      "label": "Mixed",
+      "score": 1.0
+    }
   },
   "top_supports": [
     {
@@ -37,7 +52,8 @@
       "severity": 50.0,
       "source_status": "active",
       "urgency": "near_term",
-      "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities."
+      "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities.",
+      "access_status": "free_public_active"
     },
     {
       "category": "macro",
@@ -54,7 +70,8 @@
       "severity": 65.0,
       "source_status": "active",
       "urgency": "slow",
-      "why_it_matters": "Labor cycle data drives the strategic recession-risk read."
+      "why_it_matters": "Labor cycle data drives the strategic recession-risk read.",
+      "access_status": "free_public_active"
     },
     {
       "category": "volatility",
@@ -71,7 +88,8 @@
       "severity": 18.0,
       "source_status": "active",
       "urgency": "immediate",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress."
+      "why_it_matters": "Implied equity volatility frames near-term equity stress.",
+      "access_status": "free_public_active"
     }
   ],
   "top_warnings": [
@@ -90,7 +108,8 @@
       "severity": 100.0,
       "source_status": "active",
       "urgency": "slow",
-      "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
+      "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction.",
+      "access_status": "free_public_active"
     },
     {
       "category": "rates",
@@ -107,7 +126,8 @@
       "severity": 45.0,
       "source_status": "active",
       "urgency": "near_term",
-      "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuations."
+      "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuations.",
+      "access_status": "free_public_active"
     },
     {
       "category": "liquidity",
@@ -124,7 +144,8 @@
       "severity": 25.0,
       "source_status": "active",
       "urgency": "slow",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets."
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets.",
+      "access_status": "free_public_active"
     },
     {
       "category": "positioning",
@@ -141,7 +162,8 @@
       "severity": 28.0,
       "source_status": "active",
       "urgency": "near_term",
-      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns."
+      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns.",
+      "access_status": "free_public_active"
     },
     {
       "category": "dollar",
@@ -158,7 +180,8 @@
       "severity": 80.0,
       "source_status": "candidate",
       "urgency": "near_term",
-      "why_it_matters": "Test-only fixture entry to verify source-gating exclusion."
+      "why_it_matters": "Test-only fixture entry to verify source-gating exclusion.",
+      "access_status": "terms_review_needed"
     }
   ]
 }
