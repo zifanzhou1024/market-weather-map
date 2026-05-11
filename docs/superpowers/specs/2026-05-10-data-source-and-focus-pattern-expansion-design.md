@@ -72,21 +72,25 @@ Six implementation agents plus one QA agent.
 
 | Phase | Agent | Owns |
 |---|---|---|
-| A | `source-governance-agent` | `src/lib/types.ts` (`AccessStatus` enum + flags), `public/data/catalog/source_registry.json` reclassification + new entries (`bea`, `bls`, `multpl_shiller`, `ny_fed`, `naaim`, `aaii`, `tradingview`), `public/data/catalog/series_catalog.json` per-series overrides where needed (e.g. FRED-hosted SP500 stays gated at the series level), `scripts/validate/validate_schema.py` extensions, `scripts/validate/validate_candidate_isolation.py` (new), `tests/python/test_signal_priority.py` extension, `tests/python/test_candidate_isolation.py` (new), `public/data/candidates/README.md`, `public/data/candidates/.gitkeep`. |
-| B | `official-sources-agent` | `scripts/ingest/fetch_bea_personal_saving_rate.py`, `scripts/ingest/fetch_shiller_cape.py`, `scripts/ingest/fetch_nyfed_acm_term_premium.py`, `scripts/transform/build_treasury_supply_pressure.py`, `docs/source_reviews/bea_personal_saving_rate.md`, `docs/source_reviews/shiller_cape.md`, updated `docs/source_reviews/ny_fed_acm_term_premium.md`. |
-| B | `cboe-candidate-agent` | `scripts/ingest/fetch_cboe_put_call.py`, `scripts/ingest/fetch_cboe_vx_settlements.py`, `scripts/transform/build_vx_curve_context.py`. |
-| B | `sentiment-candidate-agent` | `scripts/ingest/fetch_naaim_candidate.py`, `scripts/ingest/fetch_aaii_candidate.py`. |
-| C | `tradingview-candidate-agent` | `.github/workflows/update-data.yml` env-block extension only, `requirements.txt` additions, `scripts/shared/config.py` secret helpers, `scripts/ingest/fetch_tradingview_move.py`, `scripts/ingest/fetch_tradingview_put_call.py`, `scripts/ingest/fetch_tradingview_vx_curve.py`, `docs/source_reviews/tradingview_authenticated_candidates.md`, `tests/python/test_secrets_isolation.py`. |
-| D | `focus-pattern-agent` | `src/components/FocusBlock.tsx`, `src/components/FocusBlock.test.tsx`, `src/lib/types.ts` extension (`SectionInsight`, `RouteInsight.sections`), `scripts/transform/build_page_insights.py` extension (`SECTION_CATALOG`), targeted insertions in `Volatility.tsx`, `Rates.tsx`, `RegimeMap.tsx`, `Sentiment.tsx`, `TacticalTradingWeather.tsx`, `FragilityShockRisk.tsx`. |
-| QA | `qa-agent` | Verification commands, candidate-isolation grep checks, route-render fallback checks, no-secret-in-public-JSON check, ARIA fallback checks, verification report. |
+| A | `source-governance-agent` | `src/lib/types.ts` (`AccessStatus` enum + flags), `public/data/catalog/source_registry.json` reclassification + 7 new source entries, `public/data/catalog/series_catalog.json` reclassification of all 105 existing entries + series-level overrides + appended entries for sources whose reviews already exist (Cboe put/call, VX, NAAIM, AAII), `scripts/shared/catalog.py` `governance()` factory extension, `scripts/validate/validate_schema.py` AccessStatus enum check (append-only), `scripts/validate/validate_candidate_isolation.py` (new), `scripts/update_data.py` MODULES restructure into per-phase sub-lists, `scripts/transform/build_signal_priority.py` and `build_page_insights.py` gating-predicate rewrite, `tests/python/test_signal_priority.py` extension, `tests/python/test_candidate_isolation.py` (new), `public/data/candidates/README.md`, `public/data/candidates/.gitkeep`. |
+| B | `official-sources-agent` | `scripts/ingest/fetch_bea_personal_saving_rate.py`, `scripts/ingest/fetch_shiller_cape.py`, `scripts/ingest/fetch_nyfed_acm_term_premium.py`, `scripts/transform/build_treasury_supply_pressure.py`, `docs/source_reviews/bea_personal_saving_rate.md`, `docs/source_reviews/shiller_cape.md`, updated `docs/source_reviews/ny_fed_acm_term_premium.md`. Appends new series_catalog entries: `personal_saving_rate`, `cape_ratio`, `ny_fed_acm_term_premium_candidate`. Appends MODULES sub-lists. |
+| B | `cboe-candidate-agent` | `scripts/ingest/fetch_cboe_put_call.py`, `scripts/ingest/fetch_cboe_vx_settlements.py`, `scripts/transform/build_vx_curve_context.py`. Appends MODULES sub-list. (series_catalog entries already added by phase A.) |
+| B | `sentiment-candidate-agent` | `scripts/ingest/fetch_naaim_candidate.py`, `scripts/ingest/fetch_aaii_candidate.py`. Appends MODULES sub-list. (series_catalog entries already added by phase A.) |
+| C | `tradingview-candidate-agent` | `.github/workflows/update-data.yml` env-block extension only, `requirements.txt` additions, `scripts/shared/config.py` secret helpers, `scripts/ingest/fetch_tradingview_move.py`, `scripts/ingest/fetch_tradingview_put_call.py`, `scripts/ingest/fetch_tradingview_vx_curve.py`, `docs/source_reviews/tradingview_authenticated_candidates.md`, `tests/python/test_secrets_isolation.py`. Appends new series_catalog entries for the three TradingView candidates. Appends MODULES sub-list. |
+| D | `focus-pattern-agent` | `src/components/FocusBlock.tsx`, `src/components/FocusBlock.test.tsx`, `src/lib/types.ts` extension (`SectionInsight`, `SectionId`, `RouteInsight.sections`), `scripts/validate/validate_schema.py` SectionId enum check (append-only, in a separate function from the AccessStatus check), `scripts/transform/build_page_insights.py` extension (`SECTION_CATALOG` and `_build_sections()`), `tests/python/test_page_insights_duplicate_reads.py` (new), targeted insertions in `Volatility.tsx`, `Rates.tsx`, `RegimeMap.tsx`, `Sentiment.tsx`, `TacticalTradingWeather.tsx`. (FragilityShockRisk NOT touched in this phase.) |
+| QA | `qa-agent` | Verification commands, candidate-isolation grep checks, route-render fallback checks, no-secret-in-public-JSON check, ARIA fallback checks, MODULES final-order check, verification report. |
 
 ### Why this carves cleanly
 
-- Phase A is governance-only — touches catalog + types + validators. No ingest scripts, no routes, no UI components.
-- Phase B's three agents write to disjoint files. `official-sources-agent` writes to `series/` and `derived/`. `cboe-candidate-agent` and `sentiment-candidate-agent` write only to `candidates/`. No script-file overlap.
+- Phase A is governance-only — touches catalog + types + validators + the gating-predicate rewrite in `build_signal_priority.py`/`build_page_insights.py`. No ingest scripts, no routes, no UI components.
+- Phase B's three agents write to disjoint scripts and JSON files. `official-sources-agent` writes to `series/` and `derived/`. `cboe-candidate-agent` and `sentiment-candidate-agent` write to `candidates/` only.
 - Phase C is the only phase that touches `.github/workflows/` and `requirements.txt`.
-- Phase D is the only phase that touches `src/components/` and routes in this design.
-- `source_registry.json` is touched by phase A (reclassification + pre-emptive addition of `naaim`, `aaii`, `tradingview`, `bea`, `bls`, `multpl_shiller`, `ny_fed`). Phase B/C agents only *reference* the entries already added by phase A.
+- Phase D is the only phase that touches `src/components/FocusBlock.tsx` and the five named routes.
+- `source_registry.json` is touched by phase A only (reclassification + 7 new source entries).
+- `series_catalog.json` is touched by phase A (reclassification + appended entries for already-reviewed sources) AND phase B/C (each appends entries for the source reviews they create in the same PR). All NEW entries are appended; pre-existing entries are touched only by phase A. Append-only edits to a JSON array conflict only on the trailing `]` line, which is trivially resolvable. The qa-agent verifies the merged file is valid JSON.
+- `scripts/update_data.py`'s MODULES list is restructured by phase A into per-phase sub-lists (`MODULES_INGEST_PHASE_B_OFFICIAL`, `MODULES_INGEST_PHASE_B_CBOE`, etc.). Each phase B/C agent edits only its named sub-list — disjoint regions, trivial git merge.
+- `scripts/validate/validate_schema.py` is touched by both phase A (AccessStatus enum check) and phase D (SectionId enum check). The two add separate functions in separate regions of the file; phase D's edits are append-only after phase A's section. Trivial merge if phase A merges first.
+- `scripts/transform/build_page_insights.py` is touched by both phase A (gating predicate rewrite) and phase D (SECTION_CATALOG + `_build_sections()` addition). Different functions; trivial merge if phase A merges first.
 
 ### Phase gating
 
@@ -138,13 +142,59 @@ Derivation rule (validator enforces):
 
 Note: `authenticated_candidate` is the only row where `public_redistribution_allowed: false` AND the file is still committed to `candidates/`. This is intentional — the TradingView candidate files are committed because the workflow generates them, but the underlying licensing prohibits broad republication. The repo accepts the practical risk in exchange for letting the dashboard surface the candidate. Validator must not infer "no commit" from `public_redistribution_allowed: false`; it must check the access_status directly.
 
-### Replacing `score_status` with `access_status`
+### Three related fields — `access_status`, `score_status`, `source_status`
 
-The existing `series_catalog.json` carries both `access_status` (values `free_public` / `terms_review_needed`) and `score_status` (values `active` / `candidate`). `scripts/transform/build_page_insights.py:30` uses `GATED_STATUSES = frozenset({"terms_review_needed", "candidate"})` against the `source_status` value.
+Three different fields participate in gating. The codebase currently conflates them in places; this phase clarifies their roles. **`score_status` is NOT removed in this phase.** It is kept as a deprecated alias to limit blast radius.
 
-**Phase A makes `access_status` the single gating field.** `score_status` is removed from new entries and migrated away from existing entries. The build-time exclusion in `build_signal_priority.py` and `build_page_insights.py` reads `access_status` and applies the rule `active_scoring_allowed === true` (computed from the derivation table). `GATED_STATUSES` is renamed to `CANDIDATE_ACCESS_STATUSES = frozenset({"free_public_candidate", "terms_review_needed", "authenticated_candidate", "restricted_vendor", "unavailable"})` for clarity; build-time gating uses the boolean derivation, not the set membership directly, but the set is exposed for tests and validator code.
+| Field | Where it lives | Authoritative? | Phase A action |
+|---|---|---|---|
+| `access_status` | `series_catalog.json` entry, `source_registry.json` entry | **Yes — single source of truth after phase A.** | Migrated to new 7-value enum on all 105 series + 13 source entries. |
+| `score_status` | `series_catalog.json` entry | No — derived alias kept for downstream compatibility. | Computed from `access_status` via mapping `{free_public_active, proxy_only} → "active"; everything else → "candidate"`. Field is RETAINED on every entry. Removal is deferred to a follow-up cleanup PR. |
+| `source_status` | Projected onto each `RankedEntry` inside `signal_priority.json` and consumed by `build_page_insights.py` | No — projection from upstream. | Continues to exist on `RankedEntry`. Its value is changed to mirror `access_status` directly (no longer the old `score_status`). `GATED_STATUSES` in `build_page_insights.py` is replaced by an `active_scoring_allowed` predicate computed from each entry's `access_status`. |
 
-Any consumer that previously read `score_status` (greps confirm two callsites in `build_page_insights.py`) is updated to read `access_status` and apply the same rule. `score_status` is removed in this PR — no deprecation period, since the consumer surface is small and fully owned by the build pipeline.
+This three-tier mapping has these consequences:
+
+1. **`scripts/shared/catalog.py`** — the `governance()` factory at line 11 keeps its `score_status: str = "active"` kwarg signature but adds a new required `access_status: AccessStatus` kwarg. The factory derives `score_status` from `access_status` when `score_status` is not explicitly provided; legacy callsites that pass `score_status="candidate"` (lines 816, 832, 848, 864, 880, 896, 968, 1285, etc.) are updated to also pass the corresponding `access_status`. The factory remains the single point of truth for governance fields on a catalog entry.
+
+2. **`scripts/transform/compute_regime_score.py`** — its 7 `score_status` references (lines 1871, 1882, 1918, 1922, 1923, 1945, 1956) are unchanged because `score_status` remains a populated field. Build-time gating in this module is unchanged.
+
+3. **`scripts/ingest/fetch_fred_csv.py` and `fetch_cboe.py`** — their 4 `score_status` references are unchanged. `score_status` keeps being written; phase A's catalog factory derivation guarantees consistency with `access_status`.
+
+4. **`scripts/validate/validate_freshness.py:76`** — unchanged.
+
+5. **`src/lib/types.ts`** — the existing `ScoreStatus` enum and field on `SeriesCatalogEntry` / `CatalogEntry` are KEPT. The new `AccessStatus` enum and fields are ADDED. Frontend can read either field.
+
+6. **`src/routes/TacticalTradingWeather.tsx:108` and `src/routes/Volatility.tsx:109`** — currently read `entry?.access_status ?? entry?.score_status ?? "source_review_required"`. This pattern continues to work because both fields are populated. No frontend edits required from this phase.
+
+7. **Tests** — the 50+ test fixture references to `score_status` continue to work because fixtures keep writing both fields. New test fixtures (`test_candidate_isolation.py`) carry both fields to match the new factory contract.
+
+The end-state is: `access_status` becomes authoritative; `score_status` is computed alongside it for back-compat. A follow-up cleanup PR (out of this phase's scope) removes `score_status` once consumers migrate.
+
+### `GATED_STATUSES` → `active_scoring_allowed` predicate
+
+`scripts/transform/build_page_insights.py:30` currently defines:
+
+```python
+GATED_STATUSES = frozenset({"terms_review_needed", "candidate"})
+```
+
+…and tests `entry.get("source_status", "")` against this set at lines 167 and 187. Phase A replaces this with:
+
+```python
+def is_active_scoring_allowed(access_status: str) -> bool:
+    return access_status in {"free_public_active", "proxy_only"}
+```
+
+…and changes both callsites to:
+
+```python
+if not is_active_scoring_allowed(str(entry.get("access_status", ""))):
+    # excluded from primary slot, may appear in missing-signals
+```
+
+The `source_status` projection on `RankedEntry` is updated to carry the entry's `access_status` value verbatim. Downstream consumers read `access_status` from `RankedEntry.source_status` (yes, the field name stays, the values change). This is intentional — renaming `source_status` to `access_status` on `RankedEntry` would force a frontend rewrite that this phase explicitly defers.
+
+Pytest fixtures in `test_signal_priority.py` and the new `test_candidate_isolation.py` exercise the `is_active_scoring_allowed` predicate for every new `AccessStatus` enum value.
 
 ### Reclassification of existing source registry entries
 
@@ -170,27 +220,32 @@ FRED-hosted SP500 stays gated at the **series** level via `series_catalog.json`,
 
 ### Series-level migration
 
-`public/data/catalog/series_catalog.json` has 105 entries. Phase A migrates each entry from its current `(access_status, score_status)` pair to a single `access_status` value plus the new flags, applying this mapping:
+`public/data/catalog/series_catalog.json` has 105 entries. Phase A migrates each entry from its current `(access_status, score_status)` pair to a new `access_status` value plus the new flags, applying this mapping. `score_status` is RETAINED on every entry (computed as the derived alias) per the three-related-fields section above.
 
-| Current `access_status` | Current `score_status` | New `access_status` | `active_scoring_allowed` | `public_redistribution_allowed` |
-|---|---|---|---|---|
-| `free_public` | `active` | `free_public_active` | true | true |
-| `free_public` | `candidate` | `free_public_candidate` | false | true |
-| `terms_review_needed` | `active` | impossible — log and fail migration | — | — |
-| `terms_review_needed` | `candidate` | `terms_review_needed` | false | false |
+| Current `access_status` | Current `score_status` | New `access_status` | `active_scoring_allowed` | `public_redistribution_allowed` | New `score_status` (alias) |
+|---|---|---|---|---|---|
+| `free_public` | `active` | `free_public_active` | true | true | `active` |
+| `free_public` | `candidate` | `free_public_candidate` | false | true | `candidate` |
+| `terms_review_needed` | `active` | impossible — log and fail migration (no such row in current data) | — | — | — |
+| `terms_review_needed` | `candidate` | `terms_review_needed` | false | false | `candidate` |
+| any | any unmapped combination | log warning, default to `terms_review_needed` + `candidate`; flag in migration report | false | false | `candidate` |
+
+The "any unmapped combination" row is the safety net for legacy rows the survey may have missed; it never silently corrupts data, and the migration script writes a report listing every unmapped row for human review. The expected count of unmapped rows is zero given the current file content.
 
 Series-level explicit overrides (apply after the default mapping):
 
 | `series.id` | New `access_status` | Reason |
 |---|---|---|
-| `sp500_index` | `terms_review_needed` | S&P DJI redistribution gate per `docs/source_reviews/sp500_index.md`. Stays in the missing-signals panel. |
-| `move_index` | `restricted_vendor` | ICE MOVE per `docs/source_reviews/ice_move.md`. |
-| `skew_index` | `terms_review_needed` | Per `docs/source_reviews/cboe_skew.md`. |
+| `sp500_index` | `terms_review_needed` | S&P DJI redistribution gate per `docs/source_reviews/sp500_index.md`. Stays in the missing-signals panel. The corresponding file `public/data/series/sp500_index.json` does NOT currently exist (verified 2026-05-10); no file deletion is required. |
+| `move_index` | `restricted_vendor` | ICE MOVE per `docs/source_reviews/ice_move.md`. No corresponding file in `series/`. |
+| `skew_index` | `terms_review_needed` | Per `docs/source_reviews/cboe_skew.md`. No corresponding file in `series/`. |
 | `bond_volatility_proxy` (derived) | `proxy_only` | Per `docs/source_reviews/bond_volatility_proxy.md`. The only `proxy_only` entry in this phase. |
+
+**Phase A's no-commit rule applies to NEW files only, not pre-existing files.** None of the three gated overrides (`sp500_index`, `move_index`, `skew_index`) have files in `public/data/series/` to delete. The no-commit rule in the derivation table ("`terms_review_needed` ⇒ `public_redistribution_allowed: false`") is forward-looking — phase A's QA verifies that no new file is added under `public/data/series/` for a `terms_review_needed` series; it does not retroactively delete pre-existing files (there are none).
 
 All other series entries take the default mapping. `source-governance-agent` writes all 105 entries with the new fields in one PR; the migration is deterministic and scripted (no per-entry policy judgment).
 
-`requires_secret` defaults to `false` for every existing series entry. The only `requires_secret: true` series in this phase are the three TradingView candidate files, which are created by `tradingview-candidate-agent` in phase C (not phase A).
+`requires_secret` defaults to `false` for every existing series entry. The only `requires_secret: true` series in this phase are the three TradingView candidate files, which are created by `tradingview-candidate-agent` in phase C (not phase A — see "series_catalog ownership" below).
 
 ### New source entries (added by `source-governance-agent` in phase A)
 
@@ -206,22 +261,31 @@ All other series entries take the default mapping. `source-governance-agent` wri
 | `aaii` | `terms_review_needed` | false (per `aaii_naaim.md`) |
 | `tradingview` | `authenticated_candidate` | true |
 
-### New series-level entries (added by `source-governance-agent` in phase A)
+### `series_catalog.json` ownership — split by source-review presence
 
-Phase A pre-emptively adds series-level entries for every candidate file the other phases produce. This avoids cross-PR coordination on `series_catalog.json` and keeps phase B/C agents focused on ingest scripts. Each entry carries the appropriate `access_status`, `requires_secret`, `active_scoring_allowed`, `public_redistribution_allowed`, plus existing schema fields (`category`, `horizon`, `frequency`, etc.). Each entry is added with `endpoint_url: null` initially — the ingest agents populate the endpoint when they land the fetch script.
+To avoid the dependency-direction problem (phase A entries citing source reviews that phase C creates), `series_catalog.json` entries are added by whichever phase commits the underlying source review:
 
-| `series.id` | `access_status` | `provider_id` | Source review |
+**Phase A adds series-level entries for sources whose `docs/source_reviews/*.md` already exists today (2026-05-10).** These citations are stable.
+
+| `series.id` | `access_status` | `provider_id` | Source review (existing) |
 |---|---|---|---|
-| `personal_saving_rate` | `free_public_active` | `bea` | `bea_personal_saving_rate.md` (phase B) |
-| `cape_ratio` | `free_public_active` | `multpl_shiller` | `shiller_cape.md` (phase B) |
-| `ny_fed_acm_term_premium_candidate` | `free_public_candidate` | `ny_fed` | `ny_fed_acm_term_premium.md` (re-reviewed in phase B) |
-| `put_call_total_candidate`, `put_call_index_candidate`, `put_call_equity_candidate`, `put_call_vix_candidate`, `put_call_spxw_candidate` | `free_public_candidate` | `cboe_options` | `cboe_put_call.md` (existing) |
-| `vx1_candidate`, `vx2_candidate`, `vx3_candidate`, `vx_front_spread_candidate`, `vx_contango_score_candidate` | `free_public_candidate` | `cboe_futures` | `vix_futures_curve.md` (existing) |
-| `naaim_exposure_candidate` | `terms_review_needed` | `naaim` | `aaii_naaim.md` (existing) |
-| `aaii_sentiment_candidate` | `terms_review_needed` | `aaii` | `aaii_naaim.md` (existing) |
-| `tradingview_move_candidate`, `tradingview_put_call_candidate`, `tradingview_vx_curve_candidate` | `authenticated_candidate` | `tradingview` | `tradingview_authenticated_candidates.md` (phase C) |
+| `put_call_total_candidate`, `put_call_index_candidate`, `put_call_equity_candidate`, `put_call_vix_candidate`, `put_call_spxw_candidate` | `free_public_candidate` | `cboe_options` | `cboe_put_call.md` |
+| `vx1_candidate`, `vx2_candidate`, `vx3_candidate`, `vx_front_spread_candidate`, `vx_contango_score_candidate` | `free_public_candidate` | `cboe_futures` | `vix_futures_curve.md` |
+| `naaim_exposure_candidate` | `terms_review_needed` | `naaim` | `aaii_naaim.md` |
+| `aaii_sentiment_candidate` | `terms_review_needed` | `aaii` | `aaii_naaim.md` |
 
-Adding the entries up front lets the validator from phase A enforce the candidate-isolation contract before phase B/C agents write any candidate files. If an agent writes a file with a `series_id` not in `series_catalog.json`, the validator rejects it.
+**Phase B and C add their own series-level entries in the same PR as their new source reviews.** This keeps citations consistent and avoids forward references.
+
+| Adding phase / agent | `series.id` | `access_status` | `provider_id` | Source review (created in same PR) |
+|---|---|---|---|---|
+| Phase B / `official-sources-agent` | `personal_saving_rate` | `free_public_active` | `bea` | `bea_personal_saving_rate.md` |
+| Phase B / `official-sources-agent` | `cape_ratio` | `free_public_active` | `multpl_shiller` | `shiller_cape.md` |
+| Phase B / `official-sources-agent` | `ny_fed_acm_term_premium_candidate` | `free_public_candidate` | `ny_fed` | `ny_fed_acm_term_premium.md` (re-reviewed) |
+| Phase C / `tradingview-candidate-agent` | `tradingview_move_candidate`, `tradingview_put_call_candidate`, `tradingview_vx_curve_candidate` | `authenticated_candidate` | `tradingview` | `tradingview_authenticated_candidates.md` |
+
+**Multi-agent writes to `series_catalog.json`: append-only rule.** All new entries are appended to the END of the JSON array. No agent modifies pre-existing entries except phase A's reclassification (which touches every entry but writes the same schema). Append-only edits to a JSON array near the closing `]` produce predictable git conflicts only on the trailing `]` line, which are trivially auto-resolvable by the second-merging PR or human reviewer. The qa-agent verifies the merged file is valid JSON with all expected entries.
+
+The validator from phase A enforces the candidate-isolation contract on every entry present, regardless of who added it. Adding all phase-A entries up front lets validate_candidate_isolation reject leaks from any source even before phase B/C land their additions.
 
 ### `public/data/candidates/` directory
 
@@ -240,24 +304,27 @@ Phase A creates the directory with a `.gitkeep` and a `README.md` stating:
 
 `scripts/validate/validate_candidate_isolation.py` (new module) loads `signal_priority.json`, `page_insights.json`, `score_summary.json`, `regime_score.json`, `bucket_scores.json`, `shock_risk_snapshot.json` and verifies that no candidate-class `series_id` appears in primary slots. Fails loudly with the leaking id and the receiving file.
 
-**How the new module is invoked.** `validate_candidate_isolation.py` exposes both a `main()` entry point (for direct `python -m scripts.validate.validate_candidate_isolation` invocation in CI/QA) AND a `run()` function. `scripts/validate/validate_schema.py` imports `run()` and calls it after its existing schema checks, so a single `python -m scripts.validate.validate_schema` invocation transitively runs candidate isolation. The QA gate runs both commands explicitly for CI clarity (the second command is a no-op when the first already covered it, but it documents intent). Update `scripts/update_data.py`'s `MODULES` list to include `scripts.validate.validate_candidate_isolation` after `scripts.validate.validate_schema` so the safe-update path also exercises it.
+**How the new module is invoked.** `validate_candidate_isolation.py` exposes both a `main()` entry point (for direct `python -m scripts.validate.validate_candidate_isolation` invocation in CI/QA) AND a `run()` function. `scripts/validate/validate_schema.py` imports `run()` and calls it after its existing schema checks, so a single `python -m scripts.validate.validate_schema` invocation transitively runs candidate isolation. The QA gate runs both commands explicitly for CI clarity (the second command is a no-op when the first already covered it, but the explicit command surfaces failures distinctly in CI logs). The MODULES list does NOT add a separate `scripts.validate.validate_candidate_isolation` entry — adding one would run candidate isolation twice on every safe-update invocation. The single `scripts.validate.validate_schema` entry already exercises it transitively.
 
 ### Candidate isolation guard — defense in depth
 
-1. **Python build-time guard.** `scripts/transform/build_signal_priority.py` and `scripts/transform/build_page_insights.py` extend their existing source-gated exclusion to apply the rule `active_scoring_allowed === true` against the entry's `access_status` (computed via the derivation table). Items whose `active_scoring_allowed` is false are excluded from primary slots; they may still appear in `missing_high_value_signals` for transparency. The previous `GATED_STATUSES` constant against `source_status` is removed; the new code reads `access_status` from the series_catalog entry and applies the derivation rule. Note: `proxy_only` series (e.g. `bond_volatility_proxy`) have `active_scoring_allowed: true` and ARE allowed in active outputs under their proxy name.
-2. **Validator-time guard.** `validate_candidate_isolation.py` catches leaks in committed JSON. It enumerates every series whose `active_scoring_allowed === false` and grep-checks the listed active-output files for the corresponding `series_id`.
-3. **Pytest contract.** Existing `tests/python/test_signal_priority.py` gated-source non-leak test is extended; new `tests/python/test_candidate_isolation.py` adds an intentional-leak fixture per new `AccessStatus` enum value (one fixture per: `free_public_candidate`, `terms_review_needed`, `authenticated_candidate`, `restricted_vendor`, `unavailable`). Each fixture must fail validation; the test asserts failure with a clear message.
+1. **Python build-time guard.** `scripts/transform/build_signal_priority.py` and `scripts/transform/build_page_insights.py` apply the `is_active_scoring_allowed(access_status)` predicate to each series referenced from the catalog. Items whose predicate is false are excluded from primary slots; they may still appear in `missing_high_value_signals` for transparency. The previous `GATED_STATUSES` constant (which gated on `source_status`) is replaced by the predicate (which gates on `access_status`). The `source_status` field on `RankedEntry` continues to be populated, but its value is now the entry's `access_status` verbatim — downstream consumers reading `source_status` see the new enum values. `proxy_only` series (e.g. `bond_volatility_proxy`) have `is_active_scoring_allowed === true` and ARE allowed in active outputs under their proxy name.
+2. **Validator-time guard.** `validate_candidate_isolation.py` catches leaks in committed JSON. It enumerates every series whose `is_active_scoring_allowed === false` and grep-checks the listed active-output files for the corresponding `series_id`.
+3. **Pytest contract.** Existing `tests/python/test_signal_priority.py` gated-source non-leak test is extended; new `tests/python/test_candidate_isolation.py` adds an intentional-leak fixture per new `AccessStatus` enum value (one fixture per: `free_public_candidate`, `terms_review_needed`, `authenticated_candidate`, `restricted_vendor`, `unavailable`). Each fixture must fail validation; the test asserts failure with a clear message naming the leaking series_id and receiving file.
 
 ### `source-governance-agent` acceptance
 
-- All 13 source registry entries carry the new fields with valid values; reclassification table matches the file state.
-- All 105 existing series_catalog entries carry the new fields; series-level migration table applied; `score_status` field removed from new entries.
-- All 7 new source registry entries are present.
-- All 17 new series-level entries are present (12 candidate file ids + 5 listed in the new-series-entries table — adjust counts per the table).
-- `build_signal_priority.py` and `build_page_insights.py` updated to read `access_status` and apply the `active_scoring_allowed === true` rule; their existing test suites pass.
-- All three validators (`validate_schema`, `validate_freshness`, `validate_candidate_isolation`) pass on existing data after migration; intentional-leak fixtures fail the validator.
+- All 13 source registry entries carry the new `access_status` enum + `requires_secret` + `active_scoring_allowed` + `public_redistribution_allowed` fields; reclassification table matches the file state.
+- All 7 new source registry entries are present (`bea`, `bls`, `multpl_shiller`, `ny_fed`, `naaim`, `aaii`, `tradingview`).
+- All 105 existing series_catalog entries carry the new fields; series-level migration table applied; `score_status` field is RETAINED as a derived alias (computed from `access_status`).
+- 12 new series-level entries appended for already-reviewed candidate sources: 5 put/call + 5 VX (3 vx_n + vx_front_spread + vx_contango_score) + naaim_exposure_candidate + aaii_sentiment_candidate.
+- `scripts/shared/catalog.py` `governance()` factory accepts a new `access_status: AccessStatus` kwarg and derives `score_status` from it; all callsites in `catalog.py` updated to pass both kwargs.
+- `scripts/transform/build_signal_priority.py` and `scripts/transform/build_page_insights.py` updated to use the `is_active_scoring_allowed(access_status)` predicate in place of the old `GATED_STATUSES` set; `source_status` projection on RankedEntry now carries `access_status` verbatim; existing test suites pass.
+- `scripts/update_data.py` MODULES list restructured into per-phase sub-lists; final `MODULES = (...)` concatenation declared.
+- All three validators (`validate_schema`, `validate_freshness`, `validate_candidate_isolation`) pass on existing data after migration; intentional-leak fixtures fail the validator with clear messages naming the leaking series_id.
 - `public/data/candidates/README.md` and `.gitkeep` exist.
 - `npm run build` and `npm test` still pass.
+- Frontend route reads `entry?.access_status ?? entry?.score_status` continue to work because both fields are populated (no frontend edits required from phase A).
 - No edits to `src/components/`, `src/routes/`, `scripts/ingest/`, or `.github/workflows/`.
 
 ## Phase B — official sources + Cboe candidates + sentiment candidates
@@ -279,14 +346,15 @@ Phase A creates the directory with a `.gitkeep` and a `README.md` stating:
 
 **Schema + freshness validators.** Add expectations for each new file. Personal saving rate is monthly with month-end timestamp; CAPE is monthly; ACM is monthly (per NY Fed publication); supply pressure is event-driven.
 
-**Pipeline integration.** Add the four new module paths to `scripts/update_data.py`'s `MODULES` list in the appropriate phase order (ingest before transform before validate). The safe-update path preserves prior good JSON on failure; failures record into `public/data/status/data_status.json`. See "MODULES coordination" under cross-agent collision check below for the merge-resolution rule when multiple phase-B/C agents extend MODULES in parallel branches.
+**Pipeline integration.** Append the four new module paths to the per-phase sub-lists in `scripts/update_data.py` per the MODULES coordination rule (specifically: `MODULES_INGEST_PHASE_B_OFFICIAL` for ingest scripts and `MODULES_TRANSFORM_PHASE_B` for the supply-pressure transform). The safe-update path preserves prior good JSON on failure; failures record into `public/data/status/data_status.json`.
 
 **Acceptance.**
 
-- Three source review docs committed before any ingest script.
+- Three source review docs committed before any ingest script in the same PR.
 - All four output files validate against schema and freshness.
 - `python -m scripts.update_data` produces them on a fresh repo when network is available.
-- `MODULES` in `scripts/update_data.py` contains the four new module paths in the correct phase order.
+- `MODULES_INGEST_PHASE_B_OFFICIAL` and `MODULES_TRANSFORM_PHASE_B` contain the new module paths in declaration order.
+- New series_catalog entries for `personal_saving_rate`, `cape_ratio`, `ny_fed_acm_term_premium_candidate` are appended to `series_catalog.json` in the same PR.
 - No edits to `src/components/`, `src/routes/`, or other agents' files.
 - ACM stays as candidate file in `candidates/` unless promotion review explicitly approves.
 
@@ -342,16 +410,70 @@ Weekly cadence.
 
 All three agents write to disjoint files. `source_registry.json` and `series_catalog.json` are touched only by phase A — phase B/C agents only reference entries pre-added by `source-governance-agent`. If an agent needs a `series_id` that phase A did not pre-add, the agent must coordinate with the QA fixup PR (below), not edit `series_catalog.json` directly.
 
-### MODULES coordination — the one shared file across phase B + C
+### MODULES coordination — split into per-phase sub-lists
 
-`scripts/update_data.py` has a single `MODULES` Python list (currently 15 entries). Every new ingest/transform module added by phases B and C must be appended to this list to run in CI. Coordination rule:
+`scripts/update_data.py` currently has a single `MODULES` Python list (15 entries) with one entry per line and a closing `]`. Parallel appends from phase B/C/D all collide on the closing-`]` line — git's textual three-way merge produces a conflict every time, regardless of the logical commutativity of appends.
 
-- Each phase-B agent and the phase-C agent appends its own module paths to `MODULES` in its own PR.
-- Appends go at the end of the appropriate logical section (ingest before transform before validate). The list has natural section boundaries; agents respect them.
-- Conflicts on the list are append-only and auto-merge via git in the typical case. If a non-trivial conflict arises, resolution is "union of all appends in their section's order"; no agent ever removes another agent's entry.
-- The QA agent's verification gate confirms `MODULES` contains the expected module paths for all merged phases and that they appear in the correct order (ingest → transform → validate).
+**Phase A restructures `MODULES` into named per-phase sub-lists**, concatenated at the bottom:
 
-This avoids handing MODULES ownership to a single fixup agent, which would create a merge bottleneck.
+```python
+MODULES_INGEST_EXISTING = [
+    "scripts.ingest.fetch_cboe",
+    "scripts.ingest.fetch_fred_csv",
+    "scripts.ingest.fetch_treasury",
+    "scripts.ingest.fetch_cftc",
+]
+
+MODULES_INGEST_PHASE_B_OFFICIAL: list[str] = []          # official-sources-agent appends here
+MODULES_INGEST_PHASE_B_CBOE: list[str] = []              # cboe-candidate-agent appends here
+MODULES_INGEST_PHASE_B_SENTIMENT: list[str] = []         # sentiment-candidate-agent appends here
+MODULES_INGEST_PHASE_C_TRADINGVIEW: list[str] = []       # tradingview-candidate-agent appends here
+
+MODULES_TRANSFORM_EXISTING = [
+    "scripts.transform.normalize_series",
+    "scripts.transform.compute_percentiles",
+    "scripts.transform.compute_regime_score",
+    "scripts.transform.build_signal_priority",
+    "scripts.transform.build_page_insights",
+    "scripts.transform.build_volatility_dashboard",
+    "scripts.transform.build_rates_dashboard",
+    "scripts.transform.build_regime_dashboard",
+    "scripts.generate_macro_calendar",
+]
+
+MODULES_TRANSFORM_PHASE_B: list[str] = []                # any phase B transform additions (e.g. treasury_supply_pressure)
+
+MODULES_VALIDATE = [
+    "scripts.validate.validate_schema",
+    "scripts.validate.validate_freshness",
+    # validate_candidate_isolation runs transitively via validate_schema.run();
+    # no separate MODULES entry needed.
+]
+
+MODULES = (
+    MODULES_INGEST_EXISTING
+    + MODULES_INGEST_PHASE_B_OFFICIAL
+    + MODULES_INGEST_PHASE_B_CBOE
+    + MODULES_INGEST_PHASE_B_SENTIMENT
+    + MODULES_INGEST_PHASE_C_TRADINGVIEW
+    + MODULES_TRANSFORM_EXISTING
+    + MODULES_TRANSFORM_PHASE_B
+    + MODULES_VALIDATE
+)
+```
+
+Each phase B/C agent edits ONLY its named sub-list. Different sub-lists are in disjoint regions of the file; git auto-merges without conflict. Each sub-list starts empty in phase A's commit; phase B/C fills in. Phase A also writes a comment above each empty sub-list explaining which agent owns it.
+
+**Coordination rule:**
+
+- `official-sources-agent` appends to `MODULES_INGEST_PHASE_B_OFFICIAL` and `MODULES_TRANSFORM_PHASE_B`.
+- `cboe-candidate-agent` appends to `MODULES_INGEST_PHASE_B_CBOE`.
+- `sentiment-candidate-agent` appends to `MODULES_INGEST_PHASE_B_SENTIMENT`.
+- `tradingview-candidate-agent` appends to `MODULES_INGEST_PHASE_C_TRADINGVIEW`.
+- The final `MODULES = (...)` concatenation lives in phase A's commit; phase B/C never edit it.
+- QA verifies all expected entries are present in their respective sub-lists.
+
+This structure has no merge conflict for parallel appends and keeps the `MODULES` final ordering deterministic and visible in one place.
 
 ## Phase C — TradingView authenticated candidates + workflow secrets
 
@@ -518,7 +640,7 @@ type FocusBlockProps = {
 | Chart | `InteractiveChartShell.insight` (string) | Default for ordinary charts. Unchanged in this phase. |
 | Important chart | `InteractiveChartShell.insight={<FocusBlock variant="compact" .../>}` | Important single chart that needs structured framing. |
 
-Never stack a route-level read (`PageInsightHero` / `HorizonScoreHeader` / `MarketBriefHeader`) + `FocusBlock variant="section"` + chart-level read in a way that produces duplicate reads with the same wording. The audit grid enforces this by allowing no more than five `FocusBlock` placements in this phase, and the verification gate runs a duplicate-text check (first 80 characters of each read on a route must be distinct).
+Never stack a route-level read (`PageInsightHero` / `HorizonScoreHeader` / `MarketBriefHeader`) + `FocusBlock variant="section"` + chart-level read in a way that produces duplicate reads with the same wording. The audit grid enforces this by allowing no more than five `FocusBlock` placements in this phase, and the verification gate runs a duplicate-text check against the source JSON strings (not the rendered DOM). The check is defined precisely under "Verification gate" below.
 
 **HorizonScoreHeader coexistence on Tactical.** `TacticalTradingWeather.tsx` keeps `HorizonScoreHeader` as the route-level read (covering the horizon score and the top-level horizon interpretation). Above the existing 6-tile tactical section, a `FocusBlock variant="section"` is added with section id `tactical_stress_board` — its `question` and `answer` focus on the stress-board interpretation (which warnings are clustered? which supports counter?), distinct in wording from the horizon-level read. The verification gate's duplicate-text check enforces the distinction.
 
@@ -579,9 +701,11 @@ Each placement is gated on data presence — when its `SectionInsight` is absent
 | `Sentiment.tsx` | `positioning_vs_candidate_sentiment` | section | Above the `sentiment_primary_chart` slot and the candidate panel pair below | CFTC actives + new NAAIM/AAII candidate files (fallback to "data not yet active" when files absent) |
 | `TacticalTradingWeather.tsx` | `tactical_stress_board` | section | Above the existing tactical 6-tile section | `signal_priority.json[top_warnings]` + tactical readiness |
 
-`FocusBlock variant="compact"` is implemented in the component but unused in this phase. The compact variant exists in code so a follow-up PR (or `validation` test fixture) can use it; the audit grid is what determines placement, and the grid contains no compact placements right now.
+`FocusBlock variant="compact"` is implemented in the component but **deferred** in this phase — no compact placements ship until a follow-up. The compact variant exists in code so that future work can use it without re-implementing; the audit grid is what determines placement, and the grid intentionally contains no compact placements right now.
 
-Other routes (`Credit`, `Liquidity`, `DollarGlobal`, `Commodities`, `Inflation`, `Growth`, `Housing`, `LongTermMacroClimate`, `Overview`, `Calendar`, `Methodology`, `HistoricalRegimeReplay`, `FragilityShockRisk`) do **not** receive FocusBlock in this phase. They already have `PageInsightHero`/`HorizonScoreHeader`/`MarketBriefHeader` plus chart-level `insight` strings; adding section-level FocusBlocks would duplicate reads. `LongTermMacroClimate` specifically retains its PR-7 macro grid framing instead of overlaying a FocusBlock.
+**Compact placement considered then dropped:** `FragilityShockRisk.tsx`'s `ShockRiskContributionChart` was originally proposed for a compact placement, but the chart is rendered directly (not wrapped in `InteractiveChartShell`) at `src/routes/FragilityShockRisk.tsx:125`, so there is no `insight` slot to populate. Wrapping it in the shell would extend phase D's scope into chart-shell changes, conflicting with the no-shell-changes acceptance criterion. Decision: not added in this phase; revisit if the chart is wrapped in a future cleanup.
+
+**Section placements not considered:** Other routes (`Credit`, `Liquidity`, `DollarGlobal`, `Commodities`, `Inflation`, `Growth`, `Housing`, `LongTermMacroClimate`, `Overview`, `Calendar`, `Methodology`, `HistoricalRegimeReplay`) do **not** receive `FocusBlock variant="section"` in this phase. They already have `PageInsightHero`/`HorizonScoreHeader`/`MarketBriefHeader` plus chart-level `insight` strings; adding section-level FocusBlocks would duplicate reads. `LongTermMacroClimate` specifically retains its PR-7 macro grid framing instead of overlaying a FocusBlock.
 
 ### Tests
 
@@ -661,7 +785,7 @@ Plus these explicit checks:
 - `public/data/candidates/README.md` exists; every file in that directory carries `active_scoring_allowed: false`.
 - `grep -rE "TRADINGVIEW_USERNAME|TRADINGVIEW_PASSWORD|tradingview_username|tradingview_password" public/ docs/ src/ scripts/` returns zero hits.
 - Every new route placement of `FocusBlock` renders cleanly when its underlying `sections` data is absent.
-- Duplicate-text check: on each route that has a `FocusBlock variant="section"`, the first 80 characters of (route header read) and (FocusBlock answer) and (each chart-level insight string within the section) are pairwise distinct.
+- Duplicate-text check (run as a pytest assertion against committed `page_insights.json`): for each `RouteKey` that has a `sections` entry, the first 80 characters (case- and whitespace-normalized) of `routes[<route>].why_it_matters` (route-level read) and each `routes[<route>].sections[*].answer` (section-level read) are pairwise distinct. The check operates against JSON strings, not rendered DOM. Test lives at `tests/python/test_page_insights_duplicate_reads.py`.
 - `RouteDataFooter` is still the last element on every route.
 - All new FocusBlock placements have ARIA labels and fallback text.
 - `MODULES` in `scripts/update_data.py` contains every new ingest/transform/validate module path from phases B + C in correct order.
@@ -677,7 +801,7 @@ Plus these explicit checks:
 
 | Phase | Primary deliverable | Verification |
 |---|---|---|
-| A | `AccessStatus` enum + flags + 13 source-registry reclassifications + 105 series-catalog migrations + 17 new series entries + candidate-isolation validator + candidates directory | All validators pass; intentional-leak fixtures fail validator; pytest extension passes; `score_status` removed from new code |
+| A | `AccessStatus` enum + flags + 13 source-registry reclassifications + 7 new source entries + 105 series-catalog migrations + 12 appended candidate series entries + `governance()` factory extension + MODULES sub-list restructure + gating-predicate rewrite + candidate-isolation validator + candidates directory | All validators pass; intentional-leak fixtures fail validator; pytest extension passes; `score_status` kept as derived alias |
 | B | Personal saving rate + CAPE + ACM candidate + treasury supply pressure + Cboe put/call candidates + VX candidates + NAAIM/AAII ingest scripts (no committed JSON) | All new JSONs validate; candidate isolation holds; safe-update preserves prior good data; MODULES extended |
 | C | TradingView MOVE/put-call/VX candidates with workflow env-block extension and secret helpers, pinned TV client | Secrets never leak; cache path under temp dir; exception scrubbing works; missing secrets tolerated; candidate files validate when generated; MODULES extended |
 | D | `FocusBlock` + `SectionInsight` extension + five route placements | FocusBlock renders both variants; placements degrade gracefully when data absent; duplicate-text check passes |
@@ -705,20 +829,22 @@ B, C, and D may dispatch and merge in parallel after A merges. QA dispatches aft
 
 | File | source-governance | official-sources | cboe-candidate | sentiment-candidate | tradingview-candidate | focus-pattern | qa |
 |---|---|---|---|---|---|---|---|
-| `public/data/catalog/source_registry.json` | W | R | R | R | R | R | R |
-| `public/data/catalog/series_catalog.json` | W | R | R | R | R | R | R |
-| `scripts/validate/validate_schema.py` | W | — | — | — | — | W | R |
-| `scripts/validate/validate_freshness.py` | R | W | W | W | W | W | R |
+| `public/data/catalog/source_registry.json` | W (full) | R | R | R | R | R | R |
+| `public/data/catalog/series_catalog.json` | W (reclassify all 105 + append already-reviewed candidates) | W (append 3 new) | R | R | W (append 3 new) | R | R |
+| `scripts/shared/catalog.py` | W (governance() factory extension) | R | R | R | R | R | R |
+| `scripts/validate/validate_schema.py` | W (AccessStatus enum check) | — | — | — | — | W (SectionId enum check, append-only) | R |
+| `scripts/validate/validate_freshness.py` | R | W (append) | W (append) | W (append) | W (append) | W (append) | R |
 | `scripts/validate/validate_candidate_isolation.py` | W (new) | — | — | — | — | — | R |
-| `scripts/update_data.py` (MODULES) | — | W (append) | W (append) | W (append) | W (append) | — | R |
+| `scripts/update_data.py` MODULES sub-lists | W (split structure) | W (append to own sub-list) | W (append to own sub-list) | W (append to own sub-list) | W (append to own sub-list) | — | R |
 | `scripts/shared/config.py` | — | — | — | — | W | — | R |
-| `src/lib/types.ts` | W | — | — | — | — | W (`SectionInsight`, `SectionId`) | R |
+| `src/lib/types.ts` | W (AccessStatus enum + flags; keep ScoreStatus) | — | — | — | — | W (`SectionInsight`, `SectionId`, `RouteInsight.sections`) | R |
 | `src/lib/data.ts` | — | — | — | — | — | R | R |
-| `scripts/transform/build_signal_priority.py` | W (gating rewrite) | — | — | — | — | — | R |
-| `scripts/transform/build_page_insights.py` | W (gating rewrite) | — | — | — | — | W (`SECTION_CATALOG`) | R |
+| `scripts/transform/build_signal_priority.py` | W (gating rewrite to `is_active_scoring_allowed`) | — | — | — | — | — | R |
+| `scripts/transform/build_page_insights.py` | W (gating rewrite) | — | — | — | — | W (`SECTION_CATALOG`, `_build_sections()`) | R |
 | `tests/python/test_signal_priority.py` | W | — | — | — | — | — | R |
 | `tests/python/test_candidate_isolation.py` (new) | W | — | — | — | — | — | R |
 | `tests/python/test_secrets_isolation.py` (new) | — | — | — | — | W | — | R |
+| `tests/python/test_page_insights_duplicate_reads.py` (new) | — | — | — | — | — | W | R |
 | `.github/workflows/update-data.yml` | — | — | — | — | W (env block only) | — | R |
 | `requirements.txt` | — | — | — | — | W | — | R |
 | `public/data/candidates/README.md` (new) | W | — | — | — | — | — | R |
@@ -731,8 +857,11 @@ B, C, and D may dispatch and merge in parallel after A merges. QA dispatches aft
 
 **Coordination points and resolution:**
 
-1. `source_registry.json` and `series_catalog.json` — phase A writes them with all entries (existing + new), so phase B/C agents only read. No conflict.
-2. `update_data.py` MODULES list — every agent that adds an ingest/transform/validate module appends to the list. Conflicts auto-resolve under git's typical append-merge behavior; QA validates final order.
-3. `validate_freshness.py` — multiple phase B/C agents add freshness expectations for their files. Same append-merge rule as MODULES.
-4. `src/lib/types.ts` — phase A adds `AccessStatus` + flag types at the top; phase D adds `SectionInsight` + `SectionId` types. Different regions; trivial merge.
-5. `build_page_insights.py` — phase A rewrites the gating logic; phase D adds `SECTION_CATALOG` and `_build_sections()`. Different functions; trivial merge if phase A merges first (as it must).
+1. `source_registry.json` — phase A writes it fully; phase B/C agents only read. No conflict.
+2. `series_catalog.json` — phase A reclassifies all existing entries and appends entries for already-reviewed sources. Phase B/C agents append entries for sources reviewed in their own PRs. All new entries append at the end of the array; pre-existing entries are touched only by phase A. Git conflicts limited to the trailing `]` line; trivially resolvable. QA confirms file is valid JSON post-merge.
+3. `update_data.py` MODULES — split into per-phase sub-lists by phase A. Each phase B/C agent edits only its named sub-list. Disjoint regions; trivial merge. The final `MODULES = ...` concatenation lives in phase A's commit only.
+4. `validate_freshness.py` — multiple phase agents add freshness expectations. Appends near the end of the file; minor conflict on trailing structure; QA validates final state.
+5. `validate_schema.py` — phase A adds an `AccessStatus` enum-check function; phase D appends a `SectionId` enum-check function below it. Different functions, different regions; trivial merge if phase A merges first.
+6. `src/lib/types.ts` — phase A adds `AccessStatus` + flag types near existing governance types; phase D adds `SectionInsight` + `SectionId` types near existing `RouteInsight` definition. Different regions; trivial merge.
+7. `build_page_insights.py` — phase A rewrites gating logic; phase D adds `SECTION_CATALOG` and `_build_sections()`. Different functions; trivial merge if phase A merges first (as it must).
+8. `scripts/shared/catalog.py` — phase A extends `governance()` factory; phase B/C agents call it with new `access_status` kwargs but don't edit the factory itself.
