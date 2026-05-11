@@ -109,7 +109,7 @@ STRATEGIC_IDS = {
     "treasury_net_issuance", "treasury_auction_tail", "treasury_bid_to_cover",
     "monthly_treasury_receipts", "monthly_treasury_outlays",
     "monthly_treasury_deficit_surplus", "treasury_auction_supply",
-    "cape_ratio", "forward_pe", "equity_risk_premium", "earnings_revision_breadth",
+    "forward_pe", "equity_risk_premium", "earnings_revision_breadth",
 }
 
 REGIME_ROLES_BY_ID = {
@@ -1263,19 +1263,6 @@ STRATEGIC_SOURCE_GATE_SERIES = [
         "Candidate auction demand input; requires auction-level calculation rules and redistribution review before ingestion.",
         "terms_review",
         higher_is="supportive",
-    ),
-    tactical_candidate_series(
-        "cape_ratio",
-        "CAPE Ratio",
-        "sentiment",
-        "Valuation Provider",
-        VALUATION_SOURCE_URL,
-        "monthly",
-        "ratio",
-        45,
-        "Candidate valuation input; requires source choice, methodology, and redistribution review before ingestion.",
-        "terms_review",
-        higher_is="riskier",
     ),
     tactical_candidate_series(
         "forward_pe",
