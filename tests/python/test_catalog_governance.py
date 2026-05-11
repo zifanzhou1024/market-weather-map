@@ -73,3 +73,28 @@ def test_governance_derivation_table_for_every_enum_value(monkeypatch):
         assert result["active_scoring_allowed"] is active, f"active_scoring_allowed for {access_status}"
         assert result["public_redistribution_allowed"] is redist, f"public_redistribution_allowed for {access_status}"
         assert result["requires_secret"] is secret, f"requires_secret for {access_status}"
+
+
+def test_governance_legacy_literal_as_kwarg_resolves():
+    """Legacy 4-value SourceAccessStatus values are translated when passed as the access_status kwarg.
+
+    Required because scripts/shared/catalog.py:1587 passes
+    access_status=str(series.get("access_status", "free_public")) — the literal
+    "free_public" would otherwise raise ValueError after the 7-value enum migration.
+    """
+    legacy_result = governance("fred", access_status="free_public")
+    new_result = governance("fred", access_status="free_public_active")
+    # Both should resolve to free_public_active in the output.
+    assert legacy_result["access_status"] == "free_public_active"
+    assert new_result["access_status"] == "free_public_active"
+    # And the derived flags should match.
+    assert legacy_result["active_scoring_allowed"] == new_result["active_scoring_allowed"]
+    assert legacy_result["public_redistribution_allowed"] == new_result["public_redistribution_allowed"]
+    assert legacy_result["score_status"] == new_result["score_status"]
+
+
+def test_governance_raises_for_unknown_access_status():
+    """Unknown access_status values (not in _DERIVATION_TABLE and not in _LEGACY_ACCESS_STATUS_MAP)
+    must raise ValueError. The error message names the offending value and lists valid options."""
+    with pytest.raises(ValueError, match="unknown access_status"):
+        governance("fred", access_status="not_a_valid_status")
