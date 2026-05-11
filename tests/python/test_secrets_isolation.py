@@ -61,11 +61,12 @@ SECRET_NAME_ALLOWLIST: tuple[str, ...] = (
     "docs/superpowers/plans/2026-05-11-phase-c-prs.md",
     "docs/superpowers/plans/2026-05-11-bcd-replan.md",
     "docs/superpowers/specs/2026-05-10-data-source-and-focus-pattern-expansion-design.md",
-    # Future PRs C2/C3/C4 append their fetcher paths here:
-    # "scripts/ingest/fetch_tradingview_move.py",
+    # PR C2 MOVE fetcher:
+    "scripts/ingest/fetch_tradingview_move.py",
+    "tests/python/test_fetch_tradingview_move.py",
+    # PRs C3/C4 will uncomment these when their fetchers land:
     # "scripts/ingest/fetch_tradingview_put_call.py",
     # "scripts/ingest/fetch_tradingview_vx_curve.py",
-    # "tests/python/test_fetch_tradingview_move.py",
     # "tests/python/test_fetch_tradingview_put_call.py",
     # "tests/python/test_fetch_tradingview_vx_curve.py",
 )
