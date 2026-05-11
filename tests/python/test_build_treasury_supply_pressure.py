@@ -42,15 +42,20 @@ def test_compute_supply_pressure_skips_insufficient_history():
     assert result == []
 
 
-def test_compute_supply_pressure_constant_input_gives_ratio_near_1():
-    # Constant value of 100 across 60 weeks. After enough baseline history, the
-    # window_sum and the baseline mean are both ~constant, so ratio ~= 1.0.
+def test_compute_supply_pressure_constant_input_clusters_near_1():
+    """With constant weekly input, the ratio fluctuates in a tight band around 1.0.
+
+    The 30-day trailing window catches 4 or 5 weekly observations depending on
+    day-of-week alignment, while the 365-day baseline averages a mix. Result:
+    each ratio is in [1.0, ~1.06] but not exactly 1.0.
+    """
     obs = _weekly_series(date(2024, 1, 1), 60, 100.0)
     result = mod.compute_supply_pressure(obs, min_baseline_samples=40)
     assert len(result) > 0
-    # Some observations should clear the threshold; their value should be exactly 1.0.
-    final = result[-1]
-    assert final["value"] == pytest.approx(1.0, rel=1e-3)
+    values = [r["value"] for r in result]
+    # All ratios in the expected weekly-alignment band; no drift outside.
+    assert min(values) >= 1.0
+    assert max(values) <= 1.07
 
 
 def test_compute_supply_pressure_doubling_late_value_raises_ratio():
