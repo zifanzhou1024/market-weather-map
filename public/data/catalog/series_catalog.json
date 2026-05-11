@@ -3254,5 +3254,32 @@
     "source_url": "https://www.tradingview.com/symbols/TVC-MOVE/",
     "terms_status": "review_needed",
     "units": "index"
+  },
+  {
+    "access_status": "authenticated_candidate",
+    "active_scoring_allowed": false,
+    "category": "sentiment",
+    "citation_notes": "TradingView USI:PCC series; authenticated candidate pending review per docs/source_reviews/tradingview_authenticated_candidates.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "tradingview_put_call_candidate",
+    "max_stale_days": 3,
+    "name": "Cboe Equity Put/Call Ratio via TradingView (candidate)",
+    "notes": "Authenticated TradingView candidate for the Cboe equity put/call ratio. Not treated as the official Cboe put/call feed; sourced from TradingView's USI data via rongardF/tvdatafeed. Not active until a source review approves redistribution; see docs/source_reviews/tradingview_authenticated_candidates.md.",
+    "preferred_chart": "line",
+    "provider_id": "tradingview",
+    "public": false,
+    "public_redistribution_allowed": false,
+    "regime_role": [
+      "sentiment"
+    ],
+    "requires_secret": true,
+    "score_status": "candidate",
+    "source": "TradingView",
+    "source_url": "https://www.tradingview.com/symbols/USI-PCC/",
+    "terms_status": "review_needed",
+    "units": "ratio"
   }
 ]

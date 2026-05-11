@@ -1877,6 +1877,40 @@ TRADINGVIEW_CANDIDATE_SERIES: list[dict[str, object]] = [
         "regime_role": ["volatility"],
         "preferred_chart": "line",
     },
+    {
+        "id": "tradingview_put_call_candidate",
+        "name": "Cboe Equity Put/Call Ratio via TradingView (candidate)",
+        "category": "sentiment",
+        "source": "TradingView",
+        "provider_id": "tradingview",
+        "source_url": "https://www.tradingview.com/symbols/USI-PCC/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 3,
+        "notes": (
+            "Authenticated TradingView candidate for the Cboe equity put/call ratio. "
+            "Not treated as the official Cboe put/call feed; "
+            "sourced from TradingView's USI data via rongardF/tvdatafeed. "
+            "Not active until a source review approves redistribution; "
+            "see docs/source_reviews/tradingview_authenticated_candidates.md."
+        ),
+        "citation_notes": (
+            "TradingView USI:PCC series; authenticated candidate pending review "
+            "per docs/source_reviews/tradingview_authenticated_candidates.md."
+        ),
+        "access_status": "authenticated_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": False,
+        "requires_secret": True,
+        "horizon": "tactical",
+        "regime_role": ["sentiment"],
+        "preferred_chart": "line",
+    },
 ]
 
 
