@@ -18,7 +18,8 @@ REQUIRED_REVIEW_FILES = {
     "gold_xau.md",
     "ice_move.md",
     "ism_spglobal_pmis.md",
-    "ny_fed_acm_term_premium.md",
+    # ny_fed_acm_term_premium.md promoted to free_public_active by PR B3;
+    # removed from gated-candidate review set (which asserts "No" to active scoring).
     "README.md",
     "regional_fed_surveys_as_pmi_proxy.md",
     "sloos.md",

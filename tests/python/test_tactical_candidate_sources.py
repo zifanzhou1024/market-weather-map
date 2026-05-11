@@ -34,7 +34,7 @@ TACTICAL_CANDIDATE_IDS = (
 
 STRATEGIC_CANDIDATE_IDS = (
     "ism_services_pmi",
-    "term_premium_acm_10y",
+    # term_premium_acm_10y promoted to free_public_active by PR B3; removed from strategic candidates.
     "treasury_net_issuance",
     "treasury_auction_tail",
     "treasury_bid_to_cover",
