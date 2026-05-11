@@ -1857,22 +1857,22 @@ OFFICIAL_SOURCE_SERIES_PHASE_B: list[dict[str, object]] = [
         "id": "cape_ratio",
         "name": "Shiller CAPE Ratio",
         "category": "sentiment",
-        "source": "Robert Shiller / Yale",
+        "source": "Robert Shiller / multpl.com",
         "source_url": "http://www.econ.yale.edu/~shiller/data.htm",
-        "endpoint_url": "http://www.econ.yale.edu/~shiller/data/ie_data.xls",
+        "endpoint_url": "https://www.multpl.com/shiller-pe/table/by-month",
         "frequency": "monthly",
         "units": "ratio",
         "higher_is": "riskier",
         "public": True,
-        "max_stale_days": 90,  # Shiller's update cadence is irregular; 90 days tolerates ~2 missed months
-        "notes": "Cyclically Adjusted Price-to-Earnings ratio (S&P 500), monthly. Sourced from Shiller's published XLS at Yale.",
+        "max_stale_days": 45,  # multpl.com updates monthly; 45 days tolerates one missed update
+        "notes": "Cyclically Adjusted Price-to-Earnings ratio (S&P 500), monthly. Fetched from multpl.com mirror of Shiller's methodology; Yale .xls stale since 2023-10-17.",
         "horizon": "strategic",
         "regime_role": ["sentiment"],
         "preferred_chart": "line",
         **governance(
             "multpl_shiller",
             score_status="active",
-            citation_notes="Cyclically Adjusted P/E ratio from Robert Shiller, Yale University.",
+            citation_notes="Cyclically Adjusted P/E ratio from Robert Shiller, Yale University, via multpl.com mirror.",
         ),
     },
     {

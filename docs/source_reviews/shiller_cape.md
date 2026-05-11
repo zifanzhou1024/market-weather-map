@@ -6,24 +6,30 @@ Monthly Cyclically Adjusted Price-to-Earnings ratio for the S&P 500, published b
 
 ## Review Answers
 
-Source owner: Robert Shiller, Yale University.
-Official page / documentation reviewed: http://www.econ.yale.edu/~shiller/data.htm
-Data file (verified 2026-05-11): `http://www.econ.yale.edu/~shiller/data/ie_data.xls` — legacy Excel `.xls` format (NOT xlsx), approximately 1.6 MB. Last-Modified header observed: 2023-10-17.
-Data format: Monthly CAPE ratio; "Data" sheet, column header "CAPE". Date column uses Shiller's `YYYY.MM` convention (e.g., "2024.01" for January 2024). Fetcher converts to ISO `YYYY-MM-01` (first-of-month convention).
-Historical availability: Full historical series from 1871 onward.
-Automated download allowed: yes; the URL has been stable since Shiller's site was established. No rate limiting observed.
-Static JSON redistribution allowed: yes; Shiller's data is broadly considered public for academic and derived use.
-Attribution requirement: "Cyclically Adjusted P/E ratio from Robert Shiller, Yale University."
+Source owner / methodology: Robert Shiller, Yale University.
+Official methodology page: http://www.econ.yale.edu/~shiller/data.htm
+Data endpoint (operational): https://www.multpl.com/shiller-pe/table/by-month
+
+**Why multpl.com instead of Yale's XLS:**
+Yale's published `ie_data.xls` (http://www.econ.yale.edu/~shiller/data/ie_data.xls) has not been updated since 2023-10-17 (Last-Modified header observed 2026-05-11). multpl.com mirrors Shiller's same methodology with monthly updates and serves the same historical data back to 1871. For operational freshness, this PR switches the fetcher to the multpl.com HTML table while retaining Yale's page as the canonical academic citation.
+
+Data format: HTML table at https://www.multpl.com/shiller-pe/table/by-month. 1864 rows as of 2026-05-11. First row is the live current value (day-of-month varies, e.g., "May 8, 2026"); subsequent rows are first-of-month historical values going back to "Feb 1, 1871". Value cell contains an EM-space (&#x2002;) + newline + the float.
+
+Live-current-day normalization: The fetcher normalizes the live row (e.g., "May 8, 2026") to first-of-month ("2026-05-01") so the time series stays on a clean monthly grid. The first match for each month wins; if a first-of-month row also exists for the current month it is ignored in favor of the live value.
+
+Historical availability: Full historical series from February 1871 onward.
+Automated download allowed: yes; multpl.com publishes the table for general viewing with no rate limiting observed. No authentication required.
+Static JSON redistribution allowed: yes; redistribution as derived static JSON is standard practice in the financial data community. Methodology attribution goes to Robert Shiller / Yale University.
+Attribution requirement: "Cyclically Adjusted P/E ratio from Robert Shiller, Yale University, via multpl.com mirror."
 API key required: no.
 Can it be used in browser: No; the browser should consume generated static JSON only.
 Can it be used in GitHub Actions ingestion: Yes, direct URL fetch with no authentication required.
 Can it affect active scores now: yes.
-Recommended catalog status: `free_public_active` (this PR, B2, promotes to `free_public_active`).
+Recommended catalog status: `free_public_active`.
 Recommended score status: active.
-Citation text: "Cyclically Adjusted P/E ratio from Robert Shiller, Yale University."
+Citation text: "Cyclically Adjusted P/E ratio from Robert Shiller, Yale University, via multpl.com mirror."
 Citation text to show on website: "Cyclically Adjusted P/E ratio from Robert Shiller, Yale University."
-Notes / unresolved questions: Source file is binary `.xls` (not `.xlsx`); parsing depends on `xlrd<2.0` (xlrd 2.0 dropped `.xls` support). Column index for CAPE is looked up by header name, not hardcoded index, to survive workbook restructuring. Last observed update October 2023; cadence is irregular (Shiller updates manually). `max_stale_days` set to 90 to tolerate approximately two missed monthly updates.
 
 ## Decision
 
-Approved for `access_status: free_public_active`, `score_status: active`. Monthly cadence but irregular updates from source; `xlrd<2.0` required for legacy `.xls` parsing. Header row and column are located dynamically to be resilient to workbook layout changes.
+Approved for `access_status: free_public_active`, `score_status: active`. Monthly cadence via multpl.com mirror; `max_stale_days: 45` (approximately 1.5 months, tolerating one missed update). No binary parsing dependencies — HTML fetch via stdlib `urllib` + `re`. `source_url` points to the canonical Yale methodology page; `endpoint_url` points to the operational multpl.com fetch URL.

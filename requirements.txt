@@ -1,3 +1,1 @@
 pytest>=8,<9
-# xlrd<2.0 required: xlrd 2.0 dropped .xls support; Shiller publishes legacy .xls (not .xlsx)
-xlrd>=1.2,<2.0
