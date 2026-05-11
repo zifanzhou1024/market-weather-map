@@ -1864,31 +1864,29 @@ CANDIDATE_SERIES_PHASE_A: list[dict[str, object]] = [
 
 # Phase B official sources — fully reviewed, active-scoring entries.
 # Each Phase-B PR (B1, B2, ...) appends one entry here.
+# Phase B official sources reuse the provider-level governance() helper since all entries share free_public_active provider defaults.
 OFFICIAL_SOURCE_SERIES_PHASE_B: list[dict[str, object]] = [
     {
         "id": "personal_saving_rate",
         "name": "U.S. Personal Saving Rate",
         "category": "growth",
         "source": "BEA / FRED",
-        "provider_id": "bea",
         "source_url": "https://fred.stlouisfed.org/series/PSAVERT",
         "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSAVERT",
         "frequency": "monthly",
         "units": "percent",
         "higher_is": "supportive",
         "public": True,
-        "max_stale_days": 60,
+        "max_stale_days": 60,  # monthly cadence + ~30d release lag
         "notes": "Monthly U.S. personal saving rate; reflects share of disposable income saved.",
-        "citation_notes": "U.S. Bureau of Economic Analysis, Personal Saving Rate [PSAVERT], via FRED. Free public.",
-        "access_status": "free_public_active",
-        "score_status": "active",
-        "terms_status": "review_each_series",
-        "active_scoring_allowed": True,
-        "public_redistribution_allowed": True,
-        "requires_secret": False,
         "horizon": "strategic",
         "regime_role": ["growth"],
         "preferred_chart": "line",
+        **governance(
+            "bea",
+            score_status="active",
+            citation_notes="U.S. Bureau of Economic Analysis, Personal Saving Rate [PSAVERT], via FRED. Free public.",
+        ),
     },
 ]
 

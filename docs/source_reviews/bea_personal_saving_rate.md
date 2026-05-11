@@ -17,7 +17,7 @@ API key required: no.
 Can it be used in browser: No; the browser should consume generated static JSON only.
 Can it be used in GitHub Actions ingestion: Yes, via FRED graph CSV endpoint with no key required.
 Can it affect active scores now: yes.
-Recommended catalog status: `free_public` (this PR promotes to `free_public_active` in BO2).
+Recommended catalog status: `free_public_active` (this PR, B1, promotes to `free_public_active`).
 Recommended score status: active.
 Citation text: "U.S. Bureau of Economic Analysis, Personal Saving Rate [PSAVERT], via FRED."
 Citation text to show on website: "U.S. Bureau of Economic Analysis, Personal Saving Rate [PSAVERT], via FRED."
