@@ -1941,11 +1941,12 @@ def catalog_entries() -> list[dict[str, object]]:
         ]
     )
     entries.extend(entry.copy() for entry in CANDIDATE_SERIES_PHASE_A)
-    # Series-level access_status overrides. Some series cannot be classified
-    # accurately from the provider row alone (e.g. ice_indices' MOVE feed is
-    # restricted_vendor while other ICE candidates remain terms_review_needed;
-    # bond_volatility_proxy is a derived series whose public_redistribution_allowed
-    # flag must follow its FRED-derived inputs).
+    # Series-level access_status overrides applied after entry assembly.
+    # Some series cannot be classified accurately from the provider row alone
+    # (e.g. ice_indices' MOVE feed is restricted_vendor while other ICE
+    # candidates remain terms_review_needed; bond_volatility_proxy is a
+    # derived series whose public_redistribution_allowed flag must follow
+    # its FRED-derived inputs).
     for entry in entries:
         series_id = entry.get("id")
         if series_id in _SERIES_ACCESS_STATUS_OVERRIDES:

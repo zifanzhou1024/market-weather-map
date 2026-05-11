@@ -78,7 +78,7 @@ def test_governance_derivation_table_for_every_enum_value(monkeypatch):
 def test_governance_legacy_literal_as_kwarg_resolves():
     """Legacy 4-value SourceAccessStatus values are translated when passed as the access_status kwarg.
 
-    Required because scripts/shared/catalog.py:1587 passes
+    Required because the FRED_SERIES loop in scripts/shared/catalog.py passes
     access_status=str(series.get("access_status", "free_public")) — the literal
     "free_public" would otherwise raise ValueError after the 7-value enum migration.
     """
