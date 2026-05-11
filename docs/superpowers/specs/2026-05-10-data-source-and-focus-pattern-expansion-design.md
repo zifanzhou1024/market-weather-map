@@ -587,7 +587,16 @@ None in this phase. TradingView candidate data is visible only via existing `Can
 
 1. `secret()` never returns non-stripped values.
 2. `tradingview_credentials_available()` returns False when env is empty.
-3. No committed file under `public/`, `docs/`, `src/`, or `scripts/` contains the literal strings `TRADINGVIEW_USERNAME`, `TRADINGVIEW_PASSWORD`, or their lowercase variants. (The CI workflow file under `.github/workflows/` references these strings via `${{ secrets.* }}` and is excluded from the grep.)
+3. **Secret NAME references are allowed only in an explicit allowlist of files.** The strings `TRADINGVIEW_USERNAME` / `TRADINGVIEW_PASSWORD` / `ENABLE_AUTHENTICATED_CANDIDATES` are legitimate env-var names; they may appear in:
+   - `.github/workflows/update-data.yml` (workflow env block)
+   - `scripts/shared/config.py` (the `secret()` helpers must reference the names to read the env)
+   - `scripts/ingest/fetch_tradingview_*.py` (each may reference `tradingview_credentials_available()` plus error-message scrubbing patterns)
+   - `docs/source_reviews/tradingview_authenticated_candidates.md` (documents which secrets the workflow injects)
+   - `tests/python/test_secrets_isolation.py` (asserts behavior, exercises name patterns)
+   - This spec file itself.
+   Any reference outside this allowlist fails the test. Implementation: enumerate matches via `grep -rE` then subtract the allowlist; remaining hits cause failure.
+4. **No secret VALUES may appear anywhere in the repo.** The test sets fake env values (`os.environ["TRADINGVIEW_USERNAME"] = "fake-user-token-abc123"` and similar) before invoking each TV ingest script in a sandboxed run, then asserts that no committed file under `public/`, `docs/`, or `scripts/` (and no captured `caplog` output from the test run) contains the substring `"fake-user-token-abc123"` or its companion fake password. This proves the credential never leaks into JSON outputs or log artifacts under realistic conditions.
+5. **No TradingView candidate observation arrays are committed when `public_redistribution_allowed: false`.** The current spec puts `public_redistribution_allowed: false` on `authenticated_candidate` while permitting the file itself to ship; the test guards the stricter rule that if a future review flips a TV series to `public_redistribution_allowed: false` AND no longer permits committed observations, the workflow respects the flag. Implementation: read each candidate file's `public_redistribution_allowed`; if false and a separate `commit_observations` flag is also false, assert the file's `observations` array is empty.
 4. The chosen TV client's cache directory, if any, is configurable and is set to a path under `tempfile.gettempdir()` (e.g. `/tmp/.tv_cache_<uuid>`) for the workflow run, never the home directory. The test enumerates the client's documented cache-path env variable and asserts the workflow sets it.
 5. Exception handling in each ingest script catches `Exception` from the TV client, sanitizes the message to remove any substring containing the username or password, and re-logs with a generic message. The test mocks the TV client to raise `Exception("login failed for user a1258737881@gmail.com")` and asserts the logged output does not contain `@` or any other recognizable credential fragment.
 
@@ -599,7 +608,8 @@ None in this phase. TradingView candidate data is visible only via existing `Can
 - `scripts/shared/config.py` exports the secret helpers with tests.
 - All three candidate files validate when generated; absence is silently tolerated.
 - `test_secrets_isolation.py` passes (all 5 assertions including cache-path and exception-scrubbing).
-- `grep -rE "TRADINGVIEW_USERNAME|TRADINGVIEW_PASSWORD|tradingview_username|tradingview_password" public/ docs/ src/ scripts/` returns zero hits.
+- Secret-NAME allowlist check passes (see `test_secrets_isolation.py` assertion 3): the strings `TRADINGVIEW_USERNAME` / `TRADINGVIEW_PASSWORD` / `ENABLE_AUTHENTICATED_CANDIDATES` appear only in the allowlisted files.
+- Secret-VALUE leak test passes (assertion 4): fake env values do not appear in any committed JSON, source file, or captured log when the TV ingest scripts run.
 - TV client's cache path set to a temp dir via env variable in the workflow step; verified by a workflow-step `printenv | grep -i cache` check that the path starts with `/tmp` or `${RUNNER_TEMP}`.
 - Each ingest script wraps the TV client call in a try/except that scrubs credentials from the exception message before logging.
 - `MODULES` in `scripts/update_data.py` includes the three TV ingest module paths.
@@ -783,7 +793,8 @@ Plus these explicit checks:
 - No active score uses any `series_id` whose `active_scoring_allowed` is false. Equivalently: every `series_id` appearing in an active output has `access_status ∈ {free_public_active, proxy_only}` per the derivation table.
 - No leak of TradingView / Cboe-candidate / NAAIM / AAII `series_id`s into `signal_priority.json` primary slots, `page_insights.json` primary slots, `score_summary.json`, `regime_score.json`, `bucket_scores.json`, or `shock_risk_snapshot.json`.
 - `public/data/candidates/README.md` exists; every file in that directory carries `active_scoring_allowed: false`.
-- `grep -rE "TRADINGVIEW_USERNAME|TRADINGVIEW_PASSWORD|tradingview_username|tradingview_password" public/ docs/ src/ scripts/` returns zero hits.
+- Secret-NAME allowlist check passes (no references to `TRADINGVIEW_USERNAME` / `TRADINGVIEW_PASSWORD` / `ENABLE_AUTHENTICATED_CANDIDATES` outside `.github/workflows/update-data.yml`, `scripts/shared/config.py`, `scripts/ingest/fetch_tradingview_*.py`, `docs/source_reviews/tradingview_authenticated_candidates.md`, `tests/python/test_secrets_isolation.py`, and this spec file).
+- Secret-VALUE leak test passes (fake env values never appear in committed artifacts or test logs).
 - Every new route placement of `FocusBlock` renders cleanly when its underlying `sections` data is absent.
 - Duplicate-text check (run as a pytest assertion against committed `page_insights.json`): for each `RouteKey` that has a `sections` entry, the first 80 characters (case- and whitespace-normalized) of `routes[<route>].why_it_matters` (route-level read) and each `routes[<route>].sections[*].answer` (section-level read) are pairwise distinct. The check operates against JSON strings, not rendered DOM. Test lives at `tests/python/test_page_insights_duplicate_reads.py`.
 - `RouteDataFooter` is still the last element on every route.
