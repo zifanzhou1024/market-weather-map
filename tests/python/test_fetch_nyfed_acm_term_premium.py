@@ -134,3 +134,35 @@ def test_extract_acm_observations_uses_header_row_index():
     obs = mod.extract_acm_observations(rows, header_row_index=2)
     assert len(obs) == 1
     assert obs[0]["date"] == "1961-06-14"
+
+
+# ---------------------------------------------------------------------------
+# _sheet_contains_headers: sheet-level header detection
+# ---------------------------------------------------------------------------
+
+class _FakeSheet:
+    """Minimal sheet-like stand-in for xlrd.sheet.Sheet."""
+
+    def __init__(self, rows: list[list[object]]) -> None:
+        self._rows = rows
+        self.nrows = len(rows)
+
+    def row_values(self, i: int) -> list[object]:
+        return self._rows[i]
+
+
+def test_sheet_contains_headers_positive():
+    sheet = _FakeSheet([
+        ["preamble", "blank"],
+        ["DATE", "ACMTP10", "other"],
+        ["01-Jun-2024", 1.5, None],
+    ])
+    assert mod._sheet_contains_headers(sheet, scan_rows=30) is True
+
+
+def test_sheet_contains_headers_negative():
+    sheet = _FakeSheet([
+        ["DATE", "OTHER_COL"],   # has DATE but not ACMTP10
+        ["01-Jun-2024", 1.5],
+    ])
+    assert mod._sheet_contains_headers(sheet, scan_rows=30) is False

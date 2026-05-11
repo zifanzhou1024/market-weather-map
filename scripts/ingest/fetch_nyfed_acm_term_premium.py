@@ -36,6 +36,37 @@ def parse_acm_date(raw: str) -> str:
     return datetime.strptime(raw.strip(), _DATE_FMT).date().isoformat()
 
 
+def _sheet_contains_headers(sheet: xlrd.sheet.Sheet, scan_rows: int = 30) -> bool:
+    """Return True if the sheet's first `scan_rows` rows contain both required headers."""
+    for i in range(min(scan_rows, sheet.nrows)):
+        stripped = {str(c).strip() for c in sheet.row_values(i)}
+        if DATE_HEADER in stripped and VALUE_HEADER in stripped:
+            return True
+    return False
+
+
+def find_acm_sheet(book: xlrd.Book) -> xlrd.sheet.Sheet:
+    """Locate the sheet containing the 10-year ACM column.
+
+    Tries SHEET_NAME first; if absent or empty, scans all sheets for one whose
+    first ~30 rows contain both DATE_HEADER and VALUE_HEADER.
+    """
+    try:
+        sheet = book.sheet_by_name(SHEET_NAME)
+        if _sheet_contains_headers(sheet):
+            return sheet
+    except xlrd.XLRDError:
+        pass
+    for name in book.sheet_names():
+        candidate = book.sheet_by_name(name)
+        if _sheet_contains_headers(candidate):
+            return candidate
+    raise ValueError(
+        f"ACMTermPremium.xls: no sheet containing '{DATE_HEADER}' and '{VALUE_HEADER}' headers; "
+        f"sheets present: {book.sheet_names()}"
+    )
+
+
 def find_header_row_index(rows: list[list[object]]) -> int:
     """Return the index of the row that contains both DATE and ACMTP10 headers."""
     for i, row in enumerate(rows):
@@ -93,7 +124,7 @@ def extract_acm_observations(
 def main() -> None:
     raw_bytes = download_bytes(ENDPOINT)
     book = xlrd.open_workbook(file_contents=raw_bytes)
-    sheet = book.sheet_by_name(SHEET_NAME)
+    sheet = find_acm_sheet(book)
     rows = [sheet.row_values(i) for i in range(sheet.nrows)]
     header_row_index = find_header_row_index(rows)
     observations = extract_acm_observations(rows, header_row_index=header_row_index)
