@@ -93,3 +93,54 @@ def test_isolation_fails_when_candidate_in_page_insights_primary(tmp_data: Path)
         validate_isolation()
     assert "put_call_total_candidate" in str(exc.value)
     assert "page_insights.json" in str(exc.value)
+
+
+# ---------------------------------------------------------------------------
+# Layer 3 defense-in-depth: every candidate-class AccessStatus enum value
+# must trigger CandidateIsolationError when leaked into a signal_priority
+# primary slot. One intentional-leak fixture per enum value proves the
+# validator catches every class — not just the canonical ``free_public_candidate``
+# case already exercised above.
+# ---------------------------------------------------------------------------
+
+
+LEAK_CASES = [
+    ("free_public_candidate", "put_call_total_candidate"),
+    ("terms_review_needed", "naaim_exposure_candidate"),
+    ("authenticated_candidate", "tradingview_move_candidate"),
+    ("restricted_vendor", "move_index"),
+    ("unavailable", "synthetic_unavailable_series"),
+]
+
+
+@pytest.mark.parametrize("access_status,series_id", LEAK_CASES)
+def test_isolation_catches_every_candidate_class(
+    tmp_path: Path, monkeypatch, access_status: str, series_id: str
+):
+    catalog = tmp_path / "catalog"
+    derived = tmp_path / "derived"
+    catalog.mkdir()
+    derived.mkdir()
+    from scripts.shared import io as shared_io
+    monkeypatch.setattr(shared_io, "data_dir", lambda: tmp_path)
+
+    (catalog / "series_catalog.json").write_text(json.dumps([
+        {
+            "id": series_id,
+            "access_status": access_status,
+            "active_scoring_allowed": False,
+            "public_redistribution_allowed": False,
+            "requires_secret": access_status == "authenticated_candidate",
+            "score_status": "candidate",
+            "provider_id": "test_provider",
+        }
+    ]))
+    (derived / "signal_priority.json").write_text(json.dumps({
+        "top_warnings": [{"id": series_id, "source_status": access_status}],
+        "top_supports": [],
+        "missing_high_value_signals": [],
+    }))
+
+    with pytest.raises(CandidateIsolationError) as exc:
+        validate_isolation()
+    assert series_id in str(exc.value)
