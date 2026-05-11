@@ -25,6 +25,22 @@ _LEGACY_ACCESS_STATUS_MAP = {
     "unavailable":         "unavailable",
 }
 
+# Series-level access_status overrides applied inside catalog_entries().
+# Each row overrides whatever access_status the provider-level governance()
+# populated, plus re-derives the flag fields via _DERIVATION_TABLE.
+# Notes:
+#   - sp500_index and skew_index naturally resolve to terms_review_needed
+#     via their providers; no override needed.
+#   - move_index is promoted from terms_review_needed to restricted_vendor
+#     to reflect its ICE-licensed dataset.
+#   - bond_volatility_proxy is a derived series; proxy_only marks it as
+#     active-scoring-eligible without claiming public redistribution rights
+#     beyond what FRED already grants for the underlying US10Y data.
+_SERIES_ACCESS_STATUS_OVERRIDES: dict[str, str] = {
+    "move_index": "restricted_vendor",
+    "bond_volatility_proxy": "proxy_only",
+}
+
 
 def governance(
     provider_id: str,
@@ -1618,6 +1634,41 @@ def catalog_entries() -> list[dict[str, object]]:
             for series in CANDIDATE_SERIES
         ]
     )
+    # Post-pass 1: series-level access_status overrides. Some series cannot
+    # be classified accurately from the provider row alone (e.g. ice_indices'
+    # MOVE feed is restricted_vendor while other ICE candidates remain
+    # terms_review_needed; bond_volatility_proxy is a derived series whose
+    # public_redistribution_allowed flag must follow its FRED-derived inputs).
+    for entry in entries:
+        series_id = entry.get("id")
+        if series_id in _SERIES_ACCESS_STATUS_OVERRIDES:
+            new_access = _SERIES_ACCESS_STATUS_OVERRIDES[series_id]
+            derived_score, active_scoring, public_redist, derived_secret = (
+                _DERIVATION_TABLE[new_access]
+            )
+            entry["access_status"] = new_access
+            entry["score_status"] = derived_score
+            entry["active_scoring_allowed"] = active_scoring
+            entry["public_redistribution_allowed"] = public_redist
+            entry["requires_secret"] = derived_secret
+    # Post-pass 2: reconcile entries that emerged with the legacy
+    # "free_public_active + score_status=candidate" combination. The new
+    # AccessStatus enum models this as free_public_candidate so the
+    # active_scoring_allowed flag stays consistent with score_status.
+    for entry in entries:
+        if (
+            entry.get("access_status") == "free_public_active"
+            and entry.get("score_status") == "candidate"
+        ):
+            derived_score, active_scoring, public_redist, derived_secret = (
+                _DERIVATION_TABLE["free_public_candidate"]
+            )
+            entry["access_status"] = "free_public_candidate"
+            # score_status stays "candidate" (matches derived_score here).
+            entry["score_status"] = derived_score
+            entry["active_scoring_allowed"] = active_scoring
+            entry["public_redistribution_allowed"] = public_redist
+            entry["requires_secret"] = derived_secret
     return entries
 
 

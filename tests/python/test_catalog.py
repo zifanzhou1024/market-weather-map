@@ -274,7 +274,7 @@ def test_official_public_diagnostic_candidates_are_generated_but_not_active():
         assert entry["source_url"] == f"https://fred.stlouisfed.org/series/{fred_id}"
         assert entry["endpoint_url"] == f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={fred_id}"
         assert entry["public"] is True
-        assert entry["access_status"] == "free_public_active"
+        assert entry["access_status"] == "free_public_candidate"
         assert entry["terms_status"] == "review_each_series"
         assert entry["score_status"] == "candidate"
         assert entry["horizon"] == horizon
@@ -303,7 +303,7 @@ def test_treasury_supply_diagnostics_are_generated_candidates_not_active():
         assert entry["source_url"] == source_url
         assert entry["endpoint_url"]
         assert entry["public"] is True
-        assert entry["access_status"] == "free_public_active"
+        assert entry["access_status"] == "free_public_candidate"
         assert entry["terms_status"] == "review_each_series"
         assert entry["score_status"] == "candidate"
         assert entry["generate_static"] is True
@@ -312,7 +312,7 @@ def test_treasury_supply_diagnostics_are_generated_candidates_not_active():
         assert series_id not in active_ids
 
 
-def test_derived_bond_volatility_proxy_candidate_catalog_row_is_non_scoring():
+def test_derived_bond_volatility_proxy_catalog_row_uses_proxy_only_access():
     entries = {entry["id"]: entry for entry in catalog_module.catalog_entries()}
 
     entry = entries["bond_volatility_proxy"]
@@ -320,9 +320,12 @@ def test_derived_bond_volatility_proxy_candidate_catalog_row_is_non_scoring():
     assert entry["source"] == "Derived"
     assert entry["source_url"] == "/data/series/us10y.json"
     assert entry["endpoint_url"] == "/data/derived/bond_volatility_proxy.json"
-    assert entry["access_status"] == "free_public_active"
+    # Task A4 reclassifies this derived series to proxy_only so it can be
+    # actively scored without claiming public redistribution rights beyond
+    # what its FRED-derived input already grants.
+    assert entry["access_status"] == "proxy_only"
     assert entry["terms_status"] == "ok"
-    assert entry["score_status"] == "candidate"
+    assert entry["score_status"] == "active"
     assert entry["public"] is True
     assert entry["regime_role"] == ["bond_volatility"]
 
