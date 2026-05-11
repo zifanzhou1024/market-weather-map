@@ -144,3 +144,4 @@ def test_isolation_catches_every_candidate_class(
     with pytest.raises(CandidateIsolationError) as exc:
         validate_isolation()
     assert series_id in str(exc.value)
+    assert "signal_priority.json" in str(exc.value)
