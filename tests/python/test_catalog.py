@@ -239,7 +239,6 @@ def test_phase4_catalog_contains_consumer_candidates_only():
             "FRED",
             "https://fred.stlouisfed.org/series/DSPIC96",
         ),
-        "personal_saving_rate": ("FRED", "https://fred.stlouisfed.org/series/PSAVERT"),
         "total_consumer_credit": ("FRED", "https://fred.stlouisfed.org/series/TOTALSL"),
         "revolving_consumer_credit": ("FRED", "https://fred.stlouisfed.org/series/REVOLSL"),
     }
