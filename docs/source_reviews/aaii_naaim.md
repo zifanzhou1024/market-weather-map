@@ -2,26 +2,34 @@
 
 ## Candidate Use
 
-Investor-positioning and sentiment context using AAII sentiment and NAAIM Exposure Index data after terms review.
+Investor-positioning and sentiment context using NAAIM Exposure Index (weekly fund-manager equity exposure) and AAII Sentiment Survey (weekly retail bull/bear/neutral breakdown). Listed as readiness-UI candidates only; no operational free-public path has been approved as of this re-review.
 
 ## Review Answers
 
-Source owner: American Association of Individual Investors and National Association of Active Investment Managers.
-Official page / documentation reviewed: AAII Sentiment Investing dashboard https://sentiment.aaii.com/dashboard and NAAIM Exposure Index page https://naaim.org/programs/naaim-exposure-index/.
-Data format: AAII subscription/dashboard content and NAAIM web table or downloadable spreadsheet; exact approved automated format is not documented here.
-Historical availability: AAII advertises survey history and dashboard content; NAAIM publishes current and historical exposure data on its page, subject to its stated usage limits.
-Automated download allowed: Not approved; source-owner terms must be reviewed before scheduled collection.
-Static JSON redistribution allowed: Not approved; both datasets need redistribution and commercial-use review before public static publication.
-Attribution requirement: Attribute AAII, AAII Investor Sentiment Survey or dashboard, NAAIM, and NAAIM Exposure Index if later approved.
-API key required: No public project key is approved; AAII subscription access or other credentials may be required.
-Can it be used in browser: No; do not fetch survey or exposure data directly from browser code.
-Can it be used in GitHub Actions ingestion: No, not until access, automation, attribution, and redistribution are approved.
+Source owner: American Association of Individual Investors (AAII) and National Association of Active Investment Managers (NAAIM).
+Official page / documentation reviewed: AAII Sentiment Investing dashboard https://sentiment.aaii.com/dashboard; AAII Sentiment Survey page https://www.aaii.com/sentimentsurvey; NAAIM Exposure Index page https://www.naaim.org/programs/naaim-exposure-index/.
+Data format: AAII publishes weekly survey results via a subscription/dashboard interface. NAAIM publishes a weekly XLSX (`USE_Data-since-Inception_YYYY-MM-DD.xlsx`) linked from its public page.
+Historical availability: AAII survey results go back to 1987 but are subscription-gated. NAAIM Exposure Index history is published in the weekly XLSX file.
+Access probe (2026-05-11): AAII survey page (`aaii.com/sentimentsurvey`) returns HTTP 403 to automated requests; AAII dashboard (`sentiment.aaii.com/dashboard`) returns HTTP 200 with an Imperva anti-bot interstitial rather than survey data. Neither is a scriptable scheduled-fetch path; content is subscription/dashboard-oriented. NAAIM (`naaim.org/programs/naaim-exposure-index/`) HTML page returns 200 and the weekly XLSX is publicly downloadable (Cloudflare cache, no automated-request block observed); however, redistribution rights for derived static JSON are not approved by current review.
+Automated download allowed: No. AAII is subscription-gated and the survey/dashboard URLs are behind anti-bot interstitials (HTTP 403 on the survey page; an Imperva interstitial on the dashboard); no free-public scheduled fetch is feasible. NAAIM's weekly XLSX is publicly downloadable, but NAAIM's stated usage limits and request for permission on commercial/redistribution use mean an honest scheduled-ingest decision requires explicit source-owner contact and a redistribution-permission review. Both paths remain deferred.
+Static JSON redistribution allowed: No. Both NAAIM (usage-limits and permission-request language) and AAII (subscription/paywall) require explicit redistribution agreements before publishing derived static JSON.
+Attribution requirement: Attribute AAII (Investor Sentiment Survey) and NAAIM (Exposure Index) per their respective notices if a later approved path is established.
+API key required: AAII subscription access is required for any direct AAII path. NAAIM does not gate via API key but the redistribution question remains open.
+Can it be used in browser: No.
+Can it be used in GitHub Actions ingestion: No. Neither source has an approved free-public endpoint for scheduled GitHub Actions collection. AAII is Cloudflare-blocked and subscription-gated; NAAIM ingestion is deferred pending redistribution-permission review.
 Can it affect active scores now: No
 Recommended catalog status: terms_review_needed
 Recommended score status: candidate
-Citation text: AAII sentiment and NAAIM Exposure Index are candidate-only sentiment inputs pending terms and redistribution review.
-Notes / unresolved questions: NAAIM states usage limits and asks for permission for commercial use; AAII dashboard access appears subscription-oriented. Do not infer static redistribution rights from visible tables or downloads.
+Citation text: AAII Sentiment Survey and NAAIM Exposure Index are candidate-only sentiment inputs. AAII is subscription-gated and behind anti-bot interstitials; NAAIM redistribution rights are not approved. Both deferred to Phase C TradingView authenticated-candidate path.
+Notes / unresolved questions: Phase C TradingView mirror is planned as the operational candidate fallback for both signals. TradingView tickers such as `AAII_BULL`, `AAII_BEAR`, `AAII_NEUT`, and an exposure-index equivalent are accessed under an authenticated TradingView account. Output will be tagged `access_status: authenticated_candidate`, `score_status: candidate`, `active_scoring_allowed: false`, `requires_secret: true`. TradingView data must not enter active scoring, must not drive PageInsight primary warnings or supports, and raw observations are not committed to public static JSON unless a future source review explicitly approves publication. Re-review AAII if it releases an automated free-public endpoint, NAAIM if the project obtains explicit redistribution permission, or either if the project signs a licensed data agreement.
 
 ## Decision
 
-Keep AAII and NAAIM source-gated and non-active until a later review approves an access and publication path.
+Keep AAII and NAAIM source-gated and non-active. As of 2026-05-11:
+
+- AAII has no honest free-public scheduled-fetch path; the survey page returns HTTP 403 to automated requests, the dashboard returns HTTP 200 with an Imperva anti-bot interstitial instead of survey data, and data access is subscription-oriented.
+- NAAIM has a publicly downloadable weekly XLSX, but redistribution rights for derived static JSON are not approved by current review. NAAIM's stated usage limits and permission-request language mean an automated scheduled ingest requires a separate redistribution-permission step before implementing.
+
+The operational fallback for both is the Phase C TradingView authenticated-candidate path; that path keeps data outside active scoring per the governance rules in CLAUDE.md.
+
+Re-review either source if AAII releases an automated free-public endpoint, if NAAIM grants explicit redistribution permission, or if the project signs a licensed data agreement.
