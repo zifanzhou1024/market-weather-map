@@ -2673,19 +2673,69 @@ git commit -m "feat(ingest): add BEA personal saving rate ingest from FRED CSV"
 - Create: `scripts/ingest/fetch_shiller_cape.py`
 - Modify: `scripts/update_data.py` (append to `MODULES_INGEST_PHASE_B_OFFICIAL`)
 - Modify: `scripts/validate/validate_schema.py`, `scripts/validate/validate_freshness.py`
+- Modify: `requirements.txt` (add `openpyxl>=3.1,<4` if absent)
 - Test: `tests/python/test_fetch_shiller_cape.py` (new)
 
-Follows the same shape as BO3. Endpoint: Shiller's XLS at http://www.econ.yale.edu/~shiller/data/ie_data.xls (verify on the canonical page). Use `openpyxl` to read; emit monthly CAPE ratio. Output to `public/data/series/cape_ratio.json`.
+Same overall shape as BO3 but reads Shiller's XLS (multiple sheets — CAPE is in the "Data" sheet, with the ratio in a known column) instead of CSV.
 
-Add `openpyxl>=3.1,<4` to `requirements.txt` if not already present.
+- [ ] **Step 1: Add `openpyxl` to requirements.txt if not present**
 
-Steps mirror BO3:
-- [ ] Write failing test with a small fixture XLS or a mocked DataFrame
-- [ ] Implement ingest module
-- [ ] Append to MODULES_INGEST_PHASE_B_OFFICIAL
-- [ ] Schema + freshness
-- [ ] Run + verify
-- [ ] Commit
+Run: `grep -c openpyxl requirements.txt`
+If 0, append `openpyxl>=3.1,<4` and run `.venv/bin/pip install -r requirements.txt`.
+
+- [ ] **Step 2: Write the failing test (fixture-driven)**
+
+Create `tests/python/test_fetch_shiller_cape.py`. Use a small fixture XLS or monkeypatch `openpyxl.load_workbook` to return a fake worksheet:
+
+```python
+from pathlib import Path
+
+from scripts.ingest import fetch_shiller_cape as mod
+
+
+def test_parse_shiller_xls_extracts_cape(tmp_path: Path, monkeypatch):
+    # Mock openpyxl to return rows: [(date, ..., cape), ...]
+    fake_rows = [
+        ("2024.01", 5000.0, 200.0, 35.5),
+        ("2024.02", 5050.0, 201.0, 36.0),
+    ]
+    # ... monkeypatch the workbook loader to return fake_rows
+    series_file = mod.parse_xls_rows(fake_rows)
+    assert series_file["series_id"] == "cape_ratio"
+    assert series_file["frequency"] == "monthly"
+    assert series_file["units"] == "ratio"
+    assert len(series_file["observations"]) == 2
+    assert series_file["observations"][0]["value"] == 35.5
+```
+
+- [ ] **Step 3: Implement the ingest module**
+
+Mirror BO3's structure. Endpoint: `http://www.econ.yale.edu/~shiller/data/ie_data.xls` (verify on the canonical page; the exact filename may change). Use `openpyxl.load_workbook` with `read_only=True`. Extract the CAPE column from the "Data" sheet (skip header rows; the column index depends on the workbook layout — confirm in source review). Output to `public/data/series/cape_ratio.json` with the same `TimeSeriesFile` shape as BO3.
+
+- [ ] **Step 4: Append to MODULES sub-list**
+
+```python
+MODULES_INGEST_PHASE_B_OFFICIAL.append("scripts.ingest.fetch_shiller_cape")
+```
+(Or extend the list literal in place — same effect.)
+
+- [ ] **Step 5: Add schema + freshness rules**
+
+Same pattern as BO3 Step 5. Use `expected_frequency="monthly"` and `EXPECTED_FRESHNESS["cape_ratio"] = timedelta(days=45)`.
+
+- [ ] **Step 6: Run test + validators**
+
+```bash
+.venv/bin/python -m pytest tests/python/test_fetch_shiller_cape.py -v
+.venv/bin/python -m scripts.validate.validate_schema
+```
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add scripts/ingest/fetch_shiller_cape.py scripts/update_data.py scripts/validate/validate_schema.py scripts/validate/validate_freshness.py requirements.txt tests/python/test_fetch_shiller_cape.py
+git commit -m "feat(ingest): add Shiller CAPE ratio ingest from Yale XLS"
+```
 
 ---
 
@@ -2699,11 +2749,66 @@ Steps mirror BO3:
 - Modify: `scripts/validate/validate_schema.py`, `scripts/validate/validate_freshness.py`
 - Test: `tests/python/test_fetch_nyfed_acm.py` (new)
 
-**Output path is different from BO3/BO4.** Because `access_status` is `free_public_candidate`, the output goes to `public/data/candidates/ny_fed_acm_term_premium_candidate.json` — NOT to `series/`.
+**Output path differs from BO3/BO4.** Because `access_status` is `free_public_candidate`, the output goes to `public/data/candidates/ny_fed_acm_term_premium_candidate.json` — NOT to `series/`.
 
-The output JSON carries `access_status: "free_public_candidate"`, `active_scoring_allowed: false`, `public_redistribution_allowed: true`, `requires_secret: false`. The fetch follows the pattern from BO3.
+The output JSON carries `access_status: "free_public_candidate"`, `active_scoring_allowed: false`, `public_redistribution_allowed: true`, `requires_secret: false`.
 
-Steps mirror BO3 with the candidate output path.
+- [ ] **Step 1: Write the failing test (XLS fixture)**
+
+Same shape as BO4 Step 2 but parses the NY Fed ACM XLS columns (10Y term premium is column `ACMTP10`).
+
+- [ ] **Step 2: Implement the ingest module**
+
+Endpoint: `https://www.newyorkfed.org/medialibrary/media/research/data_indicators/ACMTermPremium.xls` (confirm on the NY Fed term-premia page; the canonical URL may change). Output path:
+
+```python
+out = data_dir() / "candidates" / "ny_fed_acm_term_premium_candidate.json"
+```
+
+The output payload MUST include candidate metadata:
+
+```python
+payload = {
+    "series_id": "ny_fed_acm_term_premium_candidate",
+    "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+    "source": "Federal Reserve Bank of New York",
+    "source_url": "https://www.newyorkfed.org/research/data_indicators/term-premia-tabs",
+    "frequency": "monthly",
+    "units": "percent",
+    "access_status": "free_public_candidate",
+    "score_status": "candidate",
+    "active_scoring_allowed": False,
+    "public_redistribution_allowed": True,
+    "requires_secret": False,
+    "notes": "NY Fed ACM 10-year term premium; candidate pending redistribution review.",
+    "observations": [...],
+}
+```
+
+- [ ] **Step 3: Append to MODULES sub-list**
+
+```python
+MODULES_INGEST_PHASE_B_OFFICIAL.append("scripts.ingest.fetch_nyfed_acm_term_premium")
+```
+
+- [ ] **Step 4: Add schema + freshness rules**
+
+Add a candidate-file schema check pattern (since the file lives under `candidates/`, validate_schema enforces `active_scoring_allowed: false`). Freshness: `EXPECTED_FRESHNESS["ny_fed_acm_term_premium_candidate"] = timedelta(days=45)`.
+
+- [ ] **Step 5: Run test + validators**
+
+```bash
+.venv/bin/python -m pytest tests/python/test_fetch_nyfed_acm.py -v
+.venv/bin/python -m scripts.validate.validate_schema
+.venv/bin/python -m scripts.validate.validate_candidate_isolation
+```
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add scripts/ingest/fetch_nyfed_acm_term_premium.py scripts/update_data.py scripts/validate/validate_schema.py scripts/validate/validate_freshness.py tests/python/test_fetch_nyfed_acm.py
+git commit -m "feat(ingest): add NY Fed ACM 10Y term premium candidate ingest"
+```
 
 ---
 
@@ -2717,9 +2822,130 @@ Steps mirror BO3 with the candidate output path.
 - Modify: validators
 - Test: `tests/python/test_build_treasury_supply_pressure.py` (new)
 
-Read `treasury_auction_supply.json`. Compute a derived "supply pressure" metric: rolling 30-day sum of auction amounts as a percent of trailing year average. Output to `public/data/derived/treasury_supply_pressure.json` with `access_status: free_public_active`.
+Reads `treasury_auction_supply.json`. Computes a derived metric: 30-day trailing sum of auction amounts as a percentage of the trailing 365-day mean of 30-day trailing sums. Output to `public/data/derived/treasury_supply_pressure.json` with `access_status: free_public_active`.
 
-Steps mirror BO3 with a transform instead of ingest.
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/python/test_build_treasury_supply_pressure.py`:
+
+```python
+from datetime import datetime, timedelta
+
+from scripts.transform import build_treasury_supply_pressure as mod
+
+
+def test_compute_pressure_returns_percent_above_average():
+    # Build a synthetic series: 30-day trailing sum = 100 every day for 365 days,
+    # then 150 on day 366. Pressure on day 366 should be 1.5 (or 150%).
+    series = [{"date": (datetime(2024, 1, 1) + timedelta(days=i)).isoformat(), "value": 100} for i in range(365)]
+    series.append({"date": (datetime(2024, 1, 1) + timedelta(days=365)).isoformat(), "value": 150})
+    result = mod.compute_supply_pressure(series, window_days=30, baseline_days=365)
+    last = result[-1]
+    assert last["pressure_ratio"] > 1.0
+```
+
+- [ ] **Step 2: Implement the transform**
+
+Pattern follows existing derived builders (e.g. `scripts/transform/build_rates_dashboard.py`):
+
+```python
+"""Compute treasury auction supply pressure (30-day sum / trailing-year mean)."""
+from __future__ import annotations
+
+import json
+from datetime import datetime, timezone
+
+from scripts.shared.io import data_dir, write_json
+
+
+def compute_supply_pressure(observations, window_days=30, baseline_days=365):
+    # observations: list of {"date": ISO, "value": float}
+    # Returns list of {"date": ISO, "pressure_ratio": float, "window_sum": float}
+    ...
+
+
+def main():
+    src = data_dir() / "series" / "treasury_auction_supply.json"
+    series = json.loads(src.read_text())["observations"]
+    points = compute_supply_pressure(series)
+    payload = {
+        "series_id": "treasury_supply_pressure",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "source": "Derived",
+        "source_url": "/data",
+        "frequency": "event",
+        "units": "ratio",
+        "access_status": "free_public_active",
+        "score_status": "active",
+        "active_scoring_allowed": True,
+        "public_redistribution_allowed": True,
+        "requires_secret": False,
+        "observations": points,
+    }
+    write_json(data_dir() / "derived" / "treasury_supply_pressure.json", payload)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+- [ ] **Step 3: Append to MODULES_TRANSFORM_PHASE_B**
+
+```python
+MODULES_TRANSFORM_PHASE_B.append("scripts.transform.build_treasury_supply_pressure")
+```
+
+- [ ] **Step 4: Add the new derived file to validators**
+
+Schema: validate `pressure_ratio` is numeric and present on each observation. Freshness: `EXPECTED_FRESHNESS["treasury_supply_pressure"] = timedelta(days=30)`.
+
+- [ ] **Step 5: Add a series_catalog entry**
+
+Add to `catalog.py` (extending `OFFICIAL_SOURCE_SERIES_PHASE_B` or as a new derived-entry list):
+
+```python
+{
+    "id": "treasury_supply_pressure",
+    "name": "Treasury Supply Pressure",
+    "category": "rates",
+    "source": "Derived",
+    "provider_id": "derived",
+    "source_url": "/data",
+    "endpoint_url": "",
+    "frequency": "event",
+    "units": "ratio",
+    "higher_is": "riskier",
+    "public": True,
+    "max_stale_days": 30,
+    "notes": "30-day trailing auction sum as percent of trailing-year average.",
+    "citation_notes": "Computed from treasury_auction_supply.json.",
+    "access_status": "free_public_active",
+    "score_status": "active",
+    "terms_status": "ok",
+    "active_scoring_allowed": True,
+    "public_redistribution_allowed": True,
+    "requires_secret": False,
+    "horizon": "tactical",
+    "regime_role": ["nominal_yield"],
+    "preferred_chart": "line",
+},
+```
+
+Regenerate JSON.
+
+- [ ] **Step 6: Run test + validators**
+
+```bash
+.venv/bin/python -m pytest tests/python/test_build_treasury_supply_pressure.py -v
+.venv/bin/python -m scripts.validate.validate_schema
+```
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add scripts/transform/build_treasury_supply_pressure.py scripts/update_data.py scripts/shared/catalog.py public/data/catalog/series_catalog.json scripts/validate/validate_schema.py scripts/validate/validate_freshness.py tests/python/test_build_treasury_supply_pressure.py
+git commit -m "feat(transform): add treasury supply pressure derived metric"
+```
 
 ---
 
@@ -2754,34 +2980,115 @@ git worktree add .worktrees/phaseB-sentiment -b feat/data-source-phase-b-sentime
 **Files:**
 - Create: `scripts/ingest/fetch_cboe_put_call.py`
 - Modify: `scripts/update_data.py` (`MODULES_INGEST_PHASE_B_CBOE`)
+- Modify: `scripts/validate/validate_schema.py`, `scripts/validate/validate_freshness.py`
 - Test: `tests/python/test_fetch_cboe_put_call.py`
 
-Fetches Cboe options market statistics CSV (verify endpoint on the Cboe market statistics page). Writes five candidate files under `public/data/candidates/`:
-- `put_call_total_candidate.json`
-- `put_call_index_candidate.json`
-- `put_call_equity_candidate.json`
-- `put_call_vix_candidate.json`
-- `put_call_spxw_candidate.json`
+Fetches Cboe options market statistics. The Cboe daily-market-stats CSV at `https://cdn.cboe.com/api/global/us_indices/daily_prices/.../...` typically returns a single multi-column CSV with the five ratios (total, index, equity, vix, spxw) in separate columns. Confirm in source review (`docs/source_reviews/cboe_put_call.md`). If the source returns separate CSVs per ratio, split into five fetches.
 
-Each file carries `access_status: "free_public_candidate"`, `active_scoring_allowed: false`, `public_redistribution_allowed: true`, `requires_secret: false`. Series catalog entries were pre-added by Phase A Task A5.
+Each output carries `access_status: "free_public_candidate"`, `active_scoring_allowed: false`, `public_redistribution_allowed: true`, `requires_secret: false`. Series catalog entries were pre-added by Phase A Task A5.
 
-Steps mirror Task BO3 with 5 outputs.
+- [ ] **Step 1: Confirm CSV structure**
+
+Examine the source CSV (download once manually, or follow source-review notes). Decide whether the script makes one fetch and splits into 5 outputs, or makes 5 separate fetches.
+
+- [ ] **Step 2: Write the failing test (fixture-driven)**
+
+Create `tests/python/test_fetch_cboe_put_call.py` with a small CSV fixture containing date + 5 ratio columns. Assert the parser produces 5 separate `TimeSeriesFile`-shaped dicts keyed by ratio name.
+
+- [ ] **Step 3: Implement the ingest module**
+
+Same shape as `fetch_bea_personal_saving_rate.py` from Task BO3, but writes 5 output files under `public/data/candidates/`. Each output is a candidate file (carries the 4 governance fields per Task BO5).
+
+- [ ] **Step 4: Append to `MODULES_INGEST_PHASE_B_CBOE`**
+
+```python
+MODULES_INGEST_PHASE_B_CBOE.append("scripts.ingest.fetch_cboe_put_call")
+```
+
+- [ ] **Step 5: Schema + freshness**
+
+Add 5 entries to `EXPECTED_FRESHNESS` (each `timedelta(days=7)`). Add candidate-file schema check (validate_schema enforces `active_scoring_allowed: false` for all 5).
+
+- [ ] **Step 6: Run tests + validators**
+
+```bash
+.venv/bin/python -m pytest tests/python/test_fetch_cboe_put_call.py -v
+.venv/bin/python -m scripts.validate.validate_schema
+.venv/bin/python -m scripts.validate.validate_candidate_isolation
+```
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add scripts/ingest/fetch_cboe_put_call.py scripts/update_data.py scripts/validate/validate_schema.py scripts/validate/validate_freshness.py tests/python/test_fetch_cboe_put_call.py
+git commit -m "feat(ingest): add Cboe put/call ratio candidate ingest (5 ratios)"
+```
 
 ---
 
-### Task BC2: cboe-candidate-agent — fetch Cboe VX settlements
+### Task BC2: cboe-candidate-agent — fetch Cboe VX settlements + curve context
 
 **Files:**
 - Create: `scripts/ingest/fetch_cboe_vx_settlements.py`
-- Create: `scripts/transform/build_vx_curve_context.py` (computes vx_front_spread, vx_contango_score)
-- Modify: `scripts/update_data.py`
+- Create: `scripts/transform/build_vx_curve_context.py`
+- Modify: `scripts/update_data.py` (append to `MODULES_INGEST_PHASE_B_CBOE` and a new `MODULES_TRANSFORM_PHASE_B_CBOE` if needed)
+- Modify: `scripts/validate/validate_schema.py`, `scripts/validate/validate_freshness.py`
 - Test: `tests/python/test_fetch_cboe_vx.py`, `tests/python/test_build_vx_curve_context.py`
 
-Fetches VX1/VX2/VX3 settlement data from Cboe Futures. Writes:
-- `vx1_candidate.json`, `vx2_candidate.json`, `vx3_candidate.json` (ingest)
-- `vx_front_spread_candidate.json`, `vx_contango_score_candidate.json` (transform)
+Fetches VX1/VX2/VX3 settlement data from Cboe Futures (3 outputs); derives 2 more files via the transform (`vx_front_spread_candidate`, `vx_contango_score_candidate`). All five carry `free_public_candidate` governance.
 
-All five carry the same `free_public_candidate` flag set as BC1.
+Computation rules pinned:
+- `vx_front_spread = settle(VX2) - settle(VX1)` (per observation day where both exist).
+- `vx_contango_score = percentile rank of vx_front_spread across the trailing 504 trading days` (~2 years).
+
+- [ ] **Step 1: Pin the Cboe VX endpoint**
+
+Confirm the canonical CSV path from `docs/source_reviews/vix_futures_curve.md`. Typical Cboe paths return one CSV per expiry; the script may need to request the front 3 expiries by symbol.
+
+- [ ] **Step 2: Write failing tests**
+
+Create `tests/python/test_fetch_cboe_vx.py` with a small CSV fixture containing settlement rows for VX1/VX2/VX3. Assert 3 output dicts.
+
+Create `tests/python/test_build_vx_curve_context.py` with a synthetic series and assert `vx_front_spread` equals `vx2 - vx1` per date, and `vx_contango_score` percentile-ranks correctly.
+
+- [ ] **Step 3: Implement `fetch_cboe_vx_settlements.py`**
+
+Output 3 candidate files to `public/data/candidates/`: `vx1_candidate.json`, `vx2_candidate.json`, `vx3_candidate.json`. Each has the candidate governance shape.
+
+- [ ] **Step 4: Implement `build_vx_curve_context.py`**
+
+Reads the 3 VX candidate files. Computes:
+- `vx_front_spread_candidate.json` — per-date `vx2 - vx1`.
+- `vx_contango_score_candidate.json` — trailing-504 percentile rank of the spread.
+
+Both outputs are candidate files.
+
+- [ ] **Step 5: Append to MODULES**
+
+```python
+MODULES_INGEST_PHASE_B_CBOE.append("scripts.ingest.fetch_cboe_vx_settlements")
+MODULES_INGEST_PHASE_B_CBOE.append("scripts.transform.build_vx_curve_context")
+```
+(Transforms can live in the ingest sub-list since the per-phase sub-list is just a list of modules to run in order.)
+
+- [ ] **Step 6: Schema + freshness**
+
+5 entries in `EXPECTED_FRESHNESS` (daily). Candidate-file schema check.
+
+- [ ] **Step 7: Run tests + validators**
+
+```bash
+.venv/bin/python -m pytest tests/python/test_fetch_cboe_vx.py tests/python/test_build_vx_curve_context.py -v
+.venv/bin/python -m scripts.validate.validate_schema
+.venv/bin/python -m scripts.validate.validate_candidate_isolation
+```
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add scripts/ingest/fetch_cboe_vx_settlements.py scripts/transform/build_vx_curve_context.py scripts/update_data.py scripts/validate/validate_schema.py scripts/validate/validate_freshness.py tests/python/test_fetch_cboe_vx.py tests/python/test_build_vx_curve_context.py
+git commit -m "feat(ingest): add Cboe VX1/VX2/VX3 candidate ingest + curve context"
+```
 
 ---
 
@@ -2813,7 +3120,44 @@ Steps:
 
 ### Task BS2: sentiment-candidate-agent — implement AAII ingest (ingest only)
 
-Same shape as BS1 for AAII. Output `aaii_sentiment_candidate.json` is also gitignored.
+**Files:**
+- Create: `scripts/ingest/fetch_aaii_candidate.py`
+- Modify: `scripts/update_data.py` (`MODULES_INGEST_PHASE_B_SENTIMENT`)
+- Modify: `.gitignore` (add `public/data/candidates/aaii_*`)
+- Test: `tests/python/test_fetch_aaii.py`
+
+Same shape as BS1 for AAII Sentiment Survey. Endpoint: confirm from `docs/source_reviews/aaii_naaim.md`; AAII publishes a weekly XLS or CSV. Output to `public/data/candidates/aaii_sentiment_candidate.json` (gitignored).
+
+- [ ] **Step 1: Add gitignore entry**
+
+```bash
+echo "public/data/candidates/aaii_*" >> .gitignore
+```
+
+- [ ] **Step 2: Write the failing test (fixture-driven)**
+
+Same pattern as BS1; assert the parser yields a weekly series with `access_status: "terms_review_needed"`.
+
+- [ ] **Step 3: Implement `fetch_aaii_candidate.py`**
+
+Pattern follows BS1. Output payload includes `access_status: "terms_review_needed"`, `active_scoring_allowed: false`, `public_redistribution_allowed: false`, `requires_secret: false`.
+
+- [ ] **Step 4: Append to MODULES_INGEST_PHASE_B_SENTIMENT**
+
+- [ ] **Step 5: Run test**
+
+```bash
+.venv/bin/python -m pytest tests/python/test_fetch_aaii.py -v
+```
+
+- [ ] **Step 6: Commit (only the script + .gitignore + test; NO JSON file)**
+
+```bash
+git status --short
+# Confirm NO public/data/candidates/aaii_*.json is staged.
+git add scripts/ingest/fetch_aaii_candidate.py scripts/update_data.py .gitignore tests/python/test_fetch_aaii.py
+git commit -m "feat(ingest): add AAII sentiment candidate ingest (no committed JSON)"
+```
 
 ---
 
@@ -2825,7 +3169,7 @@ Same shape as BS1 for AAII. Output `aaii_sentiment_candidate.json` is also gitig
 
 ---
 
-## Chunk 6: Phase C — TradingView authenticated candidates (tasks C1–C8)
+## Chunk 6: Phase C — TradingView authenticated candidates (tasks C1–C9)
 
 **Branch:** `feat/data-source-phase-c-tradingview`
 **Worktree:** `.worktrees/phaseC`
@@ -2932,46 +3276,223 @@ Regenerate JSON; commit.
 **Files:**
 - Create: `scripts/ingest/fetch_tradingview_move.py`
 - Modify: `scripts/update_data.py` (`MODULES_INGEST_PHASE_C_TRADINGVIEW`)
-- Test: integration test (mocks TV client)
+- Test: `tests/python/test_fetch_tradingview_move.py` (mocks the TV client)
 
-Implement per the spec's §"Ingest scripts" code block. Top-level guard:
+**TV library API (chosen in Task C1):** the `tvdatafeed-fork` package exposes `from tvDatafeed import TvDatafeed, Interval`. Authentication is via constructor: `tv = TvDatafeed(username, password)`. Data fetch: `tv.get_hist(symbol="MOVE", exchange="ICEUS", interval=Interval.in_daily, n_bars=5000)` returns a pandas DataFrame with index = date, columns = `["open","high","low","close","volume"]`. The exact `symbol` and `exchange` for MOVE must be confirmed in the source review (C1) — the ICE-listed MOVE Index is published on TradingView under a specific identifier.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/python/test_fetch_tradingview_move.py`:
 
 ```python
-from scripts.shared.config import tradingview_credentials_available, secret
+import os
+from unittest.mock import MagicMock, patch
 
-def main():
-    if not tradingview_credentials_available():
-        print("TradingView candidates disabled or secrets missing; skipping.")
-        return
-    try:
-        import tvDatafeed  # or chosen library
-    except ImportError:
-        print("WARN: TradingView library not installed; skipping.")
-        return
-    # set cache dir under /tmp
-    import os, tempfile
-    os.environ.setdefault("TVDATAFEED_CACHE_DIR", tempfile.mkdtemp(prefix="tv_cache_"))
-    try:
-        # fetch MOVE-like series via TV
-        ...
-    except Exception as exc:
-        # SCRUB credentials from error message
-        msg = _scrub_credentials(str(exc))
-        print(f"WARN: TradingView fetch failed: {msg}")
-        return
-    # write public/data/candidates/tradingview_move_candidate.json
-    ...
+import pandas as pd
+import pytest
+
+from scripts.ingest import fetch_tradingview_move as mod
+
+
+def _enable_secrets(monkeypatch):
+    monkeypatch.setenv("ENABLE_AUTHENTICATED_CANDIDATES", "true")
+    monkeypatch.setenv("TRADINGVIEW_USERNAME", "fake-user-token-abc123")
+    monkeypatch.setenv("TRADINGVIEW_PASSWORD", "fake-pass-token-xyz789")
+
+
+def test_skips_when_secrets_disabled(monkeypatch, capsys):
+    monkeypatch.delenv("ENABLE_AUTHENTICATED_CANDIDATES", raising=False)
+    mod.main()
+    captured = capsys.readouterr()
+    assert "skipping" in captured.out.lower()
+
+
+def test_writes_candidate_file_on_success(monkeypatch, tmp_path):
+    _enable_secrets(monkeypatch)
+    from scripts.shared import io as shared_io
+    monkeypatch.setattr(shared_io, "data_dir", lambda: tmp_path)
+    (tmp_path / "candidates").mkdir()
+
+    fake_df = pd.DataFrame(
+        {"close": [120.0, 121.5]},
+        index=pd.to_datetime(["2024-01-01", "2024-01-02"]),
+    )
+    fake_tv = MagicMock()
+    fake_tv.get_hist.return_value = fake_df
+    with patch.object(mod, "_build_tv_client", return_value=fake_tv):
+        mod.main()
+
+    out = tmp_path / "candidates" / "tradingview_move_candidate.json"
+    assert out.exists()
+    import json
+    payload = json.loads(out.read_text())
+    assert payload["series_id"] == "tradingview_move_candidate"
+    assert payload["access_status"] == "authenticated_candidate"
+    assert payload["requires_secret"] is True
+    assert len(payload["observations"]) == 2
+
+
+def test_scrubs_credentials_from_error(monkeypatch, capsys):
+    _enable_secrets(monkeypatch)
+    fake_tv = MagicMock()
+    fake_tv.get_hist.side_effect = RuntimeError(
+        "login failed for fake-user-token-abc123"
+    )
+    with patch.object(mod, "_build_tv_client", return_value=fake_tv):
+        mod.main()
+    captured = capsys.readouterr()
+    assert "fake-user-token-abc123" not in captured.out
+    assert "fake-user-token-abc123" not in captured.err
 ```
 
-Where `_scrub_credentials()` removes any substring containing `secret("TRADINGVIEW_USERNAME")` or `secret("TRADINGVIEW_PASSWORD")`.
+- [ ] **Step 2: Implement the ingest module**
 
-Commit.
+Create `scripts/ingest/fetch_tradingview_move.py`:
+
+```python
+"""Fetch MOVE-like series from TradingView (authenticated candidate)."""
+from __future__ import annotations
+
+import json
+import os
+import sys
+import tempfile
+from datetime import datetime, timezone
+from pathlib import Path
+
+from scripts.shared.config import (
+    authenticated_candidates_enabled,
+    secret,
+    tradingview_credentials_available,
+)
+from scripts.shared.io import data_dir, write_json
+
+SERIES_ID = "tradingview_move_candidate"
+TV_SYMBOL = "MOVE"          # confirm in source review
+TV_EXCHANGE = "ICEUS"       # confirm in source review
+N_BARS = 5000
+
+
+def _build_tv_client():
+    """Factory; isolated so tests can patch it."""
+    from tvDatafeed import TvDatafeed  # type: ignore
+    return TvDatafeed(secret("TRADINGVIEW_USERNAME"), secret("TRADINGVIEW_PASSWORD"))
+
+
+def _scrub_credentials(text: str) -> str:
+    for name in ("TRADINGVIEW_USERNAME", "TRADINGVIEW_PASSWORD"):
+        value = secret(name)
+        if value and value in text:
+            text = text.replace(value, f"<scrubbed {name}>")
+    return text
+
+
+def _write_payload(rows: list[dict]) -> None:
+    payload = {
+        "series_id": SERIES_ID,
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "source": "TradingView",
+        "source_url": "https://www.tradingview.com",
+        "frequency": "daily",
+        "units": "index",
+        "access_status": "authenticated_candidate",
+        "score_status": "candidate",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": False,
+        "requires_secret": True,
+        "notes": "Authenticated TradingView candidate; not treated as official ICE MOVE.",
+        "observations": rows,
+    }
+    out = data_dir() / "candidates" / f"{SERIES_ID}.json"
+    write_json(out, payload)
+
+
+def main() -> None:
+    if not tradingview_credentials_available():
+        print(f"{SERIES_ID}: secrets missing or disabled; skipping.")
+        return
+    try:
+        from tvDatafeed import Interval  # type: ignore  # noqa: F401
+    except ImportError:
+        print(f"{SERIES_ID}: TradingView library not installed; skipping.")
+        return
+
+    os.environ.setdefault("TVDATAFEED_CACHE_DIR", tempfile.mkdtemp(prefix="tv_cache_"))
+    try:
+        tv = _build_tv_client()
+        from tvDatafeed import Interval as _Interval  # type: ignore
+        df = tv.get_hist(symbol=TV_SYMBOL, exchange=TV_EXCHANGE, interval=_Interval.in_daily, n_bars=N_BARS)
+    except Exception as exc:
+        msg = _scrub_credentials(str(exc))
+        print(f"{SERIES_ID}: TradingView fetch failed: {msg}", file=sys.stderr)
+        return
+
+    rows = [
+        {"date": ts.strftime("%Y-%m-%d"), "value": float(row["close"])}
+        for ts, row in df.iterrows()
+    ]
+    _write_payload(rows)
+    print(f"{SERIES_ID}: wrote {len(rows)} observations.")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+- [ ] **Step 3: Append to MODULES_INGEST_PHASE_C_TRADINGVIEW**
+
+- [ ] **Step 4: Run the test**
+
+```bash
+.venv/bin/python -m pytest tests/python/test_fetch_tradingview_move.py -v
+```
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add scripts/ingest/fetch_tradingview_move.py scripts/update_data.py tests/python/test_fetch_tradingview_move.py
+git commit -m "feat(ingest): add TradingView MOVE candidate ingest with secret scrubbing"
+```
 
 ---
 
 ### Task C6: Implement `fetch_tradingview_put_call.py` and `fetch_tradingview_vx_curve.py`
 
-Same pattern as C5. Three TV ingest scripts in total.
+C5 covered MOVE. C6 adds the remaining two scripts (put_call and vx_curve), bringing the total to three TV ingest scripts.
+
+**Files:**
+- Create: `scripts/ingest/fetch_tradingview_put_call.py`
+- Create: `scripts/ingest/fetch_tradingview_vx_curve.py`
+- Modify: `scripts/update_data.py` (append both to `MODULES_INGEST_PHASE_C_TRADINGVIEW`)
+- Test: `tests/python/test_fetch_tradingview_put_call.py`, `tests/python/test_fetch_tradingview_vx_curve.py`
+
+- [ ] **Step 1: Implement `fetch_tradingview_put_call.py`**
+
+Identical structure to C5's MOVE script. Change:
+- `SERIES_ID = "tradingview_put_call_candidate"`
+- `TV_SYMBOL` and `TV_EXCHANGE` per source review (TradingView may publish put/call ratios as composite or per-product symbols)
+- Notes: "Authenticated TradingView candidate; not treated as official Cboe put/call."
+
+- [ ] **Step 2: Implement `fetch_tradingview_vx_curve.py`**
+
+Output `tradingview_vx_curve_candidate.json`. May fetch the VIX futures continuous front or term-structure depending on TV symbol availability (confirm in source review).
+
+- [ ] **Step 3: Mirror C5's tests for both new scripts**
+
+Each test covers: skip-on-missing-secrets, write-on-success, credential-scrubbing-on-error.
+
+- [ ] **Step 4: Run tests**
+
+```bash
+.venv/bin/python -m pytest tests/python/test_fetch_tradingview_put_call.py tests/python/test_fetch_tradingview_vx_curve.py -v
+```
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add scripts/ingest/fetch_tradingview_put_call.py scripts/ingest/fetch_tradingview_vx_curve.py scripts/update_data.py tests/python/test_fetch_tradingview_put_call.py tests/python/test_fetch_tradingview_vx_curve.py
+git commit -m "feat(ingest): add TradingView put/call and VX curve candidate ingest"
+```
 
 ---
 
@@ -2986,7 +3507,20 @@ Per the spec's §"Secret-isolation test" section:
 2. `tradingview_credentials_available()` is False without env vars.
 3. **Allowlist check:** secret-name strings appear only in the allowlist files (`.github/workflows/update-data.yml`, `scripts/shared/config.py`, `scripts/ingest/fetch_tradingview_*.py`, `docs/source_reviews/tradingview_authenticated_candidates.md`, `tests/python/test_secrets_isolation.py`, this plan + spec docs). Implementation: enumerate `grep -rE ...` matches, subtract allowlist, assert empty.
 4. **Secret-VALUE leak check:** set fake env values (`os.environ["TRADINGVIEW_USERNAME"] = "fake-user-token-abc123"` etc.); invoke each TV ingest script in a sandbox; assert the fake value never appears in any committed file under `public/`, `docs/`, `scripts/`, nor in `caplog` output.
-5. Cache-path-under-tempdir check.
+5. **Cache-path-under-tempdir check.** Assert that after invoking any TV ingest script (mock the client to return an empty DataFrame), the env var `TVDATAFEED_CACHE_DIR` is set and its value starts with `/tmp` or matches `tempfile.gettempdir()`. Concretely:
+
+```python
+import os
+import tempfile
+
+def test_cache_dir_is_tempdir():
+    # invoke a TV ingest script's main() with mocks
+    ...
+    cache_dir = os.environ.get("TVDATAFEED_CACHE_DIR", "")
+    assert cache_dir.startswith(tempfile.gettempdir()), (
+        f"cache dir {cache_dir!r} must be under tempdir"
+    )
+```
 
 Commit.
 
@@ -3023,7 +3557,7 @@ Commit.
 
 ---
 
-## Chunk 7: Phase D — FocusBlock + page focus audit (tasks D1–D9)
+## Chunk 7: Phase D — FocusBlock + page focus audit (tasks D1–D8)
 
 **Branch:** `feat/data-source-phase-d-focus-block`
 **Worktree:** `.worktrees/phaseD`
@@ -3127,7 +3661,61 @@ export default function FocusBlock(props: FocusBlockProps) {
 }
 ```
 
-- [ ] Add CSS in `src/components/FocusBlock.css` (or the existing component CSS file).
+- [ ] Add baseline CSS for FocusBlock.
+
+Either create `src/components/FocusBlock.css` or extend the existing component-CSS bundle. Required selectors:
+
+```css
+.focus-block {
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  background: var(--color-surface-1, #1a1f29);
+  border: 1px solid var(--color-border, #2a3140);
+  margin-bottom: 1rem;
+}
+.focus-block--compact {
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: transparent;
+}
+.focus-block--stale {
+  opacity: 0.6;
+  border-style: dashed;
+}
+.focus-block__eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #9aa3b2);
+  margin: 0 0 0.25rem 0;
+}
+.focus-block__question {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--color-text, #e6eaf2);
+}
+.focus-block__answer {
+  font-size: 0.95rem;
+  color: var(--color-text, #e6eaf2);
+  margin: 0 0 0.5rem 0;
+}
+.focus-block__why,
+.focus-block__caveat {
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #9aa3b2);
+}
+.focus-block__signals {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+}
+.focus-block__signals dt { color: var(--color-text-muted, #9aa3b2); }
+```
+
+Adjust variable names to match the project's existing CSS variables. The structure mirrors the existing `PageInsightHero` and `InsightCallout` styling.
 - [ ] Run vitest; commit.
 
 ---
@@ -3136,17 +3724,186 @@ export default function FocusBlock(props: FocusBlockProps) {
 
 **Files:**
 - Modify: `scripts/transform/build_page_insights.py`
-- Test: extend existing test or create `tests/python/test_section_catalog.py`
+- Test: `tests/python/test_section_catalog.py` (new)
 
-Add a `SECTION_CATALOG: dict[RouteKey, list[SectionTemplate]]` constant with the 5 placements. Each template has:
-- Static `eyebrow`, `question`.
-- A Python derivation function that reads from existing derived JSONs and returns `answer`, `why`, `risk`, `support`, `caveat`, `freshness_status`.
+**Data spine per section** (matches spec audit grid):
 
-Fallback rule: if underlying data file is absent, return `freshness_status: "unavailable"` with answer "Data not yet active for this section." Omit `why`/`risk`/`support`/`caveat`.
+| `SectionId` | Underlying data file(s) |
+|---|---|
+| `volatility_complex` | `public/data/derived/volatility_dashboard.json` |
+| `rates_pressure` | `public/data/derived/rates_dashboard.json` |
+| `regime_drivers` | `public/data/derived/regime_dashboard.json` |
+| `positioning_vs_candidate_sentiment` | `public/data/series/cftc_sp500_asset_mgr_net.json` + `public/data/candidates/naaim_exposure_candidate.json` (may be absent) |
+| `tactical_stress_board` | `public/data/derived/signal_priority.json` |
 
-The build appends each populated `SectionInsight` to `route.sections`. Frontend renders.
+**Tone constraints (from `docs/LIMITATIONS.md`):** all text descriptive, no advice/targets/buy-sell language. Distinct first 80 chars from each route's `why_it_matters`.
 
-Commit.
+- [ ] **Step 1: Add the `SectionTemplate` TypedDict and `SECTION_CATALOG` constant**
+
+In `scripts/transform/build_page_insights.py`, append (after existing constants):
+
+```python
+from typing import Callable, TypedDict
+
+class SectionTemplate(TypedDict, total=False):
+    id: str
+    eyebrow: str
+    question: str
+    derive: Callable[[dict], dict]   # returns answer/why/risk/support/caveat/freshness_status
+
+# Hand-curated text. Questions are ≤ 120 chars and distinct from
+# each route's why_it_matters string in page_insights.json.
+SECTION_CATALOG: dict[str, list[SectionTemplate]] = {
+    "volatility": [
+        {
+            "id": "volatility_complex",
+            "eyebrow": "Volatility complex",
+            "question": "Is the term structure pricing calm, stress, or hidden options stress?",
+            "derive": _derive_volatility_complex,
+        },
+    ],
+    "rates": [
+        {
+            "id": "rates_pressure",
+            "eyebrow": "Rates pressure",
+            "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
+            "derive": _derive_rates_pressure,
+        },
+    ],
+    "regime_map": [
+        {
+            "id": "regime_drivers",
+            "eyebrow": "Regime drivers",
+            "question": "Are real yields and the dollar tightening or easing financial conditions together?",
+            "derive": _derive_regime_drivers,
+        },
+    ],
+    "sentiment": [
+        {
+            "id": "positioning_vs_candidate_sentiment",
+            "eyebrow": "Positioning vs sentiment",
+            "question": "Is positioning crowded enough to amplify downside?",
+            "derive": _derive_positioning,
+        },
+    ],
+    "tactical": [
+        {
+            "id": "tactical_stress_board",
+            "eyebrow": "Tactical stress",
+            "question": "Which warnings are clustering on the short-term board today?",
+            "derive": _derive_tactical_stress,
+        },
+    ],
+}
+```
+
+- [ ] **Step 2: Implement one fully-worked derivation function — `_derive_volatility_complex`**
+
+```python
+def _derive_volatility_complex(loaded: dict) -> dict:
+    """Read volatility_dashboard.json and build the section's dynamic fields."""
+    vol = loaded.get("volatility_dashboard")
+    if vol is None:
+        return {
+            "answer": "Data not yet active for this section.",
+            "freshness_status": "unavailable",
+        }
+    curve = vol.get("latest_curve", [])
+    hidden = vol.get("hidden_stress", [])
+    latest_hidden = hidden[-1] if hidden else None
+    if not curve or latest_hidden is None:
+        return {
+            "answer": "Data partially loaded; awaiting full volatility dashboard.",
+            "freshness_status": "stale",
+        }
+    state = latest_hidden.get("state", "calm")
+    answer_map = {
+        "calm": "Volatility term structure remains contained and short-end stress is muted.",
+        "watch": "Term structure remains contained but VVIX-vs-VIX divergence suggests hidden options stress is building.",
+        "elevated": "Hidden options stress is elevated while headline VIX still understates the move.",
+    }
+    return {
+        "answer": answer_map.get(state, answer_map["calm"]),
+        "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX.",
+        "risk": "VVIX percentile is above VIX percentile" if state in {"watch", "elevated"} else None,
+        "support": "Front-end percentile remains in normal range" if state == "calm" else None,
+        "caveat": "Volatility indices are delayed Cboe public data; intraday moves not reflected.",
+        "freshness_status": "ok",
+    }
+```
+
+The remaining 4 derivation functions (`_derive_rates_pressure`, `_derive_regime_drivers`, `_derive_positioning`, `_derive_tactical_stress`) follow the same shape: read one or two derived JSONs into `loaded`, branch on the latest state, return the 5 text fields. The subagent implements each following the volatility example.
+
+- [ ] **Step 3: Wire the SECTION_CATALOG into the build**
+
+In the function that constructs each `RouteInsight`, after the existing fields are set, add:
+
+```python
+templates = SECTION_CATALOG.get(route_key, [])
+sections = []
+for template in templates:
+    dynamic = template["derive"](loaded_data_bundle)
+    sections.append({
+        "id": template["id"],
+        "eyebrow": template["eyebrow"],
+        "question": template["question"],
+        "answer": dynamic.get("answer", ""),
+        "why": dynamic.get("why"),
+        "risk": dynamic.get("risk"),
+        "support": dynamic.get("support"),
+        "caveat": dynamic.get("caveat"),
+        "freshness_status": dynamic.get("freshness_status", "unavailable"),
+    })
+if sections:
+    route_insight["sections"] = sections
+```
+
+`loaded_data_bundle` is a dict the build function pre-loads with all derived JSONs (keyed by filename stem). Each derivation function reads only the keys it needs.
+
+- [ ] **Step 4: Write `tests/python/test_section_catalog.py`**
+
+```python
+from scripts.transform import build_page_insights as mod
+
+
+def test_section_catalog_has_five_entries():
+    total = sum(len(v) for v in mod.SECTION_CATALOG.values())
+    assert total == 5
+
+
+def test_volatility_derive_returns_unavailable_when_data_missing():
+    result = mod._derive_volatility_complex({})
+    assert result["freshness_status"] == "unavailable"
+    assert "not yet active" in result["answer"]
+
+
+def test_volatility_derive_returns_ok_with_fixture():
+    loaded = {
+        "volatility_dashboard": {
+            "latest_curve": [{"tenor": "9D", "value": 14.0, "percentile_5y": 0.4}],
+            "hidden_stress": [{"date": "2024-01-01", "state": "calm"}],
+        }
+    }
+    result = mod._derive_volatility_complex(loaded)
+    assert result["freshness_status"] == "ok"
+    assert "contained" in result["answer"]
+```
+
+- [ ] **Step 5: Run tests + regenerate**
+
+```bash
+.venv/bin/python -m pytest tests/python/test_section_catalog.py -v
+.venv/bin/python -m scripts.transform.build_page_insights
+```
+
+Confirm `public/data/derived/page_insights.json` now carries `sections` for the 5 route keys.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add scripts/transform/build_page_insights.py tests/python/test_section_catalog.py public/data/derived/page_insights.json
+git commit -m "feat(page-insights): add SECTION_CATALOG for 5 FocusBlock placements"
+```
 
 ---
 
@@ -3176,24 +3933,72 @@ Commit.
 - Modify: `src/routes/Sentiment.tsx`
 - Modify: `src/routes/TacticalTradingWeather.tsx` (above the 6-tile section)
 
-For each route, find the FocusBlock placement location per the audit grid. Insert:
+**Per-route placement table:**
+
+| Route file | `SectionId` | Slot location |
+|---|---|---|
+| `src/routes/Volatility.tsx` | `volatility_complex` | Above `volatility_primary_chart` + `volatility_secondary_charts` slots |
+| `src/routes/Rates.tsx` | `rates_pressure` | Above `rates_primary_chart` + `rates_secondary_charts` slots |
+| `src/routes/RegimeMap.tsx` | `regime_drivers` | Above `regime_primary_chart` slot |
+| `src/routes/Sentiment.tsx` | `positioning_vs_candidate_sentiment` | Above `sentiment_primary_chart` slot |
+| `src/routes/TacticalTradingWeather.tsx` | `tactical_stress_board` | Above the 6-tile section |
+
+For each route, find the FocusBlock placement location per the table above. Use this insertion pattern (works under TypeScript strict mode — the `id` field on `SectionInsight` does NOT collide with `FocusBlockProps` because we destructure rather than spread):
 
 ```tsx
 import FocusBlock from "../components/FocusBlock";
 // ...
-{routeInsight?.sections?.find((s) => s.id === "volatility_complex") && (
-  <FocusBlock
-    variant="section"
-    {...routeInsight.sections.find((s) => s.id === "volatility_complex")!}
-  />
-)}
+
+function VolatilityRoute() {
+  const routeInsight = usePageInsights("volatility");   // existing hook
+  const section = routeInsight?.sections?.find((s) => s.id === "volatility_complex");
+
+  return (
+    <>
+      <PageInsightHero route="volatility" />
+      {section && (
+        <FocusBlock
+          variant="section"
+          eyebrow={section.eyebrow}
+          question={section.question}
+          answer={section.answer}
+          why={section.why}
+          risk={section.risk}
+          support={section.support}
+          caveat={section.caveat}
+          freshnessStatus={section.freshness_status}
+        />
+      )}
+      {/* SLOT:volatility_primary_chart */}
+      {/* SLOT:volatility_secondary_charts */}
+      {/* ...rest of existing route content unchanged... */}
+    </>
+  );
+}
 ```
 
-(Use the appropriate `SectionId` for each route.)
+Apply the same pattern to all 5 routes, substituting the matching `SectionId` from the table. The destructured props match `FocusBlockProps` exactly — no extra `id` field is passed to the component (which would fail strict-mode prop type checking).
 
 No other route changes. No shell or hero changes.
 
-Run vitest, run `npm run build`. Commit per route.
+- [ ] **Step 1: Add FocusBlock + selector to `Volatility.tsx`**
+- [ ] **Step 2: Add FocusBlock + selector to `Rates.tsx`**
+- [ ] **Step 3: Add FocusBlock + selector to `RegimeMap.tsx`**
+- [ ] **Step 4: Add FocusBlock + selector to `Sentiment.tsx`**
+- [ ] **Step 5: Add FocusBlock + selector to `TacticalTradingWeather.tsx`**
+- [ ] **Step 6: Run vitest + build**
+
+```bash
+npm test
+npm run build
+```
+
+- [ ] **Step 7: Commit (one commit per route or one combined commit — your choice)**
+
+```bash
+git add src/routes/Volatility.tsx src/routes/Rates.tsx src/routes/RegimeMap.tsx src/routes/Sentiment.tsx src/routes/TacticalTradingWeather.tsx
+git commit -m "feat(routes): wire FocusBlock(section) into 5 routes"
+```
 
 ---
 
