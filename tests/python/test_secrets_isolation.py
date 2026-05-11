@@ -64,10 +64,11 @@ SECRET_NAME_ALLOWLIST: tuple[str, ...] = (
     # PR C2 MOVE fetcher:
     "scripts/ingest/fetch_tradingview_move.py",
     "tests/python/test_fetch_tradingview_move.py",
-    # PRs C3/C4 will uncomment these when their fetchers land:
-    # "scripts/ingest/fetch_tradingview_put_call.py",
+    # PR C3 put/call fetcher:
+    "scripts/ingest/fetch_tradingview_put_call.py",
+    "tests/python/test_fetch_tradingview_put_call.py",
+    # PR C4 will uncomment these when the VX-curve fetcher lands:
     # "scripts/ingest/fetch_tradingview_vx_curve.py",
-    # "tests/python/test_fetch_tradingview_put_call.py",
     # "tests/python/test_fetch_tradingview_vx_curve.py",
 )
 

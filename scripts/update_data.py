@@ -31,6 +31,7 @@ MODULES_INGEST_PHASE_B_SENTIMENT: list[str] = []
 # Phase C / tradingview-candidate-agent appends entries here.
 MODULES_INGEST_PHASE_C_TRADINGVIEW: list[str] = [
     "scripts.ingest.fetch_tradingview_move",
+    "scripts.ingest.fetch_tradingview_put_call",
 ]
 
 MODULES_TRANSFORM_EXISTING = [
