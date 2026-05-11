@@ -6,6 +6,7 @@ CATALOG = Path("public/data/catalog/series_catalog.json")
 
 EXPECTED = {
     "personal_saving_rate": ("free_public_active", "bea"),
+    "cape_ratio": ("free_public_active", "multpl_shiller"),
 }
 
 

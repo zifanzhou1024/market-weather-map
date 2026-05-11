@@ -1867,6 +1867,28 @@ CANDIDATE_SERIES_PHASE_A: list[dict[str, object]] = [
 # Phase B official sources reuse the provider-level governance() helper since all entries share free_public_active provider defaults.
 OFFICIAL_SOURCE_SERIES_PHASE_B: list[dict[str, object]] = [
     {
+        "id": "cape_ratio",
+        "name": "Shiller CAPE Ratio",
+        "category": "sentiment",
+        "source": "Robert Shiller / Yale",
+        "source_url": "http://www.econ.yale.edu/~shiller/data.htm",
+        "endpoint_url": "http://www.econ.yale.edu/~shiller/data/ie_data.xls",
+        "frequency": "monthly",
+        "units": "ratio",
+        "higher_is": "riskier",
+        "public": True,
+        "max_stale_days": 90,  # Shiller's update cadence is irregular; 90 days tolerates ~2 missed months
+        "notes": "Cyclically Adjusted Price-to-Earnings ratio (S&P 500), monthly. Sourced from Shiller's published XLS at Yale.",
+        "horizon": "strategic",
+        "regime_role": ["sentiment"],
+        "preferred_chart": "line",
+        **governance(
+            "multpl_shiller",
+            score_status="active",
+            citation_notes="Cyclically Adjusted P/E ratio from Robert Shiller, Yale University.",
+        ),
+    },
+    {
         "id": "personal_saving_rate",
         "name": "U.S. Personal Saving Rate",
         "category": "growth",

@@ -3177,6 +3177,33 @@
   {
     "access_status": "free_public_active",
     "active_scoring_allowed": true,
+    "category": "sentiment",
+    "citation_notes": "Cyclically Adjusted P/E ratio from Robert Shiller, Yale University.",
+    "endpoint_url": "http://www.econ.yale.edu/~shiller/data/ie_data.xls",
+    "frequency": "monthly",
+    "higher_is": "riskier",
+    "horizon": "strategic",
+    "id": "cape_ratio",
+    "max_stale_days": 90,
+    "name": "Shiller CAPE Ratio",
+    "notes": "Cyclically Adjusted Price-to-Earnings ratio (S&P 500), monthly. Sourced from Shiller's published XLS at Yale.",
+    "preferred_chart": "line",
+    "provider_id": "multpl_shiller",
+    "public": true,
+    "public_redistribution_allowed": true,
+    "regime_role": [
+      "sentiment"
+    ],
+    "requires_secret": false,
+    "score_status": "active",
+    "source": "Robert Shiller / Yale",
+    "source_url": "http://www.econ.yale.edu/~shiller/data.htm",
+    "terms_status": "review_each_series",
+    "units": "ratio"
+  },
+  {
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "category": "growth",
     "citation_notes": "U.S. Bureau of Economic Analysis, Personal Saving Rate [PSAVERT], via FRED. Free public.",
     "endpoint_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PSAVERT",
