@@ -415,7 +415,13 @@ function catalogEntry(
     public: true,
     source: "FRED",
     source_url: `https://example.com/${id}`,
-    units
+    units,
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   };
 }
 
@@ -430,6 +436,8 @@ function candidateCatalogEntry(
     access_status: "terms_review_needed",
     notes,
     score_status: "candidate",
+    active_scoring_allowed: false,
+    public_redistribution_allowed: false,
     source: "Candidate registry",
     source_url: `https://example.com/${id}`
   };
@@ -446,9 +454,10 @@ function generatedDiagnosticCatalogEntry(
 ): SeriesCatalogEntry {
   return {
     ...catalogEntry(id, category, name, units, frequency),
-    access_status: "free_public",
+    access_status: "free_public_active",
     notes,
     score_status: "candidate",
+    active_scoring_allowed: false,
     source,
     source_url: `https://example.com/${id}`
   };
@@ -466,7 +475,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "Cboe",
     source_url: "https://example.com/vix",
-    units: "index"
+    units: "index",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   catalogEntry("vvix", "volatility", "Cboe VIX Volatility Index", "index"),
   catalogEntry("vix9d", "volatility", "Cboe 9-Day Volatility Index", "index"),
@@ -482,7 +497,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "FRED",
     source_url: "https://example.com/us2y",
-    units: "percent"
+    units: "percent",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "rates",
@@ -495,7 +516,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "FRED",
     source_url: "https://example.com/us10y",
-    units: "percent"
+    units: "percent",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "rates",
@@ -508,7 +535,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "FRED",
     source_url: "https://example.com/us20y",
-    units: "percent"
+    units: "percent",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "rates",
@@ -521,7 +554,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "FRED",
     source_url: "https://example.com/us30y",
-    units: "percent"
+    units: "percent",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "credit",
@@ -534,7 +573,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "FRED",
     source_url: "https://example.com/financial-stress",
-    units: "index"
+    units: "index",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "commodities",
@@ -547,7 +592,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "FRED",
     source_url: "https://example.com/wti",
-    units: "USD/barrel"
+    units: "USD/barrel",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "commodities",
@@ -560,7 +611,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "FRED",
     source_url: "https://example.com/brent",
-    units: "USD/barrel"
+    units: "USD/barrel",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "commodities",
@@ -573,7 +630,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "FRED",
     source_url: "https://example.com/corn",
-    units: "USD/bushel"
+    units: "USD/bushel",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "commodities",
@@ -586,7 +649,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "FRED",
     source_url: "https://example.com/wheat",
-    units: "USD/bushel"
+    units: "USD/bushel",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "commodities",
@@ -599,7 +668,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "FRED",
     source_url: "https://example.com/soybean",
-    units: "USD/bushel"
+    units: "USD/bushel",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "sentiment",
@@ -612,7 +687,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "CFTC",
     source_url: "https://example.com/cftc-asset-manager",
-    units: "contracts"
+    units: "contracts",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   {
     category: "sentiment",
@@ -625,7 +706,13 @@ const catalog: SeriesCatalogEntry[] = [
     public: true,
     source: "CFTC",
     source_url: "https://example.com/cftc-lev-money",
-    units: "contracts"
+    units: "contracts",
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   },
   catalogEntry("cfnai", "growth", "Chicago Fed National Activity Index", "index", "monthly"),
   catalogEntry("cfnai_3m_avg", "growth", "CFNAI 3-month average", "index", "monthly"),

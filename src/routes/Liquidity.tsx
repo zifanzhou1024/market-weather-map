@@ -62,7 +62,13 @@ export default function Liquidity() {
         public: true,
         source: data.netLiquidity.source,
         source_url: data.netLiquidity.source_url,
-        units: data.netLiquidity.units
+        units: data.netLiquidity.units,
+        access_status: "free_public_active",
+        terms_status: "ok",
+        score_status: "active",
+        active_scoring_allowed: true,
+        public_redistribution_allowed: true,
+        requires_secret: false
       }
     : undefined;
 

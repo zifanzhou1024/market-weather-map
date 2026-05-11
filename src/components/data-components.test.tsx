@@ -82,9 +82,13 @@ const catalogEntry: SeriesCatalogEntry = {
   public: true,
   source: "Cboe",
   source_url: "https://example.com/vix",
-  access_status: "free_public",
+  access_status: "free_public_active",
   citation_notes: "Cboe public historical index data; displayed with source caveats.",
   terms_status: "ok",
+  score_status: "active",
+  active_scoring_allowed: true,
+  public_redistribution_allowed: true,
+  requires_secret: false,
   units: "index"
 };
 
@@ -553,8 +557,12 @@ describe("data-driven components", () => {
         source: "FRED",
         source_url: "https://example.com/sloos",
         units: "net percent",
-        access_status: "free_public",
-        score_status: "candidate"
+        access_status: "free_public_active",
+        score_status: "candidate",
+        terms_status: "ok",
+        active_scoring_allowed: false,
+        public_redistribution_allowed: true,
+        requires_secret: false
       }
     ];
     const diagnosticStatus: DataStatusFile = {

@@ -34,7 +34,13 @@ function brentWtiSpreadEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
     public: true,
     source: series.source,
     source_url: series.source_url,
-    units: series.units
+    units: series.units,
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   };
 }
 
@@ -50,7 +56,13 @@ function commodityImpulseEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
     public: true,
     source: series.source,
     source_url: series.source_url,
-    units: series.units
+    units: series.units,
+    access_status: "free_public_active",
+    terms_status: "ok",
+    score_status: "active",
+    active_scoring_allowed: true,
+    public_redistribution_allowed: true,
+    requires_secret: false
   };
 }
 
