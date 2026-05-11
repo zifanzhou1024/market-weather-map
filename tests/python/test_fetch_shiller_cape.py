@@ -78,3 +78,22 @@ def test_extract_cape_observations_empty_raises():
     rows = [["Date", "CAPE"]]
     with pytest.raises(ValueError, match="no CAPE observations parsed"):
         mod.extract_cape_observations(rows, header_row_index=0)
+
+
+def test_find_header_row_index_locates_header():
+    rows = [
+        ["preamble", None, None],
+        ["", "", ""],
+        ["Date", "S&P 500", "CAPE"],
+        ["2024.01", 5000.0, 35.5],
+    ]
+    assert mod.find_header_row_index(rows) == 2
+
+
+def test_find_header_row_index_missing_raises():
+    rows = [
+        ["preamble"],
+        ["S&P 500", "Earnings"],  # no Date, no CAPE
+    ]
+    with pytest.raises(ValueError, match="no header row found"):
+        mod.find_header_row_index(rows)
