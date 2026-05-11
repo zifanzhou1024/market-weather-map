@@ -3,7 +3,8 @@ pytest>=8,<9
 xlrd>=1.2,<2.0
 # Phase C TradingView authenticated-candidate path; see
 # docs/source_reviews/tradingview_authenticated_candidates.md
-# TradingView Python client is pinned in PR C2 alongside the first fetcher,
-# after validating the exact package name and version range on PyPI.
+# Pinned to a specific commit of the rongardF fork (probed live 2026-05-11;
+# symbol TVC:MOVE confirmed returning 5000-bar daily OHLCV back to 2005-12-15).
 pandas>=2.2,<3
 requests>=2.32,<3
+tvdatafeed @ git+https://github.com/rongardF/tvdatafeed.git@e6f6aaa7de43
