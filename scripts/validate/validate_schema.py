@@ -712,6 +712,7 @@ PAGE_INSIGHT_ROUTE_KEYS = {
     "housing",
     "sentiment",
     "fragility",
+    "tactical",
 }
 # "watch" is reserved for a future build path. The current
 # build_page_insights.py only emits risk|support|mixed|calm|unknown,
@@ -1122,6 +1123,101 @@ def check_access_status_enum() -> None:
         raise SchemaError("AccessStatus enum violations:\n  " + "\n  ".join(errs))
 
 
+# ----- D2 section catalog schema check ------------------------------------
+
+SECTION_IDS = frozenset(
+    {
+        "volatility_complex",
+        "rates_pressure",
+        "regime_drivers",
+        "positioning_vs_candidate_sentiment",
+        "tactical_stress_board",
+    }
+)
+SECTION_FRESHNESS_STATUSES = frozenset({"ok", "stale", "unavailable", "degraded"})
+# Character-length pins per spec (D2 / FocusBlock contract).
+_SECTION_FIELD_LIMITS: dict[str, tuple[int | None, int]] = {
+    # field_name: (min_len or None, max_len)
+    "eyebrow": (None, 60),
+    "question": (None, 120),
+    "answer": (60, 200),
+    "why": (None, 200),
+    "risk": (None, 120),
+    "support": (None, 120),
+    "caveat": (None, 200),
+}
+
+
+def check_section_insight_schema() -> None:
+    """Validate ``sections`` arrays in ``page_insights.json``.
+
+    For each route that carries a ``sections`` key, checks:
+    - ``id`` is in the ``SectionId`` enum.
+    - ``eyebrow`` and ``question`` are non-empty strings within length pins.
+    - ``answer`` is a non-empty string with length between 60 and 200 chars.
+    - Optional text fields (``why``, ``risk``, ``support``, ``caveat``) are
+      strings or absent/null, within their respective length limits.
+    - ``freshness_status`` is one of the allowed enum values.
+
+    Raises:
+        ValueError: on any schema violation.
+    """
+    path = data_dir() / "derived" / "page_insights.json"
+    payload = _load_json(path)
+    routes = payload.get("routes", {})
+    for route_key, insight in routes.items():
+        sections = insight.get("sections")
+        if sections is None:
+            continue
+        if not isinstance(sections, list):
+            raise ValueError(
+                f"{path} routes.{route_key}.sections must be a list"
+            )
+        for idx, section in enumerate(sections):
+            ctx = f"routes.{route_key}.sections[{idx}]"
+            if not isinstance(section, dict):
+                raise ValueError(f"{path} {ctx} must be an object")
+            # id must be in SectionId enum
+            section_id = section.get("id")
+            if section_id not in SECTION_IDS:
+                raise ValueError(
+                    f"{path} {ctx}.id {section_id!r} is not in the SectionId enum "
+                    f"(expected one of {sorted(SECTION_IDS)})"
+                )
+            # eyebrow and question: required non-empty strings
+            for field in ("eyebrow", "question", "answer"):
+                value = section.get(field)
+                if not isinstance(value, str) or not value.strip():
+                    raise ValueError(
+                        f"{path} {ctx}.{field} must be a non-empty string"
+                    )
+            # Length pins for all text fields
+            for field, (min_len, max_len) in _SECTION_FIELD_LIMITS.items():
+                value = section.get(field)
+                if value is None:
+                    # Optional fields may be absent or null — skip length check
+                    continue
+                if not isinstance(value, str):
+                    raise ValueError(f"{path} {ctx}.{field} must be a string or null")
+                if min_len is not None and len(value) < min_len:
+                    raise ValueError(
+                        f"{path} {ctx}.{field} is {len(value)} chars; "
+                        f"minimum is {min_len}"
+                    )
+                if len(value) > max_len:
+                    raise ValueError(
+                        f"{path} {ctx}.{field} is {len(value)} chars; "
+                        f"maximum is {max_len}"
+                    )
+            # freshness_status
+            freshness = section.get("freshness_status")
+            if freshness not in SECTION_FRESHNESS_STATUSES:
+                raise ValueError(
+                    f"{path} {ctx}.freshness_status {freshness!r} is not in "
+                    f"{sorted(SECTION_FRESHNESS_STATUSES)}"
+                )
+
+
 _VIX_TERM_CANDIDATE_OBS_KEYS = frozenset(
     {"vix9d", "vix", "vix3m", "vix6m", "vix1y", "vvix"}
 )
@@ -1225,6 +1321,7 @@ def main() -> None:
     validate_regime_dashboard_file()
     validate_status_file()
     check_access_status_enum()
+    check_section_insight_schema()
     run_candidate_isolation()
     validate_vix_term_candidate_file()
     validate_vix_term_metrics_candidate_file()
