@@ -2771,3 +2771,70 @@ code {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── FocusBlock ─────────────────────────────────────────────────────────── */
+
+.focus-block {
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.focus-block--compact {
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: transparent;
+}
+
+.focus-block--stale {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.focus-block__eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 0 0 0.25rem 0;
+}
+
+.focus-block__question {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--accent);
+}
+
+.focus-block__answer {
+  font-size: 0.95rem;
+  color: #233029;
+  margin: 0 0 0.5rem 0;
+}
+
+.focus-block__why,
+.focus-block__caveat {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.focus-block__signals {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+}
+
+.focus-block__signals dt {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.focus-block__signals dd {
+  margin: 0;
+  color: #233029;
+}
