@@ -1,0 +1,27 @@
+{
+  "generated_at_utc": "2026-05-11T00:00:00Z",
+  "date": "2026-05-11",
+  "method_version": "1.0.0",
+  "routes": {
+    "rates": {
+      "title": "Rates",
+      "state": "unknown",
+      "why_it_matters": "Rising real yields compress equity multiples and signal tighter financial conditions.",
+      "confidence": 0.0,
+      "freshness_notes": ["Rates data is unavailable."],
+      "sections": [
+        {
+          "id": "rates_pressure",
+          "eyebrow": "Rates Pressure",
+          "question": "Is the move in yields demand-driven or inflation-driven?",
+          "answer": "Data not yet active for this section.",
+          "why": "Real-yield-driven moves compress equity multiples more directly than breakeven-driven moves.",
+          "risk": "If real yields reach 2.5%, historical precedent suggests meaningful equity multiple compression.",
+          "support": "Breakeven inflation is anchored below 2.5%, limiting stagflation framing.",
+          "caveat": "NY Fed ACM term premium data is unavailable; duration risk decomposition is incomplete.",
+          "freshness_status": "unavailable"
+        }
+      ]
+    }
+  }
+}

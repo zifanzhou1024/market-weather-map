@@ -1,0 +1,23 @@
+{
+  "generated_at_utc": "2026-05-11T00:00:00Z",
+  "date": "2026-05-11",
+  "method_version": "1.0.0",
+  "routes": {
+    "rates": {
+      "title": "Rates",
+      "state": "risk",
+      "why_it_matters": "Rising real yields compress equity multiples and signal tighter financial conditions.",
+      "confidence": 0.92,
+      "freshness_notes": [],
+      "sections": [
+        {
+          "id": "rates_pressure",
+          "eyebrow": "Rates Pressure",
+          "question": "Is the move in yields demand-driven or inflation-driven?",
+          "answer": "The current rise in nominal 10Y is predominantly real-yield driven, consistent with demand-led tightening.",
+          "freshness_status": "ok"
+        }
+      ]
+    }
+  }
+}

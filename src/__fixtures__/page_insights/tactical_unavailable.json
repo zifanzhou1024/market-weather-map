@@ -1,0 +1,27 @@
+{
+  "generated_at_utc": "2026-05-11T00:00:00Z",
+  "date": "2026-05-11",
+  "method_version": "1.0.0",
+  "routes": {
+    "fragility": {
+      "title": "Tactical Stress Board",
+      "state": "unknown",
+      "why_it_matters": "Tactical stress signals identify short-horizon fragility before it registers in broader macro indicators.",
+      "confidence": 0.0,
+      "freshness_notes": ["Tactical stress data is unavailable."],
+      "sections": [
+        {
+          "id": "tactical_stress_board",
+          "eyebrow": "Tactical Stress Board",
+          "question": "Where is near-term stress concentrating across credit, vol, and liquidity?",
+          "answer": "Data not yet active for this section.",
+          "why": "Credit-vol divergences of this magnitude have resolved within 10 trading days in 80% of historical occurrences.",
+          "risk": "If VIX catches up to credit spreads, a rapid volatility repricing could amplify forced selling.",
+          "support": "Financial conditions index remains accommodative, limiting systemic amplification risk.",
+          "caveat": "Only HY OAS is active; IG OAS and loan spreads are candidate-only, limiting spread composite confidence.",
+          "freshness_status": "unavailable"
+        }
+      ]
+    }
+  }
+}

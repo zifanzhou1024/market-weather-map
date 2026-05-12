@@ -1,0 +1,27 @@
+{
+  "generated_at_utc": "2026-05-11T00:00:00Z",
+  "date": "2026-05-11",
+  "method_version": "1.0.0",
+  "routes": {
+    "regime_map": {
+      "title": "Regime Map",
+      "state": "unknown",
+      "why_it_matters": "The macro regime quadrant determines which asset classes face structural headwinds versus tailwinds.",
+      "confidence": 0.0,
+      "freshness_notes": ["Regime data is unavailable."],
+      "sections": [
+        {
+          "id": "regime_drivers",
+          "eyebrow": "Regime Drivers",
+          "question": "Which macro quadrant best describes current cross-asset dynamics?",
+          "answer": "Data not yet active for this section.",
+          "why": "Quadrant transitions are more informative than spot levels; direction of dollar and real yield change over 20 days leads equity beta.",
+          "risk": "A rapid dollar reversal or real yield spike could shift the quadrant to global-tightening risk-off within days.",
+          "support": "Fragility score remains below 40, limiting the tail risk of abrupt quadrant exit.",
+          "caveat": "60D and 120D windows still show mixed regime, tempering conviction on the 20D read.",
+          "freshness_status": "unavailable"
+        }
+      ]
+    }
+  }
+}
