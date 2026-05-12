@@ -17,8 +17,8 @@ SERIES_ID = "personal_saving_rate"
 def normalize_rows(rows: list[dict[str, str]]) -> list[dict[str, object]]:
     return normalize_two_column_csv(
         rows,
-        date_column="DATE",
-        value_column="VALUE",
+        date_column="observation_date",
+        value_column="PSAVERT",
         label="PSAVERT",
     )
 
