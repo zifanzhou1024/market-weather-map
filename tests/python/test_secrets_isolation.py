@@ -76,6 +76,10 @@ SECRET_NAME_ALLOWLIST: tuple[str, ...] = (
     # but shares the naming convention, so explicit allowlisting is cleaner).
     "scripts/transform/build_tradingview_vix_term_metrics.py",
     "tests/python/test_build_tradingview_vix_term_metrics.py",
+    # QA gate: agent-rules doc + verification report reference secret NAMES
+    # (not values) to document the secrets-injection contract.
+    "CLAUDE.md",
+    "docs/superpowers/plans/2026-05-10-data-source-and-focus-pattern-expansion-verification.md",
 )
 
 FAKE_USERNAME = "fake-user-token-abc123-isolation-canary"
