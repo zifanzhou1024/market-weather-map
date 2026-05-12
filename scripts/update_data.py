@@ -32,6 +32,7 @@ MODULES_INGEST_PHASE_B_SENTIMENT: list[str] = []
 MODULES_INGEST_PHASE_C_TRADINGVIEW: list[str] = [
     "scripts.ingest.fetch_tradingview_move",
     "scripts.ingest.fetch_tradingview_put_call",
+    "scripts.ingest.fetch_tradingview_vix_term",
 ]
 
 MODULES_TRANSFORM_EXISTING = [
@@ -55,6 +56,11 @@ MODULES_TRANSFORM_PHASE_B: list[str] = [
     "scripts.transform.build_treasury_supply_pressure",
 ]
 
+# Phase C transform modules.
+MODULES_TRANSFORM_PHASE_C: list[str] = [
+    "scripts.transform.build_tradingview_vix_term_metrics",
+]
+
 MODULES_VALIDATE = [
     "scripts.validate.validate_schema",
     "scripts.validate.validate_freshness",
@@ -70,6 +76,7 @@ MODULES = (
     + MODULES_INGEST_PHASE_C_TRADINGVIEW
     + MODULES_TRANSFORM_EXISTING
     + MODULES_TRANSFORM_PHASE_B
+    + MODULES_TRANSFORM_PHASE_C
     + MODULES_VALIDATE
 )
 
