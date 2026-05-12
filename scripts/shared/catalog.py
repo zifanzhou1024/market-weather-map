@@ -1911,6 +1911,72 @@ TRADINGVIEW_CANDIDATE_SERIES: list[dict[str, object]] = [
         "regime_role": ["sentiment"],
         "preferred_chart": "line",
     },
+    {
+        "id": "tradingview_vix_term_candidate",
+        "name": "TradingView VIX term-structure candidate",
+        "category": "volatility",
+        "source": "TradingView",
+        "provider_id": "tradingview",
+        "source_url": "https://www.tradingview.com/symbols/CBOE-VIX/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "index",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": (
+            "Multi-tenor constant-maturity VIX indices fetched from TradingView; "
+            "cross-validation candidate against the active Cboe-CSV-sourced VIX series. "
+            "Covers VIX9D, VIX, VIX3M, VIX6M, VIX1Y, and VVIX from CBOE exchange. "
+            "NOT VX futures contracts. Not active in scoring."
+        ),
+        "citation_notes": (
+            "TradingView CBOE constant-maturity VIX indices; authenticated candidate pending review "
+            "per docs/source_reviews/tradingview_vix_term.md."
+        ),
+        "access_status": "authenticated_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": False,
+        "requires_secret": True,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
+    {
+        "id": "tradingview_vix_term_metrics_candidate",
+        "name": "TradingView VIX term-structure metrics candidate",
+        "category": "volatility",
+        "source": "TradingView",
+        "provider_id": "tradingview",
+        "source_url": "https://www.tradingview.com/symbols/CBOE-VIX/",
+        "endpoint_url": "",
+        "frequency": "daily",
+        "units": "index_points",
+        "higher_is": "riskier",
+        "public": False,
+        "max_stale_days": 7,
+        "notes": (
+            "Derived term-structure spreads and contango score from the TradingView VIX term "
+            "candidate. Metrics: vix_event_spread (VIX9D-VIX), vix_front_spread (VIX3M-VIX), "
+            "vix_mid_curve_spread (VIX6M-VIX3M), vix_long_curve_spread (VIX1Y-VIX6M), "
+            "vix_term_contango_score ((VIX1Y-VIX)/VIX). Not active in scoring."
+        ),
+        "citation_notes": (
+            "Derived from TradingView CBOE VIX term candidate; authenticated candidate pending review "
+            "per docs/source_reviews/tradingview_vix_term.md."
+        ),
+        "access_status": "authenticated_candidate",
+        "score_status": "candidate",
+        "terms_status": "review_needed",
+        "active_scoring_allowed": False,
+        "public_redistribution_allowed": False,
+        "requires_secret": True,
+        "horizon": "tactical",
+        "regime_role": ["volatility"],
+        "preferred_chart": "line",
+    },
 ]
 
 
