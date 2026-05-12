@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Any
 
 from scripts.shared.io import data_dir
@@ -133,6 +133,54 @@ def validate_dashboard_freshness() -> None:
         raise SystemExit("\n".join(failures))
 
 
+# Candidate files written by authenticated ingest steps. Validated only when
+# present (i.e. when credentials ran and the ingest succeeded). Max stale
+# days matches the active VIX series convention (7 calendar days).
+_CANDIDATE_FRESHNESS_EXPECTATIONS: dict[str, int] = {
+    "candidates/tradingview_vix_term_candidate.json": 7,
+    "candidates/tradingview_vix_term_metrics_candidate.json": 7,
+}
+
+
+def validate_candidate_file_freshness() -> None:
+    """Check freshness of candidate JSON files that are present on disk.
+
+    Missing files are silently skipped — authenticated candidates are
+    only written when workflow secrets are available.
+    """
+    failures: list[str] = []
+    today = datetime.now(timezone.utc).date()
+
+    for rel_path, max_stale_days in _CANDIDATE_FRESHNESS_EXPECTATIONS.items():
+        path = data_dir() / rel_path
+        if not path.exists():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            failures.append(f"{rel_path} is not valid JSON: {error}")
+            continue
+
+        generated_at_raw = payload.get("generated_at_utc")
+        generated_at = _parse_iso_date(generated_at_raw)
+        if generated_at is None:
+            failures.append(f"{rel_path} missing valid generated_at_utc")
+            continue
+
+        freshness_days = (today - generated_at).days
+        if freshness_days < 0:
+            failures.append(f"{rel_path} generated_at_utc is in the future: {generated_at_raw}")
+            continue
+        if freshness_days > max_stale_days:
+            failures.append(
+                f"{rel_path} is stale: generated {freshness_days} days ago > "
+                f"{max_stale_days} day tolerance"
+            )
+
+    if failures:
+        raise SystemExit("\n".join(failures))
+
+
 def main() -> None:
     path = data_dir() / "status" / "data_status.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -167,6 +215,7 @@ def main() -> None:
         raise SystemExit("\n".join(failures))
 
     validate_dashboard_freshness()
+    validate_candidate_file_freshness()
 
 
 if __name__ == "__main__":

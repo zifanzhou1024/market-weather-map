@@ -3281,5 +3281,59 @@
     "source_url": "https://www.tradingview.com/symbols/USI-PCC/",
     "terms_status": "review_needed",
     "units": "ratio"
+  },
+  {
+    "access_status": "authenticated_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "TradingView CBOE constant-maturity VIX indices; authenticated candidate pending review per docs/source_reviews/tradingview_vix_term.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "tradingview_vix_term_candidate",
+    "max_stale_days": 7,
+    "name": "TradingView VIX term-structure candidate",
+    "notes": "Multi-tenor constant-maturity VIX indices fetched from TradingView; cross-validation candidate against the active Cboe-CSV-sourced VIX series. Covers VIX9D, VIX, VIX3M, VIX6M, VIX1Y, and VVIX from CBOE exchange. NOT VX futures contracts. Not active in scoring.",
+    "preferred_chart": "line",
+    "provider_id": "tradingview",
+    "public": false,
+    "public_redistribution_allowed": false,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": true,
+    "score_status": "candidate",
+    "source": "TradingView",
+    "source_url": "https://www.tradingview.com/symbols/CBOE-VIX/",
+    "terms_status": "review_needed",
+    "units": "index"
+  },
+  {
+    "access_status": "authenticated_candidate",
+    "active_scoring_allowed": false,
+    "category": "volatility",
+    "citation_notes": "Derived from TradingView CBOE VIX term candidate; authenticated candidate pending review per docs/source_reviews/tradingview_vix_term.md.",
+    "endpoint_url": "",
+    "frequency": "daily",
+    "higher_is": "riskier",
+    "horizon": "tactical",
+    "id": "tradingview_vix_term_metrics_candidate",
+    "max_stale_days": 7,
+    "name": "TradingView VIX term-structure metrics candidate",
+    "notes": "Derived term-structure spreads and contango score from the TradingView VIX term candidate. Metrics: vix_event_spread (VIX9D-VIX), vix_front_spread (VIX3M-VIX), vix_mid_curve_spread (VIX6M-VIX3M), vix_long_curve_spread (VIX1Y-VIX6M), vix_term_contango_score ((VIX1Y-VIX)/VIX). Not active in scoring.",
+    "preferred_chart": "line",
+    "provider_id": "tradingview",
+    "public": false,
+    "public_redistribution_allowed": false,
+    "regime_role": [
+      "volatility"
+    ],
+    "requires_secret": true,
+    "score_status": "candidate",
+    "source": "TradingView",
+    "source_url": "https://www.tradingview.com/symbols/CBOE-VIX/",
+    "terms_status": "review_needed",
+    "units": "index_points"
   }
 ]

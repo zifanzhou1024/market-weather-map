@@ -1122,6 +1122,92 @@ def check_access_status_enum() -> None:
         raise SchemaError("AccessStatus enum violations:\n  " + "\n  ".join(errs))
 
 
+_VIX_TERM_CANDIDATE_OBS_KEYS = frozenset(
+    {"vix9d", "vix", "vix3m", "vix6m", "vix1y", "vvix"}
+)
+_VIX_TERM_METRICS_OBS_KEYS = frozenset(
+    {
+        "vix_event_spread",
+        "vix_front_spread",
+        "vix_mid_curve_spread",
+        "vix_long_curve_spread",
+        "vix_term_contango_score",
+    }
+)
+
+
+def _validate_candidate_file_governance(payload: dict[str, Any], path: Path) -> None:
+    """Check that a candidate file carries the correct governance flags."""
+    if payload.get("active_scoring_allowed") is not False:
+        raise ValueError(f"{path} active_scoring_allowed must be false for candidate file")
+    if payload.get("public_redistribution_allowed") is not False:
+        raise ValueError(f"{path} public_redistribution_allowed must be false for candidate file")
+    if payload.get("requires_secret") is not True:
+        raise ValueError(f"{path} requires_secret must be true for authenticated candidate")
+    if payload.get("access_status") != "authenticated_candidate":
+        raise ValueError(f"{path} access_status must be 'authenticated_candidate'")
+    if payload.get("score_status") != "candidate":
+        raise ValueError(f"{path} score_status must be 'candidate'")
+
+
+def validate_vix_term_candidate_file() -> None:
+    """Validate public/data/candidates/tradingview_vix_term_candidate.json if present.
+
+    The file is generated only when TradingView credentials are available;
+    missing file is silently skipped — the ingest step is optional.
+    """
+    path = data_dir() / "candidates" / "tradingview_vix_term_candidate.json"
+    if not path.exists():
+        return
+    payload = _load_json(path)
+    if payload.get("series_id") != "tradingview_vix_term_candidate":
+        raise ValueError(f"{path} series_id must be 'tradingview_vix_term_candidate'")
+    _validate_candidate_file_governance(payload, path)
+    observations = payload.get("observations")
+    if not isinstance(observations, list):
+        raise ValueError(f"{path} observations must be a list")
+    # Each observation must have a date plus at least one numeric series key.
+    for index, obs in enumerate(observations):
+        if not isinstance(obs, dict):
+            raise ValueError(f"{path} observations[{index}] must be an object")
+        if not isinstance(obs.get("date"), str):
+            raise ValueError(f"{path} observations[{index}] date must be a string")
+        # Allow partial keys (partial-failure tolerance) but at least one must be present.
+        present_keys = _VIX_TERM_CANDIDATE_OBS_KEYS & obs.keys()
+        if not present_keys:
+            raise ValueError(
+                f"{path} observations[{index}] must have at least one VIX series key"
+            )
+        for key in present_keys:
+            if not isinstance(obs[key], int | float) or isinstance(obs[key], bool):
+                raise ValueError(f"{path} observations[{index}].{key} must be numeric")
+
+
+def validate_vix_term_metrics_candidate_file() -> None:
+    """Validate public/data/candidates/tradingview_vix_term_metrics_candidate.json if present.
+
+    Missing file is silently skipped — the transform skips if the ingest file is absent.
+    """
+    path = data_dir() / "candidates" / "tradingview_vix_term_metrics_candidate.json"
+    if not path.exists():
+        return
+    payload = _load_json(path)
+    if payload.get("series_id") != "tradingview_vix_term_metrics_candidate":
+        raise ValueError(f"{path} series_id must be 'tradingview_vix_term_metrics_candidate'")
+    _validate_candidate_file_governance(payload, path)
+    observations = payload.get("observations")
+    if not isinstance(observations, list):
+        raise ValueError(f"{path} observations must be a list")
+    for index, obs in enumerate(observations):
+        if not isinstance(obs, dict):
+            raise ValueError(f"{path} observations[{index}] must be an object")
+        if not isinstance(obs.get("date"), str):
+            raise ValueError(f"{path} observations[{index}] date must be a string")
+        for key in _VIX_TERM_METRICS_OBS_KEYS:
+            if key in obs and (not isinstance(obs[key], int | float) or isinstance(obs[key], bool)):
+                raise ValueError(f"{path} observations[{index}].{key} must be numeric")
+
+
 def main() -> None:
     for entry in available_catalog_entries():
         validate_series_file(str(entry["id"]))
@@ -1140,6 +1226,8 @@ def main() -> None:
     validate_status_file()
     check_access_status_enum()
     run_candidate_isolation()
+    validate_vix_term_candidate_file()
+    validate_vix_term_metrics_candidate_file()
 
 
 if __name__ == "__main__":

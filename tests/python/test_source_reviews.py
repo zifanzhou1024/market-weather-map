@@ -25,6 +25,7 @@ REQUIRED_REVIEW_FILES = {
     "sloos.md",
     "term_premium.md",
     "tradingview_authenticated_candidates.md",
+    "tradingview_vix_term.md",
     "treasury_auctions.md",
     "treasury_fiscal_supply.md",
     "valuation_erp_earnings.md",
