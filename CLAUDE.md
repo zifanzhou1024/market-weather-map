@@ -34,7 +34,7 @@ A source moves from `terms_review_needed` to an active tier only after `docs/sou
 
 See `docs/source_reviews/` for each review doc and `docs/superpowers/plans/2026-05-10-data-source-and-focus-pattern-expansion-verification.md` for the initiative closeout report.
 
-**TradingView authenticated candidates.** Three repository secrets are injected via `${{ secrets.* }}` in `.github/workflows/update-data.yml` — the TV username, TV password, and a feature-gate flag. Secret helpers live in `scripts/shared/config.py`. An allowlist + value-leak enforcement test in `tests/python/test_secrets_isolation.py` enumerates which files may mention those secret names; extending the allowlist is the only touch required when adding a new TV fetcher.
+**TradingView authenticated candidates.** Secrets (`TRADINGVIEW_USERNAME`, `TRADINGVIEW_PASSWORD`, `ENABLE_AUTHENTICATED_CANDIDATES`) are injected via `${{ secrets.* }}` in `.github/workflows/update-data.yml`. Secret helpers live in `scripts/shared/config.py`. An allowlist + value-leak enforcement test in `tests/python/test_secrets_isolation.py` enumerates which files may mention those secret names; extending the allowlist is the only touch required when adding a new TV fetcher.
 
 **FocusBlock section pattern.** Routes consume `routeInsight.sections` (populated in `scripts/transform/build_page_insights.py` via `SECTION_CATALOG`) and render `<FocusBlock variant="section" ...>` above multi-chart sections. The `SectionInsight` interface in `src/lib/types.ts` mirrors the JSON shape. Five placements are active: Volatility, Rates, RegimeMap, Sentiment, Tactical. Compact placements are implemented in the component but deferred — no compact placements ship until a follow-up audit.
 
