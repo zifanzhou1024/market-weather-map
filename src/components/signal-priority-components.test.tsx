@@ -150,6 +150,24 @@ describe("TopSignalList", () => {
     expect(container.textContent).not.toContain("Severity ");
   });
 
+  it("renders external research links for missing high-value signals", () => {
+    const container = render(
+      <TopSignalList
+        title="Missing High-Value Signals"
+        emptyText="No gated signals."
+        variant="missing"
+        signals={[moveMissing]}
+      />
+    );
+
+    expect(
+      container.querySelector("a[href='https://en.macromicro.me/charts/131635/us-treasury-move-index']")
+    ).not.toBeNull();
+    expect(container.querySelector("a[href='https://finance.yahoo.com/quote/%5EMOVE/']")).not.toBeNull();
+    expect(container.querySelector("a")?.getAttribute("target")).toBe("_blank");
+    expect(container.querySelector("a")?.getAttribute("rel")).toBe("noreferrer");
+  });
+
   it("preserves the order it is given (caller pre-sorts by priority)", () => {
     const container = render(
       <TopSignalList

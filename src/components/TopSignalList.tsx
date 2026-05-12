@@ -3,6 +3,7 @@ import type {
   SignalHorizon,
   SignalMissingEntry
 } from "../lib/types";
+import ExternalResearchLinks from "./ExternalResearchLinks";
 
 type SignalEntry = SignalActiveEntry | SignalMissingEntry;
 
@@ -56,6 +57,11 @@ export default function TopSignalList({
               </div>
               <p className="top-signal-list-item-message">{signal.message}</p>
               <p className="top-signal-list-item-why">{signal.why_it_matters}</p>
+              <ExternalResearchLinks
+                className="top-signal-list-item-links"
+                id={signal.id}
+                label={signal.label}
+              />
               <div className="top-signal-list-item-meta">
                 <span className="top-signal-list-item-importance">
                   Importance {signal.importance}/5

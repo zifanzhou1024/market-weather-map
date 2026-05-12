@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import EChartPanel from "../../charts/EChartPanel";
+import ExternalResearchLinks from "../ExternalResearchLinks";
 import { buildTimeWindow, type RangePreset } from "../../charts/buildTimeWindow";
 import {
   chartAxisDefaults,
@@ -203,14 +204,21 @@ export default function LiquidityDecompositionHero({
         </div>
       }
     >
-      <EChartPanel
-        title="Net liquidity"
-        description="Fed assets minus the Treasury General Account minus reverse repo, in USD billions."
-        state="ready"
-        option={option}
-        ariaLabel="Area line chart of net liquidity proxy in USD billions over time."
-        height={380}
-      />
+      <>
+        <EChartPanel
+          title="Net liquidity"
+          description="Fed assets minus the Treasury General Account minus reverse repo, in USD billions."
+          state="ready"
+          option={option}
+          ariaLabel="Area line chart of net liquidity proxy in USD billions over time."
+          height={380}
+        />
+        <ExternalResearchLinks
+          className="liquidity-source-links"
+          id="net_liquidity"
+          label="Net liquidity source components"
+        />
+      </>
     </InteractiveChartShell>
   );
 }

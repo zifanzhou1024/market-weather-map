@@ -492,4 +492,21 @@ describe("StrategicSourceGapMatrix", () => {
       expect(unlock.textContent ?? "").toContain("Unlocks:");
     }
   });
+
+  it("renders external research links for strategic source gaps", () => {
+    const c = render(<StrategicSourceGapMatrix />);
+
+    expect(
+      c.querySelector(
+        "a[href='https://en.macromicro.me/collections/34/us-stock-relative/45614/sp500-shiller-cape-ratio']"
+      )
+    ).not.toBeNull();
+    expect(c.querySelector("a[href='https://en.macromicro.me/charts/27100/sp500-forward-pe-ratio']"))
+      .not.toBeNull();
+    expect(
+      c.querySelector(
+        "a[href='https://www.ismworld.org/supply-management-news-and-reports/reports/ism-report-on-business/']"
+      )
+    ).not.toBeNull();
+  });
 });

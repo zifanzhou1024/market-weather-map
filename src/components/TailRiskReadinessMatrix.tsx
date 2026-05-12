@@ -1,4 +1,5 @@
 import type { DataStatusFile } from "../lib/types";
+import ExternalResearchLinks from "./ExternalResearchLinks";
 
 interface TailRiskReadinessMatrixProps {
   status: DataStatusFile;
@@ -66,19 +67,64 @@ const GROUPS: SignalGroup[] = [
 ];
 
 const GATED_STATUSES = new Set(["terms_review_needed", "unavailable"]);
+const DISPLAY_GATED_STATUSES = new Set([
+  "candidate_gated",
+  "not_implemented",
+  "source_gated",
+  "terms_gated"
+]);
+const TERMS_GATED_READINESS_IDS = new Set(["put_call_total", "put_call_spxw"]);
+const READINESS_STATUS_OVERRIDES: Record<string, string> = {
+  move_index: "candidate_gated",
+  skew_index: "source_gated",
+  vx1: "terms_gated",
+  vx2: "terms_gated",
+  vx3: "terms_gated",
+  vx4: "terms_gated",
+  vx5: "terms_gated",
+  vx6: "terms_gated",
+  vx7: "terms_gated",
+  vx8: "terms_gated"
+};
+const READINESS_STATUS_LABELS: Record<string, string> = {
+  candidate_gated: "candidate gated",
+  failed: "failed",
+  not_implemented: "not implemented",
+  ok: "ok",
+  source_gated: "source gated",
+  stale: "stale",
+  terms_gated: "terms gated",
+  terms_review_needed: "terms gated",
+  unavailable: "unavailable",
+  unknown: "unknown"
+};
 
 function badgeModifier(status: string | undefined): string {
   if (status === "ok") return "tail-risk-readiness-badge--active";
   if (status === "stale") return "tail-risk-readiness-badge--stale";
   if (status === "failed") return "tail-risk-readiness-badge--failed";
-  if (status && GATED_STATUSES.has(status)) return "tail-risk-readiness-badge--gated";
+  if (status && (GATED_STATUSES.has(status) || DISPLAY_GATED_STATUSES.has(status))) {
+    return "tail-risk-readiness-badge--gated";
+  }
   return "tail-risk-readiness-badge--unknown";
 }
 
-function statusFor(status: DataStatusFile, id: string): string {
+function rawStatusFor(status: DataStatusFile, id: string): string {
   const entry = status.series?.[id];
   if (!entry || typeof entry.status !== "string") return "unknown";
   return entry.status;
+}
+
+function displayStatusFor(status: DataStatusFile, id: string): string {
+  const rawStatus = rawStatusFor(status, id);
+  const override = READINESS_STATUS_OVERRIDES[id];
+  if (override) return override;
+  if (TERMS_GATED_READINESS_IDS.has(id) && rawStatus === "terms_review_needed") return "terms_gated";
+  return rawStatus;
+}
+
+function statusLabelFor(status: string): string {
+  return READINESS_STATUS_LABELS[status] ?? status.replace(/_/g, " ");
 }
 
 export default function TailRiskReadinessMatrix({ status }: TailRiskReadinessMatrixProps) {
@@ -95,14 +141,21 @@ export default function TailRiskReadinessMatrix({ status }: TailRiskReadinessMat
         <div key={group.key} className="tail-risk-readiness-group">
           <h4 className="tail-risk-readiness-group-heading">{group.heading}</h4>
           {group.signals.map((signal) => {
-            const rawStatus = statusFor(status, signal.id);
+            const displayStatus = displayStatusFor(status, signal.id);
             return (
               <div key={signal.id} className="tail-risk-readiness-row">
-                <span className="tail-risk-readiness-label">{signal.label}</span>
+                <span className="tail-risk-readiness-main">
+                  <span className="tail-risk-readiness-label">{signal.label}</span>
+                  <ExternalResearchLinks
+                    className="tail-risk-readiness-links"
+                    id={signal.id}
+                    label={signal.label}
+                  />
+                </span>
                 <span
-                  className={`tail-risk-readiness-badge ${badgeModifier(rawStatus)}`}
+                  className={`tail-risk-readiness-badge ${badgeModifier(displayStatus)}`}
                 >
-                  {rawStatus}
+                  {statusLabelFor(displayStatus)}
                 </span>
               </div>
             );

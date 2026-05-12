@@ -26,6 +26,7 @@ def test_modules_list_contains_existing_paths():
 def test_modules_order_ingest_transform_validate():
     indices = {p: i for i, p in enumerate(mod.MODULES)}
     assert indices["scripts.ingest.fetch_cboe"] < indices["scripts.transform.normalize_series"]
+    assert indices["scripts.ingest.fetch_cboe_vx_settlement"] < indices["scripts.transform.normalize_series"]
     assert indices["scripts.transform.normalize_series"] < indices["scripts.validate.validate_schema"]
 
 

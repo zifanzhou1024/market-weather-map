@@ -2721,9 +2721,23 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("VIX9D / VIX");
     expect(container.textContent).toContain("VIX / VIX3M");
     expect(container.textContent).toContain("VX futures curve");
+    expect(container.textContent).toContain("Missing volatility data links");
+    expect(container.textContent).toContain("MOVE official unavailable; TradingView candidate gated.");
+    expect(container.textContent).toContain("Cboe SKEW source gated; no implemented candidate.");
+    expect(
+      container.querySelector("a[href='https://en.macromicro.me/charts/131635/us-treasury-move-index']")
+    ).not.toBeNull();
+    expect(container.querySelector("a[href='https://finance.yahoo.com/quote/%5EMOVE/']")).not.toBeNull();
+    expect(container.querySelector("a[href='https://www.cboe.com/us/options/market_statistics/daily/']"))
+      .not.toBeNull();
+    expect(
+      container.querySelector("a[href='https://en.macromicro.me/series/22520/sp500-vix-future-price-continuous-month-1']")
+    ).not.toBeNull();
+    expect(container.textContent).toContain("Cboe VX settlement candidate fetcher is implemented.");
+    expect(container.textContent).toContain("Rows remain source-gated and non-scoring");
+    expect(container.textContent).toContain("Terms review needed");
     expect(container.textContent).toContain("Fallback proxy");
     expect(container.textContent).toContain("VX1 futures");
-    expect(container.textContent).toContain("VX1 futures source remains under terms review.");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
   });
 
@@ -2823,7 +2837,7 @@ describe("data-backed routes", () => {
     );
 
     const container = render(
-      <MemoryRouter initialEntries={["/tactical"]}>
+      <MemoryRouter initialEntries={["/short-term"]}>
         <App />
       </MemoryRouter>
     );
@@ -2838,9 +2852,18 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("FOMC Minutes");
     expect(container.textContent).toContain("Not scored");
     expect(container.textContent).toContain("does not affect active scores, regime labels, checklist states, or confidence");
-    expect(container.textContent).toContain("VIX futures readiness");
+    expect(container.textContent).toContain("VX futures curve");
+    expect(container.textContent).toContain("Cboe VX settlement candidate fetcher is implemented.");
+    expect(container.textContent).toContain("Rows remain source-gated and non-scoring");
     expect(container.textContent).toContain("SPXW put/call ratio");
     expect(container.textContent).toContain("SPXW options source remains under terms review.");
+    expect(container.querySelector("a[href='https://en.macromicro.me/series/1650/us-put-call-ratio-total']"))
+      .not.toBeNull();
+    expect(container.querySelector("a[href='https://www.cboe.com/us/options/market_statistics/daily/']"))
+      .not.toBeNull();
+    expect(
+      container.querySelector("a[href='https://en.macromicro.me/series/22520/sp500-vix-future-price-continuous-month-1']")
+    ).not.toBeNull();
     expect(container.textContent).toContain("VX1 futures");
     expect(container.textContent).toContain("OPEX calendar");
     expect(container.textContent).toContain("OPEX calendar source remains under review.");
@@ -2923,6 +2946,8 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Trend window 3 observations");
     expect(container.textContent).toContain("Latest 8.70 basis points on 2026-05-03");
     expect(container.textContent).toContain("Gated stress");
+    expect(container.textContent).toContain("MOVE official unavailable; TradingView candidate gated.");
+    expect(container.textContent).toContain("Cboe SKEW source gated; no implemented candidate.");
     expect(container.textContent).toContain("Mismatch severity");
     expect(container.textContent).toContain("MOVE");
     expect(container.textContent).toContain("SKEW");
@@ -3035,6 +3060,20 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Treasury net issuance");
     expect(container.textContent).toContain("valuation");
     expect(container.textContent).toContain("earnings revisions");
+    expect(
+      container.querySelector(
+        "a[href='https://www.ismworld.org/supply-management-news-and-reports/reports/ism-report-on-business/']"
+      )
+    ).not.toBeNull();
+    expect(container.querySelector("a[href='https://www.newyorkfed.org/research/data_indicators/term-premia-tabs']"))
+      .not.toBeNull();
+    expect(
+      container.querySelector(
+        "a[href='https://en.macromicro.me/collections/34/us-stock-relative/45614/sp500-shiller-cape-ratio']"
+      )
+    ).not.toBeNull();
+    expect(container.querySelector("a[href='https://en.macromicro.me/charts/27100/sp500-forward-pe-ratio']"))
+      .not.toBeNull();
     const strategicRows = Array.from(container.querySelectorAll(".candidate-source-row"));
     expect(strategicRows).toHaveLength(11);
     expect(strategicRows.every((row) => row.getAttribute("role") === "listitem")).toBe(true);
@@ -3158,6 +3197,9 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("Yield driver");
     expect(container.textContent).toContain("Cross-asset confirmation");
     expect(container.textContent).toContain("Gold / XAU");
+    expect(container.textContent).toContain("MOVE official unavailable; TradingView candidate gated.");
+    expect(container.textContent).toContain("Cboe SKEW source gated; no implemented candidate.");
+    expect(container.textContent).toContain("VX futures curve source-gated.");
     expect(container.textContent).toContain("MOVE");
     expect(container.textContent).toContain("Terms review needed");
     expect(container.textContent).toContain("Duration-bond confirmation");

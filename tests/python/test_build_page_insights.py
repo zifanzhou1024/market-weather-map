@@ -138,6 +138,52 @@ def test_liquidity_route_with_stale_warning_records_freshness_note():
     assert any("stale" in note.lower() for note in liquidity["freshness_notes"])
 
 
+def test_volatility_missing_source_notes_use_governance_specific_copy():
+    payload = {
+        "date": "2026-05-12",
+        "generated_at_utc": "2026-05-12T09:00:00Z",
+        "method_version": "phase6-pr1-signal-priority-v1",
+        "top_warnings": [],
+        "top_supports": [],
+        "missing_high_value_signals": [
+            {
+                "category": "volatility",
+                "id": "move_index",
+                "label": "MOVE Index (bond volatility)",
+                "source_status": "terms_review_needed",
+            },
+            {
+                "category": "volatility",
+                "id": "skew_index",
+                "label": "Cboe SKEW",
+                "source_status": "terms_review_needed",
+            },
+            {
+                "category": "volatility",
+                "id": "vx_futures_curve",
+                "label": "VX futures curve",
+                "source_status": "terms_review_needed",
+            },
+        ],
+    }
+
+    result = build_page_insights.build_page_insights(
+        signal_priority=payload,
+        generated_at_utc="2026-05-12T09:30:00Z",
+    )
+
+    notes = result["routes"]["volatility"]["freshness_notes"]
+    assert "MOVE official unavailable; TradingView candidate gated." in notes
+    assert "Cboe SKEW source gated; no implemented candidate." in notes
+    assert (
+        "VX futures curve source-gated; Cboe settlement candidate is non-scoring "
+        "until redistribution review approves publication."
+    ) in notes
+    assert "MOVE Index (bond volatility) is unavailable." not in notes
+    assert "Cboe SKEW is unavailable." not in notes
+    assert "VX futures curve is unavailable." not in notes
+
+
 def test_source_gated_signal_never_populates_primary_slot():
     """The gated_dollar_diagnostic fixture entry has source_status='candidate'.
     It must NEVER appear as primary_warning or primary_support, even though

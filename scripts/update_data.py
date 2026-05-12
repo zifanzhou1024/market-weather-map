@@ -23,7 +23,9 @@ MODULES_INGEST_PHASE_B_OFFICIAL: list[str] = [
 ]
 
 # Phase B / cboe-candidate-agent appends entries here.
-MODULES_INGEST_PHASE_B_CBOE: list[str] = []
+MODULES_INGEST_PHASE_B_CBOE: list[str] = [
+    "scripts.ingest.fetch_cboe_vx_settlement",
+]
 
 # Phase B / sentiment-candidate-agent appends entries here.
 MODULES_INGEST_PHASE_B_SENTIMENT: list[str] = []
