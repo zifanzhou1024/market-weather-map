@@ -8,6 +8,7 @@ import DataStatusTable from "../components/DataStatusTable";
 import DollarRealYieldPressurePanel from "../components/DollarRealYieldPressurePanel";
 import EventRiskPanel from "../components/EventRiskPanel";
 import EventRiskTimeline from "../components/EventRiskTimeline";
+import FocusBlock from "../components/FocusBlock";
 import HorizonScoreHeader from "../components/HorizonScoreHeader";
 import LiquidityDollarPressureChart from "../components/LiquidityDollarPressureChart";
 import LiquidityPulsePanel from "../components/LiquidityPulsePanel";
@@ -26,6 +27,7 @@ import {
   loadCatalog,
   loadDataStatus,
   loadMacroCalendar,
+  loadPageInsights,
   loadRegimeSnapshot,
   loadScoreSummary,
   loadSignalPriority,
@@ -35,6 +37,7 @@ import type {
   DataStatusFile,
   DerivedSeriesFile,
   MacroCalendarFile,
+  PageInsightsFile,
   RegimeSnapshotFile,
   ScoreSummaryFile,
   SeriesCatalogEntry,
@@ -141,9 +144,18 @@ function driverLabel(driver: RegimeSnapshotFile["regime"]["yield_driver"]) {
 export default function TacticalTradingWeather() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadTacticalTradingWeather() {
       try {
@@ -245,6 +257,24 @@ export default function TacticalTradingWeather() {
               />
             </section>
           ) : null}
+          {(() => {
+            const section = pageInsights?.routes?.fragility?.sections?.find(
+              (s) => s.id === "tactical_stress_board"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           <section
             className="tactical-charts"
             aria-label="Short-term tactical charts: volatility, rates, credit, liquidity, dollar, and event risk"
