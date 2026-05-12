@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import FocusBlock from "../components/FocusBlock";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import PageInsightHero from "../components/PageInsightHero";
@@ -15,6 +16,7 @@ import {
   loadCatalog,
   loadDataStatus,
   loadDerivedSeries,
+  loadPageInsights,
   loadRatesDashboard,
   loadRegimeSnapshot
 } from "../lib/data";
@@ -23,6 +25,7 @@ import type {
   DataStatusFile,
   DerivedSeriesFile,
   DirectionState,
+  PageInsightsFile,
   RatesDashboardFile,
   RegimeSnapshotFile,
   SeriesCatalogEntry,
@@ -71,9 +74,18 @@ function breakevenDirection(snapshot: RegimeSnapshotFile): DirectionState {
 export default function Rates() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadRates() {
       try {
@@ -142,6 +154,24 @@ export default function Rates() {
       {data ? (
         <div className="route-stack">
           <PageInsightHero route="rates" />
+          {(() => {
+            const section = pageInsights?.routes?.rates?.sections?.find(
+              (s) => s.id === "rates_pressure"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           {/* SLOT:rates_primary_chart */}
           {data.ratesDashboard ? (
             <YieldChangeWaterfallChart data={data.ratesDashboard.yield_change_windows} />
