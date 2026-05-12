@@ -258,7 +258,7 @@ export default function TacticalTradingWeather() {
             </section>
           ) : null}
           {(() => {
-            const section = pageInsights?.routes?.fragility?.sections?.find(
+            const section = pageInsights?.routes?.tactical?.sections?.find(
               (s) => s.id === "tactical_stress_board"
             );
             return section ? (

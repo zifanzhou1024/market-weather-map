@@ -4,7 +4,7 @@
  * These tests verify the conditional rendering of FocusBlock based on the
  * sections array in page_insights.json. The route renders FocusBlock only
  * when a section with id="tactical_stress_board" is present under the
- * "fragility" route key in the loaded page insights; otherwise it is absent.
+ * "tactical" route key in the loaded page insights; otherwise it is absent.
  *
  * Fixtures used:
  *   tactical_complete.json  — sections includes tactical_stress_board (all optional fields)
@@ -229,7 +229,7 @@ describe("TacticalTradingWeather route — FocusBlock placement (D4)", () => {
       date: "2026-05-11",
       method_version: "1.0.0",
       routes: {
-        fragility: {
+        tactical: {
           title: "Tactical Stress Board",
           state: "watch",
           why_it_matters: "Tactical stress signals track immediate risk posture.",
@@ -254,7 +254,7 @@ describe("TacticalTradingWeather route — FocusBlock placement (D4)", () => {
       date: "2026-05-11",
       method_version: "1.0.0",
       routes: {
-        fragility: {
+        tactical: {
           title: "Tactical Stress Board",
           state: "watch",
           why_it_matters: "Tactical stress signals track immediate risk posture.",
