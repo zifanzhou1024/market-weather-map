@@ -1,5 +1,6 @@
 import { formatDate, formatNumber, formatPercentile, formatSigned } from "../lib/formatters";
 import type { SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import ExternalResearchLinks from "./ExternalResearchLinks";
 import SourceAccessBadge from "./SourceAccessBadge";
 
 interface MetricCardProps {
@@ -57,6 +58,11 @@ export default function MetricCard({ series, catalogEntry }: MetricCardProps) {
         </div>
       </dl>
       <p className="metric-date">Last observation {formatDate(latestDate)}</p>
+      <ExternalResearchLinks
+        className="metric-card-source-links"
+        id={series.series_id}
+        label={catalogEntry?.name ?? series.series_id}
+      />
     </article>
   );
 }

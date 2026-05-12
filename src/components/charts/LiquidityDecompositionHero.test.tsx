@@ -184,4 +184,12 @@ describe("LiquidityDecompositionHero", () => {
     const ySpec = Array.isArray(yAxis) ? (yAxis[0] as { name?: string }) : (yAxis as { name?: string });
     expect((ySpec?.name ?? "").toLowerCase()).toMatch(/usd|billion|million|\$/);
   });
+
+  it("renders direct manual-check links for the net-liquidity source components", () => {
+    const c = render(<LiquidityDecompositionHero netLiquidity={netLiquidityFixture} />);
+
+    expect(c.querySelector("a[href='https://fred.stlouisfed.org/series/WALCL']")).not.toBeNull();
+    expect(c.querySelector("a[href='https://fred.stlouisfed.org/series/WTREGEN']")).not.toBeNull();
+    expect(c.querySelector("a[href='https://fred.stlouisfed.org/series/RRPONTSYD']")).not.toBeNull();
+  });
 });

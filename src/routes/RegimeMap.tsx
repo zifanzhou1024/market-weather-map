@@ -7,6 +7,7 @@ import RegimeInterpretationPanel from "../components/RegimeInterpretationPanel";
 import RegimeQuadrantChart from "../components/RegimeQuadrantChart";
 import RouteDataFooter from "../components/RouteDataFooter";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
+import { candidateDisplayLabel, candidateDisplayMessage } from "../lib/candidateDisplay";
 import { loadPageInsights, loadRegimeSnapshot, loadScoreSummary } from "../lib/data";
 import { directionLabel } from "../lib/regime";
 import type { DirectionState, PageInsightsFile, RegimeSnapshotFile, ScoreSummaryFile } from "../lib/types";
@@ -36,9 +37,12 @@ const candidateConfirmationRows = [
   },
   {
     id: "vix_futures_curve",
-    label: "VIX futures curve",
-    message: "VX futures confirmation remains candidate-only; the active page uses VIX9D/VIX/VIX3M proxies.",
-    status: "terms_review_needed"
+    label: candidateDisplayLabel("vix_futures_curve", "VIX futures curve"),
+    message: candidateDisplayMessage(
+      "vix_futures_curve",
+      "VX futures confirmation remains candidate-only; the active page uses VIX9D/VIX/VIX3M proxies."
+    ),
+    status: "not_implemented"
   },
   {
     id: "put_call_ratios",
@@ -48,15 +52,15 @@ const candidateConfirmationRows = [
   },
   {
     id: "move_index",
-    label: "MOVE",
-    message: "Bond-volatility confirmation remains source-gated.",
-    status: "terms_review_needed"
+    label: candidateDisplayLabel("move_index", "MOVE"),
+    message: candidateDisplayMessage("move_index", "Bond-volatility confirmation remains source-gated."),
+    status: "candidate_gated"
   },
   {
     id: "skew_index",
-    label: "SKEW",
-    message: "Equity tail-risk confirmation remains source-gated.",
-    status: "terms_review_needed"
+    label: candidateDisplayLabel("skew_index", "SKEW"),
+    message: candidateDisplayMessage("skew_index", "Equity tail-risk confirmation remains source-gated."),
+    status: "not_implemented"
   },
   {
     id: "equity_breadth",

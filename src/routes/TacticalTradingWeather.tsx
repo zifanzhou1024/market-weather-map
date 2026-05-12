@@ -22,6 +22,7 @@ import VixCurveTermStructureChart from "../components/charts/VixCurveTermStructu
 import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
 import VolatilityHiddenStressChart from "../components/charts/VolatilityHiddenStressChart";
 import VolatilityTermStructurePanel from "../components/VolatilityTermStructurePanel";
+import { applyCandidateDisplayOverride } from "../lib/candidateDisplay";
 import { scoreLabel } from "../lib/horizon";
 import {
   loadCatalog,
@@ -120,12 +121,12 @@ function candidateItems(
     const entry = catalog.find((candidate) => candidate.id === id);
     const statusRow = status.series[id];
 
-    return {
+    return applyCandidateDisplayOverride({
       id,
       label: entry?.name ?? id,
       note: statusRow?.message ?? entry?.notes ?? "Source review required.",
       status: statusRow?.status ?? fallbackCandidateStatus(entry)
-    };
+    });
   });
 }
 

@@ -137,6 +137,7 @@ def validate_dashboard_freshness() -> None:
 # present (i.e. when credentials ran and the ingest succeeded). Max stale
 # days matches the active VIX series convention (7 calendar days).
 _CANDIDATE_FRESHNESS_EXPECTATIONS: dict[str, int] = {
+    "candidates/cboe_vx_settlement_candidate.json": 7,
     "candidates/tradingview_vix_term_candidate.json": 7,
     "candidates/tradingview_vix_term_metrics_candidate.json": 7,
 }

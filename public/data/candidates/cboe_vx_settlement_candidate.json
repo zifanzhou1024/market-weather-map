@@ -1,0 +1,100 @@
+{
+  "access_status": "terms_review_needed",
+  "active_scoring_allowed": false,
+  "contracts": [
+    {
+      "expiration_date": "2026-05-19",
+      "symbol": "VX/K6",
+      "tenor": "vx1",
+      "value": 19.4709
+    },
+    {
+      "expiration_date": "2026-06-17",
+      "symbol": "VX/M6",
+      "tenor": "vx2",
+      "value": 20.99
+    },
+    {
+      "expiration_date": "2026-07-22",
+      "symbol": "VX/N6",
+      "tenor": "vx3",
+      "value": 21.9478
+    },
+    {
+      "expiration_date": "2026-08-19",
+      "symbol": "VX/Q6",
+      "tenor": "vx4",
+      "value": 22.225
+    },
+    {
+      "expiration_date": "2026-09-16",
+      "symbol": "VX/U6",
+      "tenor": "vx5",
+      "value": 22.5121
+    },
+    {
+      "expiration_date": "2026-10-21",
+      "symbol": "VX/V6",
+      "tenor": "vx6",
+      "value": 22.925
+    },
+    {
+      "expiration_date": "2026-11-18",
+      "symbol": "VX/X6",
+      "tenor": "vx7",
+      "value": 22.975
+    },
+    {
+      "expiration_date": "2026-12-16",
+      "symbol": "VX/Z6",
+      "tenor": "vx8",
+      "value": 22.775
+    }
+  ],
+  "csv_url": "https://www-api.cboe.com/us/futures/market_statistics/settlement/csv?dt=2026-05-11",
+  "frequency": "daily",
+  "generated_at_utc": "2026-05-12T11:12:41Z",
+  "latest_metrics": {
+    "date": "2026-05-11",
+    "vx1": 19.4709,
+    "vx1_vx2_ratio": 0.927627,
+    "vx2": 20.99,
+    "vx_curve_slope": 3.3041,
+    "vx_front_spread": 1.5191
+  },
+  "notes": "Daily Cboe VX standard monthly futures settlement candidate. Generated for source-readiness visibility only; not active in scoring until Cboe redistribution terms are approved.",
+  "observations": [
+    {
+      "date": "2026-05-11",
+      "vx1": 19.4709,
+      "vx1_vx2_ratio": 0.927627,
+      "vx2": 20.99,
+      "vx3": 21.9478,
+      "vx4": 22.225,
+      "vx5": 22.5121,
+      "vx6": 22.925,
+      "vx7": 22.975,
+      "vx8": 22.775,
+      "vx_curve_slope": 3.3041,
+      "vx_front_spread": 1.5191
+    }
+  ],
+  "public_redistribution_allowed": false,
+  "requires_secret": false,
+  "score_status": "candidate",
+  "series_id": "cboe_vx_settlement_candidate",
+  "settlement_date": "2026-05-11",
+  "source": "Cboe Futures Exchange",
+  "source_url": "https://www.cboe.com/markets/us/futures/market-statistics/settlement/futures/daily/",
+  "tenor_keys": [
+    "vx1",
+    "vx2",
+    "vx3",
+    "vx4",
+    "vx5",
+    "vx6",
+    "vx7",
+    "vx8"
+  ],
+  "units": "index"
+}

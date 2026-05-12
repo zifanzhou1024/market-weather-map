@@ -122,6 +122,15 @@ DEFAULT_WHY_IT_MATTERS: dict[str, str] = {
     "tactical": "Short-term tactical signals track the immediate risk posture across asset classes.",
 }
 
+MISSING_HIGH_VALUE_SIGNAL_NOTES: dict[str, str] = {
+    "move_index": "MOVE official unavailable; TradingView candidate gated.",
+    "skew_index": "Cboe SKEW source gated; no implemented candidate.",
+    "vx_futures_curve": (
+        "VX futures curve source-gated; Cboe settlement candidate is non-scoring "
+        "until redistribution review approves publication."
+    ),
+}
+
 
 # ---------------------------------------------------------------------------
 # Section catalog — FocusBlock data layer (D2)
@@ -688,7 +697,7 @@ def _freshness_notes_for_route(
             continue
         seen.add(signal_id)
         label = str(entry.get("label", signal_id))
-        notes.append(f"{label} is unavailable.")
+        notes.append(MISSING_HIGH_VALUE_SIGNAL_NOTES.get(signal_id, f"{label} is unavailable."))
 
     return notes
 

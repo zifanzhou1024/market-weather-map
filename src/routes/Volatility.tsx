@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
+import CandidateSourcePanel, { type CandidateSourceItem } from "../components/CandidateSourcePanel";
 import DataStatusTable from "../components/DataStatusTable";
 import FocusBlock from "../components/FocusBlock";
 import InterpretationPanel from "../components/InterpretationPanel";
@@ -14,6 +14,7 @@ import VixCurveTermStructureChart from "../components/charts/VixCurveTermStructu
 import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
 import VixRatioHistoryChart from "../components/charts/VixRatioHistoryChart";
 import VolatilityHiddenStressChart from "../components/charts/VolatilityHiddenStressChart";
+import { applyCandidateDisplayOverride } from "../lib/candidateDisplay";
 import { loadCatalog, loadDataStatus, loadPageInsights, loadSeries, loadVolatilityDashboard } from "../lib/data";
 import type {
   DataStatusFile,
@@ -27,6 +28,13 @@ import { loadRouteDerivedSeries } from "./routeSeries";
 
 const volatilitySeriesIds = ["vix", "vvix", "vix9d", "vix3m"];
 const volatilityDerivedIds = ["vix9d_vix_ratio", "vix_vix3m_ratio"];
+const volatilityMissingSourceIds = [
+  "move_index",
+  "skew_index",
+  "put_call_total",
+  "put_call_spxw",
+  "vx_futures_curve"
+];
 const vxCandidateIds = ["vx1", "vx2", "vx3", "vx4", "vx5", "vx6", "vx7", "vx8"];
 const volatilityStatusIds = [...volatilitySeriesIds, ...volatilityDerivedIds, ...vxCandidateIds];
 const volatilityChartLines = [
@@ -126,12 +134,12 @@ function candidateItems(
     const entry = catalog.find((candidate) => candidate.id === id);
     const statusRow = status.series[id];
 
-    return {
+    return applyCandidateDisplayOverride({
       id,
       label: entry?.name ?? id,
       note: statusRow?.message ?? entry?.notes ?? "Source review required.",
       status: statusRow?.status ?? fallbackCandidateStatus(entry)
-    };
+    });
   });
 }
 
@@ -271,6 +279,12 @@ export default function Volatility() {
           ) : null}
           <MultiSeriesChart series={toChartSeries(data.series)} title="VIX term-structure proxy" units="index" />
           <RouteDataFooter route="volatility">
+            <CandidateSourcePanel
+              eyebrow="External data links"
+              items={candidateItems(data.catalog, data.status, volatilityMissingSourceIds)}
+              summary="Important volatility and tail-risk inputs that remain gated or unimplemented are linked here for manual review."
+              title="Missing volatility data links"
+            />
             <VixFuturesReadinessPanel
               items={candidateItems(data.catalog, data.status, vxCandidateIds)}
               title="VX futures curve"

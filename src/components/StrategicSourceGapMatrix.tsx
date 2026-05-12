@@ -1,3 +1,5 @@
+import ExternalResearchLinks from "./ExternalResearchLinks";
+
 interface StrategicGapRow {
   id: string;
   label: string;
@@ -156,6 +158,11 @@ export default function StrategicSourceGapMatrix() {
                   </span>
                 </div>
                 <p className="strategic-source-gap-unlock">{`Unlocks: ${row.unlocks}`}</p>
+                <ExternalResearchLinks
+                  className="strategic-source-gap-links"
+                  id={row.id}
+                  label={row.label}
+                />
               </div>
             ))}
           </div>

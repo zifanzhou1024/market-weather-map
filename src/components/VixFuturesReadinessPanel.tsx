@@ -1,13 +1,14 @@
 import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
+import { applyCandidateDisplayOverride } from "../lib/candidateDisplay";
 
 const vxItems: CandidateSourceItem[] = Array.from({ length: 8 }, (_, index) => {
   const month = index + 1;
-  return {
+  return applyCandidateDisplayOverride({
     id: `vx${month}`,
     label: `VX${month}`,
     note: "VIX futures candidate month pending source and terms readiness review.",
     status: "terms_review_needed"
-  };
+  });
 });
 
 interface VixFuturesReadinessPanelProps {
@@ -17,8 +18,10 @@ interface VixFuturesReadinessPanelProps {
 
 export default function VixFuturesReadinessPanel({
   items = vxItems,
-  title = "VIX futures readiness"
+  title = "VX futures curve"
 }: VixFuturesReadinessPanelProps) {
+  const displayItems = items.map(applyCandidateDisplayOverride);
+
   return (
     <CandidateSourcePanel
       eyebrow="Candidate sources"
@@ -31,8 +34,8 @@ export default function VixFuturesReadinessPanel({
           </p>
         </div>
       }
-      items={items}
-      summary="VX candidate rows remain gated until active futures data is approved for publication."
+      items={displayItems}
+      summary="Cboe VX settlement candidate fetcher is implemented. Rows remain source-gated and non-scoring until redistribution review approves publication."
       title={title}
     />
   );

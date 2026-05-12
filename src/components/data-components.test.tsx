@@ -379,6 +379,30 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("2026-04-30");
   });
 
+  it("renders direct manual-check links for a net liquidity metric", () => {
+    const netLiquiditySeries: TimeSeriesFile = {
+      ...series,
+      series_id: "net_liquidity",
+      source: "Derived",
+      source_url: "https://example.com/net-liquidity",
+      units: "USD billions"
+    };
+    const netLiquidityCatalog: SeriesCatalogEntry = {
+      ...catalogEntry,
+      id: "net_liquidity",
+      name: "Net liquidity proxy",
+      notes: "Fed assets minus the Treasury General Account minus reverse repo, in USD billions.",
+      source: "Derived",
+      source_url: "https://example.com/net-liquidity",
+      units: "USD billions"
+    };
+    const container = render(<MetricCard catalogEntry={netLiquidityCatalog} series={netLiquiditySeries} />);
+
+    expect(container.querySelector("a[href='https://fred.stlouisfed.org/series/WALCL']")).not.toBeNull();
+    expect(container.querySelector("a[href='https://fred.stlouisfed.org/series/WTREGEN']")).not.toBeNull();
+    expect(container.querySelector("a[href='https://fred.stlouisfed.org/series/RRPONTSYD']")).not.toBeNull();
+  });
+
   it("clamps percentile bar width while preserving the displayed percentile", () => {
     const container = render(<PercentileBandChart percentile={125} />);
     const fill = container.querySelector<HTMLElement>(".percentile-fill");
@@ -534,6 +558,30 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Index put/call");
     expect(container.textContent).toContain("Terms review needed");
     expect(container.textContent).toContain("Candidate options source pending review.");
+  });
+
+  it("renders external research links for gated candidate sources", () => {
+    const container = render(
+      <CandidateSourcePanel
+        items={[
+          {
+            id: "put_call_total",
+            label: "Total put/call",
+            note: "Candidate aggregate options source.",
+            status: "terms_review_needed"
+          }
+        ]}
+        title="Candidate inputs"
+      />
+    );
+
+    expect(
+      container.querySelector("a[href='https://en.macromicro.me/series/1650/us-put-call-ratio-total']")
+    ).not.toBeNull();
+    expect(container.querySelector("a[href='https://www.cboe.com/us/options/market_statistics/daily/']"))
+      .not.toBeNull();
+    expect(container.querySelector("a[href='https://www.tradingview.com/symbols/USI-PCC/']"))
+      .not.toBeNull();
   });
 
   it("renders an explicit candidate source empty state", () => {
@@ -856,7 +904,10 @@ describe("data-driven components", () => {
     const container = render(<VixFuturesReadinessPanel />);
     const text = container.textContent ?? "";
 
-    expect(text).toContain("VIX futures readiness");
+    expect(text).toContain("VX futures curve");
+    expect(text).toContain("Cboe VX settlement candidate fetcher is implemented.");
+    expect(text).toContain("Rows remain source-gated and non-scoring");
+    expect(text).toContain("Terms review needed");
     for (let month = 1; month <= 8; month += 1) {
       expect(text).toContain(`VX${month}`);
     }
@@ -882,10 +933,10 @@ describe("data-driven components", () => {
     );
     const text = container.textContent ?? "";
 
-    expect(text).toContain("VIX futures readiness");
+    expect(text).toContain("VX futures curve");
     expect(text).toContain("Distinct VX1 route candidate");
-    expect(text).toContain("Route-provided VX1 readiness note.");
-    expect(text).toContain("Partial");
+    expect(text).toContain("Cboe VX settlement candidate fetcher is implemented.");
+    expect(text).toContain("Terms review needed");
     expect(text).toContain("Fallback proxy");
   });
 
@@ -924,12 +975,13 @@ describe("data-driven components", () => {
     );
     const text = container.textContent ?? "";
 
-    expect(text).toContain("MOVE Index");
-    expect(text).toContain("SKEW Index");
+    expect(text).toContain("MOVE official unavailable; TradingView candidate gated.");
+    expect(text).toContain("Cboe SKEW source gated; no implemented candidate.");
     expect(text).toContain("Terms Review Needed");
     expect(text).toContain("Bond volatility");
     expect(text).toContain("distinct from VIX");
-    expect(text).toContain("Candidate source requires access or terms review before scoring.");
+    expect(text).toContain("TradingView MOVE candidate is secret-gated");
+    expect(text).toContain("no implemented TradingView SKEW candidate fetcher");
   });
 
   it("renders mismatch warning rows and an explicit empty state", () => {

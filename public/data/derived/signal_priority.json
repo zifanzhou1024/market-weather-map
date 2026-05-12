@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-08",
-  "generated_at_utc": "2026-05-11T07:50:57Z",
+  "date": "2026-05-11",
+  "generated_at_utc": "2026-05-12T09:05:19Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -72,22 +72,22 @@
   ],
   "overall_read": {
     "fragility": {
-      "confidence": 0.98,
+      "confidence": 0.99,
       "label": "Low Fragility",
-      "score": 37.78
+      "score": 26.59
     },
     "long_term": {
       "confidence": 0.99,
       "label": "Mixed",
-      "score": 13.67
+      "score": 15.57
     },
     "regime": {
       "label": "Mixed"
     },
     "short_term": {
-      "confidence": 0.99,
+      "confidence": 1.0,
       "label": "Mixed",
-      "score": 2.71
+      "score": -1.87
     }
   },
   "top_supports": [
@@ -112,17 +112,17 @@
     {
       "access_status": "free_public_active",
       "category": "dollar",
-      "confidence": 0.99,
+      "confidence": 1.0,
       "direction": "support",
-      "freshness_status": "stale",
+      "freshness_status": "ok",
       "group": "Dollar / Global",
       "horizon": "short_term",
       "id": "broad_dollar",
       "importance": 4,
       "label": "Broad dollar",
       "message": "The broad dollar backdrop is easing.",
-      "priority": 243.87,
-      "severity": 76.98,
+      "priority": 336.48,
+      "severity": 84.12,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
@@ -130,7 +130,7 @@
     {
       "access_status": "free_public_active",
       "category": "credit",
-      "confidence": 0.99,
+      "confidence": 1.0,
       "direction": "support",
       "freshness_status": "ok",
       "group": "Credit",
@@ -139,8 +139,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 240.62,
-      "severity": 48.61,
+      "priority": 219.25,
+      "severity": 43.85,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -162,42 +162,6 @@
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Broad growth conditions set the strategic backdrop for risk assets and recession risk."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.98,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Volatility curve",
-      "horizon": "short_term",
-      "id": "vix_curve",
-      "importance": 4,
-      "label": "VIX curve state",
-      "message": "VIX curve is contango-proxy and calm.",
-      "priority": 196.0,
-      "severity": 50.0,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.99,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Volatility & tail risk",
-      "horizon": "short_term",
-      "id": "vix_complex",
-      "importance": 5,
-      "label": "VIX / VVIX complex",
-      "message": "Volatility tail risk is contained.",
-      "priority": 127.66,
-      "severity": 25.79,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
     {
       "access_status": "free_public_active",
@@ -239,26 +203,8 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "rates",
-      "confidence": 0.99,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Rates / Real-Yield Pressure",
-      "horizon": "both",
-      "id": "real_yields",
-      "importance": 5,
-      "label": "10Y real yields",
-      "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 227.9,
-      "severity": 46.04,
-      "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.99,
+      "confidence": 1.0,
       "direction": "risk",
       "freshness_status": "ok",
       "group": "Commodities / Inflation",
@@ -267,16 +213,34 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 143.06,
-      "severity": 48.17,
+      "priority": 145.86,
+      "severity": 48.62,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
     },
     {
       "access_status": "free_public_active",
+      "category": "rates",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Rates / Real-Yield Pressure",
+      "horizon": "both",
+      "id": "real_yields",
+      "importance": 5,
+      "label": "10Y real yields",
+      "message": "Real yields are elevated and pressuring valuations.",
+      "priority": 134.9,
+      "severity": 26.98,
+      "source_status": "active",
+      "urgency": "near_term",
+      "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
+    },
+    {
+      "access_status": "free_public_active",
       "category": "positioning",
-      "confidence": 0.99,
+      "confidence": 1.0,
       "direction": "risk",
       "freshness_status": "ok",
       "group": "Positioning",
@@ -285,7 +249,7 @@
       "importance": 4,
       "label": "S&P 500 positioning",
       "message": "Leveraged-money S&P 500 positioning is crowded.",
-      "priority": 113.89,
+      "priority": 115.04,
       "severity": 28.76,
       "source_status": "active",
       "urgency": "near_term",
@@ -294,7 +258,7 @@
     {
       "access_status": "free_public_active",
       "category": "liquidity",
-      "confidence": 0.99,
+      "confidence": 1.0,
       "direction": "risk",
       "freshness_status": "ok",
       "group": "Liquidity / Funding",
@@ -303,11 +267,47 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is draining.",
-      "priority": 108.86,
-      "severity": 27.49,
+      "priority": 110.44,
+      "severity": 27.61,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility & tail risk",
+      "horizon": "short_term",
+      "id": "vix_complex",
+      "importance": 5,
+      "label": "VIX / VVIX complex",
+      "message": "Volatility tail risk is elevated.",
+      "priority": 105.85,
+      "severity": 21.17,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 0.99,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility curve",
+      "horizon": "short_term",
+      "id": "vix_curve",
+      "importance": 4,
+      "label": "VIX curve state",
+      "message": "VIX curve is in backwardation-proxy stress.",
+      "priority": 9.42,
+      "severity": 2.38,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     }
   ]
 }

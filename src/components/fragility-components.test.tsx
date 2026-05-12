@@ -278,6 +278,62 @@ describe("TailRiskReadinessMatrix", () => {
     ).toBe(true);
   });
 
+  it("renders governance-specific labels instead of raw internal gated status codes", () => {
+    const c = render(
+      <TailRiskReadinessMatrix
+        status={makeStatusFile({
+          move_index: statusEntry("terms_review_needed"),
+          skew_index: statusEntry("terms_review_needed"),
+          put_call_total: statusEntry("terms_review_needed"),
+          put_call_spxw: statusEntry("terms_review_needed"),
+          vx1: statusEntry("terms_review_needed"),
+          vx2: statusEntry("terms_review_needed")
+        })}
+      />
+    );
+    const text = c.textContent ?? "";
+    expect(text).not.toContain("terms_review_needed");
+    expect(text).toContain("candidate gated");
+    expect(text).toContain("source gated");
+    expect(text).toContain("terms gated");
+    expect(text).not.toContain("not implemented");
+  });
+
+  it("renders manual research links for gated or unavailable readiness rows", () => {
+    const c = render(
+      <TailRiskReadinessMatrix
+        status={makeStatusFile({
+          move_index: statusEntry("terms_review_needed"),
+          skew_index: statusEntry("terms_review_needed"),
+          put_call_total: statusEntry("terms_review_needed"),
+          vx1: statusEntry("terms_review_needed")
+        })}
+      />
+    );
+    const rows = Array.from(c.querySelectorAll(".tail-risk-readiness-row"));
+    const moveRow = rows.find((row) => (row.textContent ?? "").includes("ICE MOVE"));
+    const skewRow = rows.find((row) => (row.textContent ?? "").includes("Cboe SKEW"));
+    const putCallRow = rows.find((row) => (row.textContent ?? "").includes("Cboe put/call (total)"));
+    const vxRow = rows.find((row) => (row.textContent ?? "").includes("VX1 front"));
+
+    expect(moveRow?.querySelector("a[href='https://en.macromicro.me/series/17581/us-treasury-move-index']"))
+      .not.toBeNull();
+    expect(moveRow?.querySelector("a[href='https://finance.yahoo.com/quote/%5EMOVE/']")).not.toBeNull();
+    expect(moveRow?.querySelector("a[href='https://developer.ice.com/fixed-income-data-services/catalog/ice-data-indices-move-index']"))
+      .not.toBeNull();
+    expect(skewRow?.querySelector("a[href='https://en.macromicro.me/series/4407/cboe-skew']"))
+      .not.toBeNull();
+    expect(skewRow?.querySelector("a[href='https://finance.yahoo.com/quote/%5ESKEW/']")).not.toBeNull();
+    expect(skewRow?.querySelector("a[href='https://www.cboe.com/us/indices/dashboard/SKEW/']"))
+      .not.toBeNull();
+    expect(putCallRow?.querySelector("a[href='https://en.macromicro.me/series/1650/us-put-call-ratio-total']"))
+      .not.toBeNull();
+    expect(vxRow?.querySelector("a[href='https://en.macromicro.me/series/22520/sp500-vix-future-price-continuous-month-1']"))
+      .not.toBeNull();
+    expect(moveRow?.querySelector("a")?.getAttribute("target")).toBe("_blank");
+    expect(moveRow?.querySelector("a")?.getAttribute("rel")).toBe("noreferrer");
+  });
+
   it("uses --failed badge class for failed status (distinct from gated)", () => {
     const c = render(
       <TailRiskReadinessMatrix

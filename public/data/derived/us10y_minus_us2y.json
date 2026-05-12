@@ -4,7 +4,7 @@
     "us2y"
   ],
   "frequency": "daily",
-  "generated_at_utc": "2026-05-09T23:33:42Z",
+  "generated_at_utc": "2026-05-12T09:05:17Z",
   "method": "10-year Treasury yield minus 2-year Treasury yield by matched observation date.",
   "observations": [
     {
@@ -62406,6 +62406,11 @@
       "date": "2026-05-07",
       "percentile_252d": 14.29,
       "value": 0.49
+    },
+    {
+      "date": "2026-05-08",
+      "percentile_252d": 9.92,
+      "value": 0.48
     }
   ],
   "series_id": "us10y_minus_us2y",
@@ -62413,13 +62418,13 @@
   "source_url": "/data/series/us10y.json",
   "summary": {
     "change_12m": -0.04,
-    "change_1d": 0.0,
-    "change_1m": -0.01,
+    "change_1d": -0.01,
+    "change_1m": -0.03,
     "change_1w": -0.03,
-    "change_3m": -0.23,
-    "latest_date": "2026-05-07",
-    "latest_value": 0.49,
-    "percentile_252d": 14.29
+    "change_3m": -0.26,
+    "latest_date": "2026-05-08",
+    "latest_value": 0.48,
+    "percentile_252d": 9.92
   },
   "units": "percentage_points"
 }

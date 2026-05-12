@@ -103,6 +103,48 @@ def test_writes_candidate_file_on_success(
             assert isinstance(obs[key], float)
 
 
+def test_merges_daily_rows_by_calendar_date_when_timestamps_differ(
+    monkeypatch: pytest.MonkeyPatch, tmp_path
+) -> None:
+    """TradingView daily bars can carry different times for the same date."""
+    _enable_secrets(monkeypatch)
+
+    from scripts.shared import io as shared_io
+    monkeypatch.setattr(shared_io, "data_dir", lambda: tmp_path)
+    (tmp_path / "candidates").mkdir()
+
+    symbol_timestamps = {
+        "VIX9D": ["2024-01-02 06:30:00", "2024-01-03 06:30:00"],
+        "VIX": ["2024-01-02 00:15:00", "2024-01-03 00:15:00"],
+        "VIX3M": ["2024-01-02 06:30:00", "2024-01-03 06:30:00"],
+        "VIX6M": ["2024-01-02 06:30:00", "2024-01-03 06:30:00"],
+        "VIX1Y": ["2024-01-02 06:30:00", "2024-01-03 06:30:00"],
+        "VVIX": ["2024-01-02 06:30:00", "2024-01-03 06:30:00"],
+    }
+    symbol_closes = {
+        "VIX9D": 16.89,
+        "VIX": 18.38,
+        "VIX3M": 21.24,
+        "VIX6M": 23.06,
+        "VIX1Y": 23.99,
+        "VVIX": 98.06,
+    }
+    fake_tv = MagicMock()
+
+    def get_hist_side_effect(symbol, exchange, interval, n_bars):
+        return _make_fake_df(symbol_timestamps[symbol], symbol_closes[symbol])
+
+    fake_tv.get_hist.side_effect = get_hist_side_effect
+
+    with patch.object(mod, "_build_tv_client", return_value=fake_tv):
+        mod.main()
+
+    out = tmp_path / "candidates" / "tradingview_vix_term_candidate.json"
+    payload = json.loads(out.read_text())
+    assert [obs["date"] for obs in payload["observations"]] == ["2024-01-02", "2024-01-03"]
+    assert all("vix" in obs and "vix9d" in obs for obs in payload["observations"])
+
+
 # ---------------------------------------------------------------------------
 # Test 3: credential values never appear in stdout/stderr on error
 # ---------------------------------------------------------------------------

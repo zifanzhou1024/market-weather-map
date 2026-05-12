@@ -102,7 +102,7 @@ def main() -> None:
         return
 
     # Fetch all series; tolerate partial failures — only abort if ALL fail.
-    rows_by_date: dict = {}
+    rows_by_date: dict[str, dict[str, float]] = {}
     succeeded_keys: list[str] = []
     failed_count = 0
 
@@ -130,7 +130,8 @@ def main() -> None:
 
         succeeded_keys.append(key)
         for ts, row in df.iterrows():
-            rows_by_date.setdefault(ts, {})[key] = float(row["close"])
+            date_key = ts.strftime("%Y-%m-%d")
+            rows_by_date.setdefault(date_key, {})[key] = float(row["close"])
 
     if failed_count == len(SYMBOL_TO_KEY):
         print(f"{SERIES_ID}: all series failed; aborting without writing output.", file=sys.stderr)
@@ -138,8 +139,8 @@ def main() -> None:
 
     # Only keep dates where every successfully-fetched series has a value.
     observations = [
-        {"date": ts.strftime("%Y-%m-%d"), **values}
-        for ts, values in sorted(rows_by_date.items())
+        {"date": date_key, **values}
+        for date_key, values in sorted(rows_by_date.items())
         if len(values) == len(succeeded_keys)
     ]
 

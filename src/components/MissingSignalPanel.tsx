@@ -1,4 +1,5 @@
 import type { SignalCategory, SignalHorizon, SignalMissingEntry } from "../lib/types";
+import ExternalResearchLinks from "./ExternalResearchLinks";
 
 interface MissingSignalPanelProps {
   signals: ReadonlyArray<SignalMissingEntry>;
@@ -72,6 +73,11 @@ export default function MissingSignalPanel({ signals }: MissingSignalPanelProps)
               </div>
               <p className="missing-signal-panel-message">{signal.message}</p>
               <p className="missing-signal-panel-why">{signal.why_it_matters}</p>
+              <ExternalResearchLinks
+                className="missing-signal-panel-links"
+                id={signal.id}
+                label={signal.label}
+              />
               <div className="missing-signal-panel-meta">
                 <span>Importance {signal.importance}/5</span>
                 <span className="missing-signal-panel-source">Source: {signal.source_status}</span>

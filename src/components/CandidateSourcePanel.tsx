@@ -1,10 +1,13 @@
 import type { ReactNode } from "react";
+import type { ExternalResearchLink } from "../lib/externalResearchLinks";
+import ExternalResearchLinks from "./ExternalResearchLinks";
 
 export interface CandidateSourceItem {
   id: string;
   label: string;
   status: string;
   note: string;
+  links?: readonly ExternalResearchLink[];
 }
 
 interface CandidateSourcePanelProps {
@@ -56,6 +59,12 @@ export default function CandidateSourcePanel({
               <div>
                 <h4>{item.label}</h4>
                 <p>{item.note}</p>
+                <ExternalResearchLinks
+                  className="candidate-source-links"
+                  id={item.id}
+                  label={item.label}
+                  links={item.links}
+                />
               </div>
               <span className={`status-pill ${statusClassName(item.status)}`}>
                 {normalizeCandidateStatus(item.status)}

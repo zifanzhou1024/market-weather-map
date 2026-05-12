@@ -1,4 +1,5 @@
 import { statusLabel } from "../lib/formatters";
+import { candidateDisplayLabel, candidateDisplayMessage } from "../lib/candidateDisplay";
 import type {
   DataStatus,
   DataStatusFile,
@@ -45,8 +46,8 @@ export default function TailRiskPanel({ snapshot, catalog, status }: TailRiskPan
 
     return {
       id,
-      label: gap?.label ?? catalogEntry?.name ?? fallbackLabel(id),
-      message: gap?.message ?? statusRow?.message ?? catalogEntry?.notes ?? fallbackNote(id),
+      label: candidateDisplayLabel(id, gap?.label ?? catalogEntry?.name ?? fallbackLabel(id)),
+      message: candidateDisplayMessage(id, gap?.message ?? statusRow?.message ?? catalogEntry?.notes ?? fallbackNote(id)),
       status: rowStatus
     };
   });
