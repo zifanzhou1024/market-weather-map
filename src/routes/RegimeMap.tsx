@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
 import DataQualityBanner from "../components/DataQualityBanner";
+import FocusBlock from "../components/FocusBlock";
 import PageInsightHero from "../components/PageInsightHero";
 import RegimeInterpretationPanel from "../components/RegimeInterpretationPanel";
 import RegimeQuadrantChart from "../components/RegimeQuadrantChart";
 import RouteDataFooter from "../components/RouteDataFooter";
 import YieldDecompositionChart from "../components/YieldDecompositionChart";
-import { loadRegimeSnapshot, loadScoreSummary } from "../lib/data";
+import { loadPageInsights, loadRegimeSnapshot, loadScoreSummary } from "../lib/data";
 import { directionLabel } from "../lib/regime";
-import type { DirectionState, RegimeSnapshotFile, ScoreSummaryFile } from "../lib/types";
+import type { DirectionState, PageInsightsFile, RegimeSnapshotFile, ScoreSummaryFile } from "../lib/types";
 
 interface DirectionCardProps {
   label: string;
@@ -88,9 +89,18 @@ function DirectionCard({ label, direction }: DirectionCardProps) {
 export default function RegimeMap() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadRegimeMap() {
       try {
@@ -123,6 +133,24 @@ export default function RegimeMap() {
       {data ? (
         <div className="route-stack">
           <PageInsightHero route="regime_map" />
+          {(() => {
+            const section = pageInsights?.routes?.regime_map?.sections?.find(
+              (s) => s.id === "regime_drivers"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           {/* SLOT:regime_primary_chart */}
           <RegimeQuadrantChart />
           <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />

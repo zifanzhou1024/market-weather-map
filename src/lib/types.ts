@@ -506,7 +506,8 @@ export type RouteKey =
   | "growth"
   | "housing"
   | "sentiment"
-  | "fragility";
+  | "fragility"
+  | "tactical";
 
 // "watch" is reserved for a future build path that distinguishes a
 // pre-risk early-warning state from "risk"/"mixed". The current
