@@ -548,6 +548,26 @@ export interface RouteInsight {
   why_it_matters: string;
   confidence: number;
   freshness_notes: string[];
+  sections?: SectionInsight[];
+}
+
+export type SectionId =
+  | "volatility_complex"
+  | "rates_pressure"
+  | "regime_drivers"
+  | "positioning_vs_candidate_sentiment"
+  | "tactical_stress_board";
+
+export interface SectionInsight {
+  id: SectionId;
+  eyebrow: string;
+  question: string;        // ≤ 120 chars
+  answer: string;          // 60-200 chars
+  why?: string;            // ≤ 200 chars
+  risk?: string;           // ≤ 120 chars
+  support?: string;        // ≤ 120 chars
+  caveat?: string;         // ≤ 200 chars
+  freshness_status: SignalFreshnessStatus;
 }
 
 export interface PageInsightsFile {
