@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import SentimentPositioningHero from "../components/charts/SentimentPositioningHero";
 import DataGapPanel from "../components/DataGapPanel";
 import DataStatusTable from "../components/DataStatusTable";
+import FocusBlock from "../components/FocusBlock";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import PageInsightHero from "../components/PageInsightHero";
 import RouteDataFooter from "../components/RouteDataFooter";
 import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus, loadSeries } from "../lib/data";
-import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { loadCatalog, loadDataStatus, loadPageInsights, loadSeries } from "../lib/data";
+import type { DataStatusFile, PageInsightsFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
 
 const sentimentSeriesIds = ["cftc_sp500_asset_mgr_net", "cftc_sp500_lev_money_net"];
 
@@ -21,9 +22,18 @@ interface RouteState {
 export default function Sentiment() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadSentiment() {
       try {
@@ -63,6 +73,24 @@ export default function Sentiment() {
       {data ? (
         <div className="route-stack">
           <PageInsightHero route="sentiment" />
+          {(() => {
+            const section = pageInsights?.routes?.sentiment?.sections?.find(
+              (s) => s.id === "positioning_vs_candidate_sentiment"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           {/* SLOT:sentiment_primary_chart */}
           {assetManager && leveragedMoney ? (
             <SentimentPositioningHero
