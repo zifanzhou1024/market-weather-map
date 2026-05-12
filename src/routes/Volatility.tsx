@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import DataStatusTable from "../components/DataStatusTable";
+import FocusBlock from "../components/FocusBlock";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MetricCard from "../components/MetricCard";
 import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/MultiSeriesChart";
@@ -13,10 +14,11 @@ import VixCurveTermStructureChart from "../components/charts/VixCurveTermStructu
 import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
 import VixRatioHistoryChart from "../components/charts/VixRatioHistoryChart";
 import VolatilityHiddenStressChart from "../components/charts/VolatilityHiddenStressChart";
-import { loadCatalog, loadDataStatus, loadSeries, loadVolatilityDashboard } from "../lib/data";
+import { loadCatalog, loadDataStatus, loadPageInsights, loadSeries, loadVolatilityDashboard } from "../lib/data";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
+  PageInsightsFile,
   SeriesCatalogEntry,
   TimeSeriesFile,
   VolatilityDashboardFile
@@ -136,9 +138,18 @@ function candidateItems(
 export default function Volatility() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadVolatility() {
       try {
@@ -183,6 +194,24 @@ export default function Volatility() {
       {data ? (
         <div className="route-stack">
           <PageInsightHero route="volatility" />
+          {(() => {
+            const section = pageInsights?.routes?.volatility?.sections?.find(
+              (s) => s.id === "volatility_complex"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           {/* SLOT:volatility_primary_chart */}
           {data.volDashboard ? (
             <VixCurveTermStructureChart
