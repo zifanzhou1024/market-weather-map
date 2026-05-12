@@ -56,6 +56,7 @@ SECRET_NAME_ALLOWLIST: tuple[str, ...] = (
     "tests/python/test_config_secrets.py",
     "tests/python/test_secrets_isolation.py",
     "docs/source_reviews/tradingview_authenticated_candidates.md",
+    "docs/source_reviews/tradingview_vix_term.md",
     # Superpowers spec + plan docs that describe the secret governance.
     "docs/superpowers/plans/2026-05-10-data-source-and-focus-pattern-expansion.md",
     "docs/superpowers/plans/2026-05-11-phase-c-prs.md",
