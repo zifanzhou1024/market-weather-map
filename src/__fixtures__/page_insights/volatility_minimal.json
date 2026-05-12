@@ -1,0 +1,23 @@
+{
+  "generated_at_utc": "2026-05-11T00:00:00Z",
+  "date": "2026-05-11",
+  "method_version": "1.0.0",
+  "routes": {
+    "volatility": {
+      "title": "Volatility",
+      "state": "support",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress.",
+      "confidence": 0.98,
+      "freshness_notes": [],
+      "sections": [
+        {
+          "id": "volatility_complex",
+          "eyebrow": "Volatility Complex",
+          "question": "What is the vol surface signaling about near-term risk appetite?",
+          "answer": "The VIX term structure is in contango and front-end implied vol is below its one-year median.",
+          "freshness_status": "ok"
+        }
+      ]
+    }
+  }
+}

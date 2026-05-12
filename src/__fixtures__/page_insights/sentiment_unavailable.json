@@ -1,0 +1,27 @@
+{
+  "generated_at_utc": "2026-05-11T00:00:00Z",
+  "date": "2026-05-11",
+  "method_version": "1.0.0",
+  "routes": {
+    "sentiment": {
+      "title": "Sentiment",
+      "state": "unknown",
+      "why_it_matters": "Positioning extremes are contrarian indicators; crowded longs in risk assets increase fragility.",
+      "confidence": 0.0,
+      "freshness_notes": ["Sentiment data is unavailable."],
+      "sections": [
+        {
+          "id": "positioning_vs_candidate_sentiment",
+          "eyebrow": "Positioning vs. Candidate Sentiment",
+          "question": "Are institutional positioning and broad sentiment aligned or diverging?",
+          "answer": "Data not yet active for this section.",
+          "why": "When asset managers are crowded long and leveraged money is not yet following, drawdowns tend to be sharper.",
+          "risk": "Asset manager crowding near multi-year highs reduces the available buyer base for any sustained rally.",
+          "support": "Leveraged money neutrality limits the forced-selling cascade risk that accompanies full two-sided crowding.",
+          "caveat": "NAAIM and AAII survey data are candidate-only sources; only CFTC positioning is active.",
+          "freshness_status": "unavailable"
+        }
+      ]
+    }
+  }
+}

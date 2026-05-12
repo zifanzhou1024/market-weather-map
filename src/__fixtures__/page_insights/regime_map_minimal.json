@@ -1,0 +1,23 @@
+{
+  "generated_at_utc": "2026-05-11T00:00:00Z",
+  "date": "2026-05-11",
+  "method_version": "1.0.0",
+  "routes": {
+    "regime_map": {
+      "title": "Regime Map",
+      "state": "mixed",
+      "why_it_matters": "The macro regime quadrant determines which asset classes face structural headwinds versus tailwinds.",
+      "confidence": 0.85,
+      "freshness_notes": [],
+      "sections": [
+        {
+          "id": "regime_drivers",
+          "eyebrow": "Regime Drivers",
+          "question": "Which macro quadrant best describes current cross-asset dynamics?",
+          "answer": "The 20-day window sits in risk-on easing: dollar softening, real yields declining, VIX below median.",
+          "freshness_status": "ok"
+        }
+      ]
+    }
+  }
+}

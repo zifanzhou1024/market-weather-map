@@ -1,0 +1,27 @@
+{
+  "generated_at_utc": "2026-05-11T00:00:00Z",
+  "date": "2026-05-11",
+  "method_version": "1.0.0",
+  "routes": {
+    "regime_map": {
+      "title": "Regime Map",
+      "state": "mixed",
+      "why_it_matters": "The macro regime quadrant determines which asset classes face structural headwinds versus tailwinds.",
+      "confidence": 0.85,
+      "freshness_notes": [],
+      "sections": [
+        {
+          "id": "regime_drivers",
+          "eyebrow": "Regime Drivers",
+          "question": "Which macro quadrant best describes current cross-asset dynamics?",
+          "answer": "The 20-day window sits in risk-on easing: dollar is softening, real yields are declining, and VIX is below its median — a backdrop that historically supports risk assets.",
+          "why": "Quadrant transitions are more informative than spot levels; the direction of dollar and real yield change over 20 days typically leads equity beta by one to two weeks.",
+          "risk": "A rapid dollar reversal or real yield spike could shift the quadrant to global-tightening risk-off within days.",
+          "support": "Fragility score remains below 40, limiting the tail risk of abrupt quadrant exit.",
+          "caveat": "60D and 120D windows still show mixed regime, tempering conviction on the 20D read.",
+          "freshness_status": "ok"
+        }
+      ]
+    }
+  }
+}
