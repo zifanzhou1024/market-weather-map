@@ -67,9 +67,14 @@ SECRET_NAME_ALLOWLIST: tuple[str, ...] = (
     # PR C3 put/call fetcher:
     "scripts/ingest/fetch_tradingview_put_call.py",
     "tests/python/test_fetch_tradingview_put_call.py",
-    # PR C4 will uncomment these when the VX-curve fetcher lands:
-    # "scripts/ingest/fetch_tradingview_vx_curve.py",
-    # "tests/python/test_fetch_tradingview_vx_curve.py",
+    # PR C4 VIX term-structure fetcher:
+    "scripts/ingest/fetch_tradingview_vix_term.py",
+    "tests/python/test_fetch_tradingview_vix_term.py",
+    # PR C4 VIX term metrics transform (allowlisted because it's in the
+    # tradingview_* family; the transform itself does not use credentials
+    # but shares the naming convention, so explicit allowlisting is cleaner).
+    "scripts/transform/build_tradingview_vix_term_metrics.py",
+    "tests/python/test_build_tradingview_vix_term_metrics.py",
 )
 
 FAKE_USERNAME = "fake-user-token-abc123-isolation-canary"
