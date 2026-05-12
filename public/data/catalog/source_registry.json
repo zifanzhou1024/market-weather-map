@@ -154,15 +154,15 @@
     "update_cadence": "weekly"
   },
   "ny_fed": {
-    "access_status": "free_public_candidate",
-    "active_scoring_allowed": false,
+    "access_status": "free_public_active",
+    "active_scoring_allowed": true,
     "base_url": "https://www.newyorkfed.org",
     "name": "Federal Reserve Bank of New York",
-    "notes": "Public Federal Reserve research data; candidate pending endpoint/terms confirmation.",
+    "notes": "Public Federal Reserve research data; ACM term-premium approved for active scoring per docs/source_reviews/ny_fed_acm_term_premium.md.",
     "public_redistribution_allowed": true,
     "requires_secret": false,
     "terms_status": "review_each_series",
-    "update_cadence": "monthly_release"
+    "update_cadence": "daily_release"
   },
   "occ": {
     "access_status": "terms_review_needed",

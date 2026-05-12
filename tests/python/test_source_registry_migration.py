@@ -22,7 +22,7 @@ EXPECTED_NEW_ENTRIES = {
     "bea":              "free_public_active",
     "bls":              "free_public_active",
     "multpl_shiller":   "free_public_active",
-    "ny_fed":           "free_public_candidate",
+    "ny_fed":           "free_public_active",
     "naaim":            "terms_review_needed",
     "aaii":             "terms_review_needed",
     "tradingview":      "authenticated_candidate",
