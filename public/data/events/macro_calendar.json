@@ -93,10 +93,10 @@
     },
     {
       "category": "rates",
-      "date": "2026-05-12",
+      "date": "2026-05-13",
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 10-Year Note offering amount 42000000000. Descriptive event context only; not scored.",
+      "notes": "Official FiscalData auction query row for 30-Year Bond offering amount 25000000000. Descriptive event context only; not scored.",
       "source": "FiscalData",
       "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
       "status": "scheduled",
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-05-12T09:05:52Z",
+  "generated_at_utc": "2026-05-13T01:23:35Z",
   "method_version": "official-event-calendar-v2"
 }

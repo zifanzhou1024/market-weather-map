@@ -13,18 +13,18 @@
     ],
     "source_confidence": 0.97
   },
-  "date": "2026-05-11",
-  "generated_at_utc": "2026-05-12T09:05:17Z",
+  "date": "2026-05-12",
+  "generated_at_utc": "2026-05-13T01:23:08Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 63.5,
+        "credit_spread_widening": 68.26,
         "dollar_spike": 84.12,
         "liquidity_drain": 19.24,
         "positioning_crowding": -28.76,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -2.38
+        "volatility_term_structure": 15.08
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -53,7 +53,7 @@
         "The dollar backdrop is easing.",
         "Credit spread pressure is contained."
       ],
-      "score": 26.59,
+      "score": 31.27,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -161,7 +161,7 @@
         "housing": -0.96,
         "inflation": -100.0,
         "labor": 68.16,
-        "real_yields": -26.98
+        "real_yields": -40.48
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -193,7 +193,7 @@
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
-      "score": 15.57,
+      "score": 14.22,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -353,12 +353,12 @@
     "market_weather": {
       "bucket_scores": {
         "commodities_inflation_impulse": -48.62,
-        "credit_spreads": 43.85,
+        "credit_spreads": 56.74,
         "dollar_global": 84.12,
-        "liquidity_funding": -27.61,
-        "rates_real_yields": -26.98,
+        "liquidity_funding": -27.73,
+        "rates_real_yields": -40.48,
         "sentiment_positioning": -28.76,
-        "volatility_tail_risk": -21.17
+        "volatility_tail_risk": -12.3
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -382,11 +382,11 @@
       "missing_or_stale_notes": [],
       "recent_changes": [
         "Commodity inflation impulse is elevated.",
-        "Leveraged-money S&P 500 positioning is crowded.",
+        "Real yields are elevated.",
         "The broad dollar backdrop is easing.",
         "Credit spread pressure is contained."
       ],
-      "score": -1.87,
+      "score": 0.25,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -519,8 +519,8 @@
       },
       "top_risks": [
         "Commodity inflation impulse is elevated.",
-        "Leveraged-money S&P 500 positioning is crowded.",
-        "Liquidity funding conditions are tightening."
+        "Real yields are elevated.",
+        "Leveraged-money S&P 500 positioning is crowded."
       ],
       "top_supports": [
         "The broad dollar backdrop is easing.",

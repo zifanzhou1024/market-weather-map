@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-11",
-  "generated_at_utc": "2026-05-12T11:12:50Z",
+  "date": "2026-05-12",
+  "generated_at_utc": "2026-05-13T01:23:12Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -31,7 +31,7 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 43.85,
+        "severity": 56.74,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
@@ -64,6 +64,17 @@
         "Cboe SKEW source gated; no implemented candidate.",
         "VX futures curve source-gated; Cboe settlement candidate is non-scoring until redistribution review approves publication."
       ],
+      "primary_support": {
+        "access_status": "free_public_active",
+        "confidence": 0.99,
+        "freshness_status": "ok",
+        "id": "vix_curve",
+        "label": "VIX curve state",
+        "message": "VIX curve is contango-proxy and calm.",
+        "severity": 15.08,
+        "source_status": "free_public",
+        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      },
       "primary_warning": {
         "access_status": "free_public_active",
         "confidence": 1.0,
@@ -71,13 +82,13 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 21.17,
+        "severity": 12.3,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
-      "state": "risk",
+      "state": "mixed",
       "title": "Fragility / shock risk",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     "growth": {
       "confidence": 0.99,
@@ -127,7 +138,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 27.61,
+        "severity": 27.73,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -145,7 +156,7 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 26.98,
+        "severity": 40.48,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
@@ -226,15 +237,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "7 warnings are active on the short-term board, with 2 carrying elevated severity \u2014 led by Inflation pressure; Commodities inflation impulse.",
+          "answer": "6 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by Inflation pressure; Commodities inflation impulse.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
           "id": "tactical_stress_board",
           "question": "Which warnings are clustering on the short-term board today?",
-          "risk": "2 signal(s) above the elevated-severity threshold warrant monitoring.",
-          "support": "5 support signal(s) partially offset the warning cluster.",
-          "why": "Some warnings carry elevated severity; the tactical board is cautionary but not in broad stress."
+          "risk": "3 signals above the elevated-severity threshold are clustering simultaneously.",
+          "support": null,
+          "why": "Multiple high-severity warnings across channels describe a tactically stressed environment."
         }
       ],
       "state": "unknown",
@@ -248,6 +259,17 @@
         "Cboe SKEW source gated; no implemented candidate.",
         "VX futures curve source-gated; Cboe settlement candidate is non-scoring until redistribution review approves publication."
       ],
+      "primary_support": {
+        "access_status": "free_public_active",
+        "confidence": 0.99,
+        "freshness_status": "ok",
+        "id": "vix_curve",
+        "label": "VIX curve state",
+        "message": "VIX curve is contango-proxy and calm.",
+        "severity": 15.08,
+        "source_status": "free_public",
+        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      },
       "primary_warning": {
         "access_status": "free_public_active",
         "confidence": 1.0,
@@ -255,7 +277,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 21.17,
+        "severity": 12.3,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -272,9 +294,9 @@
           "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX."
         }
       ],
-      "state": "risk",
+      "state": "mixed",
       "title": "Volatility",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     }
   }
 }

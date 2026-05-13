@@ -1,22 +1,22 @@
 {
   "buckets": {
     "commodities_inflation_impulse": -48.62,
-    "credit_spreads": 43.85,
+    "credit_spreads": 56.74,
     "dollar_global": 84.12,
-    "liquidity_funding": -27.61,
-    "rates_real_yields": -26.98,
+    "liquidity_funding": -27.73,
+    "rates_real_yields": -40.48,
     "sentiment_positioning": -28.76,
-    "volatility_tail_risk": -21.17
+    "volatility_tail_risk": -12.3
   },
-  "date": "2026-05-11",
-  "generated_at_utc": "2026-05-12T09:05:17Z",
+  "date": "2026-05-12",
+  "generated_at_utc": "2026-05-13T01:23:08Z",
   "label": "Mixed",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
-  "overall_score": -1.87,
+  "overall_score": 0.25,
   "top_risks": [
     "Commodity inflation impulse is elevated.",
-    "Leveraged-money S&P 500 positioning is crowded.",
-    "Liquidity funding conditions are tightening."
+    "Real yields are elevated.",
+    "Leveraged-money S&P 500 positioning is crowded."
   ],
   "top_supports": [
     "The broad dollar backdrop is easing.",
