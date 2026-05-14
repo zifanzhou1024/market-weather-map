@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-12",
-  "generated_at_utc": "2026-05-13T01:23:12Z",
+  "date": "2026-05-13",
+  "generated_at_utc": "2026-05-14T01:25:54Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -13,7 +13,7 @@
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is elevated.",
-        "severity": 48.62,
+        "severity": 38.23,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
@@ -31,7 +31,7 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 56.74,
+        "severity": 51.19,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
@@ -71,7 +71,7 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is contango-proxy and calm.",
-        "severity": 15.08,
+        "severity": 40.48,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
@@ -82,7 +82,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 12.3,
+        "severity": 2.25,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -138,7 +138,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 27.73,
+        "severity": 27.85,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -156,13 +156,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 40.48,
+        "severity": 56.34,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by inflation breakevens (+11 bps), not real yields.",
+          "answer": "The recent 10Y move (higher) is driven by inflation breakevens (+9 bps), not real yields.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -237,15 +237,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "6 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by Inflation pressure; Commodities inflation impulse.",
+          "answer": "6 warnings are active on the short-term board, with 2 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
           "id": "tactical_stress_board",
           "question": "Which warnings are clustering on the short-term board today?",
-          "risk": "3 signals above the elevated-severity threshold are clustering simultaneously.",
-          "support": null,
-          "why": "Multiple high-severity warnings across channels describe a tactically stressed environment."
+          "risk": "2 signal(s) above the elevated-severity threshold warrant monitoring.",
+          "support": "6 support signal(s) partially offset the warning cluster.",
+          "why": "Some warnings carry elevated severity; the tactical board is cautionary but not in broad stress."
         }
       ],
       "state": "unknown",
@@ -266,7 +266,7 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is contango-proxy and calm.",
-        "severity": 15.08,
+        "severity": 40.48,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
@@ -277,7 +277,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 12.3,
+        "severity": 2.25,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
