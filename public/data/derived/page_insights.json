@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-13",
-  "generated_at_utc": "2026-05-14T01:25:54Z",
+  "date": "2026-05-14",
+  "generated_at_utc": "2026-05-15T00:16:30Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -31,7 +31,7 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 51.19,
+        "severity": 53.37,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
@@ -75,18 +75,7 @@
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
-      "primary_warning": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "vix_complex",
-        "label": "VIX / VVIX complex",
-        "message": "Volatility tail risk is elevated.",
-        "severity": 2.25,
-        "source_status": "free_public",
-        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
-      },
-      "state": "mixed",
+      "state": "support",
       "title": "Fragility / shock risk",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
@@ -102,7 +91,7 @@
         "id": "labor",
         "label": "Labor cycle",
         "message": "Labor cycle is firm.",
-        "severity": 68.16,
+        "severity": 60.47,
         "source_status": "free_public",
         "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
       },
@@ -138,7 +127,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 27.85,
+        "severity": 16.32,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -156,21 +145,21 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 56.34,
+        "severity": 57.14,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by inflation breakevens (+9 bps), not real yields.",
+          "answer": "The recent 10Y move (higher) reflects both real yields (+7 bps) and breakevens (+10 bps).",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": "Rising breakevens may accelerate Fed hawkishness expectations.",
+          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
           "support": null,
-          "why": "Breakeven-driven moves signal changing inflation expectations rather than Fed policy tightening."
+          "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
         }
       ],
       "state": "risk",
@@ -237,14 +226,14 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "6 warnings are active on the short-term board, with 2 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
+          "answer": "5 warnings are active on the short-term board, with 2 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
           "id": "tactical_stress_board",
           "question": "Which warnings are clustering on the short-term board today?",
           "risk": "2 signal(s) above the elevated-severity threshold warrant monitoring.",
-          "support": "6 support signal(s) partially offset the warning cluster.",
+          "support": "7 support signal(s) partially offset the warning cluster.",
           "why": "Some warnings carry elevated severity; the tactical board is cautionary but not in broad stress."
         }
       ],
@@ -270,17 +259,6 @@
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
-      "primary_warning": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "vix_complex",
-        "label": "VIX / VVIX complex",
-        "message": "Volatility tail risk is elevated.",
-        "severity": 2.25,
-        "source_status": "free_public",
-        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
-      },
       "sections": [
         {
           "answer": "Volatility term structure remains contained and short-end stress is muted.",
@@ -294,7 +272,7 @@
           "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX."
         }
       ],
-      "state": "mixed",
+      "state": "support",
       "title": "Volatility",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     }

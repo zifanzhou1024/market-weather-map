@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-05-14T01:24:19Z",
+  "generated_at_utc": "2026-05-15T00:15:30Z",
   "observations": [
     {
       "date": "2002-12-18",
@@ -6106,20 +6106,25 @@
       "date": "2026-05-06",
       "percentile_252d": 73.08,
       "value": 877761.0
+    },
+    {
+      "date": "2026-05-13",
+      "percentile_252d": 61.54,
+      "value": 838584.0
     }
   ],
   "series_id": "treasury_general_account",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/WTREGEN",
   "summary": {
-    "change_12m": 294034.0,
-    "change_1d": -104168.0,
-    "change_1m": 129385.0,
-    "change_1w": -104168.0,
-    "change_3m": -31012.0,
-    "latest_date": "2026-05-06",
-    "latest_value": 877761.0,
-    "percentile_252d": 73.08
+    "change_12m": 262738.0,
+    "change_1d": -39177.0,
+    "change_1m": 87230.0,
+    "change_1w": -39177.0,
+    "change_3m": -76722.0,
+    "latest_date": "2026-05-13",
+    "latest_value": 838584.0,
+    "percentile_252d": 61.54
   },
   "units": "millions_usd"
 }

@@ -3,102 +3,92 @@
     "treasury_auction_supply"
   ],
   "frequency": "weekly",
-  "generated_at_utc": "2026-05-14T01:26:23Z",
+  "generated_at_utc": "2026-05-15T00:16:59Z",
   "method": "30-day trailing sum of Treasury auction amounts divided by the trailing 365-day rolling mean of those sums.",
   "observations": [
     {
-      "date": "1986-07-28",
-      "value": 0.9311,
-      "window_sum": 103800.0
-    },
-    {
-      "date": "1986-08-04",
-      "value": 1.1805,
-      "window_sum": 132200.0
-    },
-    {
       "date": "1986-08-11",
-      "value": 1.0776,
+      "value": 1.0581,
       "window_sum": 120900.0
     },
     {
       "date": "1986-08-18",
-      "value": 1.1691,
+      "value": 1.1484,
       "window_sum": 131700.0
     },
     {
       "date": "1986-08-25",
-      "value": 1.2325,
+      "value": 1.211,
       "window_sum": 139600.0
     },
     {
       "date": "1986-09-01",
-      "value": 1.1483,
+      "value": 1.1286,
       "window_sum": 130500.0
     },
     {
       "date": "1986-09-08",
-      "value": 0.9073,
+      "value": 0.8921,
       "window_sum": 102900.0
     },
     {
       "date": "1986-09-15",
-      "value": 0.9316,
+      "value": 0.9164,
       "window_sum": 105500.0
     },
     {
       "date": "1986-09-22",
-      "value": 1.082,
+      "value": 1.0647,
       "window_sum": 122750.0
     },
     {
       "date": "1986-09-29",
-      "value": 0.9032,
+      "value": 0.889,
       "window_sum": 102250.0
     },
     {
       "date": "1986-10-06",
-      "value": 0.8945,
+      "value": 0.8808,
       "window_sum": 101050.0
     },
     {
       "date": "1986-10-13",
-      "value": 0.8824,
+      "value": 0.8693,
       "window_sum": 99450.0
     },
     {
       "date": "1986-10-20",
-      "value": 1.0534,
+      "value": 1.038,
       "window_sum": 118850.0
     },
     {
       "date": "1986-10-27",
-      "value": 0.9109,
+      "value": 0.8979,
       "window_sum": 102600.0
     },
     {
       "date": "1986-11-03",
-      "value": 1.1742,
+      "value": 1.1774,
       "window_sum": 135000.0
     },
     {
       "date": "1986-11-10",
-      "value": 1.1674,
+      "value": 1.187,
       "window_sum": 136600.0
     },
     {
       "date": "1986-11-17",
-      "value": 1.335,
+      "value": 1.3509,
       "window_sum": 158600.0
     },
     {
       "date": "1986-11-24",
-      "value": 1.2372,
+      "value": 1.2462,
       "window_sum": 147850.0
     },
     {
       "date": "1986-12-01",
-      "value": 1.1493,
+      "value": 1.1525,
       "window_sum": 137250.0
     },
     {

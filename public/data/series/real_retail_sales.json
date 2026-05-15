@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-05-14T01:24:49Z",
+  "generated_at_utc": "2026-05-15T00:15:38Z",
   "observations": [
     {
       "date": "1992-01-01",
@@ -1995,12 +1995,12 @@
     {
       "date": "2025-03-01",
       "percentile_252d": 100.0,
-      "value": 226199.0
+      "value": 226195.0
     },
     {
       "date": "2025-04-01",
       "percentile_252d": 83.33,
-      "value": 225346.0
+      "value": 225382.0
     },
     {
       "date": "2025-05-01",
@@ -2034,7 +2034,7 @@
     },
     {
       "date": "2025-12-01",
-      "percentile_252d": 50.0,
+      "percentile_252d": 41.67,
       "value": 225352.0
     },
     {
@@ -2044,27 +2044,32 @@
     },
     {
       "date": "2026-02-01",
-      "percentile_252d": 75.0,
-      "value": 225912.0
+      "percentile_252d": 100.0,
+      "value": 226372.0
     },
     {
       "date": "2026-03-01",
       "percentile_252d": 100.0,
-      "value": 227696.0
+      "value": 228091.0
+    },
+    {
+      "date": "2026-04-01",
+      "percentile_252d": 91.67,
+      "value": 227758.0
     }
   ],
   "series_id": "real_retail_sales",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/RRSFS",
   "summary": {
-    "change_12m": 5106.0,
-    "change_1d": 1784.0,
-    "change_1m": 1784.0,
-    "change_1w": 1784.0,
-    "change_3m": 2344.0,
-    "latest_date": "2026-03-01",
-    "latest_value": 227696.0,
-    "percentile_252d": 100.0
+    "change_12m": 1563.0,
+    "change_1d": -333.0,
+    "change_1m": -333.0,
+    "change_1w": -333.0,
+    "change_3m": 2856.0,
+    "latest_date": "2026-04-01",
+    "latest_value": 227758.0,
+    "percentile_252d": 91.67
   },
   "units": "millions_chained_2017_usd"
 }
