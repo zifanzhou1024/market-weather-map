@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-14",
-  "generated_at_utc": "2026-05-16T00:14:19Z",
+  "date": "2026-05-15",
+  "generated_at_utc": "2026-05-16T16:13:45Z",
   "hidden_stress": [
     {
       "date": "2006-03-06",
@@ -45181,6 +45181,15 @@
       "vix_value": 17.26,
       "vvix_percentile": 42.54,
       "vvix_value": 94.26
+    },
+    {
+      "date": "2026-05-15",
+      "hidden_stress_score": -14.92,
+      "state": "calm",
+      "vix_percentile": 54.05,
+      "vix_value": 18.43,
+      "vvix_percentile": 39.13,
+      "vvix_value": 92.94
     }
   ],
   "latest_curve": [
@@ -45190,9 +45199,9 @@
       "value": 16.37
     },
     {
-      "percentile_5y": 44.68,
+      "percentile_5y": 54.05,
       "tenor": "30D",
-      "value": 17.26
+      "value": 18.43
     },
     {
       "percentile_5y": 58.81,
@@ -64516,6 +64525,11 @@
       "date": "2026-05-14",
       "vix9d_vix": 0.8772,
       "vix_vix3m": 0.8278
+    },
+    {
+      "date": "2026-05-15",
+      "vix9d_vix": 0.8882,
+      "vix_vix3m": 0.8628
     }
   ],
   "thresholds": {

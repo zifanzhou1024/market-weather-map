@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-16T00:14:15Z",
-  "last_successful_update_utc": "2026-05-16T00:14:15Z",
+  "generated_at_utc": "2026-05-16T16:13:43Z",
+  "last_successful_update_utc": "2026-05-16T16:13:43Z",
   "overall_status": "partial",
   "series": {
     "aaii_sentiment_candidate": {
@@ -1299,11 +1299,11 @@
     "vix": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 2,
-      "last_observation": "2026-05-14",
+      "freshness_days": 1,
+      "last_observation": "2026-05-15",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-14",
+      "message": "Latest daily observation is 1 days old.",
+      "observation_period": "2026-05-15",
       "source": "Cboe",
       "status": "ok"
     },
@@ -1332,22 +1332,22 @@
     "vix9d_vix_ratio": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 2,
-      "last_observation": "2026-05-14",
+      "freshness_days": 1,
+      "last_observation": "2026-05-15",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-14",
+      "message": "Latest daily observation is 1 days old.",
+      "observation_period": "2026-05-15",
       "source": "Derived",
       "status": "ok"
     },
     "vix_vix3m_ratio": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 2,
-      "last_observation": "2026-05-14",
+      "freshness_days": 1,
+      "last_observation": "2026-05-15",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-14",
+      "message": "Latest daily observation is 1 days old.",
+      "observation_period": "2026-05-15",
       "source": "Derived",
       "status": "ok"
     },
