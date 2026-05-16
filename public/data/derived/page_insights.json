@@ -1,19 +1,19 @@
 {
-  "date": "2026-05-14",
-  "generated_at_utc": "2026-05-15T00:16:30Z",
+  "date": "2026-05-15",
+  "generated_at_utc": "2026-05-16T00:14:19Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "freshness_notes": [],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is elevated.",
-        "severity": 38.23,
+        "severity": 38.69,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
@@ -22,16 +22,16 @@
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
     },
     "credit": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "freshness_notes": [],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 53.37,
+        "severity": 72.62,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
@@ -40,12 +40,14 @@
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
     },
     "dollar_global": {
-      "confidence": 1.0,
-      "freshness_notes": [],
+      "confidence": 0.99,
+      "freshness_notes": [
+        "Broad dollar is stale."
+      ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
+        "confidence": 0.99,
+        "freshness_status": "stale",
         "id": "broad_dollar",
         "label": "Broad dollar",
         "message": "The broad dollar backdrop is easing.",
@@ -58,7 +60,7 @@
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
     },
     "fragility": {
-      "confidence": 0.995,
+      "confidence": 0.985,
       "freshness_notes": [
         "MOVE official unavailable; TradingView candidate gated.",
         "Cboe SKEW source gated; no implemented candidate.",
@@ -66,12 +68,12 @@
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.99,
+        "confidence": 0.98,
         "freshness_status": "ok",
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is contango-proxy and calm.",
-        "severity": 40.48,
+        "severity": 68.26,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
@@ -118,16 +120,16 @@
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
     "liquidity": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "freshness_notes": [],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 16.32,
+        "severity": 16.09,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -136,22 +138,22 @@
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
     "rates": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "freshness_notes": [],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 57.14,
+        "severity": 60.32,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) reflects both real yields (+7 bps) and breakevens (+10 bps).",
+          "answer": "The recent 10Y move (higher) reflects both real yields (+10 bps) and breakevens (+10 bps).",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -187,7 +189,7 @@
       "why_it_matters": "The regime quadrant blends rates, dollar and risk inputs."
     },
     "sentiment": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "freshness_notes": [
         "S&P 500 benchmark (SPX) is unavailable.",
         "Put/call ratio (total) is unavailable.",
@@ -195,18 +197,18 @@
       ],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "sentiment_positioning",
         "label": "S&P 500 positioning",
         "message": "Leveraged-money S&P 500 positioning is crowded.",
-        "severity": 28.76,
+        "severity": 34.62,
         "source_status": "free_public",
         "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
       },
       "sections": [
         {
-          "answer": "Asset-manager S&P 500 net positioning is crowded at the 96th percentile of the past year (+50.8% OI).",
+          "answer": "Asset-manager S&P 500 net positioning is crowded at the 98th percentile of the past year (+51.3% OI).",
           "caveat": "CFTC data is weekly and delayed by several days; short-term positioning shifts are not captured. NAAIM is a candidate source and may be absent.",
           "eyebrow": "Positioning vs sentiment",
           "freshness_status": "ok",
@@ -242,7 +244,7 @@
       "why_it_matters": "Short-term tactical signals track the immediate risk posture across asset classes."
     },
     "volatility": {
-      "confidence": 0.995,
+      "confidence": 0.985,
       "freshness_notes": [
         "MOVE official unavailable; TradingView candidate gated.",
         "Cboe SKEW source gated; no implemented candidate.",
@@ -250,12 +252,12 @@
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.99,
+        "confidence": 0.98,
         "freshness_status": "ok",
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is contango-proxy and calm.",
-        "severity": 40.48,
+        "severity": 68.26,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },

@@ -2,29 +2,30 @@
   "conflicting_signals": [],
   "data_quality": {
     "coverage_confidence": 1.0,
-    "freshness_confidence": 0.99,
+    "freshness_confidence": 0.97,
     "model_confidence": 1.0,
     "overall_confidence": 0.99,
     "reasons": [
       "Treasury/bond volatility source is not active.",
+      "broad_dollar is stale: Latest daily observation is 8 days old, above the 7 day freshness buffer.",
       "consumer_debt_service_ratio is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
       "credit_card_delinquency_rate is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
       "household_debt_service_ratio is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01."
     ],
     "source_confidence": 0.97
   },
-  "date": "2026-05-14",
-  "generated_at_utc": "2026-05-15T00:16:26Z",
+  "date": "2026-05-15",
+  "generated_at_utc": "2026-05-16T00:14:15Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 30.16,
+        "credit_spread_widening": 69.84,
         "dollar_spike": 84.12,
         "liquidity_drain": 26.92,
-        "positioning_crowding": -28.76,
+        "positioning_crowding": -34.62,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": 40.48
+        "volatility_term_structure": 68.26
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -34,16 +35,17 @@
         "treasury_bond_volatility": 0.1,
         "volatility_term_structure": 0.2
       },
-      "confidence": 0.99,
+      "confidence": 0.98,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 1.0,
+        "freshness_confidence": 0.97,
         "model_confidence": 1.0,
-        "overall_confidence": 0.99,
+        "overall_confidence": 0.98,
         "source_confidence": 0.92
       },
       "confidence_reasons": [
-        "Treasury/bond volatility source is not active."
+        "Treasury/bond volatility source is not active.",
+        "broad_dollar is stale: Latest daily observation is 8 days old, above the 7 day freshness buffer."
       ],
       "label": "Low Fragility",
       "missing_or_stale_notes": [
@@ -51,9 +53,9 @@
       ],
       "recent_changes": [
         "The dollar backdrop is easing.",
-        "Volatility term structure is calm."
+        "Credit spread pressure is contained."
       ],
-      "score": 27.98,
+      "score": 42.58,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -149,19 +151,19 @@
       "top_risks": [],
       "top_supports": [
         "The dollar backdrop is easing.",
-        "Volatility term structure is calm.",
-        "Credit spread pressure is contained."
+        "Credit spread pressure is contained.",
+        "Volatility term structure is calm."
       ]
     },
     "macro_climate": {
       "bucket_scores": {
         "consumer_balance_sheet": 39.53,
-        "consumer_production": 61.11,
+        "consumer_production": 72.23,
         "growth": 41.66,
         "housing": 0.96,
         "inflation": -100.0,
         "labor": 60.47,
-        "real_yields": -57.14
+        "real_yields": -60.32
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -193,7 +195,7 @@
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
-      "score": 10.52,
+      "score": 11.98,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -352,13 +354,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -38.23,
-        "credit_spreads": 53.37,
+        "commodities_inflation_impulse": -38.69,
+        "credit_spreads": 72.62,
         "dollar_global": 84.12,
-        "liquidity_funding": -16.32,
-        "rates_real_yields": -57.14,
-        "sentiment_positioning": -28.76,
-        "volatility_tail_risk": 9.13
+        "liquidity_funding": -16.09,
+        "rates_real_yields": -60.32,
+        "sentiment_positioning": -34.62,
+        "volatility_tail_risk": 13.63
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -369,15 +371,17 @@
         "sentiment_positioning": 0.1,
         "volatility_tail_risk": 0.15
       },
-      "confidence": 1.0,
+      "confidence": 0.99,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 1.0,
+        "freshness_confidence": 0.98,
         "model_confidence": 1.0,
-        "overall_confidence": 1.0,
+        "overall_confidence": 0.99,
         "source_confidence": 1.0
       },
-      "confidence_reasons": [],
+      "confidence_reasons": [
+        "broad_dollar is stale: Latest daily observation is 8 days old, above the 7 day freshness buffer."
+      ],
       "label": "Mixed",
       "missing_or_stale_notes": [],
       "recent_changes": [
@@ -386,7 +390,7 @@
         "The broad dollar backdrop is easing.",
         "Credit spread pressure is contained."
       ],
-      "score": 3.32,
+      "score": 7.16,
       "source_coverage": {
         "available": [
           "high_yield_oas",

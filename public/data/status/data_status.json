@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-05-15T00:16:26Z",
-  "last_successful_update_utc": "2026-05-15T00:16:26Z",
+  "generated_at_utc": "2026-05-16T00:14:15Z",
+  "last_successful_update_utc": "2026-05-16T00:14:15Z",
   "overall_status": "partial",
   "series": {
     "aaii_sentiment_candidate": {
@@ -17,28 +17,28 @@
     "bank_credit": {
       "expected_frequency": "weekly",
       "expected_next_release_window": {
-        "end": "2026-05-20",
-        "start": "2026-05-06"
+        "end": "2026-05-27",
+        "start": "2026-05-13"
       },
-      "freshness_days": 16,
-      "last_observation": "2026-04-29",
+      "freshness_days": 10,
+      "last_observation": "2026-05-06",
       "max_stale_days": 14,
-      "message": "Latest weekly observation is within the expected release window ending 2026-05-20.",
-      "observation_period": "week of 2026-04-29",
+      "message": "Latest weekly observation is within the expected release window ending 2026-05-27.",
+      "observation_period": "week of 2026-05-06",
       "source": "FRED",
       "status": "ok"
     },
     "bank_deposits": {
       "expected_frequency": "weekly",
       "expected_next_release_window": {
-        "end": "2026-05-20",
-        "start": "2026-05-06"
+        "end": "2026-05-27",
+        "start": "2026-05-13"
       },
-      "freshness_days": 16,
-      "last_observation": "2026-04-29",
+      "freshness_days": 10,
+      "last_observation": "2026-05-06",
       "max_stale_days": 14,
-      "message": "Latest weekly observation is within the expected release window ending 2026-05-20.",
-      "observation_period": "week of 2026-04-29",
+      "message": "Latest weekly observation is within the expected release window ending 2026-05-27.",
+      "observation_period": "week of 2026-05-06",
       "source": "FRED",
       "status": "ok"
     },
@@ -46,10 +46,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "FRED",
       "status": "ok"
     },
@@ -57,42 +57,42 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "Derived",
       "status": "ok"
     },
     "breakeven_10y": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "freshness_days": 1,
+      "last_observation": "2026-05-15",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "message": "Latest daily observation is 1 days old.",
+      "observation_period": "2026-05-15",
       "source": "FRED",
       "status": "ok"
     },
     "breakeven_5y": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "freshness_days": 1,
+      "last_observation": "2026-05-15",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "message": "Latest daily observation is 1 days old.",
+      "observation_period": "2026-05-15",
       "source": "FRED",
       "status": "ok"
     },
     "brent_crude": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 4,
+      "freshness_days": 5,
       "last_observation": "2026-05-11",
       "max_stale_days": 10,
-      "message": "Latest daily observation is 4 days old.",
+      "message": "Latest daily observation is 5 days old.",
       "observation_period": "2026-05-11",
       "source": "FRED",
       "status": "ok"
@@ -100,10 +100,10 @@
     "brent_wti_spread": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 4,
+      "freshness_days": 5,
       "last_observation": "2026-05-11",
       "max_stale_days": 10,
-      "message": "Latest daily observation is 4 days old.",
+      "message": "Latest daily observation is 5 days old.",
       "observation_period": "2026-05-11",
       "source": "Derived",
       "status": "ok"
@@ -111,13 +111,13 @@
     "broad_dollar": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 7,
+      "freshness_days": 8,
       "last_observation": "2026-05-08",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 7 days old.",
+      "message": "Latest daily observation is 8 days old, above the 7 day freshness buffer.",
       "observation_period": "2026-05-08",
       "source": "FRED",
-      "status": "ok"
+      "status": "stale"
     },
     "building_permits": {
       "expected_frequency": "monthly",
@@ -125,7 +125,7 @@
         "end": "2026-05-16",
         "start": "2026-04-01"
       },
-      "freshness_days": 75,
+      "freshness_days": 76,
       "last_observation": "2026-03-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16.",
@@ -136,14 +136,14 @@
     "business_loans": {
       "expected_frequency": "weekly",
       "expected_next_release_window": {
-        "end": "2026-03-22",
-        "start": "2026-03-08"
+        "end": "2026-04-22",
+        "start": "2026-04-08"
       },
-      "freshness_days": 75,
-      "last_observation": "2026-03-01",
+      "freshness_days": 45,
+      "last_observation": "2026-04-01",
       "max_stale_days": 14,
-      "message": "Latest weekly observation expected release window ended 2026-03-22.",
-      "observation_period": "week of 2026-03-01",
+      "message": "Latest weekly observation expected release window ended 2026-04-22.",
+      "observation_period": "week of 2026-04-01",
       "source": "FRED",
       "status": "stale"
     },
@@ -153,7 +153,7 @@
         "end": "2026-07-16",
         "start": "2026-06-01"
       },
-      "freshness_days": 14,
+      "freshness_days": 15,
       "last_observation": "2026-05-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-05 and is within the expected release window ending 2026-07-16.",
@@ -167,7 +167,7 @@
         "end": "2026-05-16",
         "start": "2026-04-01"
       },
-      "freshness_days": 75,
+      "freshness_days": 76,
       "last_observation": "2026-03-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16.",
@@ -181,7 +181,7 @@
         "end": "2026-05-16",
         "start": "2026-04-01"
       },
-      "freshness_days": 75,
+      "freshness_days": 76,
       "last_observation": "2026-03-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16.",
@@ -192,28 +192,28 @@
     "cftc_sp500_asset_mgr_net": {
       "expected_frequency": "weekly",
       "expected_next_release_window": {
-        "end": "2026-05-26",
-        "start": "2026-05-12"
+        "end": "2026-06-02",
+        "start": "2026-05-19"
       },
-      "freshness_days": 10,
-      "last_observation": "2026-05-05",
+      "freshness_days": 4,
+      "last_observation": "2026-05-12",
       "max_stale_days": 14,
-      "message": "Latest weekly observation is within the expected release window ending 2026-05-26.",
-      "observation_period": "week of 2026-05-05",
+      "message": "Latest weekly observation is within the expected release window ending 2026-06-02.",
+      "observation_period": "week of 2026-05-12",
       "source": "CFTC",
       "status": "ok"
     },
     "cftc_sp500_lev_money_net": {
       "expected_frequency": "weekly",
       "expected_next_release_window": {
-        "end": "2026-05-26",
-        "start": "2026-05-12"
+        "end": "2026-06-02",
+        "start": "2026-05-19"
       },
-      "freshness_days": 10,
-      "last_observation": "2026-05-05",
+      "freshness_days": 4,
+      "last_observation": "2026-05-12",
       "max_stale_days": 14,
-      "message": "Latest weekly observation is within the expected release window ending 2026-05-26.",
-      "observation_period": "week of 2026-05-05",
+      "message": "Latest weekly observation is within the expected release window ending 2026-06-02.",
+      "observation_period": "week of 2026-05-12",
       "source": "CFTC",
       "status": "ok"
     },
@@ -231,11 +231,11 @@
     "commodity_inflation_impulse": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "freshness_days": 1,
+      "last_observation": "2026-05-15",
       "max_stale_days": 75,
-      "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "message": "Latest daily observation is 1 days old.",
+      "observation_period": "2026-05-15",
       "source": "Derived",
       "status": "ok"
     },
@@ -245,7 +245,7 @@
         "end": "2026-05-01",
         "start": "2026-01-01"
       },
-      "freshness_days": 226,
+      "freshness_days": 227,
       "last_observation": "2025-10-01",
       "max_stale_days": 120,
       "message": "Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
@@ -259,7 +259,7 @@
         "end": "2026-06-15",
         "start": "2026-05-01"
       },
-      "freshness_days": 44,
+      "freshness_days": 45,
       "last_observation": "2026-04-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15.",
@@ -273,7 +273,7 @@
         "end": "2026-05-16",
         "start": "2026-04-01"
       },
-      "freshness_days": 75,
+      "freshness_days": 76,
       "last_observation": "2026-03-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16.",
@@ -287,7 +287,7 @@
         "end": "2026-06-15",
         "start": "2026-04-01"
       },
-      "freshness_days": 75,
+      "freshness_days": 76,
       "last_observation": "2026-03-01",
       "max_stale_days": 75,
       "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-06-15.",
@@ -301,7 +301,7 @@
         "end": "2026-05-01",
         "start": "2026-01-01"
       },
-      "freshness_days": 226,
+      "freshness_days": 227,
       "last_observation": "2025-10-01",
       "max_stale_days": 120,
       "message": "Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
@@ -315,7 +315,7 @@
         "end": "2026-05-16",
         "start": "2026-04-01"
       },
-      "freshness_days": 75,
+      "freshness_days": 76,
       "last_observation": "2026-03-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16.",
@@ -348,13 +348,13 @@
     "eurusd": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 7,
+      "freshness_days": 8,
       "last_observation": "2026-05-08",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 7 days old.",
+      "message": "Latest daily observation is 8 days old, above the 7 day freshness buffer.",
       "observation_period": "2026-05-08",
       "source": "FRED",
-      "status": "ok"
+      "status": "stale"
     },
     "event_cpi": {
       "expected_frequency": "daily",
@@ -417,7 +417,7 @@
         "end": "2026-06-03",
         "start": "2026-05-20"
       },
-      "freshness_days": 2,
+      "freshness_days": 3,
       "last_observation": "2026-05-13",
       "max_stale_days": 14,
       "message": "Latest weekly observation is within the expected release window ending 2026-06-03.",
@@ -431,7 +431,7 @@
         "end": "2026-05-29",
         "start": "2026-05-15"
       },
-      "freshness_days": 7,
+      "freshness_days": 8,
       "last_observation": "2026-05-08",
       "max_stale_days": 14,
       "message": "Latest weekly observation is within the expected release window ending 2026-05-29.",
@@ -445,7 +445,7 @@
         "end": "2026-05-29",
         "start": "2026-05-15"
       },
-      "freshness_days": 7,
+      "freshness_days": 8,
       "last_observation": "2026-05-08",
       "max_stale_days": 14,
       "message": "Latest weekly observation is within the expected release window ending 2026-05-29.",
@@ -456,11 +456,11 @@
     "forward_inflation_5y5y": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "freshness_days": 1,
+      "last_observation": "2026-05-15",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "message": "Latest daily observation is 1 days old.",
+      "observation_period": "2026-05-15",
       "source": "FRED",
       "status": "ok"
     },
@@ -481,7 +481,7 @@
         "end": "2026-06-15",
         "start": "2026-05-01"
       },
-      "freshness_days": 44,
+      "freshness_days": 45,
       "last_observation": "2026-04-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15.",
@@ -493,10 +493,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "FRED",
       "status": "ok"
     },
@@ -506,7 +506,7 @@
         "end": "2026-05-01",
         "start": "2026-01-01"
       },
-      "freshness_days": 226,
+      "freshness_days": 227,
       "last_observation": "2025-10-01",
       "max_stale_days": 120,
       "message": "Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
@@ -520,7 +520,7 @@
         "end": "2026-05-16",
         "start": "2026-04-01"
       },
-      "freshness_days": 75,
+      "freshness_days": 76,
       "last_observation": "2026-03-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16.",
@@ -532,24 +532,24 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 10,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "Derived",
       "status": "ok"
     },
     "industrial_production": {
       "expected_frequency": "monthly",
       "expected_next_release_window": {
-        "end": "2026-05-16",
-        "start": "2026-04-01"
+        "end": "2026-06-15",
+        "start": "2026-05-01"
       },
-      "freshness_days": 75,
-      "last_observation": "2026-03-01",
+      "freshness_days": 45,
+      "last_observation": "2026-04-01",
       "max_stale_days": 45,
-      "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-16.",
-      "observation_period": "2026-03",
+      "message": "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15.",
+      "observation_period": "2026-04",
       "source": "FRED",
       "status": "ok"
     },
@@ -559,7 +559,7 @@
         "end": "2026-05-30",
         "start": "2026-05-16"
       },
-      "freshness_days": 6,
+      "freshness_days": 7,
       "last_observation": "2026-05-09",
       "max_stale_days": 14,
       "message": "Latest weekly observation is within the expected release window ending 2026-05-30.",
@@ -571,10 +571,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "FRED",
       "status": "ok"
     },
@@ -603,14 +603,14 @@
     "loans_and_leases": {
       "expected_frequency": "weekly",
       "expected_next_release_window": {
-        "end": "2026-05-20",
-        "start": "2026-05-06"
+        "end": "2026-05-27",
+        "start": "2026-05-13"
       },
-      "freshness_days": 16,
-      "last_observation": "2026-04-29",
+      "freshness_days": 10,
+      "last_observation": "2026-05-06",
       "max_stale_days": 14,
-      "message": "Latest weekly observation is within the expected release window ending 2026-05-20.",
-      "observation_period": "week of 2026-04-29",
+      "message": "Latest weekly observation is within the expected release window ending 2026-05-27.",
+      "observation_period": "week of 2026-05-06",
       "source": "FRED",
       "status": "ok"
     },
@@ -653,7 +653,7 @@
         "end": "2026-06-04",
         "start": "2026-05-21"
       },
-      "freshness_days": 1,
+      "freshness_days": 2,
       "last_observation": "2026-05-14",
       "max_stale_days": 14,
       "message": "Latest weekly observation is within the expected release window ending 2026-06-04.",
@@ -689,7 +689,7 @@
         "end": "2026-06-03",
         "start": "2026-05-20"
       },
-      "freshness_days": 2,
+      "freshness_days": 3,
       "last_observation": "2026-05-13",
       "max_stale_days": 14,
       "message": "Latest weekly observation is within the expected release window ending 2026-06-03.",
@@ -703,7 +703,7 @@
         "end": "2026-06-15",
         "start": "2026-05-01"
       },
-      "freshness_days": 44,
+      "freshness_days": 45,
       "last_observation": "2026-04-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15.",
@@ -717,7 +717,7 @@
         "end": "2026-05-31",
         "start": "2026-04-01"
       },
-      "freshness_days": 75,
+      "freshness_days": 76,
       "last_observation": "2026-03-01",
       "max_stale_days": 60,
       "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-05-31.",
@@ -742,7 +742,7 @@
         "end": "2026-06-15",
         "start": "2026-05-01"
       },
-      "freshness_days": 44,
+      "freshness_days": 45,
       "last_observation": "2026-04-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15.",
@@ -899,7 +899,7 @@
         "end": "2026-06-15",
         "start": "2026-05-01"
       },
-      "freshness_days": 44,
+      "freshness_days": 45,
       "last_observation": "2026-04-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15.",
@@ -911,10 +911,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "FRED",
       "status": "ok"
     },
@@ -922,10 +922,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "FRED",
       "status": "ok"
     },
@@ -935,7 +935,7 @@
         "end": "2026-06-03",
         "start": "2026-05-20"
       },
-      "freshness_days": 2,
+      "freshness_days": 3,
       "last_observation": "2026-05-13",
       "max_stale_days": 14,
       "message": "Latest weekly observation is within the expected release window ending 2026-06-03.",
@@ -947,10 +947,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 1,
-      "last_observation": "2026-05-14",
+      "last_observation": "2026-05-15",
       "max_stale_days": 7,
       "message": "Latest daily observation is 1 days old.",
-      "observation_period": "2026-05-14",
+      "observation_period": "2026-05-15",
       "source": "FRED",
       "status": "ok"
     },
@@ -971,7 +971,7 @@
         "end": "2026-06-15",
         "start": "2026-05-01"
       },
-      "freshness_days": 44,
+      "freshness_days": 45,
       "last_observation": "2026-04-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15.",
@@ -1027,10 +1027,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "FRED",
       "status": "ok"
     },
@@ -1040,7 +1040,7 @@
         "end": "2026-06-15",
         "start": "2026-04-01"
       },
-      "freshness_days": 75,
+      "freshness_days": 76,
       "last_observation": "2026-03-01",
       "max_stale_days": 75,
       "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-06-15.",
@@ -1062,10 +1062,10 @@
     "term_premium_acm_10y": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 7,
+      "freshness_days": 8,
       "last_observation": "2026-05-08",
       "max_stale_days": 14,
-      "message": "Latest daily observation is 7 days old.",
+      "message": "Latest daily observation is 8 days old.",
       "observation_period": "2026-05-08",
       "source": "Federal Reserve Bank of New York",
       "status": "ok"
@@ -1175,7 +1175,7 @@
         "end": "2026-06-03",
         "start": "2026-05-20"
       },
-      "freshness_days": 2,
+      "freshness_days": 3,
       "last_observation": "2026-05-13",
       "max_stale_days": 14,
       "message": "Latest weekly observation is within the expected release window ending 2026-06-03.",
@@ -1222,7 +1222,7 @@
         "end": "2026-06-15",
         "start": "2026-05-01"
       },
-      "freshness_days": 44,
+      "freshness_days": 45,
       "last_observation": "2026-04-01",
       "max_stale_days": 45,
       "message": "Latest monthly observation covers 2026-04 and is within the expected release window ending 2026-06-15.",
@@ -1234,10 +1234,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "FRED",
       "status": "ok"
     },
@@ -1245,10 +1245,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "Derived",
       "status": "ok"
     },
@@ -1256,10 +1256,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "FRED",
       "status": "ok"
     },
@@ -1267,10 +1267,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "FRED",
       "status": "ok"
     },
@@ -1278,32 +1278,32 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "FRED",
       "status": "ok"
     },
     "usdjpy": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 7,
+      "freshness_days": 8,
       "last_observation": "2026-05-08",
       "max_stale_days": 7,
-      "message": "Latest daily observation is 7 days old.",
+      "message": "Latest daily observation is 8 days old, above the 7 day freshness buffer.",
       "observation_period": "2026-05-08",
       "source": "FRED",
-      "status": "ok"
+      "status": "stale"
     },
     "vix": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "Cboe",
       "status": "ok"
     },
@@ -1311,10 +1311,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 1,
-      "last_observation": "2026-05-14",
+      "last_observation": "2026-05-15",
       "max_stale_days": 7,
       "message": "Latest daily observation is 1 days old.",
-      "observation_period": "2026-05-14",
+      "observation_period": "2026-05-15",
       "source": "Cboe",
       "status": "ok"
     },
@@ -1322,10 +1322,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 1,
-      "last_observation": "2026-05-14",
+      "last_observation": "2026-05-15",
       "max_stale_days": 7,
       "message": "Latest daily observation is 1 days old.",
-      "observation_period": "2026-05-14",
+      "observation_period": "2026-05-15",
       "source": "Cboe",
       "status": "ok"
     },
@@ -1333,10 +1333,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "Derived",
       "status": "ok"
     },
@@ -1344,10 +1344,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 2,
-      "last_observation": "2026-05-13",
+      "last_observation": "2026-05-14",
       "max_stale_days": 7,
       "message": "Latest daily observation is 2 days old.",
-      "observation_period": "2026-05-13",
+      "observation_period": "2026-05-14",
       "source": "Derived",
       "status": "ok"
     },
@@ -1355,10 +1355,10 @@
       "expected_frequency": "daily",
       "expected_next_release_window": null,
       "freshness_days": 1,
-      "last_observation": "2026-05-14",
+      "last_observation": "2026-05-15",
       "max_stale_days": 7,
       "message": "Latest daily observation is 1 days old.",
-      "observation_period": "2026-05-14",
+      "observation_period": "2026-05-15",
       "source": "Cboe",
       "status": "ok"
     },
@@ -1511,7 +1511,7 @@
         "end": "2026-06-15",
         "start": "2026-04-01"
       },
-      "freshness_days": 75,
+      "freshness_days": 76,
       "last_observation": "2026-03-01",
       "max_stale_days": 75,
       "message": "Latest monthly observation covers 2026-03 and is within the expected release window ending 2026-06-15.",
@@ -1522,10 +1522,10 @@
     "wti_crude": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 4,
+      "freshness_days": 5,
       "last_observation": "2026-05-11",
       "max_stale_days": 10,
-      "message": "Latest daily observation is 4 days old.",
+      "message": "Latest daily observation is 5 days old.",
       "observation_period": "2026-05-11",
       "source": "FRED",
       "status": "ok"

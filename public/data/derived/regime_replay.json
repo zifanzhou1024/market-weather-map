@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-15T00:16:26Z",
+  "generated_at_utc": "2026-05-16T00:14:15Z",
   "method_version": "phase5-regime-replay-v1",
   "scenarios": [
     {
@@ -8,16 +8,8 @@
       "id": "tightening_risk_off",
       "label": "Tightening / risk-off",
       "last_occurrence_date": "2026-04-07",
-      "occurrence_count": 185,
+      "occurrence_count": 184,
       "occurrences": [
-        {
-          "credit_20obs_change": -0.59,
-          "date": "2023-06-13",
-          "dollar_20obs_change": 0.0291,
-          "nominal_10y_20obs_change": 0.34,
-          "real_yield_20obs_change": 0.33,
-          "vix_curve_20obs_change": 0.005
-        },
         {
           "credit_20obs_change": -0.01,
           "date": "2023-08-09",

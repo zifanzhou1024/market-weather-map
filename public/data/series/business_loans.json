@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-05-15T00:15:44Z",
+  "generated_at_utc": "2026-05-16T00:13:24Z",
   "observations": [
     {
       "date": "1947-01-01",
@@ -4745,30 +4745,35 @@
     {
       "date": "2026-01-01",
       "percentile_252d": 46.15,
-      "value": 2738.1386
+      "value": 2737.471
     },
     {
       "date": "2026-02-01",
-      "percentile_252d": 90.38,
-      "value": 2788.5271
+      "percentile_252d": 88.46,
+      "value": 2785.9795
     },
     {
       "date": "2026-03-01",
       "percentile_252d": 100.0,
-      "value": 2827.9137
+      "value": 2822.149
+    },
+    {
+      "date": "2026-04-01",
+      "percentile_252d": 100.0,
+      "value": 2865.2666
     }
   ],
   "series_id": "business_loans",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/BUSLOANS",
   "summary": {
-    "change_12m": 392.9217,
-    "change_1d": 39.3866,
-    "change_1m": 129.6749,
-    "change_1w": 39.3866,
-    "change_3m": 156.5866,
-    "latest_date": "2026-03-01",
-    "latest_value": 2827.9137,
+    "change_12m": 392.0904,
+    "change_1d": 43.1176,
+    "change_1m": 158.4244,
+    "change_1w": 43.1176,
+    "change_3m": 189.9596,
+    "latest_date": "2026-04-01",
+    "latest_value": 2865.2666,
     "percentile_252d": 100.0
   },
   "units": "billions_usd"
