@@ -84,6 +84,25 @@ describe("CockpitCell", () => {
     expect(article?.tabIndex).toBe(0);
   });
 
+  test("label wraps in <abbr> with glossary definition for known jargon", () => {
+    // Integration check: the fixture's rank-#1 label is "10Y Breakeven",
+    // which is in the curated glossary. Confirms the GlossaryTerm wrapper
+    // is wired into the cell label and emits the native tooltip.
+    renderCell(<CockpitCell sign={topSign as any} mode="detail" />);
+    const labelAbbr = container.querySelector(".cockpit-cell__label abbr.glossary");
+    expect(labelAbbr).not.toBeNull();
+    expect(labelAbbr?.getAttribute("title")).toMatch(/inflation expectation/);
+    expect(labelAbbr?.textContent).toBe(topSign.label);
+  });
+
+  test("label renders without <abbr> when the term is not in the glossary", () => {
+    const unknownLabelSign = { ...topSign, label: "Not-A-Real-Term" };
+    renderCell(<CockpitCell sign={unknownLabelSign as any} mode="detail" />);
+    const labelAbbr = container.querySelector(".cockpit-cell__label abbr.glossary");
+    expect(labelAbbr).toBeNull();
+    expect(container.querySelector(".cockpit-cell__label")?.textContent).toBe("Not-A-Real-Term");
+  });
+
   test("secondary values are formatted to 1 decimal (no raw float spill)", () => {
     // Regression: previously the secondary value rendered as
     // "3.2027589069747022% YoY" because the raw float was passed straight to JSX.
