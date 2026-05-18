@@ -1,6 +1,6 @@
 {
   "date": "2026-05-15",
-  "generated_at_utc": "2026-05-16T16:13:45Z",
+  "generated_at_utc": "2026-05-18T08:13:56Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -17,6 +17,19 @@
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
+      "sections": [
+        {
+          "answer": "Commodity prices are subtracting from inflation pressure (impulse -38.7, 100th percentile of the past year).",
+          "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
+          "eyebrow": "Commodity impulse",
+          "freshness_status": "ok",
+          "id": "commodity_impulse",
+          "question": "Are commodity prices adding to or subtracting from inflation pressure?",
+          "risk": null,
+          "support": "Easing commodity prices reduce inflation pressure and rate-cut risk.",
+          "why": "A negative commodity impulse eases headline inflation pressure and supports disinflation."
+        }
+      ],
       "state": "risk",
       "title": "Commodities",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
@@ -35,6 +48,19 @@
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
+      "sections": [
+        {
+          "answer": "The HY-IG OAS spread is roughly stable (-0.05 pp over 30 days at 2.00 pp); credit dispersion is not currently widening or tightening.",
+          "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
+          "eyebrow": "Credit dispersion",
+          "freshness_status": "ok",
+          "id": "credit_dispersion",
+          "question": "Is the HY-IG spread widening (early credit stress) or tightening (risk-on)?",
+          "risk": null,
+          "support": "Steady credit dispersion is not amplifying cross-asset stress.",
+          "why": "Stable HY-IG dispersion describes a credit market without a directional impulse."
+        }
+      ],
       "state": "support",
       "title": "Credit",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -55,6 +81,19 @@
         "source_status": "free_public",
         "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
       },
+      "sections": [
+        {
+          "answer": "The broad dollar is weakening (-0.72% over one month to 118.04); global financial conditions are easing from the FX side.",
+          "caveat": "Broad dollar uses Fed's nominal trade-weighted index; FX series can be stale around holidays.",
+          "eyebrow": "Dollar pressure",
+          "freshness_status": "ok",
+          "id": "dollar_pressure",
+          "question": "Is the broad dollar tightening or easing global financial conditions?",
+          "risk": null,
+          "support": "Easing dollar pressure typically supports global risk assets and EM.",
+          "why": "A falling broad dollar loosens global liquidity and tends to support EM and risk assets."
+        }
+      ],
       "state": "support",
       "title": "Dollar / Global",
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
@@ -97,9 +136,42 @@
         "source_status": "free_public",
         "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
       },
+      "sections": [
+        {
+          "answer": "Growth breadth is mixed: 3 of 5 growth and labor inputs are constructive while others have softened.",
+          "caveat": "Breadth uses heuristic thresholds; release timing varies by indicator and some inputs may lag.",
+          "eyebrow": "Growth breadth",
+          "freshness_status": "ok",
+          "id": "growth_breadth",
+          "question": "Is broad-based growth firm, mixed, or softening across labor and production inputs?",
+          "risk": null,
+          "support": null,
+          "why": "Mixed growth breadth describes an economy with both expansionary and contractionary pockets."
+        }
+      ],
       "state": "support",
       "title": "Growth",
       "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
+    },
+    "housing": {
+      "confidence": 0.0,
+      "freshness_notes": [],
+      "sections": [
+        {
+          "answer": "Housing activity is resilient despite elevated rates: starts and permits are rising over three months with the 30Y mortgage at 6.36%.",
+          "caveat": "Housing starts and permits are monthly; mortgage rate updates weekly. Series can move in opposite directions over short horizons.",
+          "eyebrow": "Housing pulse",
+          "freshness_status": "ok",
+          "id": "housing_pulse",
+          "question": "Is housing activity expanding or contracting given current mortgage rates?",
+          "risk": null,
+          "support": "Resilient housing activity despite elevated rates suggests demand backstop.",
+          "why": "Housing turnover is holding up despite the most rate-sensitive sector facing high financing costs."
+        }
+      ],
+      "state": "unknown",
+      "title": "Housing",
+      "why_it_matters": "Housing turnover signals consumer balance-sheet pressure."
     },
     "inflation": {
       "confidence": 0.99,
@@ -115,6 +187,19 @@
         "source_status": "free_public",
         "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
       },
+      "sections": [
+        {
+          "answer": "Core and headline inflation are aligned and rising (headline 3.9% YoY, core CPI 3.0% YoY, both firming).",
+          "caveat": "YoY changes are computed from monthly index levels; release timing differs across CPI, PCE, and PPI.",
+          "eyebrow": "Inflation dispersion",
+          "freshness_status": "ok",
+          "id": "inflation_dispersion",
+          "question": "Are core and headline inflation moving in the same direction or diverging?",
+          "risk": "Headline and core re-accelerating together complicates Fed easing expectations.",
+          "support": null,
+          "why": "Aligned reacceleration in headline and core describes a broad rebuild of inflation pressure."
+        }
+      ],
       "state": "risk",
       "title": "Inflation",
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
@@ -133,6 +218,19 @@
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
+      "sections": [
+        {
+          "answer": "Net liquidity is contracting ($-68B over four weeks to $5,886B); TGA and reverse repo drain outpaces Fed balance sheet.",
+          "caveat": "Net liquidity is a derived weekly proxy from Fed assets, TGA, and reverse repo \u2014 not a measure of funding-market stress.",
+          "eyebrow": "Liquidity & funding",
+          "freshness_status": "ok",
+          "id": "liquidity_funding",
+          "question": "Is net liquidity expanding or contracting, and which Fed components are driving it?",
+          "risk": "Net liquidity drains historically precede risk-off episodes.",
+          "support": null,
+          "why": "Falling net liquidity tightens funding conditions and historically pressures risk assets."
+        }
+      ],
       "state": "risk",
       "title": "Liquidity",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
