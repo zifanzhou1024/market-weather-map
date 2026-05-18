@@ -239,5 +239,6 @@ COCKPIT_WHITELIST: tuple[CockpitSignal, ...] = (
         primary_decimals=1,
         direction="support",
         importance=4,
+        value_scale=1e-6,  # series is in millions of dollars; display as trillions
     ),
 )

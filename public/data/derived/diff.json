@@ -1,0 +1,549 @@
+{
+  "composite_scores": [
+    {
+      "current_date": "2026-05-15",
+      "current_value": 4.32,
+      "direction": "neutral",
+      "freshness_status": "ok",
+      "id": "market_weather",
+      "label": "Market Weather",
+      "primary_decimals": 2,
+      "primary_unit": "",
+      "windows": {
+        "1d": {
+          "date": "2026-05-14",
+          "delta": 1.0000000000000004,
+          "delta_pct": 30.120481927710856,
+          "value": 3.32
+        },
+        "30d": {
+          "date": null,
+          "delta": null,
+          "delta_pct": null,
+          "value": null
+        },
+        "7d": {
+          "date": "2026-05-08",
+          "delta": 1.6100000000000003,
+          "delta_pct": 59.409594095940975,
+          "value": 2.71
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-15",
+      "current_value": 11.98,
+      "direction": "neutral",
+      "freshness_status": "ok",
+      "id": "macro_climate",
+      "label": "Macro Climate",
+      "primary_decimals": 2,
+      "primary_unit": "",
+      "windows": {
+        "1d": {
+          "date": "2026-05-14",
+          "delta": 1.4600000000000009,
+          "delta_pct": 13.878326996197726,
+          "value": 10.52
+        },
+        "30d": {
+          "date": null,
+          "delta": null,
+          "delta_pct": null,
+          "value": null
+        },
+        "7d": {
+          "date": "2026-05-08",
+          "delta": -1.6899999999999995,
+          "delta_pct": -12.362838332114116,
+          "value": 13.67
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-15",
+      "current_value": 28.76,
+      "direction": "neutral",
+      "freshness_status": "ok",
+      "id": "fragility",
+      "label": "Fragility",
+      "primary_decimals": 2,
+      "primary_unit": "",
+      "windows": {
+        "1d": {
+          "date": "2026-05-14",
+          "delta": 0.7800000000000011,
+          "delta_pct": 2.7877055039313836,
+          "value": 27.98
+        },
+        "30d": {
+          "date": null,
+          "delta": null,
+          "delta_pct": null,
+          "value": null
+        },
+        "7d": {
+          "date": "2026-05-08",
+          "delta": -9.02,
+          "delta_pct": -23.875066172578084,
+          "value": 37.78
+        }
+      }
+    }
+  ],
+  "date": "2026-05-15",
+  "generated_at_utc": "2026-05-18T09:33:05Z",
+  "method_version": "phase-f-diff-v1",
+  "vital_signs": [
+    {
+      "current_date": "2026-05-15",
+      "current_value": 18.43,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "vix_complex",
+      "label": "VIX",
+      "primary_decimals": 1,
+      "primary_unit": "",
+      "windows": {
+        "1d": {
+          "date": "2026-05-14",
+          "delta": 1.1699999999999982,
+          "delta_pct": 6.778679026651205,
+          "value": 17.26
+        },
+        "30d": {
+          "date": "2026-04-15",
+          "delta": 0.259999999999998,
+          "delta_pct": 1.430930104567958,
+          "value": 18.17
+        },
+        "7d": {
+          "date": "2026-05-08",
+          "delta": 1.2399999999999984,
+          "delta_pct": 7.2134962187318115,
+          "value": 17.19
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-14",
+      "current_value": 4.47,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "us10y",
+      "label": "US 10Y",
+      "primary_decimals": 2,
+      "primary_unit": "%",
+      "windows": {
+        "1d": {
+          "date": "2026-05-13",
+          "delta": 0.009999999999999787,
+          "delta_pct": 0.22421524663676654,
+          "value": 4.46
+        },
+        "30d": {
+          "date": "2026-04-14",
+          "delta": 0.20999999999999996,
+          "delta_pct": 4.929577464788732,
+          "value": 4.26
+        },
+        "7d": {
+          "date": "2026-05-07",
+          "delta": 0.05999999999999961,
+          "delta_pct": 1.360544217687066,
+          "value": 4.41
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-14",
+      "current_value": 2.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "real_yields",
+      "label": "10Y Real Yield",
+      "primary_decimals": 2,
+      "primary_unit": "%",
+      "windows": {
+        "1d": {
+          "date": "2026-05-13",
+          "delta": 0.010000000000000009,
+          "delta_pct": 0.5025125628140708,
+          "value": 1.99
+        },
+        "30d": {
+          "date": "2026-04-14",
+          "delta": 0.1100000000000001,
+          "delta_pct": 5.820105820105825,
+          "value": 1.89
+        },
+        "7d": {
+          "date": "2026-05-07",
+          "delta": 0.040000000000000036,
+          "delta_pct": 2.040816326530614,
+          "value": 1.96
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-14",
+      "current_value": 276.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "credit_spreads",
+      "label": "HY OAS",
+      "primary_decimals": 0,
+      "primary_unit": " bp",
+      "windows": {
+        "1d": {
+          "date": "2026-05-13",
+          "delta": -6.0,
+          "delta_pct": -2.127659574468085,
+          "value": 282.0
+        },
+        "30d": {
+          "date": "2026-04-14",
+          "delta": -8.0,
+          "delta_pct": -2.8169014084507045,
+          "value": 284.0
+        },
+        "7d": {
+          "date": "2026-05-07",
+          "delta": -3.0,
+          "delta_pct": -1.0752688172043012,
+          "value": 279.0
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-14",
+      "current_value": 76.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "ig_spreads",
+      "label": "IG OAS",
+      "primary_decimals": 0,
+      "primary_unit": " bp",
+      "windows": {
+        "1d": {
+          "date": "2026-05-13",
+          "delta": 0.0,
+          "delta_pct": 0.0,
+          "value": 76.0
+        },
+        "30d": {
+          "date": "2026-04-14",
+          "delta": -5.0,
+          "delta_pct": -6.172839506172839,
+          "value": 81.0
+        },
+        "7d": {
+          "date": "2026-05-07",
+          "delta": -3.0,
+          "delta_pct": -3.79746835443038,
+          "value": 79.0
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-08",
+      "current_value": 118.0392,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "broad_dollar",
+      "label": "Broad USD",
+      "primary_decimals": 1,
+      "primary_unit": "",
+      "windows": {
+        "1d": {
+          "date": "2026-05-07",
+          "delta": 0.02759999999999252,
+          "delta_pct": 0.023387531395212435,
+          "value": 118.0116
+        },
+        "30d": {
+          "date": "2026-04-08",
+          "delta": -1.0204000000000093,
+          "delta_pct": -0.8570497465135187,
+          "value": 119.0596
+        },
+        "7d": {
+          "date": "2026-05-01",
+          "delta": -0.3534000000000077,
+          "delta_pct": -0.29849838587885363,
+          "value": 118.3926
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-11",
+      "current_value": 101.56,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "wti_crude",
+      "label": "WTI Crude",
+      "primary_decimals": 1,
+      "primary_unit": "$",
+      "windows": {
+        "1d": {
+          "date": "2026-05-08",
+          "delta": 2.6899999999999977,
+          "delta_pct": 2.720744411853947,
+          "value": 98.87
+        },
+        "30d": {
+          "date": "2026-04-10",
+          "delta": 3.219999999999999,
+          "delta_pct": 3.2743542810656887,
+          "value": 98.34
+        },
+        "7d": {
+          "date": "2026-05-04",
+          "delta": -8.200000000000003,
+          "delta_pct": -7.470845481049565,
+          "value": 109.76
+        }
+      }
+    },
+    {
+      "current_date": "2026-04-01",
+      "current_value": 2.7433094309685258,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "inflation",
+      "label": "Core CPI YoY",
+      "primary_decimals": 1,
+      "primary_unit": "% YoY",
+      "windows": {
+        "1d": {
+          "date": "2026-03-01",
+          "delta": 0.141141725481706,
+          "delta_pct": 5.424005731225569,
+          "value": 2.6021677054868197
+        },
+        "30d": {
+          "date": "2026-03-01",
+          "delta": 0.141141725481706,
+          "delta_pct": 5.424005731225569,
+          "value": 2.6021677054868197
+        },
+        "7d": {
+          "date": "2026-03-01",
+          "delta": 0.141141725481706,
+          "delta_pct": 5.424005731225569,
+          "value": 2.6021677054868197
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-09",
+      "current_value": 211.0,
+      "direction": "support",
+      "freshness_status": "ok",
+      "id": "labor_claims",
+      "label": "Initial Claims",
+      "primary_decimals": 0,
+      "primary_unit": "k",
+      "windows": {
+        "1d": {
+          "date": "2026-05-02",
+          "delta": 12.0,
+          "delta_pct": 6.030150753768844,
+          "value": 199.0
+        },
+        "30d": {
+          "date": "2026-04-04",
+          "delta": -7.0,
+          "delta_pct": -3.211009174311927,
+          "value": 218.0
+        },
+        "7d": {
+          "date": "2026-05-02",
+          "delta": 12.0,
+          "delta_pct": 6.030150753768844,
+          "value": 199.0
+        }
+      }
+    },
+    {
+      "current_date": "2026-04-01",
+      "current_value": 158736.0,
+      "direction": "support",
+      "freshness_status": "ok",
+      "id": "payrolls",
+      "label": "Nonfarm Payrolls",
+      "primary_decimals": 0,
+      "primary_unit": "k",
+      "windows": {
+        "1d": {
+          "date": "2026-03-01",
+          "delta": 115.0,
+          "delta_pct": 0.07249985815245144,
+          "value": 158621.0
+        },
+        "30d": {
+          "date": "2026-03-01",
+          "delta": 115.0,
+          "delta_pct": 0.07249985815245144,
+          "value": 158621.0
+        },
+        "7d": {
+          "date": "2026-03-01",
+          "delta": 115.0,
+          "delta_pct": 0.07249985815245144,
+          "value": 158621.0
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-12",
+      "current_value": -21.0306,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "sp500_positioning",
+      "label": "SP500 Lev-Money",
+      "primary_decimals": 0,
+      "primary_unit": "",
+      "windows": {
+        "1d": {
+          "date": "2026-05-05",
+          "delta": -0.6111000000000004,
+          "delta_pct": 2.992727539851615,
+          "value": -20.4195
+        },
+        "30d": {
+          "date": "2026-04-07",
+          "delta": -8.357099999999999,
+          "delta_pct": 65.94153154219433,
+          "value": -12.6735
+        },
+        "7d": {
+          "date": "2026-05-05",
+          "delta": -0.6111000000000004,
+          "delta_pct": 2.992727539851615,
+          "value": -20.4195
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-08",
+      "current_value": 0.6707474088920344,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "term_premium",
+      "label": "10Y Term Premium",
+      "primary_decimals": 2,
+      "primary_unit": "%",
+      "windows": {
+        "1d": {
+          "date": "2026-05-07",
+          "delta": -0.024281031525760888,
+          "delta_pct": -3.493530640438984,
+          "value": 0.6950284404177953
+        },
+        "30d": {
+          "date": "2026-04-08",
+          "delta": 0.016044450527136878,
+          "delta_pct": 2.4506457962565875,
+          "value": 0.6547029583648976
+        },
+        "7d": {
+          "date": "2026-05-01",
+          "delta": -0.03830675560714525,
+          "delta_pct": -5.4025147196197825,
+          "value": 0.7090541644991797
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-15",
+      "current_value": 2.49,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "breakeven_10y",
+      "label": "10Y Breakeven",
+      "primary_decimals": 2,
+      "primary_unit": "%",
+      "windows": {
+        "1d": {
+          "date": "2026-05-14",
+          "delta": 0.020000000000000018,
+          "delta_pct": 0.8097165991902842,
+          "value": 2.47
+        },
+        "30d": {
+          "date": "2026-04-15",
+          "delta": 0.10000000000000009,
+          "delta_pct": 4.184100418410045,
+          "value": 2.39
+        },
+        "7d": {
+          "date": "2026-05-08",
+          "delta": 0.040000000000000036,
+          "delta_pct": 1.632653061224491,
+          "value": 2.45
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-14",
+      "current_value": 47.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "yield_curve",
+      "label": "10Y\u22122Y",
+      "primary_decimals": 0,
+      "primary_unit": " bp",
+      "windows": {
+        "1d": {
+          "date": "2026-05-13",
+          "delta": -1.0,
+          "delta_pct": -2.083333333333333,
+          "value": 48.0
+        },
+        "30d": {
+          "date": "2026-04-14",
+          "delta": -3.0,
+          "delta_pct": -6.0,
+          "value": 50.0
+        },
+        "7d": {
+          "date": "2026-05-07",
+          "delta": -2.0,
+          "delta_pct": -4.081632653061225,
+          "value": 49.0
+        }
+      }
+    },
+    {
+      "current_date": "2026-05-13",
+      "current_value": 5.8861989999999995,
+      "direction": "support",
+      "freshness_status": "ok",
+      "id": "net_liquidity",
+      "label": "Net Liquidity",
+      "primary_decimals": 1,
+      "primary_unit": " T",
+      "windows": {
+        "1d": {
+          "date": "2026-05-06",
+          "delta": 0.056087999999999916,
+          "delta_pct": 0.9620400023258548,
+          "value": 5.830111
+        },
+        "30d": {
+          "date": "2026-04-08",
+          "delta": -0.05911899999999992,
+          "delta_pct": -0.9943791063825338,
+          "value": 5.945317999999999
+        },
+        "7d": {
+          "date": "2026-05-06",
+          "delta": 0.056087999999999916,
+          "delta_pct": 0.9620400023258548,
+          "value": 5.830111
+        }
+      }
+    }
+  ]
+}
