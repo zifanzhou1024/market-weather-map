@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import DollarPressureHero from "../components/charts/DollarPressureHero";
-import DataGapPanel from "../components/DataGapPanel";
-import DataStatusTable from "../components/DataStatusTable";
-import InterpretationPanel from "../components/InterpretationPanel";
-import MetricCard from "../components/MetricCard";
-import PageInsightHero from "../components/PageInsightHero";
-import RouteDataFooter from "../components/RouteDataFooter";
-import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus } from "../lib/data";
-import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { hasObservations, loadRouteSeries } from "./routeSeries";
+import DollarPressureHero from "../charts/DollarPressureHero";
+import DataGapPanel from "../DataGapPanel";
+import DataStatusTable from "../DataStatusTable";
+import InterpretationPanel from "../InterpretationPanel";
+import MetricCard from "../MetricCard";
+import PageInsightHero from "../PageInsightHero";
+import RouteDataFooter from "../RouteDataFooter";
+import TimeSeriesChart from "../TimeSeriesChart";
+import { loadCatalog, loadDataStatus } from "../../lib/data";
+import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { hasObservations, loadRouteSeries } from "../../routes/routeSeries";
 
 const dollarSeriesIds = ["broad_dollar", "usdjpy", "eurusd"];
 
@@ -19,7 +19,7 @@ interface RouteState {
   status: DataStatusFile;
 }
 
-export default function DollarGlobal() {
+export default function DollarTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,12 +46,7 @@ export default function DollarGlobal() {
   const broadDollar = data?.series.find((series) => series.series_id === "broad_dollar");
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Dollar & Global</p>
-        <h2>Dollar & Global</h2>
-        <p>Broad dollar and major currency pairs.</p>
-      </section>
+    <section data-testid="dollar-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -107,6 +102,6 @@ export default function DollarGlobal() {
           </RouteDataFooter>
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }

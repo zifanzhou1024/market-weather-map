@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
-import DataGapPanel from "../components/DataGapPanel";
-import DataStatusTable from "../components/DataStatusTable";
-import FocusBlock from "../components/FocusBlock";
-import InterpretationPanel from "../components/InterpretationPanel";
-import MetricCard from "../components/MetricCard";
-import PageInsightHero from "../components/PageInsightHero";
-import RouteDataFooter from "../components/RouteDataFooter";
-import TimeSeriesChart from "../components/TimeSeriesChart";
-import YieldChangeWaterfallChart from "../components/charts/YieldChangeWaterfallChart";
-import YieldCurveComparisonChart from "../components/charts/YieldCurveComparisonChart";
-import YieldDecompositionChart from "../components/YieldDecompositionChart";
-import YieldDecompositionStackChart from "../components/charts/YieldDecompositionStackChart";
+import CandidateDiagnosticPanel from "../CandidateDiagnosticPanel";
+import DataGapPanel from "../DataGapPanel";
+import DataStatusTable from "../DataStatusTable";
+import FocusBlock from "../FocusBlock";
+import InterpretationPanel from "../InterpretationPanel";
+import MetricCard from "../MetricCard";
+import PageInsightHero from "../PageInsightHero";
+import RouteDataFooter from "../RouteDataFooter";
+import TimeSeriesChart from "../TimeSeriesChart";
+import YieldChangeWaterfallChart from "../charts/YieldChangeWaterfallChart";
+import YieldCurveComparisonChart from "../charts/YieldCurveComparisonChart";
+import YieldDecompositionChart from "../YieldDecompositionChart";
+import YieldDecompositionStackChart from "../charts/YieldDecompositionStackChart";
 import {
   loadCatalog,
   loadDataStatus,
@@ -19,8 +19,8 @@ import {
   loadPageInsights,
   loadRatesDashboard,
   loadRegimeSnapshot
-} from "../lib/data";
-import { directionLabel, yieldDriverLabel } from "../lib/regime";
+} from "../../lib/data";
+import { directionLabel, yieldDriverLabel } from "../../lib/regime";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
@@ -30,8 +30,8 @@ import type {
   RegimeSnapshotFile,
   SeriesCatalogEntry,
   TimeSeriesFile
-} from "../lib/types";
-import { hasObservations, loadRouteSeries } from "./routeSeries";
+} from "../../lib/types";
+import { hasObservations, loadRouteSeries } from "../../routes/routeSeries";
 
 const ratesSeriesIds = [
   "us2y",
@@ -71,7 +71,7 @@ function breakevenDirection(snapshot: RegimeSnapshotFile): DirectionState {
   return "flat";
 }
 
-export default function Rates() {
+export default function RatesTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
@@ -140,12 +140,7 @@ export default function Rates() {
     : undefined;
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Rates & Policy</p>
-        <h2>Rates & Policy</h2>
-        <p>Nominal yields, real yields, and breakevens.</p>
-      </section>
+    <section data-testid="rates-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -254,6 +249,6 @@ export default function Rates() {
           </RouteDataFooter>
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }

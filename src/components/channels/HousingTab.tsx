@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import HousingActivityHero from "../components/charts/HousingActivityHero";
-import DataGapPanel from "../components/DataGapPanel";
-import DataStatusTable from "../components/DataStatusTable";
-import InterpretationPanel from "../components/InterpretationPanel";
-import MetricCard from "../components/MetricCard";
-import PageInsightHero from "../components/PageInsightHero";
-import RouteDataFooter from "../components/RouteDataFooter";
-import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus } from "../lib/data";
-import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { hasObservations, loadRouteSeries } from "./routeSeries";
+import HousingActivityHero from "../charts/HousingActivityHero";
+import DataGapPanel from "../DataGapPanel";
+import DataStatusTable from "../DataStatusTable";
+import InterpretationPanel from "../InterpretationPanel";
+import MetricCard from "../MetricCard";
+import PageInsightHero from "../PageInsightHero";
+import RouteDataFooter from "../RouteDataFooter";
+import TimeSeriesChart from "../TimeSeriesChart";
+import { loadCatalog, loadDataStatus } from "../../lib/data";
+import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { hasObservations, loadRouteSeries } from "../../routes/routeSeries";
 
 const housingSeriesIds = ["housing_starts", "building_permits", "mortgage_rate_30y"];
 
@@ -19,7 +19,7 @@ interface RouteState {
   status: DataStatusFile;
 }
 
-export default function Housing() {
+export default function HousingTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,12 +56,7 @@ export default function Housing() {
       mortgageRate30y.observations.length > 0);
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Housing</p>
-        <h2>Housing</h2>
-        <p>Construction activity, permits, and mortgage-rate sensitivity.</p>
-      </section>
+    <section data-testid="housing-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -121,6 +116,6 @@ export default function Housing() {
           </RouteDataFooter>
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }

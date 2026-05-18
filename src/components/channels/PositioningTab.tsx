@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import SentimentPositioningHero from "../components/charts/SentimentPositioningHero";
-import DataGapPanel from "../components/DataGapPanel";
-import DataStatusTable from "../components/DataStatusTable";
-import FocusBlock from "../components/FocusBlock";
-import InterpretationPanel from "../components/InterpretationPanel";
-import MetricCard from "../components/MetricCard";
-import PageInsightHero from "../components/PageInsightHero";
-import RouteDataFooter from "../components/RouteDataFooter";
-import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus, loadPageInsights, loadSeries } from "../lib/data";
-import type { DataStatusFile, PageInsightsFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import SentimentPositioningHero from "../charts/SentimentPositioningHero";
+import DataGapPanel from "../DataGapPanel";
+import DataStatusTable from "../DataStatusTable";
+import FocusBlock from "../FocusBlock";
+import InterpretationPanel from "../InterpretationPanel";
+import MetricCard from "../MetricCard";
+import PageInsightHero from "../PageInsightHero";
+import RouteDataFooter from "../RouteDataFooter";
+import TimeSeriesChart from "../TimeSeriesChart";
+import { loadCatalog, loadDataStatus, loadPageInsights, loadSeries } from "../../lib/data";
+import type { DataStatusFile, PageInsightsFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
 
 const sentimentSeriesIds = ["cftc_sp500_asset_mgr_net", "cftc_sp500_lev_money_net"];
 
@@ -19,7 +19,7 @@ interface RouteState {
   status: DataStatusFile;
 }
 
-export default function Sentiment() {
+export default function PositioningTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
@@ -59,12 +59,7 @@ export default function Sentiment() {
   const leveragedMoney = data?.series.find((series) => series.series_id === "cftc_sp500_lev_money_net");
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Sentiment & Positioning</p>
-        <h2>Sentiment & Positioning</h2>
-        <p>S&P 500 asset manager and leveraged money net positioning from CFTC public data.</p>
-      </section>
+    <section data-testid="positioning-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -129,6 +124,6 @@ export default function Sentiment() {
           </RouteDataFooter>
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }

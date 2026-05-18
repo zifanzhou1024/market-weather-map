@@ -4,40 +4,26 @@ import PersistentRegimeHeader from "./PersistentRegimeHeader";
 import { loadCockpit } from "../lib/data";
 import type { CockpitFile } from "../lib/types";
 
-const navSections = [
-  {
-    label: "Primary Views",
-    items: [
-      { to: "/", label: "Overview" },
-      { to: "/short-term", label: "Short-Term", ariaLabel: "Short-Term Market Reaction" },
-      { to: "/long-term", label: "Long-Term", ariaLabel: "Long-Term Macro / Allocation Climate" },
-      { to: "/fragility", label: "Fragility" },
-      { to: "/regime-map", label: "Regime Map" },
-      { to: "/replay", label: "Replay", ariaLabel: "Historical Regime Replay" }
-    ]
-  },
-  {
-    label: "Data Library",
-    items: [
-      { to: "/volatility", label: "Volatility" },
-      { to: "/rates", label: "Rates" },
-      { to: "/liquidity", label: "Liquidity" },
-      { to: "/credit", label: "Credit" },
-      { to: "/dollar-global", label: "Dollar" },
-      { to: "/commodities", label: "Commodities" },
-      { to: "/growth", label: "Growth" },
-      { to: "/housing", label: "Housing" },
-      { to: "/inflation", label: "Inflation" },
-      { to: "/sentiment", label: "Positioning" }
-    ]
-  },
-  {
-    label: "Reference",
-    items: [
-      { to: "/calendar", label: "Calendar" },
-      { to: "/methodology", label: "Methodology" }
-    ]
-  }
+interface NavItem {
+  to: string;
+  label: string;
+  ariaLabel?: string;
+  end?: boolean;
+}
+
+const navItems: readonly NavItem[] = [
+  { to: "/", label: "Overview", end: true },
+  { to: "/short-term", label: "Short-Term", ariaLabel: "Short-Term Market Reaction" },
+  { to: "/long-term", label: "Long-Term", ariaLabel: "Long-Term Macro / Allocation Climate" },
+  { to: "/fragility", label: "Fragility" },
+  { to: "/channels", label: "Channels" },
+  // PR 5 placeholder — PR 6 wires /history and updates this `to`.
+  { to: "/regime-map", label: "History" }
+];
+
+const moreItems: readonly NavItem[] = [
+  { to: "/calendar", label: "Calendar" },
+  { to: "/methodology", label: "Methodology" }
 ];
 
 export default function AppLayout() {
@@ -66,22 +52,31 @@ export default function AppLayout() {
           <h1>Market Weather Map</h1>
         </div>
         <nav className="site-nav" aria-label="Primary navigation">
-          {navSections.map((section) => (
-            <div className="nav-section" key={section.label}>
-              <span className="nav-section__label">{section.label}</span>
-              {section.items.map((item) => (
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              aria-label={item.ariaLabel}
+              className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+              end={item.end}
+            >
+              {item.label}
+            </NavLink>
+          ))}
+          <details className="site-nav__more">
+            <summary className="nav-link">More</summary>
+            <div className="site-nav__more-menu">
+              {moreItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  aria-label={item.ariaLabel}
                   className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
-                  end={item.to === "/"}
                 >
                   {item.label}
                 </NavLink>
               ))}
             </div>
-          ))}
+          </details>
         </nav>
       </header>
       <Outlet />

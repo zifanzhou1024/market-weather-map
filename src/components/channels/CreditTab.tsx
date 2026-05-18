@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import CreditSpreadMatrixHero from "../components/charts/CreditSpreadMatrixHero";
-import DataGapPanel from "../components/DataGapPanel";
-import DataStatusTable from "../components/DataStatusTable";
-import InterpretationPanel from "../components/InterpretationPanel";
-import MetricCard from "../components/MetricCard";
-import PageInsightHero from "../components/PageInsightHero";
-import RouteDataFooter from "../components/RouteDataFooter";
-import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus } from "../lib/data";
-import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { hasObservations, loadRouteDerivedSeries, loadRouteSeries } from "./routeSeries";
+import CreditSpreadMatrixHero from "../charts/CreditSpreadMatrixHero";
+import DataGapPanel from "../DataGapPanel";
+import DataStatusTable from "../DataStatusTable";
+import InterpretationPanel from "../InterpretationPanel";
+import MetricCard from "../MetricCard";
+import PageInsightHero from "../PageInsightHero";
+import RouteDataFooter from "../RouteDataFooter";
+import TimeSeriesChart from "../TimeSeriesChart";
+import { loadCatalog, loadDataStatus } from "../../lib/data";
+import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { hasObservations, loadRouteDerivedSeries, loadRouteSeries } from "../../routes/routeSeries";
 
 const creditSeriesIds = [
   "high_yield_oas",
@@ -54,7 +54,7 @@ function creditDerivedEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
   };
 }
 
-export default function Credit() {
+export default function CreditTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -96,12 +96,7 @@ export default function Credit() {
       bbbOasSeries.observations.length > 0);
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Credit & Banking</p>
-        <h2>Credit & Banking</h2>
-        <p>Credit spreads, financial stress, banking system liquidity, lending, and deposits.</p>
-      </section>
+    <section data-testid="credit-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -163,6 +158,6 @@ export default function Credit() {
           </RouteDataFooter>
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }

@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import LiquidityDecompositionHero from "../components/charts/LiquidityDecompositionHero";
-import DataGapPanel from "../components/DataGapPanel";
-import DataStatusTable from "../components/DataStatusTable";
-import InterpretationPanel from "../components/InterpretationPanel";
-import MetricCard from "../components/MetricCard";
-import PageInsightHero from "../components/PageInsightHero";
-import RouteDataFooter from "../components/RouteDataFooter";
-import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus } from "../lib/data";
-import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { hasObservations, loadRouteDerivedSeries, loadRouteSeries } from "./routeSeries";
+import LiquidityDecompositionHero from "../charts/LiquidityDecompositionHero";
+import DataGapPanel from "../DataGapPanel";
+import DataStatusTable from "../DataStatusTable";
+import InterpretationPanel from "../InterpretationPanel";
+import MetricCard from "../MetricCard";
+import PageInsightHero from "../PageInsightHero";
+import RouteDataFooter from "../RouteDataFooter";
+import TimeSeriesChart from "../TimeSeriesChart";
+import { loadCatalog, loadDataStatus } from "../../lib/data";
+import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { hasObservations, loadRouteDerivedSeries, loadRouteSeries } from "../../routes/routeSeries";
 
 const liquiditySeriesIds = ["fed_assets", "reverse_repo", "treasury_general_account", "sofr", "reserve_balances"];
 const liquidityStatusIds = ["net_liquidity", ...liquiditySeriesIds];
@@ -21,7 +21,7 @@ interface RouteState {
   status: DataStatusFile;
 }
 
-export default function Liquidity() {
+export default function LiquidityTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,12 +73,7 @@ export default function Liquidity() {
     : undefined;
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Liquidity</p>
-        <h2>Funding and balance sheet</h2>
-        <p>Net liquidity, Fed assets, reverse repo, Treasury General Account, SOFR, and reserve balances.</p>
-      </section>
+    <section data-testid="liquidity-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -132,6 +127,6 @@ export default function Liquidity() {
           </RouteDataFooter>
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }

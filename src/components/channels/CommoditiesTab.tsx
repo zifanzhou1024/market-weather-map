@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import CommodityImpulseHero from "../components/charts/CommodityImpulseHero";
-import DataGapPanel from "../components/DataGapPanel";
-import DataStatusTable from "../components/DataStatusTable";
-import InterpretationPanel from "../components/InterpretationPanel";
-import MetricCard from "../components/MetricCard";
-import PageInsightHero from "../components/PageInsightHero";
-import RouteDataFooter from "../components/RouteDataFooter";
-import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus, loadDerivedSeries, loadSeries } from "../lib/data";
-import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { loadRouteDerivedSeries } from "./routeSeries";
+import CommodityImpulseHero from "../charts/CommodityImpulseHero";
+import DataGapPanel from "../DataGapPanel";
+import DataStatusTable from "../DataStatusTable";
+import InterpretationPanel from "../InterpretationPanel";
+import MetricCard from "../MetricCard";
+import PageInsightHero from "../PageInsightHero";
+import RouteDataFooter from "../RouteDataFooter";
+import TimeSeriesChart from "../TimeSeriesChart";
+import { loadCatalog, loadDataStatus, loadDerivedSeries, loadSeries } from "../../lib/data";
+import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { loadRouteDerivedSeries } from "../../routes/routeSeries";
 
 const commoditySeriesIds = ["wti_crude", "brent_crude", "corn_price", "wheat_price", "soybean_price"];
 const commodityStatusIds = ["commodity_inflation_impulse", ...commoditySeriesIds, "brent_wti_spread"];
@@ -66,7 +66,7 @@ function commodityImpulseEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
   };
 }
 
-export default function Commodities() {
+export default function CommoditiesTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -101,12 +101,7 @@ export default function Commodities() {
   const impulseCatalogEntry = data ? commodityImpulseEntry(data.impulse) : undefined;
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Commodities</p>
-        <h2>Energy and grains</h2>
-        <p>Commodity price levels, inflation impulse, and the Brent-WTI spread.</p>
-      </section>
+    <section data-testid="commodities-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -150,6 +145,6 @@ export default function Commodities() {
           </RouteDataFooter>
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }

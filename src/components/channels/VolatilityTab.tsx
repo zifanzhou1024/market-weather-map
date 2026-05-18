@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import CandidateSourcePanel, { type CandidateSourceItem } from "../components/CandidateSourcePanel";
-import DataStatusTable from "../components/DataStatusTable";
-import FocusBlock from "../components/FocusBlock";
-import InterpretationPanel from "../components/InterpretationPanel";
-import MetricCard from "../components/MetricCard";
-import MultiSeriesChart, { type MultiSeriesChartSeries } from "../components/MultiSeriesChart";
-import PageInsightHero from "../components/PageInsightHero";
-import PercentileBandChart from "../components/PercentileBandChart";
-import RouteDataFooter from "../components/RouteDataFooter";
-import SourceNote from "../components/SourceNote";
-import TimeSeriesChart from "../components/TimeSeriesChart";
-import VixCurveTermStructureChart from "../components/charts/VixCurveTermStructureChart";
-import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
-import VixRatioHistoryChart from "../components/charts/VixRatioHistoryChart";
-import VolatilityHiddenStressChart from "../components/charts/VolatilityHiddenStressChart";
-import { applyCandidateDisplayOverride } from "../lib/candidateDisplay";
-import { loadCatalog, loadDataStatus, loadPageInsights, loadSeries, loadVolatilityDashboard } from "../lib/data";
+import CandidateSourcePanel, { type CandidateSourceItem } from "../CandidateSourcePanel";
+import DataStatusTable from "../DataStatusTable";
+import FocusBlock from "../FocusBlock";
+import InterpretationPanel from "../InterpretationPanel";
+import MetricCard from "../MetricCard";
+import MultiSeriesChart, { type MultiSeriesChartSeries } from "../MultiSeriesChart";
+import PageInsightHero from "../PageInsightHero";
+import PercentileBandChart from "../PercentileBandChart";
+import RouteDataFooter from "../RouteDataFooter";
+import SourceNote from "../SourceNote";
+import TimeSeriesChart from "../TimeSeriesChart";
+import VixCurveTermStructureChart from "../charts/VixCurveTermStructureChart";
+import VixFuturesReadinessPanel from "../VixFuturesReadinessPanel";
+import VixRatioHistoryChart from "../charts/VixRatioHistoryChart";
+import VolatilityHiddenStressChart from "../charts/VolatilityHiddenStressChart";
+import { applyCandidateDisplayOverride } from "../../lib/candidateDisplay";
+import { loadCatalog, loadDataStatus, loadPageInsights, loadSeries, loadVolatilityDashboard } from "../../lib/data";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
@@ -23,8 +23,8 @@ import type {
   SeriesCatalogEntry,
   TimeSeriesFile,
   VolatilityDashboardFile
-} from "../lib/types";
-import { loadRouteDerivedSeries } from "./routeSeries";
+} from "../../lib/types";
+import { loadRouteDerivedSeries } from "../../routes/routeSeries";
 
 const volatilitySeriesIds = ["vix", "vvix", "vix9d", "vix3m"];
 const volatilityDerivedIds = ["vix9d_vix_ratio", "vix_vix3m_ratio"];
@@ -143,7 +143,7 @@ function candidateItems(
   });
 }
 
-export default function Volatility() {
+export default function VolatilityTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
@@ -188,12 +188,7 @@ export default function Volatility() {
   const vix = data?.series.find((series) => series.series_id === "vix");
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Volatility</p>
-        <h2>VIX state</h2>
-        <p>Delayed Cboe volatility term-structure history with percentile context.</p>
-      </section>
+    <section data-testid="volatility-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -293,6 +288,6 @@ export default function Volatility() {
           </RouteDataFooter>
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }

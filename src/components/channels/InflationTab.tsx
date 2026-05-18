@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import InflationSpreadHero from "../components/charts/InflationSpreadHero";
-import DataGapPanel from "../components/DataGapPanel";
-import DataStatusTable from "../components/DataStatusTable";
-import InterpretationPanel from "../components/InterpretationPanel";
-import MetricCard from "../components/MetricCard";
-import PageInsightHero from "../components/PageInsightHero";
-import RouteDataFooter from "../components/RouteDataFooter";
-import TimeSeriesChart from "../components/TimeSeriesChart";
-import { loadCatalog, loadDataStatus } from "../lib/data";
-import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
-import { hasObservations, loadRouteSeries } from "./routeSeries";
+import InflationSpreadHero from "../charts/InflationSpreadHero";
+import DataGapPanel from "../DataGapPanel";
+import DataStatusTable from "../DataStatusTable";
+import InterpretationPanel from "../InterpretationPanel";
+import MetricCard from "../MetricCard";
+import PageInsightHero from "../PageInsightHero";
+import RouteDataFooter from "../RouteDataFooter";
+import TimeSeriesChart from "../TimeSeriesChart";
+import { loadCatalog, loadDataStatus } from "../../lib/data";
+import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { hasObservations, loadRouteSeries } from "../../routes/routeSeries";
 
 const inflationSeriesIds = [
   "headline_cpi",
@@ -27,7 +27,7 @@ interface RouteState {
   status: DataStatusFile;
 }
 
-export default function Inflation() {
+export default function InflationTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,12 +68,7 @@ export default function Inflation() {
       forwardInflation5y5y.observations.length > 0);
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Inflation</p>
-        <h2>Inflation</h2>
-        <p>Price pressure and market expectations.</p>
-      </section>
+    <section data-testid="inflation-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -134,6 +129,6 @@ export default function Inflation() {
           </RouteDataFooter>
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }
