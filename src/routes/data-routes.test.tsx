@@ -3218,9 +3218,21 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __routesDir = dirname(__filename);
 
-// All 18 route source files (every file under src/routes/ except the test).
+// Shell routes that delegate data-footer responsibility to inner tab bodies.
+// Channels.tsx is the tabbed shell introduced by PR 5; each ChannelTab body
+// carries its own <RouteDataFooter> (or the legacy detail route already
+// contains one). The shell itself only renders <ChannelTabs> + <Suspense>.
+const SHELL_ROUTE_FILES = new Set<string>(["Channels.tsx"]);
+
+// All 18 route source files (every file under src/routes/ except the test
+// and shell routes that delegate the data-footer to their tab bodies).
 const ALL_ROUTE_FILES = readdirSync(__routesDir)
-  .filter((name) => name.endsWith(".tsx") && name !== "data-routes.test.tsx")
+  .filter(
+    (name) =>
+      name.endsWith(".tsx") &&
+      name !== "data-routes.test.tsx" &&
+      !SHELL_ROUTE_FILES.has(name)
+  )
   .sort();
 
 // Routes that consume PageInsightHero (the 12 single-domain content routes).
