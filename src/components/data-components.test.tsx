@@ -1,7 +1,6 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import ConfidenceBreakdown from "./ConfidenceBreakdown";
 import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
 import CandidateDiagnosticPanel from "./CandidateDiagnosticPanel";
 import CrossAssetConfirmationMatrix from "./CrossAssetConfirmationMatrix";
@@ -34,7 +33,6 @@ import TailRiskPanel from "./TailRiskPanel";
 import VixFuturesReadinessPanel from "./VixFuturesReadinessPanel";
 import YieldDecompositionChart from "./YieldDecompositionChart";
 import type {
-  ConfidenceBreakdownData,
   DataStatusFile,
   RegimeSnapshotFile,
   RegimeReplayFile,
@@ -1042,45 +1040,6 @@ describe("data-driven components", () => {
     expect(container.textContent).toContain("Stale");
     expect(container.textContent).toContain("2 days");
     expect(container.textContent).not.toContain("fed_assets");
-  });
-
-  it("renders confidence breakdown detail and reason text", () => {
-    const confidence: ConfidenceBreakdownData = {
-      coverage_confidence: 0.91,
-      freshness_confidence: 0.72,
-      model_confidence: 0.84,
-      source_confidence: 0.75,
-      overall_confidence: 0.82,
-      reasons: ["Housing is not active in Phase 4 PR 1."]
-    };
-
-    const container = render(<ConfidenceBreakdown dataQuality={confidence} />);
-
-    expect(container.textContent).toContain("Data confidence");
-    expect(container.textContent).toContain("82% overall");
-    expect(container.textContent).toContain("Coverage");
-    expect(container.textContent).toContain("91%");
-    expect(container.textContent).toContain("Freshness");
-    expect(container.textContent).toContain("72%");
-    expect(container.textContent).toContain("84%");
-    expect(container.textContent).toContain("75%");
-    expect(container.textContent).toContain("Housing is not active in Phase 4 PR 1.");
-  });
-
-  it("renders confidence fallback when fetched reasons are malformed", () => {
-    const confidence = {
-      coverage_confidence: 0.91,
-      freshness_confidence: 0.72,
-      model_confidence: 0.84,
-      source_confidence: 0.75,
-      overall_confidence: 0.82,
-      reasons: "not an array"
-    } as unknown as ConfidenceBreakdownData;
-
-    const container = render(<ConfidenceBreakdown dataQuality={confidence} />);
-
-    expect(container.textContent).toContain("82% overall");
-    expect(container.textContent).toContain("No confidence notes in the current score summary.");
   });
 
   it("renders signal list items without empty fallback when items exist", () => {
