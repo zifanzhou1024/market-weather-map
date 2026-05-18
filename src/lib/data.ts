@@ -3,6 +3,7 @@ import type {
   CockpitFile,
   DataStatusFile,
   DerivedSeriesFile,
+  DiffFile,
   MacroCalendarFile,
   PageInsightsFile,
   RatesDashboardFile,
@@ -153,4 +154,8 @@ export function loadRegimeDashboard(): Promise<RegimeDashboardFile | null> {
 
 export function loadCockpit(): Promise<CockpitFile> {
   return loadJson<CockpitFile>("/data/derived/cockpit.json");
+}
+
+export function loadDiff(): Promise<DiffFile> {
+  return loadJson<DiffFile>("/data/derived/diff.json");
 }

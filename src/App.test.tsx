@@ -91,13 +91,14 @@ describe("App routing", () => {
     expect(container.querySelector('a[href="/tactical"]')).toBeNull();
     expect(container.querySelector('a[href="/macro-climate"]')).toBeNull();
 
-    // Calendar + Methodology are now inside the More disclosure.
+    // Diff + Calendar + Methodology now sit inside the More disclosure;
+    // Diff is the newest addition and ranks first.
     const moreDetails = container.querySelector(".site-nav__more");
     expect(moreDetails?.tagName.toLowerCase()).toBe("details");
     const moreLinks = Array.from(moreDetails?.querySelectorAll("a") ?? []).map((a) =>
       a.textContent?.trim()
     );
-    expect(moreLinks).toEqual(["Calendar", "Methodology"]);
+    expect(moreLinks).toEqual(["Diff", "Calendar", "Methodology"]);
   });
 
   it("redirects unknown routes to the overview", async () => {

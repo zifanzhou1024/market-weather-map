@@ -773,3 +773,40 @@ export interface CockpitFile {
   vital_signs: CockpitVitalSign[];
   candidates_not_shown: CockpitCandidateNotShown[];
 }
+
+// /diff route (Phase F — what flipped since yesterday)
+// Source: public/data/derived/diff.json produced by build_diff.py.
+// Reuses CockpitDirection + CockpitFreshnessStatus to keep the cockpit and
+// diff routes in sync on enum drift.
+export type DiffWindowKey = "1d" | "7d" | "30d";
+
+export interface DiffWindowEntry {
+  /** Base-of-window value in display units (post scale + transform). */
+  value: number | null;
+  /** Date of the base observation. */
+  date: string | null;
+  /** current_value - value, in display units. */
+  delta: number | null;
+  /** Percent change (delta / base * 100). null when base is zero or rounds to undefined. */
+  delta_pct: number | null;
+}
+
+export interface DiffRow {
+  id: string;
+  label: string;
+  direction: CockpitDirection;
+  primary_unit: string;
+  primary_decimals: number;
+  current_value: number | null;
+  current_date: string | null;
+  windows: Record<DiffWindowKey, DiffWindowEntry>;
+  freshness_status: CockpitFreshnessStatus;
+}
+
+export interface DiffFile {
+  generated_at_utc: string;
+  date: string;
+  method_version: string;
+  composite_scores: DiffRow[];
+  vital_signs: DiffRow[];
+}
