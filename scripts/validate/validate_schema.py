@@ -1379,11 +1379,13 @@ DIFF_ROW_REQUIRED_KEYS = {
     "current_date",
     "windows",
     "freshness_status",
+    "frequency",
 }
 DIFF_WINDOW_KEYS = {"1d", "7d", "30d"}
 DIFF_WINDOW_ENTRY_KEYS = {"value", "date", "delta", "delta_pct"}
 DIFF_DIRECTIONS = {"risk", "support", "neutral"}
 DIFF_FRESHNESS_VALUES = {"ok", "stale", "unavailable"}
+DIFF_FREQUENCY_VALUES = {"daily", "weekly", "monthly", "quarterly"}
 
 
 def _validate_diff_row(row: Any, *, context: str) -> None:
@@ -1401,6 +1403,11 @@ def _validate_diff_row(row: Any, *, context: str) -> None:
         raise ValueError(
             f"diff.json {context}.freshness_status must be one of "
             f"{sorted(DIFF_FRESHNESS_VALUES)}; got {row['freshness_status']!r}"
+        )
+    if row["frequency"] not in DIFF_FREQUENCY_VALUES:
+        raise ValueError(
+            f"diff.json {context}.frequency must be one of "
+            f"{sorted(DIFF_FREQUENCY_VALUES)}; got {row['frequency']!r}"
         )
     windows = row["windows"]
     if not isinstance(windows, dict):

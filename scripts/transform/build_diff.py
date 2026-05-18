@@ -25,6 +25,7 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
+from scripts.shared.catalog import catalog_entries
 from scripts.shared.cockpit_whitelist import COCKPIT_WHITELIST, CockpitSignal
 from scripts.shared.io import utc_now_iso
 from scripts.transform._cockpit_inputs import load_series_observations
@@ -33,6 +34,39 @@ from scripts.transform._cockpit_math import parse_date
 METHOD_VERSION = "phase-f-diff-v1"
 WINDOWS: tuple[int, ...] = (1, 7, 30)
 COMPOSITE_SCORE_ORDER: tuple[str, ...] = ("market_weather", "macro_climate", "fragility")
+ALLOWED_FREQUENCIES: frozenset[str] = frozenset(
+    {"daily", "weekly", "monthly", "quarterly"}
+)
+# Composite scores ride on score_history.json, which is regenerated each
+# pipeline run (i.e. every business day). They have no catalog entry of
+# their own, so we hard-code a "daily" cadence pill for the composite rows.
+COMPOSITE_FREQUENCY = "daily"
+# Fallback for whitelist entries whose primary_series_id isn't in the
+# catalog (e.g. derived series like net_liquidity). The cockpit pipeline
+# refreshes derived series on each daily run, so "daily" is the right
+# default to surface for these rows.
+DEFAULT_FREQUENCY = "daily"
+
+
+def _frequency_lookup() -> dict[str, str]:
+    """Map ``series_id`` to its catalog ``frequency``.
+
+    Unknown frequencies (or entries without one) are coerced to
+    :data:`DEFAULT_FREQUENCY` so the resulting map always has values from
+    :data:`ALLOWED_FREQUENCIES`. The schema validator and Python tests
+    enforce that contract end-to-end.
+    """
+    lookup: dict[str, str] = {}
+    for entry in catalog_entries():
+        sid = entry.get("id")
+        freq = entry.get("frequency")
+        if not isinstance(sid, str):
+            continue
+        if isinstance(freq, str) and freq in ALLOWED_FREQUENCIES:
+            lookup[sid] = freq
+        else:
+            lookup[sid] = DEFAULT_FREQUENCY
+    return lookup
 
 
 def _read_json(path: Path, default: Any) -> Any:
@@ -95,6 +129,7 @@ def _compose_row(
     value_scale: float,
     value_transform: str | None,
     observations: list[dict[str, Any]] | None,
+    frequency: str = DEFAULT_FREQUENCY,
 ) -> dict[str, Any]:
     """Compute the 3-window diff payload for a single signal row.
 
@@ -113,6 +148,7 @@ def _compose_row(
         "current_date": None,
         "windows": _empty_windows(),
         "freshness_status": "unavailable",
+        "frequency": frequency,
     }
 
     if observations is None or not observations:
@@ -167,6 +203,7 @@ def _compose_row(
         "current_date": current_date,
         "windows": windows_payload,
         "freshness_status": "ok",
+        "frequency": frequency,
     }
 
 
@@ -191,7 +228,9 @@ def _compose_composite_rows(score_history: dict[str, Any]) -> list[dict[str, Any
 
     Reads per-score time series from ``score_history.json`` and applies the
     same diff math as vital signs. No scale/transform — composites are
-    already in their display units.
+    already in their display units. The cadence pill is hard-coded
+    ``daily`` because ``score_history.json`` is regenerated each pipeline
+    run.
     """
     history_obs = score_history.get("observations", []) or []
     rows: list[dict[str, Any]] = []
@@ -211,25 +250,36 @@ def _compose_composite_rows(score_history: dict[str, Any]) -> list[dict[str, Any
             value_scale=1.0,
             value_transform=None,
             observations=series,
+            frequency=COMPOSITE_FREQUENCY,
         )
         rows.append(row)
     return rows
 
 
-def _compose_vital_rows(input_root: Path) -> list[dict[str, Any]]:
+def _compose_vital_rows(
+    input_root: Path, freq_map: dict[str, str] | None = None
+) -> list[dict[str, Any]]:
     """Build a diff row per :data:`COCKPIT_WHITELIST` entry.
 
     Missing series degrade to ``freshness_status: 'unavailable'`` rows so
     the frontend can render an em-dash placeholder; we never silently drop
     a whitelist entry — the row count stays stable across builds.
     """
+    if freq_map is None:
+        freq_map = _frequency_lookup()
     rows: list[dict[str, Any]] = []
     for entry in COCKPIT_WHITELIST:
-        rows.append(_compose_vital_row(entry, input_root))
+        rows.append(_compose_vital_row(entry, input_root, freq_map))
     return rows
 
 
-def _compose_vital_row(entry: CockpitSignal, input_root: Path) -> dict[str, Any]:
+def _compose_vital_row(
+    entry: CockpitSignal,
+    input_root: Path,
+    freq_map: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    if freq_map is None:
+        freq_map = _frequency_lookup()
     obs = _load_series(input_root, entry.primary_series_id)
     return _compose_row(
         id=entry.id,
@@ -240,6 +290,7 @@ def _compose_vital_row(entry: CockpitSignal, input_root: Path) -> dict[str, Any]
         value_scale=entry.value_scale,
         value_transform=entry.value_transform,
         observations=obs,
+        frequency=freq_map.get(entry.primary_series_id, DEFAULT_FREQUENCY),
     )
 
 
@@ -253,7 +304,7 @@ def build_diff_payload(input_root: Path) -> dict[str, Any]:
     score_history = _read_json(input_root / "derived" / "score_history.json", {})
     score_summary = _read_json(input_root / "derived" / "score_summary.json", {})
     composite_rows = _compose_composite_rows(score_history)
-    vital_rows = _compose_vital_rows(input_root)
+    vital_rows = _compose_vital_rows(input_root, _frequency_lookup())
     snapshot_date = _resolve_snapshot_date(
         score_summary,
         composite_rows,

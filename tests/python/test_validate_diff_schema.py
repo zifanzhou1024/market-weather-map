@@ -15,7 +15,13 @@ import pytest
 from scripts.validate.validate_schema import check_diff_schema
 
 
-def _row(*, row_id: str, direction: str = "risk", freshness: str = "ok") -> dict:
+def _row(
+    *,
+    row_id: str,
+    direction: str = "risk",
+    freshness: str = "ok",
+    frequency: str = "daily",
+) -> dict:
     return {
         "id": row_id,
         "label": row_id.replace("_", " ").title(),
@@ -30,6 +36,7 @@ def _row(*, row_id: str, direction: str = "risk", freshness: str = "ok") -> dict
             "30d": {"value": None, "date": None, "delta": None, "delta_pct": None},
         },
         "freshness_status": freshness,
+        "frequency": frequency,
     }
 
 
@@ -139,3 +146,24 @@ def test_composite_row_with_wrong_id_rejected(tmp_path):
     payload["composite_scores"][2]["id"] = "fragility_typo"
     with pytest.raises(ValueError, match="composite_scores order"):
         check_diff_schema(_write(payload, tmp_path))
+
+
+def test_invalid_frequency_value_rejected(tmp_path):
+    payload = _valid_payload()
+    payload["vital_signs"][0]["frequency"] = "hourly"
+    with pytest.raises(ValueError, match="frequency must be one of"):
+        check_diff_schema(_write(payload, tmp_path))
+
+
+def test_missing_frequency_field_rejected(tmp_path):
+    payload = _valid_payload()
+    del payload["vital_signs"][0]["frequency"]
+    with pytest.raises(ValueError, match="missing keys"):
+        check_diff_schema(_write(payload, tmp_path))
+
+
+@pytest.mark.parametrize("freq", ["daily", "weekly", "monthly", "quarterly"])
+def test_valid_frequency_values_accepted(tmp_path, freq):
+    payload = _valid_payload()
+    payload["vital_signs"][0]["frequency"] = freq
+    check_diff_schema(_write(payload, tmp_path))

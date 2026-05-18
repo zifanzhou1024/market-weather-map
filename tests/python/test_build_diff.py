@@ -20,11 +20,15 @@ from typing import Any
 import pytest
 
 from scripts.transform.build_diff import (
+    ALLOWED_FREQUENCIES,
+    COMPOSITE_FREQUENCY,
     COMPOSITE_SCORE_ORDER,
+    DEFAULT_FREQUENCY,
     METHOD_VERSION,
     WINDOWS,
     _compose_row,
     _empty_windows,
+    _frequency_lookup,
     _value_at_or_before,
     build_diff_payload,
 )
@@ -427,3 +431,115 @@ def test_build_diff_payload_windows_keys_exact(tmp_path):
     expected = {f"{d}d" for d in WINDOWS}
     for row in payload["composite_scores"] + payload["vital_signs"]:
         assert set(row["windows"].keys()) == expected
+
+
+# ---- frequency / cadence pill ---------------------------------------------
+
+
+def test_frequency_lookup_returns_known_series_frequencies():
+    """The catalog-driven lookup must include the cockpit's whitelist series
+    so the diff builder can propagate cadence pills end-to-end."""
+    lookup = _frequency_lookup()
+    # Daily FRED series
+    assert lookup["us10y"] == "daily"
+    # Weekly FRED series (jobless claims)
+    assert lookup["initial_claims"] == "weekly"
+    # Monthly FRED series (BLS payrolls / CPI)
+    assert lookup["nonfarm_payrolls"] == "monthly"
+    assert lookup["core_cpi"] == "monthly"
+    # Every emitted frequency must be in the allowed set
+    for freq in lookup.values():
+        assert freq in ALLOWED_FREQUENCIES
+
+
+def test_compose_row_default_frequency_is_daily():
+    """When ``frequency`` is omitted, the row falls back to ``daily`` so the
+    UI always has a value to render."""
+    row = _compose_row(
+        id="x",
+        label="X",
+        direction="risk",
+        primary_unit="",
+        primary_decimals=1,
+        value_scale=1.0,
+        value_transform=None,
+        observations=[
+            {"date": "2026-05-14", "value": 1.0},
+            {"date": "2026-05-15", "value": 2.0},
+        ],
+    )
+    assert row["frequency"] == DEFAULT_FREQUENCY == "daily"
+
+
+def test_compose_row_preserves_frequency_on_unavailable():
+    """An unavailable row (no observations) still carries a frequency pill
+    so the user knows why the row is empty."""
+    row = _compose_row(
+        id="x",
+        label="X",
+        direction="risk",
+        primary_unit="",
+        primary_decimals=1,
+        value_scale=1.0,
+        value_transform=None,
+        observations=None,
+        frequency="monthly",
+    )
+    assert row["freshness_status"] == "unavailable"
+    assert row["frequency"] == "monthly"
+
+
+def test_build_diff_payload_composite_rows_are_daily(tmp_path):
+    """score_history.json regenerates each pipeline run, so composite rows
+    must always advertise ``daily`` cadence."""
+    _write_scaffold(tmp_path)
+    payload = build_diff_payload(tmp_path)
+    for row in payload["composite_scores"]:
+        assert row["frequency"] == "daily"
+        assert row["frequency"] == COMPOSITE_FREQUENCY
+
+
+def test_build_diff_payload_vital_rows_carry_cadence_from_catalog(tmp_path):
+    """End-to-end: every whitelist row must inherit the catalog frequency
+    for its primary_series_id."""
+    _write_scaffold(tmp_path)
+    payload = build_diff_payload(tmp_path)
+    by_id = {row["id"]: row for row in payload["vital_signs"]}
+    # Daily FRED series
+    assert by_id["us10y"]["frequency"] == "daily"
+    assert by_id["vix_complex"]["frequency"] == "daily"
+    assert by_id["real_yields"]["frequency"] == "daily"
+    assert by_id["credit_spreads"]["frequency"] == "daily"
+    # Weekly FRED series
+    assert by_id["labor_claims"]["frequency"] == "weekly"
+    # Monthly FRED series
+    assert by_id["payrolls"]["frequency"] == "monthly"
+    assert by_id["inflation"]["frequency"] == "monthly"
+
+
+def test_build_diff_payload_every_row_has_valid_frequency(tmp_path):
+    """Every emitted row — composite or vital, available or unavailable —
+    must carry a frequency value from the allowed enum so the schema
+    validator never trips."""
+    _write_scaffold(tmp_path)
+    payload = build_diff_payload(tmp_path)
+    for row in payload["composite_scores"] + payload["vital_signs"]:
+        assert row.get("frequency") in ALLOWED_FREQUENCIES
+
+
+def test_compose_vital_row_falls_back_to_daily_when_catalog_missing():
+    """If a whitelist entry's primary_series_id isn't in the catalog (e.g.
+    a derived series), the row falls back to ``daily``."""
+    from scripts.shared.cockpit_whitelist import CockpitSignal
+    from scripts.transform.build_diff import _compose_vital_row
+
+    # net_liquidity is a derived series; pass an empty freq_map to force the
+    # fallback path.
+    entry = CockpitSignal(
+        id="bogus",
+        priority_key="net_liquidity",
+        display_label="Bogus",
+        primary_series_id="series_not_in_catalog",
+    )
+    row = _compose_vital_row(entry, Path("/nonexistent"), freq_map={})
+    assert row["frequency"] == "daily"
