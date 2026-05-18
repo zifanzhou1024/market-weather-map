@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 import CommodityImpulseHero from "../charts/CommodityImpulseHero";
 import DataGapPanel from "../DataGapPanel";
 import DataStatusTable from "../DataStatusTable";
+import FocusBlock from "../FocusBlock";
 import InterpretationPanel from "../InterpretationPanel";
 import MetricCard from "../MetricCard";
 import PageInsightHero from "../PageInsightHero";
 import RouteDataFooter from "../RouteDataFooter";
 import TimeSeriesChart from "../TimeSeriesChart";
-import { loadCatalog, loadDataStatus, loadDerivedSeries, loadSeries } from "../../lib/data";
-import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { loadCatalog, loadDataStatus, loadDerivedSeries, loadPageInsights, loadSeries } from "../../lib/data";
+import type {
+  DataStatusFile,
+  DerivedSeriesFile,
+  PageInsightsFile,
+  SeriesCatalogEntry,
+  TimeSeriesFile
+} from "../../lib/types";
 import { loadRouteDerivedSeries } from "../../routes/routeSeries";
 
 const commoditySeriesIds = ["wti_crude", "brent_crude", "corn_price", "wheat_price", "soybean_price"];
@@ -69,9 +76,18 @@ function commodityImpulseEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
 export default function CommoditiesTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadCommodities() {
       try {
@@ -110,6 +126,24 @@ export default function CommoditiesTab() {
       {data ? (
         <div className="route-stack">
           <PageInsightHero route="commodities" />
+          {(() => {
+            const section = pageInsights?.routes?.commodities?.sections?.find(
+              (s) => s.id === "commodity_impulse"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           {/* SLOT:commodities_primary_chart */}
           {data.impulse.observations.length > 0 || data.spread.observations.length > 0 ? (
             <CommodityImpulseHero impulse={data.impulse} brentWtiSpread={data.spread} />

@@ -557,7 +557,15 @@ export type SectionId =
   | "rates_pressure"
   | "regime_drivers"
   | "positioning_vs_candidate_sentiment"
-  | "tactical_stress_board";
+  | "tactical_stress_board"
+  // PR follow-up: 7 channel-tab FocusBlock placements.
+  | "liquidity_funding"
+  | "credit_dispersion"
+  | "dollar_pressure"
+  | "commodity_impulse"
+  | "growth_breadth"
+  | "housing_pulse"
+  | "inflation_dispersion";
 
 export interface SectionInsight {
   id: SectionId;

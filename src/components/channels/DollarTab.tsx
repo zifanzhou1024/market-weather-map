@@ -2,13 +2,19 @@ import { useEffect, useState } from "react";
 import DollarPressureHero from "../charts/DollarPressureHero";
 import DataGapPanel from "../DataGapPanel";
 import DataStatusTable from "../DataStatusTable";
+import FocusBlock from "../FocusBlock";
 import InterpretationPanel from "../InterpretationPanel";
 import MetricCard from "../MetricCard";
 import PageInsightHero from "../PageInsightHero";
 import RouteDataFooter from "../RouteDataFooter";
 import TimeSeriesChart from "../TimeSeriesChart";
-import { loadCatalog, loadDataStatus } from "../../lib/data";
-import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { loadCatalog, loadDataStatus, loadPageInsights } from "../../lib/data";
+import type {
+  DataStatusFile,
+  PageInsightsFile,
+  SeriesCatalogEntry,
+  TimeSeriesFile
+} from "../../lib/types";
 import { hasObservations, loadRouteSeries } from "../../routes/routeSeries";
 
 const dollarSeriesIds = ["broad_dollar", "usdjpy", "eurusd"];
@@ -22,9 +28,18 @@ interface RouteState {
 export default function DollarTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadDollarGlobal() {
       try {
@@ -55,6 +70,24 @@ export default function DollarTab() {
       {data ? (
         <div className="route-stack">
           <PageInsightHero route="dollar_global" />
+          {(() => {
+            const section = pageInsights?.routes?.dollar_global?.sections?.find(
+              (s) => s.id === "dollar_pressure"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           {/* SLOT:dollar_global_primary_chart */}
           {broadDollar && broadDollar.observations.length > 0 ? (
             <DollarPressureHero broadDollar={broadDollar} />
