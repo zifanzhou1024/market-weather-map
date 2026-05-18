@@ -52,7 +52,7 @@ describe("CockpitCell", () => {
   test("detail mode shows secondary_values labels", () => {
     renderCell(<CockpitCell sign={topSign as any} mode="detail" />);
     if (topSign.secondary_values.length > 0) {
-      expect(container.textContent).toContain(topSign.secondary_values[0].label);
+      expect(container.textContent).toContain((topSign.secondary_values[0] as { label: string }).label);
     }
   });
 
@@ -60,7 +60,7 @@ describe("CockpitCell", () => {
     renderCell(<CockpitCell sign={topSign as any} mode="brief" />);
     expect(container.textContent).not.toContain("Δ7d");
     if (topSign.secondary_values.length > 0) {
-      expect(container.textContent).not.toContain(topSign.secondary_values[0].label);
+      expect(container.textContent).not.toContain((topSign.secondary_values[0] as { label: string }).label);
     }
   });
 
