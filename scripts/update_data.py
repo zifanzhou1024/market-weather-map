@@ -69,6 +69,13 @@ MODULES_TRANSFORM_PHASE_E: list[str] = [
     "scripts.transform.build_cockpit",
 ]
 
+# Phase F (post-initiative /diff route) transform modules. Reads the same
+# series + score history that the cockpit consumes and emits a value-level
+# diff payload at public/data/derived/diff.json for the /diff route.
+MODULES_TRANSFORM_PHASE_F: list[str] = [
+    "scripts.transform.build_diff",
+]
+
 MODULES_VALIDATE = [
     "scripts.validate.validate_schema",
     "scripts.validate.validate_freshness",
@@ -86,6 +93,7 @@ MODULES = (
     + MODULES_TRANSFORM_PHASE_B
     + MODULES_TRANSFORM_PHASE_C
     + MODULES_TRANSFORM_PHASE_E
+    + MODULES_TRANSFORM_PHASE_F
     + MODULES_VALIDATE
 )
 
