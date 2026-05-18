@@ -5,6 +5,7 @@ import RouteLoading from "./RouteLoading";
 import KeyboardShortcutsHelp from "./KeyboardShortcutsHelp";
 import { loadCockpit } from "../lib/data";
 import { useKeyboardShortcuts } from "../lib/keyboardShortcuts";
+import { LocaleProvider, useT } from "../lib/i18n";
 import type { CockpitFile } from "../lib/types";
 
 interface NavItem {
@@ -14,26 +15,18 @@ interface NavItem {
   end?: boolean;
 }
 
-const navItems: readonly NavItem[] = [
-  { to: "/", label: "Overview", end: true },
-  { to: "/short-term", label: "Short-Term", ariaLabel: "Short-Term Market Reaction" },
-  { to: "/long-term", label: "Long-Term", ariaLabel: "Long-Term Macro / Allocation Climate" },
-  { to: "/fragility", label: "Fragility" },
-  { to: "/channels", label: "Channels" },
-  { to: "/history", label: "History" }
-];
-
-const moreItems: readonly NavItem[] = [
-  { to: "/diff", label: "Diff" },
-  { to: "/calendar", label: "Calendar" },
-  { to: "/methodology", label: "Methodology" }
-];
-
-// Same threshold the PersistentRegimeHeader uses to switch to thin mode — keeps
-// the two sticky chrome tiers in sync visually.
 const SCROLL_THIN_THRESHOLD_PX = 80;
 
 export default function AppLayout() {
+  return (
+    <LocaleProvider>
+      <AppLayoutInner />
+    </LocaleProvider>
+  );
+}
+
+function AppLayoutInner() {
+  const { t } = useT();
   const [cockpit, setCockpit] = useState<CockpitFile | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const { showHelp, closeHelp } = useKeyboardShortcuts();
@@ -60,16 +53,31 @@ export default function AppLayout() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const localizedNavItems: readonly NavItem[] = [
+    { to: "/", label: t("nav.overview"), end: true, ariaLabel: t("nav.overview") },
+    { to: "/short-term", label: t("nav.shortTerm"), ariaLabel: t("routes.shortTermHeading") },
+    { to: "/long-term", label: t("nav.longTerm"), ariaLabel: t("routes.longTermHeading") },
+    { to: "/fragility", label: t("nav.fragility") },
+    { to: "/channels", label: t("nav.channels") },
+    { to: "/history", label: t("nav.history") }
+  ];
+
+  const localizedMoreItems: readonly NavItem[] = [
+    { to: "/diff", label: t("nav.diff") },
+    { to: "/calendar", label: t("nav.calendar") },
+    { to: "/methodology", label: t("nav.methodology") }
+  ];
+
   return (
     <div className="app">
       <PersistentRegimeHeader cockpit={cockpit} />
       <header className={`site-header${isScrolled ? " site-header--scrolled" : ""}`}>
         <div className="site-header__masthead">
-          <p className="eyebrow">Delayed public data</p>
-          <h1>Market Weather Map</h1>
+          <p className="eyebrow">{t("chrome.eyebrow")}</p>
+          <h1>{t("chrome.mastheadTitle")}</h1>
         </div>
         <nav className="site-nav" aria-label="Primary navigation">
-          {navItems.map((item) => (
+          {localizedNavItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -81,9 +89,9 @@ export default function AppLayout() {
             </NavLink>
           ))}
           <details className="site-nav__more">
-            <summary className="nav-link">More</summary>
+            <summary className="nav-link">{t("nav.more")}</summary>
             <div className="site-nav__more-menu">
-              {moreItems.map((item) => (
+              {localizedMoreItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
