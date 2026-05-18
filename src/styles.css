@@ -3229,6 +3229,43 @@ code {
   outline-offset: 2px;
 }
 
+.language-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;  /* Right-anchor the right cluster; mode-toggle keeps margin-left:0 */
+  border: 1px solid #d4d6cd;
+  border-radius: 6px;
+  padding: 2px 4px;
+  background: #fff;
+  font-size: 0.78rem;
+}
+
+.language-toggle__option {
+  background: transparent;
+  border: 0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #6f7160;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1;
+}
+
+.language-toggle__option.is-active {
+  background: #1f2937;
+  color: #fff;
+}
+
+.language-toggle__option:hover:not(.is-active) {
+  color: #1f2937;
+}
+
+.language-toggle__divider {
+  color: #d4d6cd;
+}
+
 @media (max-width: 760px) {
   .persistent-regime-header__date { display: none; }
 }
