@@ -29,8 +29,13 @@ const moreItems: readonly NavItem[] = [
   { to: "/methodology", label: "Methodology" }
 ];
 
+// Same threshold the PersistentRegimeHeader uses to switch to thin mode — keeps
+// the two sticky chrome tiers in sync visually.
+const SCROLL_THIN_THRESHOLD_PX = 80;
+
 export default function AppLayout() {
   const [cockpit, setCockpit] = useState<CockpitFile | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { showHelp, closeHelp } = useKeyboardShortcuts();
 
   useEffect(() => {
@@ -47,11 +52,19 @@ export default function AppLayout() {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onScroll = () => setIsScrolled(window.scrollY > SCROLL_THIN_THRESHOLD_PX);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div className="app">
       <PersistentRegimeHeader cockpit={cockpit} />
-      <header className="site-header">
-        <div>
+      <header className={`site-header${isScrolled ? " site-header--scrolled" : ""}`}>
+        <div className="site-header__masthead">
           <p className="eyebrow">Delayed public data</p>
           <h1>Market Weather Map</h1>
         </div>

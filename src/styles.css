@@ -44,14 +44,41 @@ select {
 }
 
 .site-header {
-  width: min(1180px, calc(100vw - 32px));
-  margin: 0 auto;
-  padding: 24px 0 12px;
+  width: 100%;
+  /* Inner padding keeps content visually centered on a max-1180 column,
+     while the rule itself spans full width so the sticky background
+     covers edge-to-edge without scrolled content bleeding through the gaps. */
+  padding: 24px max(16px, calc((100vw - 1180px) / 2)) 12px;
   display: grid;
   grid-template-columns: minmax(240px, 1fr) auto;
   gap: 24px;
   align-items: end;
   border-bottom: 1px solid #d9ded2;
+  /* Sticky chrome: tucks just under the persistent regime header. The 34px target
+     matches the persistent header's thin-mode height, so once both elements are in
+     their scrolled states they butt up with no visible gap. During the short pre-thin
+     scroll range the persistent header (z=20) simply renders over the site-header's
+     top padding (z=19) — visible content stays below the persistent header. */
+  position: sticky;
+  top: 34px;
+  z-index: 19;
+  background: #f6f7f3;
+  transition: padding 120ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header { transition: none; }
+}
+
+/* Scrolled state: hide the masthead (eyebrow + title), leaving a compact nav-only strip. */
+.site-header--scrolled {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  align-items: center;
+}
+
+.site-header--scrolled .site-header__masthead {
+  display: none;
 }
 
 .site-header h1,
@@ -3173,12 +3200,14 @@ code {
 }
 
 .persistent-regime-header__date {
-  margin-left: auto;
+  /* margin-left:auto moved to the mode-toggle so the right-side button cluster
+     stays right-anchored even when the date is hidden in thin / mobile modes. */
   color: var(--muted);
   font-size: 0.82rem;
 }
 
 .persistent-regime-header__mode-toggle {
+  margin-left: auto;
   appearance: none;
   border: 1px solid var(--border);
   border-radius: 999px;
