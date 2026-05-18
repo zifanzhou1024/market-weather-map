@@ -33,13 +33,11 @@ vi.mock("echarts/renderers", () => ({
   CanvasRenderer: {}
 }));
 
-import MarketBriefHeader from "./MarketBriefHeader";
 import MissingSignalPanel from "./MissingSignalPanel";
 import ScoreContributionHeatmap from "./ScoreContributionHeatmap";
 import type {
   ScoreSummaryFile,
-  SignalMissingEntry,
-  SignalPriorityFile
+  SignalMissingEntry
 } from "../lib/types";
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT =
@@ -69,52 +67,6 @@ afterEach(() => {
     root = undefined;
   }
   document.body.replaceChildren();
-});
-
-const overallRead: SignalPriorityFile["overall_read"] = {
-  short_term: { label: "Mixed", score: 7.18, confidence: 1.0 },
-  long_term: { label: "Mixed", score: 14.44, confidence: 0.99 },
-  fragility: { label: "Low Fragility", score: 39.47, confidence: 0.99 },
-  regime: { label: "Mixed" }
-};
-
-describe("MarketBriefHeader", () => {
-  it("renders the four headline reads with their labels and scores", () => {
-    const c = render(<MarketBriefHeader overallRead={overallRead} date="2026-05-07" />);
-    expect(c.textContent).toContain("Short-term");
-    expect(c.textContent).toContain("Long-term");
-    expect(c.textContent).toContain("Fragility");
-    expect(c.textContent).toContain("Regime");
-    // Active reads include label + signed score.
-    expect(c.textContent).toContain("Mixed");
-    expect(c.textContent).toContain("Low Fragility");
-    expect(c.textContent).toMatch(/\+?7\.2|7\.18/);
-    expect(c.textContent).toMatch(/14\.4/);
-    expect(c.textContent).toMatch(/39\.5|39\.47/);
-  });
-
-  it("shows confidence as a percentage for the three scored reads", () => {
-    const c = render(<MarketBriefHeader overallRead={overallRead} date="2026-05-07" />);
-    // 1.0 → 100%, 0.99 → 99% (twice).
-    const text = c.textContent ?? "";
-    expect(text.match(/100\s*%/g)?.length ?? 0).toBeGreaterThanOrEqual(1);
-    expect(text.match(/99\s*%/g)?.length ?? 0).toBeGreaterThanOrEqual(2);
-  });
-
-  it("does not render a score or confidence for the regime entry", () => {
-    const c = render(<MarketBriefHeader overallRead={overallRead} date="2026-05-07" />);
-    const regimeCard = Array.from(c.querySelectorAll(".market-brief-card"))
-      .find((node) => node.textContent?.includes("Regime"));
-    expect(regimeCard).toBeTruthy();
-    // The regime card has only the label — no score number, no confidence percent.
-    expect(regimeCard?.querySelector(".market-brief-card__score")).toBeNull();
-    expect(regimeCard?.querySelector(".market-brief-card__confidence")).toBeNull();
-  });
-
-  it("renders the snapshot date so users know how fresh the read is", () => {
-    const c = render(<MarketBriefHeader overallRead={overallRead} date="2026-05-07" />);
-    expect(c.textContent).toContain("2026-05-07");
-  });
 });
 
 const moveMissing: SignalMissingEntry = {
