@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
 import DataGapPanel from "../components/DataGapPanel";
-import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
 import GrowthLaborInflationMatrix from "../components/GrowthLaborInflationMatrix";
-import HorizonScoreHeader from "../components/HorizonScoreHeader";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MacroClimateHeatmap from "../components/MacroClimateHeatmap";
 import MacroCyclePanel from "../components/MacroCyclePanel";
 import MacroRegimeQuadrant from "../components/MacroRegimeQuadrant";
 import MetricCard from "../components/MetricCard";
 import RouteDataFooter from "../components/RouteDataFooter";
+import RouteScoreStrip from "../components/RouteScoreStrip";
 import ScoreCard from "../components/ScoreCard";
 import StrategicSourceGapMatrix from "../components/StrategicSourceGapMatrix";
 import StrategicSourceGapsPanel from "../components/StrategicSourceGapsPanel";
@@ -18,12 +17,15 @@ import YieldDecompositionChart from "../components/YieldDecompositionChart";
 import YieldDecompositionStackChart from "../components/charts/YieldDecompositionStackChart";
 import {
   loadCatalog,
+  loadCockpit,
   loadDataStatus,
   loadRatesDashboard,
   loadRegimeSnapshot,
   loadScoreSummary
 } from "../lib/data";
+import { useMode } from "../lib/mode";
 import type {
+  CockpitFile,
   DataStatusFile,
   DerivedSeriesFile,
   RatesDashboardFile,
@@ -148,6 +150,7 @@ const macroCyclePanels = [
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
+  cockpit: CockpitFile | null;
   diagnosticSeries: TimeSeriesFile[];
   netLiquidity: DerivedSeriesFile;
   ratesDashboard: RatesDashboardFile | null;
@@ -180,6 +183,7 @@ function netLiquidityCatalogEntry(series: DerivedSeriesFile): SeriesCatalogEntry
 }
 
 export default function LongTermMacroClimate() {
+  const mode = useMode();
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -188,12 +192,13 @@ export default function LongTermMacroClimate() {
 
     async function loadLongTermMacroClimate() {
       try {
-        const [catalog, status, scoreSummary, snapshot, ratesDashboard] = await Promise.all([
+        const [catalog, status, scoreSummary, snapshot, ratesDashboard, cockpit] = await Promise.all([
           loadCatalog(),
           loadDataStatus(),
           loadScoreSummary(),
           loadRegimeSnapshot(),
-          loadRatesDashboard()
+          loadRatesDashboard(),
+          loadCockpit().catch(() => null)
         ]);
         const [series, diagnosticSeries, [netLiquidity]] = await Promise.all([
           loadRouteSeries(macroSeriesIds, catalog, status),
@@ -207,6 +212,7 @@ export default function LongTermMacroClimate() {
         if (active)
           setData({
             catalog,
+            cockpit,
             diagnosticSeries,
             netLiquidity,
             ratesDashboard,
@@ -241,19 +247,15 @@ export default function LongTermMacroClimate() {
       ) : null}
       {data ? (
         <div className="route-stack">
-          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
+          {(() => {
+            const macroClimate = data.cockpit?.composite_scores.find(
+              (score) => score.id === "macro_climate"
+            );
+            return macroClimate ? <RouteScoreStrip composite={macroClimate} mode={mode} /> : null;
+          })()}
           <section className="score-grid" aria-label="Macro climate score">
             <ScoreCard score={data.scoreSummary.scores.macro_climate} title="Macro Climate" />
           </section>
-          <HorizonScoreHeader
-            eyebrow="Strategic read"
-            facts={longTermFacts(data.scoreSummary)}
-            risks={data.scoreSummary.scores.macro_climate.top_risks}
-            score={data.scoreSummary.scores.macro_climate}
-            summary="Slow macro data can influence allocation conditions over months or quarters, so this read emphasizes durable public-data pressure and support rather than trade timing."
-            supports={data.scoreSummary.scores.macro_climate.top_supports}
-            title="Current Long-Term Read"
-          />
           <MacroClimateHeatmap scoreSummary={data.scoreSummary} />
           <GrowthLaborInflationMatrix scoreSummary={data.scoreSummary} />
           <InterpretationPanel
@@ -366,28 +368,6 @@ function bucketScore(scoreSummary: ScoreSummaryFile, bucket: string) {
 
 function bucketScoreValue(scoreSummary: ScoreSummaryFile, bucket: string) {
   return scoreSummary.scores.macro_climate.bucket_scores[bucket];
-}
-
-function longTermFacts(scoreSummary: ScoreSummaryFile) {
-  const facts = [
-    { label: "Growth", value: bucketScore(scoreSummary, "growth") },
-    { label: "Labor", value: bucketScore(scoreSummary, "labor") },
-    { label: "Inflation", value: bucketScore(scoreSummary, "inflation") },
-    { label: "Real yields", value: bucketScore(scoreSummary, "real_yields") }
-  ];
-  const optionalBuckets = [
-    { bucket: "credit_cycle", label: "Credit cycle" },
-    { bucket: "liquidity_cycle", label: "Liquidity cycle" }
-  ];
-
-  optionalBuckets.forEach((item) => {
-    const score = bucketScoreValue(scoreSummary, item.bucket);
-    if (typeof score === "number" && Number.isFinite(score)) {
-      facts.push({ label: item.label, value: score.toFixed(1) });
-    }
-  });
-
-  return facts;
 }
 
 function cycleLabel(score: number | undefined) {
