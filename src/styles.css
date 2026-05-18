@@ -3481,6 +3481,25 @@ code {
 .diff-cell--delta--flat { color: var(--muted); }
 .diff-cell--delta--na { color: var(--muted); }
 
+/* Cadence pill rendered next to each row's signal label. Tells the reader
+ * how often the underlying series updates so a null delta in the 1d view
+ * (e.g. Nonfarm Payrolls) reads as "monthly series" rather than missing
+ * data. Sized intentionally smaller than other status pills so it stays
+ * metadata, not chrome. */
+.diff-cadence {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
 .diff__loading,
 .diff__error {
   padding: 32px;

@@ -801,6 +801,13 @@ export interface DiffRow {
   current_date: string | null;
   windows: Record<DiffWindowKey, DiffWindowEntry>;
   freshness_status: CockpitFreshnessStatus;
+  /**
+   * How often this signal's underlying series updates. Drives the cadence
+   * pill rendered next to each row's label so a user looking at the 1d
+   * window understands why monthly series (e.g. Core CPI, payrolls) show
+   * a null delta.
+   */
+  frequency: SeriesFrequency;
 }
 
 export interface DiffFile {

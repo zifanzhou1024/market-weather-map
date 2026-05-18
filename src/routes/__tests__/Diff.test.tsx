@@ -71,6 +71,7 @@ function row(
       }
     },
     freshness_status: "ok",
+    frequency: "daily",
     ...rest
   };
 }
@@ -169,14 +170,25 @@ describe("Diff route", () => {
     expect(vitalsTable!.querySelectorAll("tbody tr").length).toBe(3);
   });
 
-  test("default window is 1d", async () => {
+  test("default window is 7d (the cockpit mix of cadences makes 1d mostly empty)", async () => {
     renderDiff("/diff");
     await flush();
     const tab1d = container.querySelector("[data-testid='diff-window-tab-1d']");
     const tab7d = container.querySelector("[data-testid='diff-window-tab-7d']");
-    expect(tab1d?.className).toContain("channel-tab--active");
-    expect(tab7d?.className).not.toContain("channel-tab--active");
-    expect(tab1d?.getAttribute("aria-current")).toBe("page");
+    expect(tab7d?.className).toContain("channel-tab--active");
+    expect(tab1d?.className).not.toContain("channel-tab--active");
+    expect(tab7d?.getAttribute("aria-current")).toBe("page");
+  });
+
+  test("?window=1d still works (user-initiated drill into yesterday's moves)", async () => {
+    renderDiff("/diff?window=1d");
+    await flush();
+    expect(
+      container.querySelector("[data-testid='diff-window-tab-1d']")?.className
+    ).toContain("channel-tab--active");
+    // vix 1d delta = 2.1 should be shown
+    const vixDelta = container.querySelector("[data-testid='diff-row-vix_complex-delta']");
+    expect(vixDelta?.textContent).toContain("2.10");
   });
 
   test("?window=7d activates the 7d tab and shows 7d window data", async () => {
@@ -190,11 +202,11 @@ describe("Diff route", () => {
     expect(vixDelta?.textContent).toContain("3.30");
   });
 
-  test("invalid ?window= falls back to 1d", async () => {
+  test("invalid ?window= falls back to the 7d default", async () => {
     renderDiff("/diff?window=garbage");
     await flush();
     expect(
-      container.querySelector("[data-testid='diff-window-tab-1d']")?.className
+      container.querySelector("[data-testid='diff-window-tab-7d']")?.className
     ).toContain("channel-tab--active");
   });
 
@@ -282,7 +294,9 @@ describe("Diff route", () => {
         })
       ]
     });
-    renderDiff("/diff");
+    // Explicit ?window=1d because the override sets only 1d deltas (the
+    // default window is 7d post-polish).
+    renderDiff("/diff?window=1d");
     await flush();
     const up = container
       .querySelector("[data-testid='diff-row-up_signal-delta']")
@@ -301,18 +315,19 @@ describe("Diff route", () => {
   test("window tab click updates the URL search param", async () => {
     renderDiff("/diff");
     await flush();
-    const tab7d = container.querySelector<HTMLButtonElement>(
-      "[data-testid='diff-window-tab-7d']"
+    // Default is 7d, so click 1d to verify the URL/state update path.
+    const tab1d = container.querySelector<HTMLButtonElement>(
+      "[data-testid='diff-window-tab-1d']"
     );
-    expect(tab7d).not.toBeNull();
+    expect(tab1d).not.toBeNull();
     await act(async () => {
-      tab7d!.click();
+      tab1d!.click();
     });
     expect(
-      container.querySelector("[data-testid='diff-window-tab-7d']")?.className
+      container.querySelector("[data-testid='diff-window-tab-1d']")?.className
     ).toContain("channel-tab--active");
     expect(
-      container.querySelector("[data-testid='diff-window-tab-1d']")?.className
+      container.querySelector("[data-testid='diff-window-tab-7d']")?.className
     ).not.toContain("channel-tab--active");
   });
 
@@ -336,6 +351,7 @@ describe("Diff route", () => {
           current_value: null,
           current_date: null,
           freshness_status: "unavailable",
+          frequency: "monthly",
           windows: {
             "1d": { value: null, date: null, delta: null, delta_pct: null },
             "7d": { value: null, date: null, delta: null, delta_pct: null },
@@ -352,5 +368,76 @@ describe("Diff route", () => {
       "[data-testid='diff-row-missing_signal-delta']"
     );
     expect(delta?.textContent).toBe("—");
+  });
+
+  test("cadence pill renders per row with the row's frequency", async () => {
+    // Mix the three cadences a user would actually see in the cockpit:
+    // daily (VIX), weekly (Initial Claims), monthly (Nonfarm Payrolls).
+    vi.mocked(loadDiff).mockResolvedValue({
+      generated_at_utc: "2026-05-17T16:13:45Z",
+      date: "2026-05-15",
+      method_version: "phase-f-diff-v1",
+      composite_scores: [
+        row("market_weather", { direction: "neutral" }),
+        row("macro_climate", { direction: "neutral" }),
+        row("fragility", { direction: "neutral" })
+      ],
+      vital_signs: [
+        row("vix_complex", { frequency: "daily" }),
+        row("labor_claims", { frequency: "weekly" }),
+        row("payrolls", { frequency: "monthly" })
+      ]
+    });
+    renderDiff("/diff");
+    await flush();
+    const vix = container.querySelector(
+      "[data-testid='diff-row-vix_complex-cadence']"
+    );
+    const claims = container.querySelector(
+      "[data-testid='diff-row-labor_claims-cadence']"
+    );
+    const payrolls = container.querySelector(
+      "[data-testid='diff-row-payrolls-cadence']"
+    );
+    expect(vix?.textContent).toBe("daily");
+    expect(claims?.textContent).toBe("weekly");
+    expect(payrolls?.textContent).toBe("monthly");
+    expect(vix?.className).toContain("diff-cadence--daily");
+    expect(claims?.className).toContain("diff-cadence--weekly");
+    expect(payrolls?.className).toContain("diff-cadence--monthly");
+  });
+
+  test("cadence pill wraps the cadence word in a glossary tooltip", async () => {
+    vi.mocked(loadDiff).mockResolvedValue({
+      generated_at_utc: "2026-05-17T16:13:45Z",
+      date: "2026-05-15",
+      method_version: "phase-f-diff-v1",
+      composite_scores: [
+        row("market_weather", { direction: "neutral" }),
+        row("macro_climate", { direction: "neutral" }),
+        row("fragility", { direction: "neutral" })
+      ],
+      vital_signs: [row("labor_claims", { frequency: "weekly" })]
+    });
+    renderDiff("/diff");
+    await flush();
+    const cadence = container.querySelector(
+      "[data-testid='diff-row-labor_claims-cadence']"
+    );
+    // GlossaryTerm renders an <abbr title=...> when the term is defined.
+    const abbr = cadence?.querySelector("abbr");
+    expect(abbr).not.toBeNull();
+    expect(abbr?.getAttribute("title")).toBe(
+      "Series updates once per week."
+    );
+  });
+
+  test("composite-score rows also carry a cadence pill (daily)", async () => {
+    renderDiff("/diff");
+    await flush();
+    const composite = container.querySelector(
+      "[data-testid='diff-row-market_weather-cadence']"
+    );
+    expect(composite?.textContent).toBe("daily");
   });
 });

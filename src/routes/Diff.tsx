@@ -49,7 +49,12 @@ export default function Diff() {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = useMode();
   const rawWindow = searchParams.get("window");
-  const activeWindow: DiffWindowKey = isWindowKey(rawWindow) ? rawWindow : "1d";
+  // 7d is the default because the cockpit whitelist mixes daily + weekly +
+  // monthly series. A 1d window leaves ~5 of 15 rows with null deltas
+  // (their underlying series didn't update yesterday), which reduces
+  // first-impression signal. 7d catches the weekly series cleanly and
+  // most daily series; users who want intraday motion can still click 1d.
+  const activeWindow: DiffWindowKey = isWindowKey(rawWindow) ? rawWindow : "7d";
 
   const [diff, setDiff] = useState<DiffFile | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -201,6 +206,12 @@ function DiffTable({ rows, window, mode, testId }: DiffTableProps) {
             >
               <th scope="row" className="diff-cell diff-cell--label">
                 <GlossaryTerm term={row.label} />
+                <span
+                  className={`diff-cadence diff-cadence--${row.frequency}`}
+                  data-testid={`diff-row-${row.id}-cadence`}
+                >
+                  <GlossaryTerm term={row.frequency}>{row.frequency}</GlossaryTerm>
+                </span>
               </th>
               <td className="diff-cell diff-cell--current">
                 {formatValue(row.current_value, row.primary_decimals)}

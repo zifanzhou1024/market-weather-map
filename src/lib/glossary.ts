@@ -73,6 +73,13 @@ export const GLOSSARY: Record<string, string> = {
   "Δ1m": "Change vs the most recent observation at least 30 calendar days ago.",
   pct: "Percentile — rank of the current value within its historical distribution.",
   pctile: "Percentile.",
+
+  // Cadence pills — used by the /diff route to explain why some windows
+  // show null deltas (e.g. weekly series in the 1d window).
+  daily: "Series updates once per business day.",
+  weekly: "Series updates once per week.",
+  monthly: "Series updates once per month.",
+  quarterly: "Series updates once per quarter.",
 };
 
 /**
