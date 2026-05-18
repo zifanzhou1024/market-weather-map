@@ -1,10 +1,14 @@
 /**
- * D4: FocusBlock placement tests for RegimeMap route.
+ * D4 (PR 6 follow-on): FocusBlock placement tests for the RegimeTab body.
  *
  * These tests verify the conditional rendering of FocusBlock based on the
- * sections array in page_insights.json. The route renders FocusBlock only
+ * sections array in page_insights.json. RegimeTab renders FocusBlock only
  * when a section with id="regime_drivers" is present in the loaded page
  * insights; otherwise it is absent.
+ *
+ * PR 5 extracted the RegimeMap route body into this tab body so the new
+ * /history shell can lazy-load it. The FocusBlock contract is unchanged —
+ * the test file moved with the body.
  *
  * Fixtures used:
  *   regime_map_complete.json  — sections includes regime_drivers (all optional fields)
@@ -17,7 +21,7 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import RegimeMap from "../RegimeMap";
+import RegimeTab from "./RegimeTab";
 import regimeMapComplete from "../../__fixtures__/page_insights/regime_map_complete.json";
 import regimeMapMinimal from "../../__fixtures__/page_insights/regime_map_minimal.json";
 import type { PageInsightsFile } from "../../lib/types";
@@ -149,12 +153,12 @@ function setupDataMocks() {
   vi.mocked(loadScoreSummary).mockResolvedValue(minimalScoreSummary() as never);
 }
 
-describe("RegimeMap route — FocusBlock placement (D4)", () => {
+describe("RegimeTab body — FocusBlock placement (D4)", () => {
   it("renders FocusBlock when sections includes regime_drivers", async () => {
     setupDataMocks();
     vi.mocked(loadPageInsights).mockResolvedValue(regimeMapComplete as PageInsightsFile);
 
-    const container = render(<RegimeMap />);
+    const container = render(<RegimeTab />);
     await flushPromises();
 
     const block = container.querySelector(".focus-block");
@@ -172,7 +176,7 @@ describe("RegimeMap route — FocusBlock placement (D4)", () => {
     setupDataMocks();
     vi.mocked(loadPageInsights).mockResolvedValue(regimeMapMinimal as PageInsightsFile);
 
-    const container = render(<RegimeMap />);
+    const container = render(<RegimeTab />);
     await flushPromises();
 
     const block = container.querySelector(".focus-block");
@@ -186,7 +190,7 @@ describe("RegimeMap route — FocusBlock placement (D4)", () => {
     setupDataMocks();
     vi.mocked(loadPageInsights).mockResolvedValue(null);
 
-    const container = render(<RegimeMap />);
+    const container = render(<RegimeTab />);
     await flushPromises();
 
     expect(container.querySelector(".focus-block")).toBeNull();
@@ -211,7 +215,7 @@ describe("RegimeMap route — FocusBlock placement (D4)", () => {
     };
     vi.mocked(loadPageInsights).mockResolvedValue(fileWithoutSections);
 
-    const container = render(<RegimeMap />);
+    const container = render(<RegimeTab />);
     await flushPromises();
 
     expect(container.querySelector(".focus-block")).toBeNull();
@@ -244,7 +248,7 @@ describe("RegimeMap route — FocusBlock placement (D4)", () => {
     };
     vi.mocked(loadPageInsights).mockResolvedValue(fileWithWrongId);
 
-    const container = render(<RegimeMap />);
+    const container = render(<RegimeTab />);
     await flushPromises();
 
     expect(container.querySelector(".focus-block")).toBeNull();
@@ -254,7 +258,7 @@ describe("RegimeMap route — FocusBlock placement (D4)", () => {
     setupDataMocks();
     vi.mocked(loadPageInsights).mockRejectedValue(new Error("network error"));
 
-    const container = render(<RegimeMap />);
+    const container = render(<RegimeTab />);
     await flushPromises();
 
     expect(container.querySelector(".focus-block")).toBeNull();

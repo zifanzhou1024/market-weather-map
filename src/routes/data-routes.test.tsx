@@ -1986,8 +1986,10 @@ describe("data-backed routes", () => {
       // Channels pill lands on the shared shell whose h2 is "Channels" with
       // the default Volatility tab active.
       { kind: "channel", label: "Channels", tabId: "volatility", tabLabel: "Volatility" },
-      // History pill is a PR5 placeholder → /regime-map. PR6 wires /history.
-      { kind: "standalone", label: "History", heading: "TIPS x Dollar Regime Map" },
+      // PR 6 wires the History pill to /history (default tab = regime). The
+      // shell renders an H2 of "History"; the active tab body (RegimeTab)
+      // renders the regime quadrant trail content.
+      { kind: "standalone", label: "History", heading: "History" },
       { kind: "standalone", label: "Calendar", heading: "Macro Calendar" },
       { kind: "standalone", label: "Methodology", heading: "How the map works" }
     ];
@@ -2933,15 +2935,17 @@ describe("data-backed routes", () => {
       })
     );
 
+    // PR 6: /regime-map redirects into the /history shell at the regime tab.
+    // The H2 is "History" and the regime body owns the confirmation matrix +
+    // candidate diagnostics that this test asserts.
     const container = render(
       <MemoryRouter initialEntries={["/regime-map"]}>
         <App />
       </MemoryRouter>
     );
 
-    await waitForContent(container, "TIPS x Dollar Regime Map");
-    expect(container.textContent).toContain("High data quality");
-    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
+    await waitForContent(container, "Confirmation matrix");
+    expect(container.querySelector("h2")?.textContent).toBe("History");
     expect(container.textContent).toContain("Yield driver");
     expect(container.textContent).toContain("Cross-asset confirmation");
     expect(container.textContent).toContain("Gold / XAU");
@@ -2964,7 +2968,7 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
 
-    await waitForContent(container, "TIPS x Dollar Regime Map");
+    await waitForContent(container, "What confirms it");
     expect(container.textContent).toContain("What confirms it");
     expect(container.textContent).toContain("What conflicts with it");
     expect(container.textContent).toContain("What weakens confidence");
@@ -2973,13 +2977,17 @@ describe("data-backed routes", () => {
   it("renders the historical regime replay route with attribution", async () => {
     mockStaticFetch(routeFetchFiles());
 
+    // PR 6: /replay redirects into the /history shell at the replay tab. The
+    // body content (HistoricalRegimeReplayPanel) carries the lowercase
+    // "Historical regime replay" eyebrow; the page H2 is the shared "History".
     const container = render(
       <MemoryRouter initialEntries={["/replay"]}>
         <App />
       </MemoryRouter>
     );
 
-    await waitForContent(container, "Historical Regime Replay");
+    await waitForContent(container, "Historical regime replay");
+    expect(container.querySelector("h2")?.textContent).toBe("History");
     expect(container.textContent).toContain("Why scores changed");
     expect(container.textContent).toContain("Tightening / risk-off");
     expect(container.textContent).toContain("Historical regime occurrences are descriptive context, not forecasts.");
@@ -3278,6 +3286,7 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __routesDir = dirname(__filename);
 const __channelsDir = join(__routesDir, "..", "components", "channels");
+const __historyDir = join(__routesDir, "..", "components", "history");
 
 interface IaBody {
   /** Stable identifier used in test names; matches the historic filename. */
@@ -3310,12 +3319,32 @@ const CHANNEL_BODY_MAP: Record<string, string> = {
   "Sentiment.tsx": "PositioningTab.tsx"
 };
 
+// PR 6: the standalone RegimeMap + HistoricalRegimeReplay routes were
+// extracted into HistoryTab bodies under src/components/history/. Like the
+// channel bodies, the IA contract still applies — each tab body owns the
+// hero (where applicable), slot markers, and footer — so we map the historic
+// route filename id to the file that now carries the body.
+const HISTORY_BODY_MAP: Record<string, string> = {
+  "RegimeMap.tsx": "RegimeTab.tsx",
+  "HistoricalRegimeReplay.tsx": "ReplayTab.tsx"
+};
+
 function makeChannelBody(id: string): IaBody {
   const filename = CHANNEL_BODY_MAP[id];
   if (!filename) throw new Error(`No CHANNEL_BODY_MAP entry for ${id}`);
   return {
     id,
     filePath: join(__channelsDir, filename),
+    importPrefix: ".."
+  };
+}
+
+function makeHistoryBody(id: string): IaBody {
+  const filename = HISTORY_BODY_MAP[id];
+  if (!filename) throw new Error(`No HISTORY_BODY_MAP entry for ${id}`);
+  return {
+    id,
+    filePath: join(__historyDir, filename),
     importPrefix: ".."
   };
 }
@@ -3328,8 +3357,8 @@ function makeRouteBody(filename: string): IaBody {
   };
 }
 
-// Every IA body the contract applies to. Channel bodies first (10) + route
-// bodies that still live in src/routes/ (8).
+// Every IA body the contract applies to. Channel bodies first (10) + history
+// bodies (2) + route bodies that still live in src/routes/ (6).
 const ROUTE_FILES_IN_DIR = readdirSync(__routesDir)
   .filter(
     (name) =>
@@ -3343,9 +3372,13 @@ const CHANNEL_BODIES: IaBody[] = Object.keys(CHANNEL_BODY_MAP)
   .sort()
   .map(makeChannelBody);
 
+const HISTORY_BODIES: IaBody[] = Object.keys(HISTORY_BODY_MAP)
+  .sort()
+  .map(makeHistoryBody);
+
 const ROUTE_BODIES: IaBody[] = ROUTE_FILES_IN_DIR.map(makeRouteBody);
 
-const ALL_BODIES: IaBody[] = [...CHANNEL_BODIES, ...ROUTE_BODIES];
+const ALL_BODIES: IaBody[] = [...CHANNEL_BODIES, ...HISTORY_BODIES, ...ROUTE_BODIES];
 
 // Legacy ID list (filename strings) kept for the test-name `%s` substitution
 // so test output continues to read e.g. "Rates.tsx renders <PageInsightHero ...>".
@@ -3404,9 +3437,10 @@ function readRouteSource(filename: string): string {
 }
 
 describe("W2-13: cross-route IA consistency", () => {
-  it("discovers exactly 18 IA body source files (10 ChannelTab bodies + 8 route bodies)", () => {
+  it("discovers exactly 18 IA body source files (10 ChannelTab bodies + 2 HistoryTab bodies + 6 route bodies)", () => {
     expect(CHANNEL_BODIES).toHaveLength(10);
-    expect(ROUTE_BODIES).toHaveLength(8);
+    expect(HISTORY_BODIES).toHaveLength(2);
+    expect(ROUTE_BODIES).toHaveLength(6);
     expect(ALL_BODIES).toHaveLength(18);
   });
 
@@ -3566,7 +3600,10 @@ describe("W2-13: cross-route IA consistency", () => {
   });
 
   it("RegimeMap fills regime_primary_chart slot with <RegimeQuadrantChart /> (no legacy trail prop)", () => {
-    const source = readRouteSource("RegimeMap.tsx");
+    // PR 6: RegimeMap.tsx route body was extracted into RegimeTab.tsx under
+    // src/components/history/. The IA contract (slot marker + chart placement
+    // + no trail prop) still applies to the extracted body.
+    const source = readBodySource("RegimeMap.tsx");
     const slotIdx = source.indexOf("{/* SLOT:regime_primary_chart */}");
     const chartIdx = source.indexOf("<RegimeQuadrantChart");
     expect(slotIdx).toBeGreaterThan(-1);

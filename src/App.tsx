@@ -4,11 +4,10 @@ import { ModeProvider } from "./lib/mode";
 import Calendar from "./routes/Calendar";
 import Channels from "./routes/Channels";
 import FragilityShockRisk from "./routes/FragilityShockRisk";
-import HistoricalRegimeReplay from "./routes/HistoricalRegimeReplay";
+import History from "./routes/History";
 import LongTermMacroClimate from "./routes/LongTermMacroClimate";
 import Methodology from "./routes/Methodology";
 import Overview from "./routes/Overview";
-import RegimeMap from "./routes/RegimeMap";
 import TacticalTradingWeather from "./routes/TacticalTradingWeather";
 
 export default function App() {
@@ -22,8 +21,9 @@ export default function App() {
           <Route path="/long-term" element={<LongTermMacroClimate />} />
           <Route path="/macro-climate" element={<Navigate to="/long-term" replace />} />
           <Route path="/fragility" element={<FragilityShockRisk />} />
-          <Route path="/regime-map" element={<RegimeMap />} />
-          <Route path="/replay" element={<HistoricalRegimeReplay />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/regime-map" element={<Navigate to="/history?tab=regime" replace />} />
+          <Route path="/replay" element={<Navigate to="/history?tab=replay" replace />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/channels" element={<Channels />} />
           <Route path="/volatility" element={<Navigate to="/channels?tab=volatility" replace />} />

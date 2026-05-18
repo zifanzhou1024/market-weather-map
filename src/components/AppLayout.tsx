@@ -17,8 +17,7 @@ const navItems: readonly NavItem[] = [
   { to: "/long-term", label: "Long-Term", ariaLabel: "Long-Term Macro / Allocation Climate" },
   { to: "/fragility", label: "Fragility" },
   { to: "/channels", label: "Channels" },
-  // PR 5 placeholder — PR 6 wires /history and updates this `to`.
-  { to: "/regime-map", label: "History" }
+  { to: "/history", label: "History" }
 ];
 
 const moreItems: readonly NavItem[] = [
