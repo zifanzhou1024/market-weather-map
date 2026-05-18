@@ -25,6 +25,7 @@ import {
   loadScoreSummary,
   loadShockRiskSnapshot
 } from "../lib/data";
+import { useT } from "../lib/i18n";
 import { useMode } from "../lib/mode";
 import { sanitizeShockRiskSnapshot } from "../lib/shockRisk";
 import { loadRouteDerivedSeries } from "./routeSeries";
@@ -61,6 +62,7 @@ interface RouteState {
 }
 
 export default function FragilityShockRisk() {
+  const { t } = useT();
   const mode = useMode();
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -109,9 +111,9 @@ export default function FragilityShockRisk() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow">Fragility</p>
-        <h2>Fragility / Shock Risk</h2>
-        <p>Current fragility score, shock-risk pressure, tail-risk source readiness, and data gaps.</p>
+        <p className="eyebrow" lang="en">Fragility</p>
+        <h2>{t("routes.fragilityHeading")}</h2>
+        <p lang="en">Current fragility score, shock-risk pressure, tail-risk source readiness, and data gaps.</p>
       </section>
       {error ? (
         <p className="data-error" role="alert">

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setMode, useMode } from "./mode";
+import { resolveLocale, setLocale } from "./i18n";
 
 const G_PREFIX_TIMEOUT_MS = 1200;
 
@@ -96,10 +97,16 @@ export function useKeyboardShortcuts(): UseShortcutsReturn {
       // Help overlay is open — only Esc / "?" interact; everything else passes through
       if (showHelp) return;
 
-      // g prefix mode: second key picks a destination
+      // g prefix mode: second key picks a destination or action
       if (gPrefixActive) {
         const key = e.key.toLowerCase();
-        if (key in NAV_BINDINGS) {
+        if (key === "i") {
+          // Toggle locale: en <-> zh. `l` is already bound to /long-term, so
+          // language toggle uses `i` (i18n / international).
+          e.preventDefault();
+          const current = resolveLocale();
+          setLocale(current === "en" ? "zh" : "en");
+        } else if (key in NAV_BINDINGS) {
           e.preventDefault();
           navigate(NAV_BINDINGS[key]);
         }

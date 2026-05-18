@@ -1,5 +1,6 @@
 import GlossaryTerm from "./GlossaryTerm";
 import type { DataQualityTier } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface DataQualityBannerProps {
   dataQuality?: unknown;
@@ -22,11 +23,11 @@ const TIER_TONE: Record<DataQualityTier, string> = {
   thin: "tone-negative"
 };
 
-const TIER_LABEL: Record<DataQualityTier, string> = {
-  high: "High",
-  medium: "Medium",
-  low: "Low",
-  thin: "Thin"
+const TIER_KEYS: Record<DataQualityTier, string> = {
+  high: "dataQuality.tierHigh",
+  medium: "dataQuality.tierMedium",
+  low: "dataQuality.tierLow",
+  thin: "dataQuality.tierThin"
 };
 
 const VALID_TIERS: ReadonlySet<DataQualityTier> = new Set<DataQualityTier>([
@@ -83,14 +84,16 @@ function formatPercent(value: number | null): string {
 }
 
 export default function DataQualityBanner({ dataQuality }: DataQualityBannerProps) {
+  const { t } = useT();
   const validDataQuality = narrowDataQuality(dataQuality);
+  const title = t("dataQuality.title");
 
   if (!validDataQuality) {
     return (
-      <section className="panel data-quality-banner" aria-label="Data quality">
+      <section className="panel data-quality-banner" aria-label={title}>
         <div className="data-quality-banner__summary">
-          <p className="eyebrow">Data quality</p>
-          <h3>Data quality unavailable</h3>
+          <p className="eyebrow">{title}</p>
+          <h3>{title} unavailable</h3>
         </div>
         <p className="score-note">Score-summary data quality is missing or malformed.</p>
       </section>
@@ -99,23 +102,24 @@ export default function DataQualityBanner({ dataQuality }: DataQualityBannerProp
 
   const { tier, overallConfidence, coverage, freshness, model, source, reasons } = validDataQuality;
   const tierTone = TIER_TONE[tier];
+  const tierWord = t(TIER_KEYS[tier]);
 
   return (
-    <section className="panel data-quality-banner" aria-label="Data quality">
+    <section className="panel data-quality-banner" aria-label={title}>
       <div className="data-quality-banner__summary">
         <p className="eyebrow">
-          <GlossaryTerm term="data quality">Data quality</GlossaryTerm>
+          <GlossaryTerm term="data quality">{title}</GlossaryTerm>
         </p>
         <div className="data-quality-banner__header">
           <span
             className={`data-quality-banner__tier status-pill ${tierTone}`}
             data-tier={tier}
           >
-            {TIER_LABEL[tier]} data quality
+            {tierWord} {title.toLowerCase()}
           </span>
           <span className="data-quality-banner__overall">
             <GlossaryTerm term="confidence aggregate">
-              aggregate {formatPercent(overallConfidence)}
+              {t("dataQuality.aggregate").toLowerCase()} {formatPercent(overallConfidence)}
             </GlossaryTerm>
           </span>
         </div>
@@ -134,24 +138,24 @@ export default function DataQualityBanner({ dataQuality }: DataQualityBannerProp
         <dl className="data-quality-banner__components">
           <div>
             <dt>
-              <GlossaryTerm term="coverage">Coverage</GlossaryTerm>
+              <GlossaryTerm term="coverage">{t("dataQuality.coverage")}</GlossaryTerm>
             </dt>
             <dd>{formatPercent(coverage)}</dd>
           </div>
           <div>
             <dt>
-              <GlossaryTerm term="freshness">Freshness</GlossaryTerm>
+              <GlossaryTerm term="freshness">{t("dataQuality.freshness")}</GlossaryTerm>
             </dt>
             <dd>{formatPercent(freshness)}</dd>
           </div>
           <div>
             <dt>
-              <GlossaryTerm term="model">Model</GlossaryTerm>
+              <GlossaryTerm term="model">{t("dataQuality.model")}</GlossaryTerm>
             </dt>
             <dd>{formatPercent(model)}</dd>
           </div>
           <div>
-            <dt>Source</dt>
+            <dt>{t("dataQuality.sourceMix")}</dt>
             <dd>{formatPercent(source)}</dd>
           </div>
         </dl>

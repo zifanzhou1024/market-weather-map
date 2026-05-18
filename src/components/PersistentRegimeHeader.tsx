@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { CockpitFile, CockpitCompositeScore } from "../lib/types";
 import { useMode, setMode } from "../lib/mode";
+import { useT } from "../lib/i18n";
+import LanguageToggle from "./LanguageToggle";
 
 interface Props {
   cockpit: CockpitFile | null;
@@ -8,12 +10,21 @@ interface Props {
 
 const SCROLL_THIN_THRESHOLD_PX = 80;
 
+// Map the cockpit.regime.label (English from Python) to the i18n key.
+const REGIME_LABEL_KEYS: Record<string, string> = {
+  "Risk-On": "regime.riskOn",
+  "Risk-Off": "regime.riskOff",
+  Neutral: "regime.neutral",
+  Stress: "regime.stress"
+};
+
 function findFragility(scores: CockpitCompositeScore[]): CockpitCompositeScore | undefined {
   return scores.find((s) => s.id === "fragility");
 }
 
 export default function PersistentRegimeHeader({ cockpit }: Props) {
   const mode = useMode();
+  const { t } = useT();
   const [isThin, setIsThin] = useState(false);
 
   useEffect(() => {
@@ -28,9 +39,9 @@ export default function PersistentRegimeHeader({ cockpit }: Props) {
       <header
         className="persistent-regime-header persistent-regime-header--loading"
         aria-busy="true"
-        aria-label="Loading regime read"
+        aria-label={t("chrome.loading")}
       >
-        <span className="persistent-regime-header__placeholder">— loading market regime —</span>
+        <span className="persistent-regime-header__placeholder">— {t("chrome.loading")} —</span>
       </header>
     );
   }
@@ -42,39 +53,47 @@ export default function PersistentRegimeHeader({ cockpit }: Props) {
       : null;
   const toneClass = `persistent-regime-header__dot--${cockpit.regime.tone}`;
   const otherMode = mode === "brief" ? "detail" : "brief";
+  const regimeKey = REGIME_LABEL_KEYS[cockpit.regime.label];
+  const regimeText = regimeKey ? t(regimeKey) : cockpit.regime.label;
+  const otherModeLabel = otherMode === "brief" ? t("chrome.briefMode") : t("chrome.detailMode");
 
   return (
     <header
       className={`persistent-regime-header ${isThin ? "persistent-regime-header--thin" : ""}`.trim()}
-      aria-label="Current market regime"
+      aria-label={t("regime.regimeLabel")}
     >
       <div className="persistent-regime-header__regime">
         <span
           className={`persistent-regime-header__dot ${toneClass}`}
-          title={`As of ${cockpit.date}`}
+          title={`${t("chrome.asOfPrefix")} ${cockpit.date}`}
           aria-hidden="true"
         />
-        <span className="persistent-regime-header__regime-label">{cockpit.regime.label}</span>
+        <span className="persistent-regime-header__regime-label">{regimeText}</span>
       </div>
 
       {risk !== null && (
-        <div className="persistent-regime-header__risk" aria-label="Fragility composite score">
-          <span className="persistent-regime-header__risk-label">Fragility</span>
+        <div className="persistent-regime-header__risk" aria-label={t("regime.fragility")}>
+          <span className="persistent-regime-header__risk-label">{t("regime.fragility")}</span>
           <span className="persistent-regime-header__risk-value">{risk}</span>
         </div>
       )}
 
-      <div className="persistent-regime-header__date" title={`Data as of ${cockpit.date}`}>
-        As of {cockpit.date}
+      <div
+        className="persistent-regime-header__date"
+        title={`${t("chrome.asOfPrefix")} ${cockpit.date}`}
+      >
+        {t("chrome.asOfPrefix")} {cockpit.date}
       </div>
+
+      <LanguageToggle />
 
       <button
         type="button"
         className="persistent-regime-header__mode-toggle"
         onClick={() => setMode(otherMode)}
-        aria-label={`Switch to ${otherMode} mode (currently ${mode})`}
+        aria-label={t("chrome.switchTo", { vars: { mode: otherModeLabel } })}
       >
-        {mode === "brief" ? "Brief" : "Detail"}
+        {mode === "brief" ? t("chrome.briefMode") : t("chrome.detailMode")}
       </button>
 
       <button
@@ -83,8 +102,8 @@ export default function PersistentRegimeHeader({ cockpit }: Props) {
         onClick={() =>
           window.dispatchEvent(new KeyboardEvent("keydown", { key: "?" }))
         }
-        aria-label="Show keyboard shortcuts"
-        title="Keyboard shortcuts (press ?)"
+        aria-label={t("chrome.keyboardShortcuts")}
+        title={`${t("chrome.keyboardShortcuts")} (?)`}
       >
         ?
       </button>

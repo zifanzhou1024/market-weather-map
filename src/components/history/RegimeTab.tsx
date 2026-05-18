@@ -138,6 +138,7 @@ export default function RegimeTab() {
             return section ? (
               <FocusBlock
                 variant="section"
+                sectionId={section.id}
                 eyebrow={section.eyebrow}
                 question={section.question}
                 answer={section.answer}

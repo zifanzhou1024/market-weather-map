@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { useKeyboardShortcuts } from "../keyboardShortcuts";
 import { ModeProvider, useMode } from "../mode";
+import { resolveLocale } from "../i18n";
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT =
   true;
@@ -190,6 +191,40 @@ describe("useKeyboardShortcuts — navigation (g prefix)", () => {
       fireKey("x");
     });
     expect(path).toBe("/short-term");
+  });
+});
+
+describe("useKeyboardShortcuts — language toggle (g i)", () => {
+  test("g i toggles locale en -> zh and does not navigate", () => {
+    let path = "";
+    renderApp({ initialPath: "/short-term", onLocation: (p) => (path = p) });
+    expect(resolveLocale()).toBe("en");
+    act(() => {
+      fireKey("g");
+    });
+    act(() => {
+      fireKey("i");
+    });
+    expect(resolveLocale()).toBe("zh");
+    expect(path).toBe("/short-term");
+  });
+
+  test("g i is reversible — pressing again returns to en", () => {
+    renderApp({});
+    act(() => {
+      fireKey("g");
+    });
+    act(() => {
+      fireKey("i");
+    });
+    expect(resolveLocale()).toBe("zh");
+    act(() => {
+      fireKey("g");
+    });
+    act(() => {
+      fireKey("i");
+    });
+    expect(resolveLocale()).toBe("en");
   });
 });
 
