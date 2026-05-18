@@ -2888,3 +2888,270 @@ code {
   margin: 0;
   color: #233029;
 }
+
+/* ── Cockpit (Phase E) ─────────────────────────────── */
+
+.market-cockpit {
+  margin-bottom: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.market-cockpit--loading {
+  opacity: 0.6;
+}
+
+.market-cockpit__skeleton {
+  padding: 40px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+
+/* Composite scores row (headline contract — 3 always-present cells) */
+.composite-scores-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.composite-score-cell {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 16px 18px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  box-shadow: 0 12px 28px rgba(33, 45, 37, 0.07);
+  border-top: 3px solid var(--accent);
+}
+
+.composite-score-cell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.composite-score-cell--market_weather { border-top-color: #b04a3a; }
+.composite-score-cell--macro_climate { border-top-color: #31516b; }
+.composite-score-cell--fragility { border-top-color: #c08b32; }
+
+.composite-score-cell__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.composite-score-cell__label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.composite-score-cell__regime {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1f3730;
+}
+
+.composite-score-cell__primary {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.composite-score-cell__value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #1f3730;
+  font-variant-numeric: tabular-nums;
+}
+
+.composite-score-cell__spark { color: var(--accent); display: block; }
+
+.composite-score-cell__delta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Vital signs grid (top-N rotating cells) */
+.vital-signs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.vital-signs-grid__empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+
+.cockpit-cell {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  border-left: 3px solid var(--accent);
+  box-shadow: 0 12px 28px rgba(33, 45, 37, 0.07);
+}
+
+.cockpit-cell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.cockpit-cell--risk { border-left-color: #b04a3a; }
+.cockpit-cell--support { border-left-color: #3a7d5b; }
+.cockpit-cell--neutral { border-left-color: var(--muted); }
+
+.cockpit-cell__header {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.cockpit-cell__rank {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cockpit-cell__label {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #233029;
+  line-height: 1.2;
+}
+
+.cockpit-cell__primary {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.cockpit-cell__value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1f3730;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.cockpit-cell__unit {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.cockpit-cell__spark {
+  display: block;
+  color: var(--muted);
+}
+
+.cockpit-cell__spark--risk { color: #b04a3a; }
+.cockpit-cell__spark--support { color: #3a7d5b; }
+.cockpit-cell__spark--neutral { color: var(--muted); }
+
+.cockpit-cell__deltas {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cockpit-cell__secondary {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.cockpit-cell__secondary li {
+  font-size: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cockpit-cell__secondary-label {
+  color: var(--muted);
+  margin-right: 4px;
+}
+
+.cockpit-cell__secondary-value {
+  color: #1f3730;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Percentile band primitive */
+.percentile-band {
+  display: block;
+  width: 100%;
+}
+
+.percentile-band--na {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.percentile-band__track {
+  fill: #e2e7dd;
+}
+
+.percentile-band--risk .percentile-band__track { fill: #f0d8d2; }
+.percentile-band--support .percentile-band__track { fill: #d4ead9; }
+.percentile-band--neutral .percentile-band__track { fill: #e2e7dd; }
+
+.percentile-band__tick {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.percentile-band--risk .percentile-band__tick { stroke: #b04a3a; }
+.percentile-band--support .percentile-band__tick { stroke: #3a7d5b; }
+.percentile-band--neutral .percentile-band__tick { stroke: var(--muted); }
+
+/* Freshness pill */
+.freshness-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+/* Mobile responsive */
+@media (max-width: 760px) {
+  .composite-scores-row {
+    grid-template-columns: 1fr;
+  }
+  .composite-score-cell__value {
+    font-size: 1.6rem;
+  }
+  .cockpit-cell__value {
+    font-size: 1.4rem;
+  }
+}
