@@ -3,6 +3,7 @@ import type { Mode } from "../lib/mode";
 import Sparkline from "./Sparkline";
 import PercentileBand from "./PercentileBand";
 import FreshnessPill from "./FreshnessPill";
+import GlossaryTerm from "./GlossaryTerm";
 
 /**
  * The atomic cell of the cockpit grid.
@@ -64,13 +65,23 @@ export default function CockpitCell({ sign, mode }: Props) {
         <span className="cockpit-cell__rank" aria-hidden="true">
           #{sign.rank}
         </span>
-        <h3 className="cockpit-cell__label">{sign.label}</h3>
+        <h3 className="cockpit-cell__label">
+          <GlossaryTerm term={sign.label} />
+        </h3>
       </header>
 
       <div className="cockpit-cell__primary">
         <span className="cockpit-cell__value">{value}</span>
         {sign.primary_unit && (
-          <span className="cockpit-cell__unit">{sign.primary_unit}</span>
+          <span className="cockpit-cell__unit">
+            {/* primary_unit values in cockpit.json carry a leading space
+              * (" bp", " T") so the value+unit reads with spacing. We trim
+              * for the glossary key lookup but keep the original visible
+              * text so layout doesn't shift. */}
+            <GlossaryTerm term={sign.primary_unit.trim()}>
+              {sign.primary_unit}
+            </GlossaryTerm>
+          </span>
         )}
       </div>
 
@@ -96,10 +107,12 @@ export default function CockpitCell({ sign, mode }: Props) {
         <ul className="cockpit-cell__secondary">
           {sign.secondary_values.map((s) => (
             <li key={s.label}>
-              <span className="cockpit-cell__secondary-label">{s.label}</span>{" "}
+              <span className="cockpit-cell__secondary-label">
+                <GlossaryTerm term={s.label} />
+              </span>{" "}
               <span className="cockpit-cell__secondary-value">
                 {s.value.toFixed(1)}
-                {s.unit}
+                <GlossaryTerm term={s.unit.trim()}>{s.unit}</GlossaryTerm>
               </span>
             </li>
           ))}

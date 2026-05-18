@@ -2,6 +2,7 @@ import type { CockpitCompositeScore } from "../lib/types";
 import type { Mode } from "../lib/mode";
 import Sparkline from "./Sparkline";
 import PercentileBand from "./PercentileBand";
+import GlossaryTerm from "./GlossaryTerm";
 
 /**
  * The headline row of the cockpit on Overview.
@@ -72,8 +73,16 @@ export default function CompositeScoresRow({ scores, mode }: Props) {
             aria-label={`${s.label}: ${formatValue(s.value)} (${s.regime_label})`}
           >
             <header className="composite-score-cell__header">
+              {/* Composite labels ("Market Weather", "Macro Climate",
+                * "Fragility") are product names, not jargon — intentionally
+                * left out of the glossary. The regime label is wrapped so
+                * future regime additions ("Stress", etc.) can inherit
+                * tooltips without touching this file again; today's regimes
+                * fall through unchanged. */}
               <span className="composite-score-cell__label">{s.label}</span>
-              <span className="composite-score-cell__regime">{s.regime_label}</span>
+              <span className="composite-score-cell__regime">
+                <GlossaryTerm term={s.regime_label} />
+              </span>
             </header>
             <div className="composite-score-cell__primary">
               <span className="composite-score-cell__value">{formatValue(s.value)}</span>

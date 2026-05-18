@@ -3389,3 +3389,36 @@ code {
   text-align: center;
   color: var(--muted);
 }
+
+/* ── Glossary tooltips ────────────────────────────────────── */
+
+/* Native <abbr title> rendered by GlossaryTerm: a dotted underline + help
+ * cursor is the universal "this term has an explanation" affordance. The
+ * tooltip itself is the browser's native title popover, so we don't ship a
+ * popover library; this keeps the bundle small and accessibility-friendly. */
+abbr.glossary,
+abbr.glossary[title] {
+  border-bottom: 1px dotted var(--muted);
+  cursor: help;
+  /* Override the default dotted-underline-via-text-decoration that some
+   * browsers add to <abbr>; we render our own dotted border to control
+   * thickness and color via theme tokens. */
+  text-decoration: none;
+}
+
+abbr.glossary:hover,
+abbr.glossary:focus {
+  border-bottom-style: solid;
+  outline: none;
+}
+
+abbr.glossary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  abbr.glossary {
+    transition: none;
+  }
+}
