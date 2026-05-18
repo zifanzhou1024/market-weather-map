@@ -2,7 +2,9 @@ import { Suspense, useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import PersistentRegimeHeader from "./PersistentRegimeHeader";
 import RouteLoading from "./RouteLoading";
+import KeyboardShortcutsHelp from "./KeyboardShortcutsHelp";
 import { loadCockpit } from "../lib/data";
+import { useKeyboardShortcuts } from "../lib/keyboardShortcuts";
 import type { CockpitFile } from "../lib/types";
 
 interface NavItem {
@@ -29,6 +31,7 @@ const moreItems: readonly NavItem[] = [
 
 export default function AppLayout() {
   const [cockpit, setCockpit] = useState<CockpitFile | null>(null);
+  const { showHelp, closeHelp } = useKeyboardShortcuts();
 
   useEffect(() => {
     let alive = true;
@@ -83,6 +86,7 @@ export default function AppLayout() {
       <Suspense fallback={<RouteLoading />}>
         <Outlet />
       </Suspense>
+      <KeyboardShortcutsHelp open={showHelp} onClose={closeHelp} />
     </div>
   );
 }
