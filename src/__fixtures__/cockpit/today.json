@@ -1,0 +1,78 @@
+{
+  "generated_at_utc": "2026-05-17T12:00:00Z",
+  "date": "2026-05-17",
+  "method_version": "phase-e-cockpit-v1",
+  "regime": {
+    "label": "Reallocation / rotation",
+    "tone": "neutral"
+  },
+  "composite_scores": [
+    {
+      "id": "market_weather",
+      "label": "Market Weather",
+      "value": 4.32,
+      "regime_label": "Mixed",
+      "percentile_5y": null,
+      "percentile_window_days": null,
+      "delta_7d": null,
+      "delta_1m": null,
+      "sparkline_90d": [],
+      "direction": "neutral"
+    },
+    {
+      "id": "macro_climate",
+      "label": "Macro Climate",
+      "value": 11.98,
+      "regime_label": "Mixed",
+      "percentile_5y": null,
+      "percentile_window_days": null,
+      "delta_7d": null,
+      "delta_1m": null,
+      "sparkline_90d": [],
+      "direction": "neutral"
+    },
+    {
+      "id": "fragility",
+      "label": "Fragility",
+      "value": 28.76,
+      "regime_label": "Low Fragility",
+      "percentile_5y": null,
+      "percentile_window_days": null,
+      "delta_7d": null,
+      "delta_1m": null,
+      "sparkline_90d": [],
+      "direction": "neutral"
+    }
+  ],
+  "vital_signs": [
+    {
+      "id": "breakeven_10y",
+      "rank": 1,
+      "label": "10Y Breakeven",
+      "primary_value": 2.49,
+      "primary_unit": "%",
+      "primary_decimals": 2,
+      "secondary_values": [],
+      "percentile_5y": 87,
+      "percentile_window_days": 1260,
+      "delta_7d": 0.04,
+      "delta_1m": 0.1,
+      "sparkline_90d": [2.27, 2.3, 2.33, 2.35, 2.38, 2.41, 2.44, 2.47, 2.49],
+      "freshness_status": "ok",
+      "score_status": "active",
+      "as_of": "2026-05-15",
+      "direction": "risk",
+      "source_series_ids": ["breakeven_10y"],
+      "priority": 388.0,
+      "importance": 5,
+      "why_it_matters": "Tracks inflation expectations priced into 10Y Treasuries."
+    }
+  ],
+  "candidates_not_shown": [
+    {
+      "id": "payrolls",
+      "priority": 293.28,
+      "reason": "below top 9 today"
+    }
+  ]
+}
