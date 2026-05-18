@@ -3290,9 +3290,10 @@ interface IaBody {
 
 // Shell routes that delegate data-footer responsibility to inner tab bodies.
 // Channels.tsx is the tabbed shell introduced by PR 5; each ChannelTab body
-// carries its own <RouteDataFooter>. The shell itself only renders
-// <ChannelTabs> + <Suspense>, so it is excluded from the IA contract.
-const SHELL_ROUTE_FILES = new Set<string>(["Channels.tsx"]);
+// carries its own <RouteDataFooter>. History.tsx is the tabbed shell introduced
+// by PR 6 (RegimeTab + ReplayTab). The shell itself only renders its tab strip
+// + <Suspense>, so it is excluded from the IA contract.
+const SHELL_ROUTE_FILES = new Set<string>(["Channels.tsx", "History.tsx"]);
 
 // Map from the historic route filename (used by the spec slot map below) to
 // the ChannelTab file that now carries that body.
