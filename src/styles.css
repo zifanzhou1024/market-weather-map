@@ -3422,3 +3422,149 @@ abbr.glossary:focus-visible {
     transition: none;
   }
 }
+
+/* ── Print stylesheet (daily-brief PDF) ───────────────────── */
+@media print {
+  /* Page setup */
+  @page {
+    size: letter portrait;
+    margin: 0.5in;
+  }
+
+  body, .app, .page-shell {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Hide interactive chrome */
+  .persistent-regime-header__mode-toggle,
+  .site-header > div:first-child + nav,
+  nav.site-nav,
+  details.site-nav__more,
+  .nav-link,
+  .channel-tabs,
+  .diff-window-tabs,
+  .channel-tab,
+  details.context-block,
+  .todays-notable,
+  .route-data-footer,
+  .data-status-table,
+  .data-gap-panel {
+    display: none !important;
+  }
+
+  /* Strip interactive affordances */
+  abbr.glossary,
+  abbr.glossary[title] {
+    border-bottom: none !important;
+    cursor: auto !important;
+  }
+
+  /* No link underlines */
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+
+  /* Persistent regime header — compact print form */
+  .persistent-regime-header {
+    position: static !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid #999 !important;
+    padding: 4px 0 !important;
+    margin-bottom: 12px !important;
+  }
+
+  .persistent-regime-header--thin .persistent-regime-header__date {
+    display: inline !important;  /* always show date in print */
+  }
+
+  /* Masthead — show title + delayed-data eyebrow in print */
+  .site-header {
+    padding: 0 0 8px !important;
+    border-bottom: 1px solid #999 !important;
+    margin-bottom: 16px !important;
+    width: auto !important;
+    display: block !important;
+  }
+
+  .site-header h1 {
+    font-size: 1.4rem !important;
+    margin: 0 !important;
+  }
+
+  .eyebrow {
+    font-size: 0.66rem !important;
+    margin: 0 !important;
+  }
+
+  /* Page heading — slim it down */
+  .page-heading {
+    margin-bottom: 12px !important;
+  }
+
+  .page-heading h2 {
+    font-size: 1.3rem !important;
+  }
+
+  /* Cockpit — fit on one page */
+  .market-cockpit {
+    margin-bottom: 12px !important;
+    gap: 8px !important;
+    page-break-inside: avoid;
+  }
+
+  .composite-scores-row {
+    gap: 6px !important;
+    page-break-inside: avoid;
+  }
+
+  .composite-score-cell {
+    padding: 8px 10px !important;
+    box-shadow: none !important;
+    border: 1px solid #444 !important;
+    page-break-inside: avoid;
+  }
+
+  .composite-score-cell__value {
+    font-size: 1.4rem !important;
+  }
+
+  .vital-signs-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .cockpit-cell {
+    padding: 8px !important;
+    box-shadow: none !important;
+    border: 1px solid #aaa !important;
+    border-left: 3px solid !important;
+    page-break-inside: avoid;
+  }
+
+  .cockpit-cell--risk { border-left-color: #b04a3a !important; }
+  .cockpit-cell--support { border-left-color: #3a7d5b !important; }
+  .cockpit-cell--neutral { border-left-color: #607066 !important; }
+
+  .cockpit-cell__value {
+    font-size: 1.1rem !important;
+  }
+
+  .cockpit-cell__deltas,
+  .cockpit-cell__secondary {
+    display: none !important;  /* drop densest details — keep the brief tight */
+  }
+
+  /* Brief footer line on the printed page */
+  .app::after {
+    content: "Market Weather Map · Delayed public data · github.com/zifanzhou1024/market-weather-map";
+    display: block;
+    margin-top: 16px;
+    padding-top: 8px;
+    border-top: 1px solid #999;
+    font-size: 0.62rem;
+    color: #555;
+    text-align: center;
+  }
+}
