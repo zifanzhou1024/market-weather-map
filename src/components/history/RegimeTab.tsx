@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import CrossAssetConfirmationMatrix from "../components/CrossAssetConfirmationMatrix";
-import DataQualityBanner from "../components/DataQualityBanner";
-import FocusBlock from "../components/FocusBlock";
-import PageInsightHero from "../components/PageInsightHero";
-import RegimeInterpretationPanel from "../components/RegimeInterpretationPanel";
-import RegimeQuadrantChart from "../components/RegimeQuadrantChart";
-import RouteDataFooter from "../components/RouteDataFooter";
-import YieldDecompositionChart from "../components/YieldDecompositionChart";
-import { candidateDisplayLabel, candidateDisplayMessage } from "../lib/candidateDisplay";
-import { loadPageInsights, loadRegimeSnapshot, loadScoreSummary } from "../lib/data";
-import { directionLabel } from "../lib/regime";
-import type { DirectionState, PageInsightsFile, RegimeSnapshotFile, ScoreSummaryFile } from "../lib/types";
+import CrossAssetConfirmationMatrix from "../CrossAssetConfirmationMatrix";
+import FocusBlock from "../FocusBlock";
+import PageInsightHero from "../PageInsightHero";
+import RegimeInterpretationPanel from "../RegimeInterpretationPanel";
+import RegimeQuadrantChart from "../RegimeQuadrantChart";
+import RouteDataFooter from "../RouteDataFooter";
+import YieldDecompositionChart from "../YieldDecompositionChart";
+import { candidateDisplayLabel, candidateDisplayMessage } from "../../lib/candidateDisplay";
+import { loadPageInsights, loadRegimeSnapshot, loadScoreSummary } from "../../lib/data";
+import { directionLabel } from "../../lib/regime";
+import type { DirectionState, PageInsightsFile, RegimeSnapshotFile, ScoreSummaryFile } from "../../lib/types";
 
 interface DirectionCardProps {
   label: string;
@@ -90,7 +89,7 @@ function DirectionCard({ label, direction }: DirectionCardProps) {
   );
 }
 
-export default function RegimeMap() {
+export default function RegimeTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
@@ -123,12 +122,7 @@ export default function RegimeMap() {
   }, []);
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Regime map</p>
-        <h2>TIPS x Dollar Regime Map</h2>
-        <p>Current dollar, real-yield, nominal-yield, and cross-asset regime context.</p>
-      </section>
+    <section data-testid="regime-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -157,7 +151,6 @@ export default function RegimeMap() {
           })()}
           {/* SLOT:regime_primary_chart */}
           <RegimeQuadrantChart />
-          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
           <RegimeInterpretationPanel scoreSummary={data.scoreSummary} snapshot={data.snapshot} />
           <section className="metric-grid" aria-label="Regime direction cards">
             <DirectionCard direction={data.snapshot.regime.tips_direction} label="TIPS direction" />
@@ -173,6 +166,6 @@ export default function RegimeMap() {
           </RouteDataFooter>
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }

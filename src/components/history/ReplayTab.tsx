@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import DriverAttributionPanel from "../components/DriverAttributionPanel";
-import HistoricalRegimeReplayPanel from "../components/HistoricalRegimeReplayPanel";
-import HowToReadPanel from "../components/HowToReadPanel";
-import RouteDataFooter from "../components/RouteDataFooter";
-import { loadRegimeReplay, loadScoreHistory } from "../lib/data";
-import type { RegimeReplayFile, ScoreHistoryFile } from "../lib/types";
+import DriverAttributionPanel from "../DriverAttributionPanel";
+import HistoricalRegimeReplayPanel from "../HistoricalRegimeReplayPanel";
+import HowToReadPanel from "../HowToReadPanel";
+import RouteDataFooter from "../RouteDataFooter";
+import { loadRegimeReplay, loadScoreHistory } from "../../lib/data";
+import type { RegimeReplayFile, ScoreHistoryFile } from "../../lib/types";
 
 interface RouteState {
   replay: RegimeReplayFile;
   scoreHistory: ScoreHistoryFile;
 }
 
-export default function HistoricalRegimeReplay() {
+export default function ReplayTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,15 +37,7 @@ export default function HistoricalRegimeReplay() {
   }, []);
 
   return (
-    <main className="page-shell">
-      <section className="page-heading">
-        <p className="eyebrow">Research</p>
-        <h2>Historical Regime Replay</h2>
-        <p>
-          Descriptive replay of prior real-yield, dollar, credit, and VIX-curve regimes, plus score
-          attribution for what changed in the latest generated snapshot.
-        </p>
-      </section>
+    <section data-testid="replay-tab" className="channel-tab-body">
       {error ? (
         <p className="data-error" role="alert">
           Data error: {error}
@@ -59,6 +51,6 @@ export default function HistoricalRegimeReplay() {
           <RouteDataFooter />
         </div>
       ) : null}
-    </main>
+    </section>
   );
 }

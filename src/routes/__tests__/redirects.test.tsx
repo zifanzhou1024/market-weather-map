@@ -34,7 +34,9 @@ const REDIRECT_CASES: Array<[string, string, string]> = [
   ["/growth", "/channels", "?tab=growth"],
   ["/housing", "/channels", "?tab=housing"],
   ["/inflation", "/channels", "?tab=inflation"],
-  ["/sentiment", "/channels", "?tab=positioning"]
+  ["/sentiment", "/channels", "?tab=positioning"],
+  ["/regime-map", "/history", "?tab=regime"],
+  ["/replay", "/history", "?tab=replay"]
 ];
 
 function renderAtPath(initialPath: string) {
@@ -50,6 +52,12 @@ function renderAtPath(initialPath: string) {
               <LocationProbe onLocation={(p, s) => (location = { pathname: p, search: s })} />
             }
           />
+          <Route
+            path="/history/*"
+            element={
+              <LocationProbe onLocation={(p, s) => (location = { pathname: p, search: s })} />
+            }
+          />
           <Route path="/volatility" element={<Navigate to="/channels?tab=volatility" replace />} />
           <Route path="/rates" element={<Navigate to="/channels?tab=rates" replace />} />
           <Route path="/liquidity" element={<Navigate to="/channels?tab=liquidity" replace />} />
@@ -60,6 +68,8 @@ function renderAtPath(initialPath: string) {
           <Route path="/housing" element={<Navigate to="/channels?tab=housing" replace />} />
           <Route path="/inflation" element={<Navigate to="/channels?tab=inflation" replace />} />
           <Route path="/sentiment" element={<Navigate to="/channels?tab=positioning" replace />} />
+          <Route path="/regime-map" element={<Navigate to="/history?tab=regime" replace />} />
+          <Route path="/replay" element={<Navigate to="/history?tab=replay" replace />} />
         </Routes>
       </MemoryRouter>
     );
@@ -67,7 +77,7 @@ function renderAtPath(initialPath: string) {
   return location;
 }
 
-describe("PR5 channel redirects (mirror of App.tsx contract)", () => {
+describe("Detail-route redirects (mirror of App.tsx contract)", () => {
   test.each(REDIRECT_CASES)("%s redirects to %s%s", (oldPath, newPath, newSearch) => {
     const loc = renderAtPath(oldPath);
     expect(loc.pathname).toBe(newPath);

@@ -87,11 +87,11 @@ describe("AppLayout nav (post-PR-5)", () => {
     expect(channelsLink?.classList.contains("active")).toBe(true);
   });
 
-  test("History placeholder points at /regime-map (PR 6 updates to /history)", () => {
+  test("History pill points at /history", () => {
     renderNav("/");
     const historyLink = Array.from(container.querySelectorAll(".site-nav .nav-link")).find(
       (a) => a.textContent?.trim() === "History"
     );
-    expect(historyLink?.getAttribute("href")).toBe("/regime-map");
+    expect(historyLink?.getAttribute("href")).toBe("/history");
   });
 });
