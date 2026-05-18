@@ -100,10 +100,21 @@ function LocationObserver({ onPathChange }: { onPathChange: (pathname: string) =
   return null;
 }
 
+// Channels.test.tsx and History.test.tsx use a 50×5ms = 250ms flushLazy budget
+// because their tab bodies (Channels/History) are React.lazy() imports that pull
+// in ECharts modules and large dependency graphs. Redirect tests in this file
+// go through the same lazy path (/regime-map -> /history?tab=regime resolves
+// RegimeTab via lazy()), so we match that budget here. Early return when the
+// expected content lands keeps the fast path cheap; the budget only matters on
+// slow CI workers or when the assertion is going to fail anyway.
 async function waitForContent(container: HTMLElement, text: string) {
-  for (let attempt = 0; attempt < 20; attempt += 1) {
+  for (let attempt = 0; attempt < 60; attempt += 1) {
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      // First few attempts stay at 0ms so synchronous-content tests don't pay
+      // any wall-clock cost. After 10 attempts, switch to a real 5ms sleep so
+      // dynamic-import settle gets a fair window on slow workers.
+      const delay = attempt < 10 ? 0 : 5;
+      await new Promise((resolve) => setTimeout(resolve, delay));
     });
     if (container.textContent?.includes(text)) return;
   }
