@@ -4,6 +4,26 @@ import Sparkline from "./Sparkline";
 import PercentileBand from "./PercentileBand";
 import FreshnessPill from "./FreshnessPill";
 import GlossaryTerm from "./GlossaryTerm";
+import { useT, COCKPIT_ID_TO_SIGNAL_KEY } from "../lib/i18n";
+
+// Categorical reading words that may appear as plain text inside a cockpit
+// cell (today via `why_it_matters` prose or future structured fields). The
+// keys map the lowercase English token to the i18n key under `readings.*`.
+// CockpitCell does not currently render a structured reading field; this
+// map is kept here so any later addition (e.g. a `sign.reading` enum) flows
+// through the same lookup without a second touch.
+const READING_KEYS: Record<string, string> = {
+  stretched: "readings.stretched",
+  neutral: "readings.neutral",
+  tight: "readings.tight",
+  wide: "readings.wide",
+  rich: "readings.rich",
+  cheap: "readings.cheap",
+  rising: "readings.rising",
+  falling: "readings.falling",
+  flat: "readings.flat",
+  normal: "readings.normal",
+};
 
 /**
  * The atomic cell of the cockpit grid.
@@ -49,10 +69,32 @@ function formatDelta(d: number | null, decimals: number): string | null {
 }
 
 export default function CockpitCell({ sign, mode }: Props) {
+  const { t } = useT();
   const value = sign.primary_value.toFixed(sign.primary_decimals);
   const delta7d = formatDelta(sign.delta_7d, sign.primary_decimals);
   const delta1m = formatDelta(sign.delta_1m, sign.primary_decimals);
   const ariaLabel = `${sign.label}: ${value}${sign.primary_unit}`;
+
+  // Localized primary label: when the cockpit `sign.id` maps to a curated
+  // `SIGNAL_NAMES` entry we render `中文 (Original)` under zh and the bare
+  // canonical English under en. Otherwise we fall back to the Python-emitted
+  // `sign.label`. The GlossaryTerm `term` prop stays the canonical English so
+  // the tooltip lookup keeps working with the existing glossary keys.
+  const signalKey = COCKPIT_ID_TO_SIGNAL_KEY[sign.id];
+  const displayLabel = signalKey
+    ? t(`signals.${signalKey}`, { withOriginal: true })
+    : sign.label;
+
+  // Optional reading-word lookup. CockpitVitalSign does not currently expose
+  // a structured reading field — kept for parity with the locale plan so any
+  // future categorical text flows through READING_KEYS without a refactor.
+  const readingValue = (sign as { reading?: string }).reading;
+  const readingText = readingValue && READING_KEYS[readingValue]
+    ? t(READING_KEYS[readingValue])
+    : readingValue;
+  // Suppress unused-var TS warning if `readingText` ends up unused at build
+  // time; consumers will pick it up when a reading field is wired.
+  void readingText;
 
   return (
     <article
@@ -66,7 +108,7 @@ export default function CockpitCell({ sign, mode }: Props) {
           #{sign.rank}
         </span>
         <h3 className="cockpit-cell__label">
-          <GlossaryTerm term={sign.label} />
+          <GlossaryTerm term={sign.label}>{displayLabel}</GlossaryTerm>
         </h3>
       </header>
 

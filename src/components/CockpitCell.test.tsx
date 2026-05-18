@@ -96,7 +96,13 @@ describe("CockpitCell", () => {
   });
 
   test("label renders without <abbr> when the term is not in the glossary", () => {
-    const unknownLabelSign = { ...topSign, label: "Not-A-Real-Term" };
+    // Use an `id` that isn't in COCKPIT_ID_TO_SIGNAL_KEY so the i18n layer
+    // falls back to `sign.label` rather than translating via SIGNAL_NAMES.
+    const unknownLabelSign = {
+      ...topSign,
+      id: "not-a-real-id",
+      label: "Not-A-Real-Term",
+    };
     renderCell(<CockpitCell sign={unknownLabelSign as any} mode="detail" />);
     const labelAbbr = container.querySelector(".cockpit-cell__label abbr.glossary");
     expect(labelAbbr).toBeNull();
