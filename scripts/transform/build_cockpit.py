@@ -11,12 +11,14 @@ Selection rule (see spec §"Cockpit selection rule"):
 from __future__ import annotations
 
 import json
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
 from scripts.shared.cockpit_whitelist import (
     COCKPIT_WHITELIST,
     REGIME_TONE_MAP,
+    CockpitSecondaryLine,
     CockpitSignal,
 )
 from scripts.shared.io import utc_now_iso
@@ -30,6 +32,8 @@ from scripts.transform._cockpit_math import (
     sparkline_90d,
 )
 
+SUPPORTED_VALUE_TRANSFORMS: frozenset[str] = frozenset({"yoy_pct"})
+
 METHOD_VERSION = "phase-e-cockpit-v1"
 MAX_VITAL_SIGNS = 9
 COMPOSITE_SCORE_ORDER: tuple[str, ...] = ("market_weather", "macro_climate", "fragility")
@@ -41,24 +45,109 @@ def _read_json(path: Path, default: Any) -> Any:
     return json.loads(path.read_text())
 
 
-def _compose_composite_scores(score_summary: dict[str, Any]) -> list[dict[str, Any]]:
+def _compose_composite_scores(
+    score_summary: dict[str, Any],
+    score_history: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    """Compose the three composite score cells.
+
+    When `score_history` (derived/score_history.json) is available, populate
+    percentile_5y / sparkline_90d / delta_7d / delta_1m from its observations.
+    When it is missing or empty, those fields stay null/empty — the frontend
+    renders a placeholder rather than misleading numbers.
+    """
     scores = score_summary.get("scores", {})
+    history_obs = (score_history or {}).get("observations", []) or []
     out: list[dict[str, Any]] = []
     for sid in COMPOSITE_SCORE_ORDER:
         s = scores.get(sid, {})
+        # Per-composite mini-series extracted from the multi-column history.
+        series = [
+            {"date": o["date"], "value": o[sid]}
+            for o in history_obs
+            if o.get(sid) is not None
+        ]
+        series.sort(key=lambda o: o["date"])
+        if series:
+            pct, window = percentile_5y(series)
+            spark = sparkline_90d(series)
+            d7 = delta_against_window(series, days=7)
+            d1m = delta_against_window(series, days=30)
+        else:
+            pct, window = None, 0
+            spark = []
+            d7 = None
+            d1m = None
         out.append({
             "id": sid,
             "label": sid.replace("_", " ").title(),
             "value": s.get("score"),
             "regime_label": s.get("label"),
-            "percentile_5y": None,        # populated when score_history.json arrives
-            "percentile_window_days": None,
-            "delta_7d": None,
-            "delta_1m": None,
-            "sparkline_90d": [],
+            "percentile_5y": pct,
+            "percentile_window_days": window if pct is not None else None,
+            "delta_7d": d7,
+            "delta_1m": d1m,
+            "sparkline_90d": spark,
             "direction": "neutral",
         })
     return out
+
+
+def _apply_yoy_pct_transform(observations: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Convert raw observations into year-over-year percent change.
+
+    For each observation at date T, find the closest prior observation in the
+    window [T-400d, T-330d] (i.e. ~12 months back, tolerating monthly cadence
+    drift) and compute (value[T] - prior) / prior * 100. Observations without
+    a comparable 12-month-prior value are dropped.
+    """
+    if not observations:
+        return observations
+    by_date = {
+        datetime.strptime(o["date"], "%Y-%m-%d").date(): o["value"]
+        for o in observations
+    }
+    out: list[dict[str, Any]] = []
+    for o in observations:
+        d = datetime.strptime(o["date"], "%Y-%m-%d").date()
+        target = d - timedelta(days=365)
+        low = d - timedelta(days=400)
+        high = d - timedelta(days=330)
+        candidates = [(cd, cv) for cd, cv in by_date.items() if low <= cd <= high]
+        if not candidates:
+            continue
+        candidates.sort(key=lambda pair: abs((pair[0] - target).days))
+        prior_value = candidates[0][1]
+        if prior_value == 0:
+            continue
+        yoy = (o["value"] - prior_value) / prior_value * 100
+        out.append({"date": o["date"], "value": yoy})
+    return out
+
+
+def _apply_value_transform_and_scale(
+    obs: list[dict[str, Any]],
+    entry: CockpitSignal,
+) -> list[dict[str, Any]]:
+    """Apply named transform (if any), then numeric scale (if not 1.0).
+
+    Returns a new list. Callers should treat the result as the canonical
+    observations used downstream (percentile, sparkline, delta).
+    """
+    if entry.value_transform is not None:
+        if entry.value_transform not in SUPPORTED_VALUE_TRANSFORMS:
+            raise ValueError(
+                f"Unknown value_transform {entry.value_transform!r} "
+                f"on cockpit signal {entry.id!r}"
+            )
+        if entry.value_transform == "yoy_pct":
+            obs = _apply_yoy_pct_transform(obs)
+    if entry.value_scale != 1.0:
+        obs = [
+            {"date": o["date"], "value": o["value"] * entry.value_scale}
+            for o in obs
+        ]
+    return obs
 
 
 def _compose_vital_sign(
@@ -79,6 +168,14 @@ def _compose_vital_sign(
     score_status = _project_score_status(status_entry.get("status"))
     if score_status != "active":
         return None  # defense-in-depth — never emit a candidate cell
+
+    # Apply transform (e.g. yoy_pct) then numeric scale (e.g. % → bp) before
+    # any downstream math; primary_value, percentile, deltas, and sparkline
+    # must all reflect the displayed units.
+    obs = _apply_value_transform_and_scale(obs, entry)
+    if not obs:
+        # Transform may legitimately drop all rows (e.g. yoy_pct with < 1y history).
+        return None
 
     # Per-cell payload
     pct, window = percentile_5y(obs)
@@ -113,8 +210,32 @@ def _compose_secondary_values(entry: CockpitSignal, series_root: Path) -> list[d
         obs = _load_series_or_derived(series_root, sec.series_id)
         if obs is None:
             continue
+        obs = _apply_secondary_transform_and_scale(obs, sec)
+        if not obs:
+            continue
         out.append({"label": sec.label, "value": obs[-1]["value"], "unit": sec.unit})
     return out
+
+
+def _apply_secondary_transform_and_scale(
+    obs: list[dict[str, Any]],
+    sec: CockpitSecondaryLine,
+) -> list[dict[str, Any]]:
+    """Mirror of _apply_value_transform_and_scale for secondary chips."""
+    if sec.value_transform is not None:
+        if sec.value_transform not in SUPPORTED_VALUE_TRANSFORMS:
+            raise ValueError(
+                f"Unknown value_transform {sec.value_transform!r} "
+                f"on secondary line {sec.label!r}"
+            )
+        if sec.value_transform == "yoy_pct":
+            obs = _apply_yoy_pct_transform(obs)
+    if sec.value_scale != 1.0:
+        obs = [
+            {"date": o["date"], "value": o["value"] * sec.value_scale}
+            for o in obs
+        ]
+    return obs
 
 
 def _load_series_or_derived(series_root: Path, series_id: str) -> list[dict[str, Any]] | None:
@@ -163,10 +284,11 @@ def build_cockpit_payload(input_root: Path) -> dict[str, Any]:
     """
     signal_priority = load_signal_priority_index(input_root / "derived" / "signal_priority.json")
     score_summary = _read_json(input_root / "derived" / "score_summary.json", {})
+    score_history = _read_json(input_root / "derived" / "score_history.json", {})
     regime_snapshot = _read_json(input_root / "derived" / "regime_snapshot.json", {})
     data_status = _read_json(input_root / "status" / "data_status.json", {"series": {}})
 
-    composite = _compose_composite_scores(score_summary)
+    composite = _compose_composite_scores(score_summary, score_history)
 
     # Compose all whitelist entries
     cells_with_priority: list[tuple[float, int, str, dict[str, Any]]] = []

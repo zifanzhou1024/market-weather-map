@@ -80,6 +80,67 @@ def test_every_priority_key_matches_a_signal_catalog_id():
     )
 
 
+def test_value_scale_is_positive_when_set():
+    """A non-1.0 value_scale must be strictly positive (negative scales
+    would invert sign without anyone noticing in the unit label)."""
+    for entry in COCKPIT_WHITELIST:
+        if entry.value_scale != 1.0:
+            assert entry.value_scale > 0, (
+                f"{entry.id}: value_scale must be > 0, got {entry.value_scale}"
+            )
+
+
+def test_value_transform_is_a_known_name_when_set():
+    """value_transform, if set, must be one of the names build_cockpit knows
+    how to apply. A mistyped transform would raise at build time, but failing
+    the test here gives a clearer error than a CI traceback."""
+    from scripts.transform.build_cockpit import SUPPORTED_VALUE_TRANSFORMS
+
+    for entry in COCKPIT_WHITELIST:
+        if entry.value_transform is not None:
+            assert entry.value_transform in SUPPORTED_VALUE_TRANSFORMS, (
+                f"{entry.id}: value_transform {entry.value_transform!r} not in "
+                f"SUPPORTED_VALUE_TRANSFORMS={sorted(SUPPORTED_VALUE_TRANSFORMS)}"
+            )
+        for sec in entry.secondary_lines:
+            if sec.value_transform is not None:
+                assert sec.value_transform in SUPPORTED_VALUE_TRANSFORMS, (
+                    f"{entry.id} secondary {sec.label!r}: value_transform "
+                    f"{sec.value_transform!r} not supported"
+                )
+
+
+def test_oas_and_yield_curve_entries_scale_percent_to_bp():
+    """Guard against an accidental scale revert. The FRED OAS series and the
+    derived us10y_minus_us2y series all arrive in percent / percentage points
+    and the cockpit displays them in basis points."""
+    expected_bp_scaled = {"credit_spreads", "ig_spreads", "yield_curve"}
+    for entry in COCKPIT_WHITELIST:
+        if entry.id in expected_bp_scaled:
+            assert entry.value_scale == 100.0, (
+                f"{entry.id}: expected value_scale=100.0 (% → bp), "
+                f"got {entry.value_scale}"
+            )
+            assert entry.primary_unit.strip() == "bp", (
+                f"{entry.id}: expected primary_unit ' bp', got "
+                f"{entry.primary_unit!r}"
+            )
+
+
+def test_inflation_uses_yoy_transform():
+    """Core CPI source is a raw index; the cockpit must convert to YoY %."""
+    inflation = next(e for e in COCKPIT_WHITELIST if e.id == "inflation")
+    assert inflation.value_transform == "yoy_pct"
+    assert inflation.primary_unit == "% YoY"
+
+
+def test_initial_claims_scaled_to_thousands():
+    """ICSA arrives in raw count (e.g. 211000); cockpit displays in thousands."""
+    claims = next(e for e in COCKPIT_WHITELIST if e.id == "labor_claims")
+    assert claims.value_scale == 0.001
+    assert claims.primary_unit == "k"
+
+
 def test_regime_tone_map_covers_known_regime_labels():
     """The keys in REGIME_TONE_MAP should match the regime labels enumerated
     in src/lib/types.ts (ScoreBlock['label'] union, see lines ~140-147).

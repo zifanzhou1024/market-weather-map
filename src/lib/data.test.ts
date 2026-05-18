@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, test, vi } from "vitest";
 import {
   DataLoadError,
+  loadCockpit,
   loadJson,
   loadJsonOrNull,
   loadPageInsights,
@@ -11,6 +12,7 @@ import {
   loadSourceRegistry,
   loadVolatilityDashboard
 } from "./data";
+import cockpitFixture from "../__fixtures__/cockpit/today.json";
 import type {
   DataStatusFile,
   PageInsightsFile,
@@ -221,6 +223,28 @@ describe("next-phase derived dashboard loaders", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(loadPageInsights()).rejects.toBeInstanceOf(SyntaxError);
+  });
+});
+
+describe("loadCockpit", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    fetchMock.mockReset();
+  });
+
+  it("fetches the canonical cockpit derived path and returns the parsed CockpitFile", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue(cockpitFixture)
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const data = await loadCockpit();
+
+    expect(fetchMock).toHaveBeenCalledWith("/data/derived/cockpit.json");
+    expect(data.vital_signs.length).toBeGreaterThan(0);
+    expect(data.composite_scores[0].id).toBe("market_weather");
   });
 });
 

@@ -305,6 +305,156 @@ def test_main_writes_real_cockpit_with_actual_data():
     )
 
 
+def test_apply_yoy_pct_transform_returns_per_obs_yoy_percent():
+    """Each observation maps to the YoY % vs the closest obs ~12 months back.
+    Observations without a 12mo-prior comparison are dropped."""
+    from scripts.transform.build_cockpit import _apply_yoy_pct_transform
+
+    obs = [
+        {"date": "2025-01-15", "value": 100.0},
+        {"date": "2025-06-15", "value": 105.0},
+        {"date": "2026-01-15", "value": 110.0},  # vs 2025-01: +10%
+        {"date": "2026-06-15", "value": 115.5},  # vs 2025-06: +10%
+    ]
+    out = _apply_yoy_pct_transform(obs)
+    by_date = {o["date"]: o["value"] for o in out}
+    assert "2025-01-15" not in by_date  # no 12mo-prior data
+    assert "2026-01-15" in by_date
+    assert by_date["2026-01-15"] == pytest.approx(10.0, abs=0.01)
+    assert by_date["2026-06-15"] == pytest.approx(10.0, abs=0.01)
+
+
+def test_apply_yoy_pct_transform_skips_zero_prior_value():
+    """Division-by-zero guard: a prior value of 0 is silently dropped."""
+    from scripts.transform.build_cockpit import _apply_yoy_pct_transform
+
+    obs = [
+        {"date": "2025-01-15", "value": 0.0},
+        {"date": "2026-01-15", "value": 5.0},
+    ]
+    out = _apply_yoy_pct_transform(obs)
+    assert out == []
+
+
+def test_value_scale_applied_to_oas_primary_value(tmp_path):
+    """A value_scale=100 entry (HY OAS) must display 100x the raw series value."""
+    derived = tmp_path / "derived"; derived.mkdir()
+    series = tmp_path / "series"; series.mkdir()
+    status_dir = tmp_path / "status"; status_dir.mkdir()
+
+    # Use the production whitelist entry credit_spreads (scale=100).
+    (derived / "signal_priority.json").write_text(json.dumps({
+        "top_warnings": [{"id": "credit_spreads", "priority": 999.0,
+                          "importance": 5, "why_it_matters": ""}],
+        "top_supports": [], "missing_high_value_signals": [], "overall_read": {},
+    }))
+    (series / "high_yield_oas.json").write_text(json.dumps({
+        "series_id": "high_yield_oas",
+        "observations": [{"date": f"2026-05-{d:02d}", "value": 2.5 + 0.01 * d}
+                         for d in range(1, 16)],
+    }))
+    (derived / "score_summary.json").write_text(json.dumps({
+        "date": "2026-05-15",
+        "scores": {s: {"score": 0, "label": "M", "confidence": 1,
+                       "bucket_scores": {}, "bucket_weights": {},
+                       "top_supports": [], "top_risks": [], "recent_changes": [],
+                       "missing_or_stale_notes": [], "confidence_reasons": []}
+                   for s in ("market_weather", "macro_climate", "fragility")},
+    }))
+    (derived / "regime_snapshot.json").write_text(json.dumps({"regime": {"label": "X"}}))
+    (status_dir / "data_status.json").write_text(json.dumps({
+        "series": {"high_yield_oas": {"status": "ok"}}
+    }))
+    payload = build_cockpit_payload(tmp_path)
+    hy = next(v for v in payload["vital_signs"] if v["id"] == "credit_spreads")
+    # Latest raw value 2.5 + 0.01*15 = 2.65; scaled by 100 = 265.0.
+    assert hy["primary_value"] == pytest.approx(265.0, abs=0.001)
+    assert hy["primary_unit"].strip() == "bp"
+
+
+def test_unknown_value_transform_raises(tmp_path):
+    """A typo in value_transform must fail loudly, not silently no-op."""
+    from scripts.shared.cockpit_whitelist import CockpitSignal
+    from scripts.transform.build_cockpit import _apply_value_transform_and_scale
+
+    bogus = CockpitSignal(
+        id="x", priority_key="x", display_label="X",
+        primary_series_id="vix", value_transform="not_a_real_transform",
+    )
+    obs = [{"date": "2026-05-15", "value": 1.0}]
+    with pytest.raises(ValueError, match="Unknown value_transform"):
+        _apply_value_transform_and_scale(obs, bogus)
+
+
+def test_composite_score_percentile_populated_from_score_history(tmp_path):
+    """When score_history.json contains ≥60 observations, composite cells
+    expose percentile_5y / sparkline_90d / delta_7d derived from it."""
+    derived = tmp_path / "derived"; derived.mkdir()
+    series = tmp_path / "series"; series.mkdir()
+    status_dir = tmp_path / "status"; status_dir.mkdir()
+
+    # 90 daily observations so percentile_5y is computable (needs ≥60).
+    history_obs = []
+    for i in range(90):
+        d = date(2026, 1, 1) + timedelta(days=i)
+        history_obs.append({
+            "date": d.isoformat(),
+            "market_weather": float(i),    # latest = max → high pct
+            "macro_climate": float(89 - i),  # latest = min → low pct
+            "fragility": 50.0,              # constant → pct ~50
+        })
+    (derived / "score_history.json").write_text(json.dumps({
+        "observations": history_obs,
+    }))
+    (derived / "score_summary.json").write_text(json.dumps({
+        "date": "2026-03-31",
+        "scores": {
+            "market_weather": {"score": 89.0, "label": "Hot"},
+            "macro_climate": {"score": 0.0, "label": "Cold"},
+            "fragility": {"score": 50.0, "label": "Mid"},
+        },
+    }))
+    (derived / "regime_snapshot.json").write_text(json.dumps({"regime": {"label": "X"}}))
+    (derived / "signal_priority.json").write_text(json.dumps({
+        "top_warnings": [], "top_supports": [],
+        "missing_high_value_signals": [], "overall_read": {},
+    }))
+    (status_dir / "data_status.json").write_text(json.dumps({"series": {}}))
+
+    payload = build_cockpit_payload(tmp_path)
+    by_id = {s["id"]: s for s in payload["composite_scores"]}
+    assert by_id["market_weather"]["percentile_5y"] is not None
+    assert by_id["market_weather"]["percentile_5y"] >= 90
+    assert by_id["macro_climate"]["percentile_5y"] is not None
+    assert by_id["macro_climate"]["percentile_5y"] <= 10
+    assert len(by_id["market_weather"]["sparkline_90d"]) == 90
+    # delta_7d should be non-null because we have >7 daily obs in history.
+    assert by_id["market_weather"]["delta_7d"] is not None
+
+
+def test_composite_score_percentile_null_when_history_missing(tmp_path):
+    """No score_history.json → percentile/spark/delta degrade gracefully."""
+    derived = tmp_path / "derived"; derived.mkdir()
+    series = tmp_path / "series"; series.mkdir()
+    status_dir = tmp_path / "status"; status_dir.mkdir()
+    (derived / "score_summary.json").write_text(json.dumps({
+        "date": "2026-05-15",
+        "scores": {s: {"score": 1.0, "label": "M"}
+                   for s in ("market_weather", "macro_climate", "fragility")},
+    }))
+    (derived / "regime_snapshot.json").write_text(json.dumps({"regime": {"label": "X"}}))
+    (derived / "signal_priority.json").write_text(json.dumps({
+        "top_warnings": [], "top_supports": [],
+        "missing_high_value_signals": [], "overall_read": {},
+    }))
+    (status_dir / "data_status.json").write_text(json.dumps({"series": {}}))
+    payload = build_cockpit_payload(tmp_path)
+    for s in payload["composite_scores"]:
+        assert s["percentile_5y"] is None
+        assert s["sparkline_90d"] == []
+        assert s["delta_7d"] is None
+
+
 def test_truncation_emits_top_nine_and_overflow_to_candidates_not_shown(tmp_path):
     """When all 15 whitelist entries qualify, only top 9 occupy vital_signs."""
     from scripts.shared.cockpit_whitelist import COCKPIT_WHITELIST

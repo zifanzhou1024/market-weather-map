@@ -21,6 +21,11 @@ class CockpitSecondaryLine:
     series_id: str
     unit: str = ""
     decimals: int = 1
+    value_scale: float = 1.0
+    """Same semantics as CockpitSignal.value_scale, for secondary chips."""
+
+    value_transform: str | None = None
+    """Same semantics as CockpitSignal.value_transform, for secondary chips."""
 
 
 @dataclass(frozen=True)
@@ -35,6 +40,24 @@ class CockpitSignal:
     direction: Direction = "risk"
     importance: int = 3
     why_it_matters: str = ""
+    value_scale: float = 1.0
+    """Multiplier applied to primary_value, deltas, and sparkline.
+
+    Example: 100 for FRED OAS series that arrive in percent but should
+    display as basis points; 0.001 for raw counts that should display
+    as thousands. 1.0 means no scaling.
+    """
+
+    value_transform: str | None = None
+    """Named transform applied to the series before scaling.
+
+    Currently supported:
+      - 'yoy_pct' : (value[T] - value[T-12mo]) / value[T-12mo] * 100,
+                    computed per-observation. Used to convert raw index
+                    series (e.g. CPILFESL) into year-over-year percent.
+
+    None means no transform (raw values used as-is).
+    """
 
 
 # Source-of-truth for regime labels: src/lib/types.ts (ScoreBlock['label'] union).
@@ -94,6 +117,7 @@ COCKPIT_WHITELIST: tuple[CockpitSignal, ...] = (
         primary_decimals=0,
         direction="risk",
         importance=5,
+        value_scale=100.0,  # FRED BAMLH0A0HYM2 arrives in percent; display in bp
     ),
     CockpitSignal(
         id="ig_spreads",
@@ -104,6 +128,7 @@ COCKPIT_WHITELIST: tuple[CockpitSignal, ...] = (
         primary_decimals=0,
         direction="risk",
         importance=4,
+        value_scale=100.0,  # FRED BAMLC0A0CM arrives in percent; display in bp
     ),
     CockpitSignal(
         id="broad_dollar",
@@ -130,12 +155,18 @@ COCKPIT_WHITELIST: tuple[CockpitSignal, ...] = (
         display_label="Core CPI YoY",
         primary_series_id="core_cpi",
         secondary_lines=(
-            CockpitSecondaryLine(label="Core PCE", series_id="core_pce", unit="% YoY"),
+            CockpitSecondaryLine(
+                label="Core PCE",
+                series_id="core_pce",
+                unit="% YoY",
+                value_transform="yoy_pct",
+            ),
         ),
         primary_unit="% YoY",
         primary_decimals=1,
         direction="risk",
         importance=5,
+        value_transform="yoy_pct",  # CPILFESL arrives as raw index; compute YoY%
     ),
     CockpitSignal(
         id="labor_claims",
@@ -146,6 +177,7 @@ COCKPIT_WHITELIST: tuple[CockpitSignal, ...] = (
         primary_decimals=0,
         direction="support",
         importance=4,
+        value_scale=0.001,  # FRED ICSA arrives as raw count; display in thousands
     ),
     CockpitSignal(
         id="payrolls",
@@ -196,6 +228,7 @@ COCKPIT_WHITELIST: tuple[CockpitSignal, ...] = (
         primary_decimals=0,
         direction="risk",
         importance=4,
+        value_scale=100.0,  # us10y_minus_us2y is in percentage points; display in bp
     ),
     CockpitSignal(
         id="net_liquidity",

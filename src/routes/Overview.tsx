@@ -8,6 +8,7 @@ import HorizonImpactMatrix from "../components/HorizonImpactMatrix";
 import HowToReadPanel from "../components/HowToReadPanel";
 import InterpretationPanel from "../components/InterpretationPanel";
 import MarketBriefHeader from "../components/MarketBriefHeader";
+import MarketCockpit from "../components/MarketCockpit";
 import MetricCard from "../components/MetricCard";
 import MissingSignalPanel from "../components/MissingSignalPanel";
 import OverviewDecisionCard from "../components/OverviewDecisionCard";
@@ -18,6 +19,7 @@ import SignalList from "../components/SignalList";
 import TopSignalList from "../components/TopSignalList";
 import {
   loadCatalog,
+  loadCockpit,
   loadDataStatus,
   loadDerivedSeries,
   loadRegimeSnapshot,
@@ -29,6 +31,7 @@ import {
 } from "../lib/data";
 import { countSourceGaps, firstText, scoreLabel } from "../lib/horizon";
 import type {
+  CockpitFile,
   ConfidenceBreakdownData,
   DataStatusFile,
   DerivedSeriesFile,
@@ -52,6 +55,7 @@ const overviewSeriesIds = [
 
 interface OverviewState {
   catalog: SeriesCatalogEntry[];
+  cockpit: CockpitFile | null;
   regimeSnapshot: RegimeSnapshotFile;
   scoreHistory: ScoreHistoryFile | null;
   scoreSummary: ScoreSummaryFile;
@@ -150,6 +154,7 @@ export default function Overview() {
           regimeSnapshot,
           shockSnapshot,
           signalPriority,
+          cockpit,
           series
         ] = await Promise.all([
           loadCatalog(),
@@ -159,6 +164,7 @@ export default function Overview() {
           loadRegimeSnapshot(),
           loadShockRiskSnapshot(),
           loadSignalPriority().catch(() => null),
+          loadCockpit().catch(() => null),
           Promise.all(
             overviewSeriesIds.map((seriesId) =>
               seriesId === "net_liquidity" ? loadDerivedSeries(seriesId) : loadSeries(seriesId)
@@ -169,6 +175,7 @@ export default function Overview() {
         if (active)
           setData({
             catalog,
+            cockpit,
             regimeSnapshot,
             scoreHistory,
             scoreSummary,
@@ -203,6 +210,7 @@ export default function Overview() {
       ) : null}
       {data ? (
         <>
+          <MarketCockpit data={data.cockpit} mode="detail" />
           {(() => {
             const { scoreSummary } = data;
             const market = scoreSummary.scores.market_weather;

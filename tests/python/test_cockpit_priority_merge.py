@@ -39,7 +39,25 @@ def _multi_signal_inputs(tmp_path):
         "missing_high_value_signals": [],
         "overall_read": {},
     }))
-    for sid in ("core_cpi", "high_yield_oas", "initial_claims"):
+    # core_cpi needs ~12mo of monthly observations because the cockpit
+    # whitelist applies value_transform="yoy_pct" to that series; without
+    # a year of history the YoY transform drops every row and the entry
+    # falls out of vital_signs. Use 24 monthly stamps to stay on the safe
+    # side of the 11-13mo lookback window.
+    cpi_obs = []
+    for year in (2024, 2025, 2026):
+        for month in range(1, 13):
+            if year == 2026 and month > 5:
+                break
+            cpi_obs.append({
+                "date": f"{year}-{month:02d}-01",
+                "value": 300.0 + (year - 2024) * 12 + month,
+            })
+    (series / "core_cpi.json").write_text(json.dumps({
+        "series_id": "core_cpi",
+        "observations": cpi_obs,
+    }))
+    for sid in ("high_yield_oas", "initial_claims"):
         (series / f"{sid}.json").write_text(json.dumps({
             "series_id": sid,
             "observations": [

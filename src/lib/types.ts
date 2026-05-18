@@ -700,3 +700,68 @@ export interface RegimeDashboardFile {
   windows: Record<RegimeWindowKey, RegimeWindowPoint[]>;
   thresholds: RegimeDashboardThresholds;
 }
+
+// Cockpit (Phase E — Overview cockpit redesign)
+// Source: public/data/derived/cockpit.json produced by build_cockpit.py
+export type CockpitDirection = "risk" | "support" | "neutral";
+export type CockpitFreshnessStatus = "ok" | "stale" | "unavailable";
+export type CockpitScoreStatus = "active" | "candidate" | "unavailable";
+export type RegimeTone = "positive" | "neutral" | "negative";
+
+export interface CockpitSecondaryValue {
+  label: string;
+  value: number;
+  unit: string;
+}
+
+export interface CockpitCompositeScore {
+  id: "market_weather" | "macro_climate" | "fragility";
+  label: string;
+  value: number | null;
+  regime_label: string;
+  percentile_5y: number | null;
+  percentile_window_days: number | null;
+  delta_7d: number | null;
+  delta_1m: number | null;
+  sparkline_90d: number[];
+  direction: CockpitDirection;
+}
+
+export interface CockpitVitalSign {
+  id: string;
+  rank: number;
+  label: string;
+  primary_value: number;
+  primary_unit: string;
+  primary_decimals: number;
+  secondary_values: CockpitSecondaryValue[];
+  percentile_5y: number | null;
+  percentile_window_days: number | null;
+  delta_7d: number | null;
+  delta_1m: number | null;
+  sparkline_90d: number[];
+  freshness_status: CockpitFreshnessStatus;
+  score_status: CockpitScoreStatus;
+  as_of: string;
+  direction: CockpitDirection;
+  source_series_ids: string[];
+  priority: number;
+  importance: number;
+  why_it_matters: string;
+}
+
+export interface CockpitCandidateNotShown {
+  id: string;
+  priority: number;
+  reason: string;
+}
+
+export interface CockpitFile {
+  generated_at_utc: string;
+  date: string;
+  method_version: string;
+  regime: { label: string; tone: RegimeTone };
+  composite_scores: CockpitCompositeScore[];
+  vital_signs: CockpitVitalSign[];
+  candidates_not_shown: CockpitCandidateNotShown[];
+}
