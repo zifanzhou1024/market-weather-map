@@ -85,6 +85,7 @@ CONFIDENCE_FIELDS = (
     "source_confidence",
     "overall_confidence",
 )
+DATA_QUALITY_TIERS = {"high", "medium", "low", "thin"}
 
 
 def _load_json(path: Path) -> Any:
@@ -377,6 +378,11 @@ def validate_score_summary_file() -> None:
         _validate_confidence_value(data_quality.get(field), path, f"data_quality.{field}")
     if not isinstance(data_quality.get("reasons"), list):
         raise ValueError(f"{path} data_quality.reasons must be a list")
+    tier = data_quality.get("tier")
+    if not isinstance(tier, str) or tier not in DATA_QUALITY_TIERS:
+        raise ValueError(
+            f"{path} data_quality.tier must be one of {sorted(DATA_QUALITY_TIERS)}"
+        )
 
 
 def validate_regime_snapshot_file() -> None:

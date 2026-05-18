@@ -2,20 +2,20 @@
   "conflicting_signals": [],
   "data_quality": {
     "coverage_confidence": 1.0,
-    "freshness_confidence": 0.97,
-    "model_confidence": 1.0,
-    "overall_confidence": 0.99,
+    "freshness_confidence": 0.94,
+    "model_confidence": 0.97,
+    "overall_confidence": 0.85,
     "reasons": [
-      "Treasury/bond volatility source is not active.",
-      "broad_dollar is stale: Latest daily observation is 8 days old, above the 7 day freshness buffer.",
-      "consumer_debt_service_ratio is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
-      "credit_card_delinquency_rate is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
-      "household_debt_service_ratio is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01."
+      "High-importance stale series: broad_dollar.",
+      "Bucket missing active inputs: treasury_bond_volatility.",
+      "Catalog source tier mix: 41 sources gated, 20 candidate-only of 122 total.",
+      "Treasury/bond volatility source is not active."
     ],
-    "source_confidence": 0.97
+    "source_confidence": 0.58,
+    "tier": "high"
   },
   "date": "2026-05-15",
-  "generated_at_utc": "2026-05-16T16:13:43Z",
+  "generated_at_utc": "2026-05-18T11:24:42Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
@@ -35,17 +35,18 @@
         "treasury_bond_volatility": 0.1,
         "volatility_term_structure": 0.2
       },
-      "confidence": 0.98,
+      "confidence": 0.96,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 0.97,
-        "model_confidence": 1.0,
-        "overall_confidence": 0.98,
-        "source_confidence": 0.92
+        "freshness_confidence": 0.95,
+        "model_confidence": 0.9,
+        "overall_confidence": 0.96,
+        "source_confidence": 1.0
       },
       "confidence_reasons": [
-        "Treasury/bond volatility source is not active.",
-        "broad_dollar is stale: Latest daily observation is 8 days old, above the 7 day freshness buffer."
+        "Bucket missing active inputs: treasury_bond_volatility.",
+        "High-importance stale series: broad_dollar.",
+        "Treasury/bond volatility source is not active."
       ],
       "label": "Low Fragility",
       "missing_or_stale_notes": [
@@ -174,19 +175,15 @@
         "labor": 0.18,
         "real_yields": 0.1
       },
-      "confidence": 0.99,
+      "confidence": 0.97,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 0.96,
+        "freshness_confidence": 0.9,
         "model_confidence": 1.0,
-        "overall_confidence": 0.99,
+        "overall_confidence": 0.97,
         "source_confidence": 1.0
       },
-      "confidence_reasons": [
-        "consumer_debt_service_ratio is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
-        "credit_card_delinquency_rate is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01.",
-        "household_debt_service_ratio is stale: Latest quarterly observation covers 2025-Q4; expected release window ended 2026-05-01."
-      ],
+      "confidence_reasons": [],
       "label": "Mixed",
       "missing_or_stale_notes": [],
       "recent_changes": [
@@ -374,13 +371,13 @@
       "confidence": 0.99,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 0.98,
+        "freshness_confidence": 0.97,
         "model_confidence": 1.0,
         "overall_confidence": 0.99,
         "source_confidence": 1.0
       },
       "confidence_reasons": [
-        "broad_dollar is stale: Latest daily observation is 8 days old, above the 7 day freshness buffer."
+        "High-importance stale series: broad_dollar."
       ],
       "label": "Mixed",
       "missing_or_stale_notes": [],
