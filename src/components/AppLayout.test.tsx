@@ -62,13 +62,14 @@ describe("AppLayout nav (post-PR-5)", () => {
     ]);
   });
 
-  test("More disclosure contains Calendar + Methodology", () => {
+  test("More disclosure contains Diff + Calendar + Methodology", () => {
     renderNav("/");
     const moreDetails = container.querySelector(".site-nav__more");
     expect(moreDetails?.tagName.toLowerCase()).toBe("details");
     const moreLinks = moreDetails?.querySelectorAll("a");
     const moreLabels = Array.from(moreLinks ?? []).map((a) => a.textContent?.trim());
-    expect(moreLabels).toEqual(["Calendar", "Methodology"]);
+    // Diff first under More since it's the newest addition.
+    expect(moreLabels).toEqual(["Diff", "Calendar", "Methodology"]);
   });
 
   test("Channels pill is active when on /channels", () => {

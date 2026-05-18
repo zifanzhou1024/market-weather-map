@@ -3,6 +3,7 @@ import AppLayout from "./components/AppLayout";
 import { ModeProvider } from "./lib/mode";
 import Calendar from "./routes/Calendar";
 import Channels from "./routes/Channels";
+import Diff from "./routes/Diff";
 import FragilityShockRisk from "./routes/FragilityShockRisk";
 import History from "./routes/History";
 import LongTermMacroClimate from "./routes/LongTermMacroClimate";
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/replay" element={<Navigate to="/history?tab=replay" replace />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/channels" element={<Channels />} />
+          <Route path="/diff" element={<Diff />} />
           <Route path="/volatility" element={<Navigate to="/channels?tab=volatility" replace />} />
           <Route path="/rates" element={<Navigate to="/channels?tab=rates" replace />} />
           <Route path="/liquidity" element={<Navigate to="/channels?tab=liquidity" replace />} />
