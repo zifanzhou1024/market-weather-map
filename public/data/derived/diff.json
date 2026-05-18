@@ -95,7 +95,7 @@
     }
   ],
   "date": "2026-05-15",
-  "generated_at_utc": "2026-05-18T10:30:19Z",
+  "generated_at_utc": "2026-05-18T10:56:16Z",
   "method_version": "phase-f-diff-v1",
   "vital_signs": [
     {
@@ -379,32 +379,32 @@
     },
     {
       "current_date": "2026-04-01",
-      "current_value": 158736.0,
+      "current_value": 115.0,
       "direction": "support",
       "frequency": "monthly",
       "freshness_status": "ok",
       "id": "payrolls",
       "label": "Nonfarm Payrolls",
       "primary_decimals": 0,
-      "primary_unit": "k",
+      "primary_unit": "k m/m",
       "windows": {
         "1d": {
           "date": "2026-03-01",
-          "delta": 115.0,
-          "delta_pct": 0.07249985815245144,
-          "value": 158621.0
+          "delta": -70.0,
+          "delta_pct": -37.83783783783784,
+          "value": 185.0
         },
         "30d": {
           "date": "2026-03-01",
-          "delta": 115.0,
-          "delta_pct": 0.07249985815245144,
-          "value": 158621.0
+          "delta": -70.0,
+          "delta_pct": -37.83783783783784,
+          "value": 185.0
         },
         "7d": {
           "date": "2026-03-01",
-          "delta": 115.0,
-          "delta_pct": 0.07249985815245144,
-          "value": 158621.0
+          "delta": -70.0,
+          "delta_pct": -37.83783783783784,
+          "value": 185.0
         }
       }
     },

@@ -184,10 +184,23 @@ COCKPIT_WHITELIST: tuple[CockpitSignal, ...] = (
         priority_key="labor",
         display_label="Nonfarm Payrolls",
         primary_series_id="nonfarm_payrolls",
-        primary_unit="k",
+        primary_unit="k m/m",
         primary_decimals=0,
         direction="support",
         importance=4,
+        # nonfarm_payrolls arrives as a monotonically-rising total (in
+        # thousands); the headline value pros actually track is the m/m
+        # change. The level is kept as a secondary line below.
+        value_transform="monthly_change",
+        secondary_lines=(
+            CockpitSecondaryLine(
+                label="Level",
+                series_id="nonfarm_payrolls",
+                unit="k",
+                decimals=0,
+                value_transform=None,  # raw level
+            ),
+        ),
     ),
     CockpitSignal(
         id="sp500_positioning",

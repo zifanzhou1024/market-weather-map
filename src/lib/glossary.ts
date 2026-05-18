@@ -69,6 +69,8 @@ export const GLOSSARY: Record<string, string> = {
   bp: "Basis point — 1/100th of one percent (0.01%).",
   pp: "Percentage point — absolute difference between two percentages.",
   "% YoY": "Percent year-over-year — value compared to 12 months ago.",
+  "k m/m": "Thousands, month-over-month change.",
+  "m/m": "Month-over-month change.",
   "Δ7d": "Change vs the most recent observation at least 7 calendar days ago.",
   "Δ1m": "Change vs the most recent observation at least 30 calendar days ago.",
   pct: "Percentile — rank of the current value within its historical distribution.",
