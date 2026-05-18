@@ -76,6 +76,18 @@ export default function PersistentRegimeHeader({ cockpit }: Props) {
       >
         {mode === "brief" ? "Brief" : "Detail"}
       </button>
+
+      <button
+        type="button"
+        className="persistent-regime-header__shortcuts-button"
+        onClick={() =>
+          window.dispatchEvent(new KeyboardEvent("keydown", { key: "?" }))
+        }
+        aria-label="Show keyboard shortcuts"
+        title="Keyboard shortcuts (press ?)"
+      >
+        ?
+      </button>
     </header>
   );
 }
