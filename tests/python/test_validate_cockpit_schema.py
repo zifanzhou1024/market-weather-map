@@ -84,3 +84,12 @@ def test_out_of_range_percentile_rejected(tmp_path):
     p.write_text(json.dumps(payload))
     with pytest.raises(AssertionError):
         check_cockpit_schema(p)
+
+
+def test_composite_missing_fragility_rejected(tmp_path):
+    payload = _valid_payload()
+    payload["composite_scores"] = [s for s in payload["composite_scores"] if s["id"] != "fragility"]
+    p = tmp_path / "cockpit.json"
+    p.write_text(json.dumps(payload))
+    with pytest.raises(AssertionError):
+        check_cockpit_schema(p)

@@ -303,3 +303,58 @@ def test_main_writes_real_cockpit_with_actual_data():
         f"got {payload['vital_signs']} with candidates_not_shown="
         f"{payload['candidates_not_shown']}"
     )
+
+
+def test_truncation_emits_top_nine_and_overflow_to_candidates_not_shown(tmp_path):
+    """When all 15 whitelist entries qualify, only top 9 occupy vital_signs."""
+    from scripts.shared.cockpit_whitelist import COCKPIT_WHITELIST
+
+    derived = tmp_path / "derived"; derived.mkdir()
+    series = tmp_path / "series"; series.mkdir()
+    status_dir = tmp_path / "status"; status_dir.mkdir()
+
+    # Build signal_priority with one entry per priority_key, descending priority
+    keys_seen: set[str] = set()
+    warnings = []
+    for i, entry in enumerate(COCKPIT_WHITELIST):
+        if entry.priority_key in keys_seen:
+            continue
+        keys_seen.add(entry.priority_key)
+        warnings.append({
+            "id": entry.priority_key,
+            "priority": float(1000 - i * 10),
+            "importance": entry.importance,
+            "why_it_matters": "",
+        })
+    (derived / "signal_priority.json").write_text(json.dumps({
+        "top_warnings": warnings, "top_supports": [],
+        "missing_high_value_signals": [], "overall_read": {},
+    }))
+
+    # Series + derived files for every primary_series_id
+    DERIVED_SERIES = {"us10y_minus_us2y", "net_liquidity"}
+    for entry in COCKPIT_WHITELIST:
+        target_dir = derived if entry.primary_series_id in DERIVED_SERIES else series
+        (target_dir / f"{entry.primary_series_id}.json").write_text(json.dumps({
+            "series_id": entry.primary_series_id,
+            "observations": [{"date": f"2026-05-{d:02d}", "value": float(d)}
+                             for d in range(1, 16)],
+        }))
+
+    (derived / "score_summary.json").write_text(json.dumps({
+        "date": "2026-05-15",
+        "scores": {s: {"score": 0, "label": "M", "confidence": 1, "bucket_scores": {},
+                       "bucket_weights": {}, "top_supports": [], "top_risks": [],
+                       "recent_changes": [], "missing_or_stale_notes": [],
+                       "confidence_reasons": []}
+                   for s in ("market_weather", "macro_climate", "fragility")},
+    }))
+    (derived / "regime_snapshot.json").write_text(json.dumps({"regime": {"label": "X"}}))
+    (status_dir / "data_status.json").write_text(json.dumps({
+        "series": {e.primary_series_id: {"status": "ok"} for e in COCKPIT_WHITELIST}
+    }))
+
+    payload = build_cockpit_payload(tmp_path)
+    assert len(payload["vital_signs"]) == 9
+    not_shown_reasons = {c["reason"] for c in payload["candidates_not_shown"]}
+    assert "below top 9 today" in not_shown_reasons
