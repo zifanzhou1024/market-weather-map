@@ -1304,6 +1304,52 @@ def validate_vix_term_metrics_candidate_file() -> None:
                 raise ValueError(f"{path} observations[{index}].{key} must be numeric")
 
 
+COCKPIT_REQUIRED_TOP_KEYS = {
+    "generated_at_utc", "date", "method_version", "regime",
+    "composite_scores", "vital_signs", "candidates_not_shown",
+}
+COCKPIT_COMPOSITE_ORDER = ("market_weather", "macro_climate", "fragility")
+COCKPIT_VITAL_REQUIRED_KEYS = {
+    "id", "rank", "label", "primary_value", "primary_unit", "primary_decimals",
+    "secondary_values", "percentile_5y", "percentile_window_days",
+    "delta_7d", "delta_1m", "sparkline_90d",
+    "freshness_status", "score_status", "as_of", "direction",
+    "source_series_ids", "priority", "importance", "why_it_matters",
+}
+
+
+def check_cockpit_schema(path: Path) -> None:
+    data = json.loads(path.read_text())
+    missing = COCKPIT_REQUIRED_TOP_KEYS - set(data.keys())
+    assert not missing, f"cockpit.json missing top-level keys: {missing}"
+
+    cs = data["composite_scores"]
+    assert len(cs) == 3, f"composite_scores must have 3 entries, got {len(cs)}"
+    ids = tuple(s["id"] for s in cs)
+    assert ids == COCKPIT_COMPOSITE_ORDER, (
+        f"composite_scores order must be {COCKPIT_COMPOSITE_ORDER}, got {ids}"
+    )
+
+    vs = data["vital_signs"]
+    assert 1 <= len(vs) <= 9, f"vital_signs count must be 1-9, got {len(vs)}"
+    for cell in vs:
+        missing_cell = COCKPIT_VITAL_REQUIRED_KEYS - set(cell.keys())
+        assert not missing_cell, f"vital_signs cell missing keys: {missing_cell}"
+        assert cell["score_status"] == "active", (
+            f"vital_signs cell {cell['id']} score_status must be 'active', "
+            f"got {cell['score_status']}"
+        )
+        assert cell["freshness_status"] in {"ok", "stale", "unavailable"}, (
+            f"freshness_status invalid: {cell['freshness_status']}"
+        )
+        assert cell["direction"] in {"risk", "support", "neutral"}
+        if cell["percentile_5y"] is not None:
+            assert 0 <= cell["percentile_5y"] <= 100, (
+                f"percentile_5y out of range: {cell['percentile_5y']}"
+            )
+        assert len(cell["sparkline_90d"]) <= 90, "sparkline_90d too long"
+
+
 def main() -> None:
     for entry in available_catalog_entries():
         validate_series_file(str(entry["id"]))
@@ -1322,6 +1368,7 @@ def main() -> None:
     validate_status_file()
     check_access_status_enum()
     check_section_insight_schema()
+    check_cockpit_schema(data_dir() / "derived" / "cockpit.json")
     run_candidate_isolation()
     validate_vix_term_candidate_file()
     validate_vix_term_metrics_candidate_file()
