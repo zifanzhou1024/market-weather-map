@@ -134,6 +134,38 @@ def test_inflation_uses_yoy_transform():
     assert inflation.primary_unit == "% YoY"
 
 
+def test_payrolls_uses_monthly_change_transform_and_level_secondary():
+    """Nonfarm Payrolls publishes a monotonically-rising total; the cockpit
+    must headline the month-over-month change and surface the level as a
+    secondary line (analogous to Core CPI YoY + Core PCE)."""
+    payrolls = next(e for e in COCKPIT_WHITELIST if e.id == "payrolls")
+    assert payrolls.value_transform == "monthly_change"
+    assert payrolls.primary_unit == "k m/m"
+    assert payrolls.direction == "support"
+    # Exactly one secondary line, the level.
+    assert len(payrolls.secondary_lines) == 1
+    level = payrolls.secondary_lines[0]
+    assert level.label == "Level"
+    assert level.series_id == "nonfarm_payrolls"
+    assert level.value_transform is None  # raw level, not transformed
+    assert level.unit == "k"
+
+
+def test_secondary_line_value_transform_is_a_known_name_when_set():
+    """Mirror of test_value_transform_is_a_known_name_when_set for the
+    secondary side — a typo on a secondary chip must fail at test time, not
+    at build time."""
+    from scripts.transform.build_cockpit import SUPPORTED_VALUE_TRANSFORMS
+
+    allowed: set[str | None] = {None, *SUPPORTED_VALUE_TRANSFORMS}
+    for entry in COCKPIT_WHITELIST:
+        for sec in entry.secondary_lines:
+            assert sec.value_transform in allowed, (
+                f"{entry.id} secondary {sec.label!r}: value_transform "
+                f"{sec.value_transform!r} not in {sorted(s for s in allowed if s)}"
+            )
+
+
 def test_initial_claims_scaled_to_thousands():
     """ICSA arrives in raw count (e.g. 211000); cockpit displays in thousands."""
     claims = next(e for e in COCKPIT_WHITELIST if e.id == "labor_claims")

@@ -32,7 +32,7 @@ from scripts.transform._cockpit_math import (
     sparkline_90d,
 )
 
-SUPPORTED_VALUE_TRANSFORMS: frozenset[str] = frozenset({"yoy_pct"})
+SUPPORTED_VALUE_TRANSFORMS: frozenset[str] = frozenset({"yoy_pct", "monthly_change"})
 
 METHOD_VERSION = "phase-e-cockpit-v1"
 MAX_VITAL_SIGNS = 9
@@ -125,6 +125,29 @@ def _apply_yoy_pct_transform(observations: list[dict[str, Any]]) -> list[dict[st
     return out
 
 
+def _apply_monthly_change_transform(
+    observations: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Convert a series of monthly observations to month-over-month change.
+
+    For each observation at index ``i > 0``, emit ``value[i] - value[i-1]``
+    dated at observation ``i``. The first observation has no prior value and
+    is dropped. Observations are assumed to be in chronological order (the
+    loader sorts them), and the caller is expected to invoke this on a
+    monthly-cadence series — applying it to a daily series would produce
+    day-over-day changes, which is mathematically defined but semantically
+    different.
+    """
+    if len(observations) < 2:
+        return []
+    out: list[dict[str, Any]] = []
+    for i in range(1, len(observations)):
+        prev = observations[i - 1]["value"]
+        cur = observations[i]["value"]
+        out.append({"date": observations[i]["date"], "value": cur - prev})
+    return out
+
+
 def _apply_value_transform_and_scale(
     obs: list[dict[str, Any]],
     entry: CockpitSignal,
@@ -142,6 +165,8 @@ def _apply_value_transform_and_scale(
             )
         if entry.value_transform == "yoy_pct":
             obs = _apply_yoy_pct_transform(obs)
+        elif entry.value_transform == "monthly_change":
+            obs = _apply_monthly_change_transform(obs)
     if entry.value_scale != 1.0:
         obs = [
             {"date": o["date"], "value": o["value"] * entry.value_scale}
@@ -230,6 +255,8 @@ def _apply_secondary_transform_and_scale(
             )
         if sec.value_transform == "yoy_pct":
             obs = _apply_yoy_pct_transform(obs)
+        elif sec.value_transform == "monthly_change":
+            obs = _apply_monthly_change_transform(obs)
     if sec.value_scale != 1.0:
         obs = [
             {"date": o["date"], "value": o["value"] * sec.value_scale}

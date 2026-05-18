@@ -336,6 +336,115 @@ def test_apply_yoy_pct_transform_skips_zero_prior_value():
     assert out == []
 
 
+def test_apply_monthly_change_transform_returns_per_obs_delta():
+    """Each non-first observation maps to (value[i] - value[i-1]). The first
+    observation is dropped because it has no prior point to subtract."""
+    from scripts.transform.build_cockpit import _apply_monthly_change_transform
+
+    obs = [
+        {"date": "2025-11-01", "value": 158_449.0},
+        {"date": "2025-12-01", "value": 158_432.0},  # -17
+        {"date": "2026-01-01", "value": 158_592.0},  # +160
+        {"date": "2026-02-01", "value": 158_436.0},  # -156
+        {"date": "2026-03-01", "value": 158_621.0},  # +185
+        {"date": "2026-04-01", "value": 158_736.0},  # +115
+    ]
+    out = _apply_monthly_change_transform(obs)
+    # 6 input obs -> 5 output deltas, first dropped.
+    assert [o["date"] for o in out] == [
+        "2025-12-01", "2026-01-01", "2026-02-01", "2026-03-01", "2026-04-01",
+    ]
+    assert [round(o["value"], 4) for o in out] == [-17.0, 160.0, -156.0, 185.0, 115.0]
+
+
+def test_apply_monthly_change_transform_two_values_yields_one_delta():
+    from scripts.transform.build_cockpit import _apply_monthly_change_transform
+
+    out = _apply_monthly_change_transform([
+        {"date": "2026-03-01", "value": 100.0},
+        {"date": "2026-04-01", "value": 115.0},
+    ])
+    assert out == [{"date": "2026-04-01", "value": 15.0}]
+
+
+def test_apply_monthly_change_transform_short_inputs_return_empty():
+    """A single observation has no prior; empty input is trivially empty."""
+    from scripts.transform.build_cockpit import _apply_monthly_change_transform
+
+    assert _apply_monthly_change_transform([]) == []
+    assert _apply_monthly_change_transform([{"date": "2026-04-01", "value": 1.0}]) == []
+
+
+def test_apply_monthly_change_transform_preserves_negative_deltas():
+    """Negative month-over-month moves are not clipped — the transform is
+    arithmetic, sign-preserving."""
+    from scripts.transform.build_cockpit import _apply_monthly_change_transform
+
+    out = _apply_monthly_change_transform([
+        {"date": "2026-03-01", "value": 100.0},
+        {"date": "2026-04-01", "value": 80.0},
+    ])
+    assert out == [{"date": "2026-04-01", "value": -20.0}]
+
+
+def test_payrolls_cell_shows_monthly_change_with_level_secondary(tmp_path):
+    """End-to-end: the nonfarm_payrolls whitelist entry must emit a cell
+    whose ``primary_value`` is the most recent m/m change and whose
+    ``secondary_values`` list contains a ``Level`` row carrying the raw level.
+
+    Uses the production whitelist (no monkeypatching) so a regression in
+    the whitelist entry would fail this test.
+    """
+    derived = tmp_path / "derived"; derived.mkdir()
+    series = tmp_path / "series"; series.mkdir()
+    status_dir = tmp_path / "status"; status_dir.mkdir()
+
+    (derived / "signal_priority.json").write_text(json.dumps({
+        "top_warnings": [{"id": "labor", "priority": 999.0, "importance": 4,
+                          "why_it_matters": ""}],
+        "top_supports": [], "missing_high_value_signals": [], "overall_read": {},
+    }))
+    # 6 monthly levels (in thousands). Final m/m change is +115.
+    (series / "nonfarm_payrolls.json").write_text(json.dumps({
+        "series_id": "nonfarm_payrolls",
+        "observations": [
+            {"date": "2025-11-01", "value": 158_449.0},
+            {"date": "2025-12-01", "value": 158_432.0},
+            {"date": "2026-01-01", "value": 158_592.0},
+            {"date": "2026-02-01", "value": 158_436.0},
+            {"date": "2026-03-01", "value": 158_621.0},
+            {"date": "2026-04-01", "value": 158_736.0},
+        ],
+    }))
+    (derived / "score_summary.json").write_text(json.dumps({
+        "date": "2026-04-01",
+        "scores": {s: {"score": 0, "label": "M", "confidence": 1,
+                       "bucket_scores": {}, "bucket_weights": {},
+                       "top_supports": [], "top_risks": [], "recent_changes": [],
+                       "missing_or_stale_notes": [], "confidence_reasons": []}
+                   for s in ("market_weather", "macro_climate", "fragility")},
+    }))
+    (derived / "regime_snapshot.json").write_text(json.dumps({"regime": {"label": "X"}}))
+    (status_dir / "data_status.json").write_text(json.dumps({
+        "series": {"nonfarm_payrolls": {"status": "ok"}}
+    }))
+
+    payload = build_cockpit_payload(tmp_path)
+    payrolls = next(v for v in payload["vital_signs"] if v["id"] == "payrolls")
+    assert payrolls["primary_value"] == pytest.approx(115.0, abs=0.001)
+    assert payrolls["primary_unit"] == "k m/m"
+    # The secondary list should expose a "Level" line with the raw final level.
+    by_label = {s["label"]: s for s in payrolls["secondary_values"]}
+    assert "Level" in by_label
+    assert by_label["Level"]["value"] == pytest.approx(158_736.0, abs=0.001)
+    assert by_label["Level"]["unit"] == "k"
+    # The sparkline must reflect the *change* series (5 monthly deltas), not
+    # the level — otherwise the visual stays a near-monotone climb.
+    assert payrolls["sparkline_90d"] == [-17.0, 160.0, -156.0, 185.0, 115.0]
+    # as_of is dated at the latest delta's observation (== latest level date).
+    assert payrolls["as_of"] == "2026-04-01"
+
+
 def test_value_scale_applied_to_oas_primary_value(tmp_path):
     """A value_scale=100 entry (HY OAS) must display 100x the raw series value."""
     derived = tmp_path / "derived"; derived.mkdir()

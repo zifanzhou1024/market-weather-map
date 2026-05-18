@@ -112,6 +112,19 @@ def _apply_yoy_pct_transform(
     return _yoy(observations)
 
 
+def _apply_monthly_change_transform(
+    observations: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Reuse :func:`scripts.transform.build_cockpit._apply_monthly_change_transform`
+    so the per-observation month-over-month conversion matches the cockpit.
+    """
+    from scripts.transform.build_cockpit import (
+        _apply_monthly_change_transform as _mom,
+    )
+
+    return _mom(observations)
+
+
 def _empty_windows() -> dict[str, dict[str, Any]]:
     return {
         f"{d}d": {"value": None, "date": None, "delta": None, "delta_pct": None}
@@ -158,6 +171,8 @@ def _compose_row(
     transformed = observations
     if value_transform == "yoy_pct":
         transformed = _apply_yoy_pct_transform(observations)
+    elif value_transform == "monthly_change":
+        transformed = _apply_monthly_change_transform(observations)
     if not transformed:
         return base_payload
 

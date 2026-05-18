@@ -242,6 +242,79 @@ def test_compose_row_applies_yoy_transform_then_scale():
     assert row["freshness_status"] == "ok"
 
 
+def test_compose_row_applies_monthly_change_transform():
+    """When ``value_transform='monthly_change'`` is set, the diff row's
+    ``current_value`` reports the latest m/m change, not the level. The
+    per-window deltas are then the change-of-changes — fine, since /diff
+    documents "since-prior" semantics."""
+    obs = _series(
+        [
+            ("2025-11-01", 158_449.0),
+            ("2025-12-01", 158_432.0),  # m/m -17
+            ("2026-01-01", 158_592.0),  # m/m +160
+            ("2026-02-01", 158_436.0),  # m/m -156
+            ("2026-03-01", 158_621.0),  # m/m +185
+            ("2026-04-01", 158_736.0),  # m/m +115 (latest)
+        ]
+    )
+    row = _compose_row(
+        id="payrolls",
+        label="Nonfarm Payrolls",
+        direction="support",
+        primary_unit="k m/m",
+        primary_decimals=0,
+        value_scale=1.0,
+        value_transform="monthly_change",
+        observations=obs,
+    )
+    assert row["current_value"] == pytest.approx(115.0, abs=0.001)
+    assert row["current_date"] == "2026-04-01"
+    assert row["freshness_status"] == "ok"
+
+
+def test_compose_row_monthly_change_too_short_marks_unavailable():
+    """A single observation cannot produce any m/m delta — the row must
+    degrade rather than emit a misleading numeric value."""
+    obs = _series([("2026-04-01", 158_736.0)])
+    row = _compose_row(
+        id="payrolls",
+        label="Nonfarm Payrolls",
+        direction="support",
+        primary_unit="k m/m",
+        primary_decimals=0,
+        value_scale=1.0,
+        value_transform="monthly_change",
+        observations=obs,
+    )
+    assert row["freshness_status"] == "unavailable"
+    assert row["current_value"] is None
+
+
+def test_build_diff_payload_payrolls_row_current_value_is_monthly_change(tmp_path):
+    """End-to-end through ``build_diff_payload``: the payrolls vital sign
+    row must report the latest m/m change as ``current_value``."""
+    _write_scaffold(tmp_path)
+    (tmp_path / "series" / "nonfarm_payrolls.json").write_text(
+        json.dumps({
+            "series_id": "nonfarm_payrolls",
+            "observations": [
+                {"date": "2025-11-01", "value": 158_449.0},
+                {"date": "2025-12-01", "value": 158_432.0},
+                {"date": "2026-01-01", "value": 158_592.0},
+                {"date": "2026-02-01", "value": 158_436.0},
+                {"date": "2026-03-01", "value": 158_621.0},
+                {"date": "2026-04-01", "value": 158_736.0},
+            ],
+        })
+    )
+    payload = build_diff_payload(tmp_path)
+    payrolls = next(r for r in payload["vital_signs"] if r["id"] == "payrolls")
+    assert payrolls["current_value"] == pytest.approx(115.0, abs=0.001)
+    assert payrolls["primary_unit"] == "k m/m"
+    # Cadence pill stays MONTHLY — the transform doesn't change frequency.
+    assert payrolls["frequency"] == "monthly"
+
+
 def test_compose_row_yoy_dropping_all_rows_marks_unavailable():
     """A 30-day series with no 12mo history yields zero post-transform rows ->
     the row must degrade to unavailable rather than emit a misleading 'ok'
