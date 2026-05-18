@@ -2,7 +2,6 @@ import { act, useEffect } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import Overview from "./Overview";
 import Rates from "./Rates";
 import App from "../App";
 import type {
@@ -75,14 +74,6 @@ function render(element: React.ReactNode) {
   return container;
 }
 
-function renderOverview() {
-  return render(
-    <MemoryRouter initialEntries={["/"]}>
-      <Overview />
-    </MemoryRouter>
-  );
-}
-
 function unmountRendered(container: HTMLElement) {
   if (root) {
     act(() => root?.unmount());
@@ -139,42 +130,6 @@ function mockStaticFetch(files: Record<string, unknown>, failures: Record<string
       };
     })
   );
-}
-
-function overviewFetchFiles(scoreSummaryFile: unknown = scoreSummary) {
-  return {
-    "/data/catalog/series_catalog.json": catalog,
-    "/data/derived/net_liquidity.json": {
-      depends_on: ["fed_assets", "reverse_repo", "treasury_general_account"],
-      frequency: "weekly",
-      generated_at_utc: "2026-05-03T18:32:54Z",
-      method: "Fed assets less reverse repo and Treasury General Account.",
-      observations: [{ date: "2026-04-29", percentile_252d: 72, value: 6123 }],
-      series_id: "net_liquidity",
-      source: "FRED",
-      source_url: "https://example.com/net-liquidity",
-      summary: {
-        change_1d: null,
-        change_1m: 100,
-        change_1w: 25,
-        latest_date: "2026-04-29",
-        latest_value: 6123,
-        percentile_252d: 72
-      },
-      units: "USD billions"
-    } satisfies DerivedSeriesFile,
-    "/data/derived/regime_snapshot.json": regimeSnapshot,
-    "/data/derived/score_history.json": scoreHistory,
-    "/data/derived/score_summary.json": scoreSummaryFile,
-    "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
-    "/data/derived/signal_priority.json": signalPriority,
-    "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
-    "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
-    "/data/series/us10y.json": seriesFile("us10y", 4.2),
-    "/data/series/vix.json": seriesFile("vix", 17.1),
-    "/data/series/wti_crude.json": seriesFile("wti_crude", 78.4),
-    "/data/status/data_status.json": status
-  };
 }
 
 function derivedFile(seriesId: string, value: number): DerivedSeriesFile {
@@ -2033,267 +1988,17 @@ describe("data-backed routes", () => {
     }
   });
 
-  it("renders overview as a horizon decision hub", async () => {
-    mockStaticFetch(routeFetchFiles());
-
-    const container = render(
-      <MemoryRouter initialEntries={["/"]}>
-        <App />
-      </MemoryRouter>
-    );
-
-    await waitForContent(container, "Short-Term Market Reaction");
-    expect(container.textContent).toContain("Long-Term Macro / Allocation Climate");
-    expect(container.textContent).toContain("Fragility / Shock Risk");
-    expect(container.textContent).toContain("TIPS x Dollar Regime Map");
-    expect(container.textContent).toContain("Short-Term Impact");
-    expect(container.textContent).toContain("Long-Term Impact");
-  });
-
-  it("renders overview when score history is unavailable", async () => {
-    mockStaticFetch(routeFetchFiles({ "/data/derived/score_history.json": undefined }));
-
-    const container = render(
-      <MemoryRouter initialEntries={["/"]}>
-        <App />
-      </MemoryRouter>
-    );
-
-    await waitForContent(container, "Short-Term Market Reaction");
-    expect(container.textContent).toContain("Data quality");
-  });
-
-  it("renders the three-score overview without legacy weather score duplication", async () => {
-    mockStaticFetch(overviewFetchFiles());
-
-    const container = render(
-      <MemoryRouter initialEntries={["/"]}>
-        <App />
-      </MemoryRouter>
-    );
-
-    await waitForContent(container, "Macro Climate");
-
-    expect(container.textContent).toContain("High data quality");
-    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
-    expect(container.textContent).toContain("Macro Climate");
-    expect(container.textContent).toContain("Fragility");
-    expect(container.textContent).toContain("Data confidence");
-    expect(container.textContent).toContain("Freshness and coverage notes");
-    expect(container.textContent).not.toContain("Weather score");
-    expect(container.textContent).not.toContain("Market Weather buckets");
-  });
-
-  it("renders top warnings, supports, and missing high-value signals on overview", async () => {
-    mockStaticFetch(overviewFetchFiles());
-
-    const container = renderOverview();
-    await waitForContent(container, "Top Active Warnings");
-
-    expect(container.textContent).toContain("Top Active Warnings");
-    expect(container.textContent).toContain("Top Active Supports");
-    expect(container.textContent).toContain("Missing High-Value Signals");
-    // Active warning entry from fixture.
-    expect(container.textContent).toContain("10Y real yields");
-    expect(container.textContent).toContain("Real yields are elevated and pressuring valuations.");
-    // Active support entry.
-    expect(container.textContent).toContain("Credit spreads");
-    expect(container.textContent).toContain("Credit spread pressure is contained.");
-    // Missing high-value entry surfaces the gated source status.
-    expect(container.textContent).toContain("MOVE Index (bond volatility)");
-    expect(container.textContent).toContain("terms_review_needed");
-    // The two-column signal-priority section holds warnings and supports.
-    const grid = container.querySelector(".signal-priority-grid");
-    expect(grid).not.toBeNull();
-    expect(grid?.querySelectorAll(".top-signal-list--warning li").length).toBe(1);
-    expect(grid?.querySelectorAll(".top-signal-list--support li").length).toBe(1);
-    // Missing high-value signals render via the dedicated MissingSignalPanel,
-    // not as the third column of the signal-priority grid.
-    expect(grid?.querySelectorAll(".top-signal-list--missing").length).toBe(0);
-    const missingPanelRows = container.querySelectorAll(".missing-signal-panel-row");
-    expect(missingPanelRows.length).toBe(1);
-  });
-
-  it("omits the signal-priority section when signal_priority.json is missing", async () => {
-    const { "/data/derived/signal_priority.json": _omitted, ...filesWithoutSignalPriority } =
-      overviewFetchFiles();
-    void _omitted;
-    mockStaticFetch(filesWithoutSignalPriority);
-
-    const container = renderOverview();
-    // Wait for the overview to finish loading something the fixture provides.
-    await waitForContent(container, "Macro Climate");
-
-    expect(container.querySelector(".signal-priority-grid")).toBeNull();
-    expect(container.textContent).not.toContain("Top Active Warnings");
-  });
-
-  it("renders overview empty states for malformed score summary top-level fields", async () => {
-    const malformedScoreSummary = {
-      ...scoreSummary,
-      scores: {
-        ...scoreSummary.scores,
-        market_weather: {
-          ...scoreSummary.scores.market_weather,
-          recent_changes: "not an array"
-        },
-        macro_climate: {
-          ...scoreSummary.scores.macro_climate,
-          recent_changes: undefined
-        },
-        fragility: {
-          ...scoreSummary.scores.fragility,
-          recent_changes: []
-        }
-      },
-      conflicting_signals: "not an array",
-      data_quality: {
-        coverage_confidence: 0.8,
-        freshness_confidence: 0.7,
-        model_confidence: 0.75,
-        source_confidence: 0.68,
-        overall_confidence: Number.NaN,
-        reasons: []
-      }
-    } as unknown as ScoreSummaryFile;
-
-    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
-
-    const container = renderOverview();
-    await waitForContent(container, "Recent changes");
-
-    expect(container.textContent).toContain("No recent changes in the current score summary.");
-    expect(container.textContent).toContain("No conflicting signals in the current score summary.");
-    expect(container.textContent).toContain("0% overall");
-    expect(container.textContent).toContain("No confidence notes in the current score summary.");
-  });
-
-  it("renders overview fallback confidence when score summary data quality is missing", async () => {
-    const malformedScoreSummary = {
-      ...scoreSummary,
-      data_quality: null
-    } as unknown as ScoreSummaryFile;
-
-    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
-
-    const container = renderOverview();
-    await waitForContent(container, "Data confidence");
-
-    expect(container.textContent).toContain("0% overall");
-    expect(container.textContent).toContain("No confidence notes in the current score summary.");
-  });
-
-  it("renders overview fallback confidence when score summary data quality is omitted", async () => {
-    const malformedScoreSummary = { ...scoreSummary } as Partial<ScoreSummaryFile>;
-    delete malformedScoreSummary.data_quality;
-
-    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
-
-    const container = renderOverview();
-    await waitForContent(container, "Data confidence");
-
-    expect(container.textContent).toContain("0% overall");
-    expect(container.textContent).toContain("No confidence notes in the current score summary.");
-  });
-
-  it("renders overview fallback labels for malformed score summary labels", async () => {
-    const malformedScoreSummary = {
-      ...scoreSummary,
-      scores: {
-        ...scoreSummary.scores,
-        market_weather: {
-          ...scoreSummary.scores.market_weather,
-          label: undefined
-        },
-        fragility: {
-          ...scoreSummary.scores.fragility,
-          label: 12
-        }
-      }
-    } as unknown as ScoreSummaryFile;
-
-    mockStaticFetch(overviewFetchFiles(malformedScoreSummary));
-
-    const container = renderOverview();
-    await waitForContent(container, "Current regime read");
-
-    expect(container.textContent).toContain("unknown market weather");
-    expect(container.textContent).toContain("unknown fragility");
-  });
-
-  it("does not duplicate fragility in the overview regime label", async () => {
-    const lowFragilityScoreSummary: ScoreSummaryFile = {
-      ...scoreSummary,
-      scores: {
-        ...scoreSummary.scores,
-        fragility: {
-          ...scoreSummary.scores.fragility,
-          label: "Low Fragility"
-        }
-      }
-    };
-
-    mockStaticFetch(overviewFetchFiles(lowFragilityScoreSummary));
-
-    const container = renderOverview();
-    await waitForContent(container, "Current regime read");
-
-    expect(container.textContent).toContain("low fragility");
-    expect(container.textContent).not.toContain("fragility fragility");
-  });
-
-  it("announces overview data load errors", async () => {
-    const files = overviewFetchFiles();
-    delete files["/data/derived/score_summary.json"];
-    mockStaticFetch(files);
-
-    const container = renderOverview();
-    await waitForContent(container, "Data error:");
-
-    expect(container.querySelector(".data-error")?.getAttribute("role")).toBe("alert");
-  });
-
-  it("renders net liquidity from the derived static file on overview", async () => {
-    const netLiquidity: DerivedSeriesFile = {
-      depends_on: ["fed_assets", "reverse_repo", "treasury_general_account"],
-      frequency: "weekly",
-      generated_at_utc: "2026-05-03T18:32:54Z",
-      method: "Fed assets less reverse repo and Treasury General Account.",
-      observations: [{ date: "2026-04-29", percentile_252d: 72, value: 6123 }],
-      series_id: "net_liquidity",
-      source: "FRED",
-      source_url: "https://example.com/net-liquidity",
-      summary: {
-        change_1d: null,
-        change_1m: 100,
-        change_1w: 25,
-        latest_date: "2026-04-29",
-        latest_value: 6123,
-        percentile_252d: 72
-      },
-      units: "USD billions"
-    };
-
-    mockStaticFetch({
-      "/data/catalog/series_catalog.json": catalog,
-      "/data/derived/net_liquidity.json": netLiquidity,
-      "/data/derived/regime_snapshot.json": regimeSnapshot,
-      "/data/derived/score_summary.json": scoreSummary,
-      "/data/derived/shock_risk_snapshot.json": shockRiskSnapshot,
-      "/data/series/cftc_sp500_lev_money_net.json": seriesFile("cftc_sp500_lev_money_net", 12500),
-      "/data/series/financial_stress.json": seriesFile("financial_stress", -0.33),
-      "/data/series/us10y.json": seriesFile("us10y", 4.2),
-      "/data/series/vix.json": seriesFile("vix", 17.1),
-      "/data/series/wti_crude.json": seriesFile("wti_crude", 78.4),
-      "/data/status/data_status.json": status
-    });
-
-    const container = renderOverview();
-    await waitForContent(container, "Net liquidity proxy");
-
-    expect(container.textContent).toContain("Net liquidity proxy");
-    expect(container.textContent).toContain("6,123.00 USD billions");
-  });
+  // NOTE: Task 4.4 (Overview demote) removed the duplicate panels — decision
+  // grid, score grid, interpretation panel, market-brief header, signal-list
+  // pair, confidence breakdown, how-to-read panel, and the per-series metric
+  // grid — from Overview.tsx. The post-demote behavior is covered by
+  // src/routes/__tests__/Overview.test.tsx, which exercises the new
+  // tier structure (MarketCockpit always, TodaysNotable + ContextBlock in
+  // Detail mode, footer always). The old assertions below targeted strings
+  // (e.g., "Short-Term Market Reaction", "Net liquidity proxy", "Current
+  // regime read", "Data confidence") rendered by the now-removed panels; they
+  // were deleted with this PR rather than rewritten because the cockpit/
+  // notable/context tests own the new contract.
 
   it("renders the 10Y-2Y spread from the derived static file on rates", async () => {
     const curve: DerivedSeriesFile = {
