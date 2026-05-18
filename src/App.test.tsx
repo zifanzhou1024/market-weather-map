@@ -34,14 +34,23 @@ afterEach(() => {
 });
 
 describe("App routing", () => {
-  it("renders the shared layout and credit route copy", () => {
+  it("renders the shared layout when /credit redirects into the Channels shell", () => {
+    // PR5 Task 5.4: /credit redirects to /channels?tab=credit. The synchronous
+    // render path only resolves the shell (the channel-tab body is lazy and
+    // resolves after Suspense). We verify layout chrome + the Channels page
+    // heading + that the Credit tab button is the active tab.
     const container = renderAt("/credit");
 
     expect(container.querySelector("h1")?.textContent).toBe("Market Weather Map");
     expect(container.querySelector(".eyebrow")?.textContent).toBe("Delayed public data");
-    expect(container.querySelector("h2")?.textContent).toBe("Credit & Banking");
-    expect(container.textContent).toContain("Credit spreads, financial stress, banking system liquidity, lending, and deposits.");
-    expect(container.querySelector('a[href="/credit"]')?.className).toContain("active");
+    expect(container.querySelector("h2")?.textContent).toBe("Channels");
+    const activeTab = container.querySelector('.channel-tabs button[aria-current="page"]');
+    expect(activeTab?.textContent).toBe("Credit");
+    // The nav link for /credit still exists in the sidebar (Task 5.5 will
+    // restructure nav). Post-redirect, react-router's NavLink active state
+    // tracks the resolved path (/channels), so the /credit link no longer
+    // carries the .active class — we just assert the link is still in the DOM.
+    expect(container.querySelector('a[href="/credit"]')).toBeTruthy();
   });
 
   it("primary navigation exposes commodities, positioning, and decision views", () => {

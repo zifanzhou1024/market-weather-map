@@ -2,7 +2,14 @@ import { act, useEffect } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import Rates from "./Rates";
+// PR5 Task 5.4: /rates is now a redirect to /channels?tab=rates. The two
+// previously-direct `render(<Rates />)` cases below render <RatesTab /> (the
+// same body now hoisted into the Channels container) so they keep testing the
+// same component without dragging in MemoryRouter + Suspense plumbing. The
+// `MemoryRouter initialEntries={["/rates"]}` cases continue to exercise the
+// old URL through App and now flow through the redirect; Task 5.6 will rework
+// the route-count and URL math.
+import RatesTab from "../components/channels/RatesTab";
 import App from "../App";
 import type {
   DataStatusFile,
@@ -1951,25 +1958,35 @@ describe("data-backed routes", () => {
 
     await waitForContent(container, "Overview");
 
-    const navExpectations = [
-      { label: "Overview", heading: "Overview" },
-      { label: "Short-Term", heading: "Short-Term Market Reaction" },
-      { label: "Long-Term", heading: "Long-Term Macro / Allocation Climate" },
-      { label: "Fragility", heading: "Fragility / Shock Risk" },
-      { label: "Regime Map", heading: "TIPS x Dollar Regime Map" },
-      { label: "Replay", heading: "Historical Regime Replay" },
-      { label: "Volatility", heading: "VIX state" },
-      { label: "Rates", heading: "Rates & Policy" },
-      { label: "Liquidity", heading: "Funding and balance sheet" },
-      { label: "Credit", heading: "Credit & Banking" },
-      { label: "Dollar", heading: "Dollar & Global" },
-      { label: "Commodities", heading: "Energy and grains" },
-      { label: "Growth", heading: "Growth" },
-      { label: "Housing", heading: "Housing" },
-      { label: "Inflation", heading: "Inflation" },
-      { label: "Positioning", heading: "Sentiment & Positioning" },
-      { label: "Calendar", heading: "Macro Calendar" },
-      { label: "Methodology", heading: "How the map works" }
+    // PR5 Task 5.4: the 10 detail routes redirect to /channels?tab=... and
+    // render under the shared Channels shell whose h2 is "Channels". Each
+    // channel link still resolves, but the page-level h2 is no longer the
+    // per-channel heading. We assert per-route h2 for the 8 standalone
+    // pages, and assert h2="Channels" + the active tab button carries
+    // aria-current="page" for the 10 channel labels.
+    interface StandaloneExpectation { kind: "standalone"; label: string; heading: string; }
+    interface ChannelExpectation { kind: "channel"; label: string; tabId: string; tabLabel: string; }
+    type NavExpectation = StandaloneExpectation | ChannelExpectation;
+
+    const navExpectations: NavExpectation[] = [
+      { kind: "standalone", label: "Overview", heading: "Overview" },
+      { kind: "standalone", label: "Short-Term", heading: "Short-Term Market Reaction" },
+      { kind: "standalone", label: "Long-Term", heading: "Long-Term Macro / Allocation Climate" },
+      { kind: "standalone", label: "Fragility", heading: "Fragility / Shock Risk" },
+      { kind: "standalone", label: "Regime Map", heading: "TIPS x Dollar Regime Map" },
+      { kind: "standalone", label: "Replay", heading: "Historical Regime Replay" },
+      { kind: "channel", label: "Volatility", tabId: "volatility", tabLabel: "Volatility" },
+      { kind: "channel", label: "Rates", tabId: "rates", tabLabel: "Rates" },
+      { kind: "channel", label: "Liquidity", tabId: "liquidity", tabLabel: "Liquidity" },
+      { kind: "channel", label: "Credit", tabId: "credit", tabLabel: "Credit" },
+      { kind: "channel", label: "Dollar", tabId: "dollar", tabLabel: "Dollar" },
+      { kind: "channel", label: "Commodities", tabId: "commodities", tabLabel: "Commodities" },
+      { kind: "channel", label: "Growth", tabId: "growth", tabLabel: "Growth" },
+      { kind: "channel", label: "Housing", tabId: "housing", tabLabel: "Housing" },
+      { kind: "channel", label: "Inflation", tabId: "inflation", tabLabel: "Inflation" },
+      { kind: "channel", label: "Positioning", tabId: "positioning", tabLabel: "Positioning" },
+      { kind: "standalone", label: "Calendar", heading: "Macro Calendar" },
+      { kind: "standalone", label: "Methodology", heading: "How the map works" }
     ];
 
     for (const expectation of navExpectations) {
@@ -1983,8 +2000,19 @@ describe("data-backed routes", () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
-      await waitForContent(container, expectation.heading);
-      expect(container.querySelector("h2")?.textContent).toBe(expectation.heading);
+      if (expectation.kind === "standalone") {
+        await waitForContent(container, expectation.heading);
+        expect(container.querySelector("h2")?.textContent).toBe(expectation.heading);
+      } else {
+        // Channel routes share the "Channels" page h2 — each tab is identified
+        // by its tab-button label being aria-current="page" inside the
+        // ChannelTabs strip.
+        await waitForContent(container, expectation.tabLabel);
+        expect(container.querySelector("h2")?.textContent).toBe("Channels");
+        const activeTab = container.querySelector('.channel-tabs button[aria-current="page"]');
+        expect(activeTab, `No active tab after clicking ${expectation.label}`).toBeTruthy();
+        expect(activeTab?.textContent).toBe(expectation.tabLabel);
+      }
     }
   });
 
@@ -2033,7 +2061,7 @@ describe("data-backed routes", () => {
       "/data/status/data_status.json": status
     });
 
-    const container = render(<Rates />);
+    const container = render(<RatesTab />);
     await waitForContent(container, "10Y-2Y spread");
 
     expect(container.textContent).toContain("0.42 percentage points");
@@ -2098,7 +2126,12 @@ describe("data-backed routes", () => {
     );
     await waitForContent(container, "Labor and recession risk");
 
-    expect(container.querySelector("h2")?.textContent).toBe("Growth");
+    // PR5 Task 5.4: /growth now redirects to /channels?tab=growth, so the
+    // page-level h2 is "Channels" and the active tab carries aria-current.
+    expect(container.querySelector("h2")?.textContent).toBe("Channels");
+    expect(
+      container.querySelector('.channel-tabs button[aria-current="page"]')?.textContent
+    ).toBe("Growth");
     expect(container.textContent).toContain("Chicago Fed National Activity Index");
     expect(container.textContent).toContain("Durable goods orders");
     expect(container.textContent).toContain("Sahm Rule recession indicator");
@@ -2282,7 +2315,7 @@ describe("data-backed routes", () => {
       "/data/status/data_status.json": status
     });
 
-    const container = render(<Rates />);
+    const container = render(<RatesTab />);
     await waitForContent(container, "Data error:");
 
     expect(container.querySelector(".data-error")?.getAttribute("role")).toBe("alert");
@@ -2335,7 +2368,11 @@ describe("data-backed routes", () => {
     );
     await waitForContent(container, "Headline CPI");
 
-    expect(container.querySelector("h2")?.textContent).toBe("Inflation");
+    // PR5 Task 5.4: /inflation now redirects to /channels?tab=inflation.
+    expect(container.querySelector("h2")?.textContent).toBe("Channels");
+    expect(
+      container.querySelector('.channel-tabs button[aria-current="page"]')?.textContent
+    ).toBe("Inflation");
     expect(container.textContent).toContain("Headline CPI");
     expect(h3Texts(container)).toContain("Core CPI");
     expect(container.textContent).toContain("Core PCE");
@@ -2383,7 +2420,11 @@ describe("data-backed routes", () => {
     );
     await waitForContent(container, "Nominal Broad U.S. Dollar Index");
 
-    expect(container.querySelector("h2")?.textContent).toBe("Dollar & Global");
+    // PR5 Task 5.4: /dollar-global now redirects to /channels?tab=dollar.
+    expect(container.querySelector("h2")?.textContent).toBe("Channels");
+    expect(
+      container.querySelector('.channel-tabs button[aria-current="page"]')?.textContent
+    ).toBe("Dollar");
     expect(h3Texts(container)).toContain("Nominal Broad U.S. Dollar Index");
     expect(container.textContent).toContain("USD/JPY");
     expect(container.textContent).toContain("EUR/USD");
@@ -3151,7 +3192,11 @@ describe("data-backed routes", () => {
     );
     await waitForContent(container, "WTI crude oil");
 
-    expect(container.querySelector("h2")?.textContent).toBe("Energy and grains");
+    // PR5 Task 5.4: /commodities now redirects to /channels?tab=commodities.
+    expect(container.querySelector("h2")?.textContent).toBe("Channels");
+    expect(
+      container.querySelector('.channel-tabs button[aria-current="page"]')?.textContent
+    ).toBe("Commodities");
     expect(container.textContent).toContain("WTI crude oil");
     expect(container.textContent).toContain("3.21 USD/barrel");
     expect(container.textContent).toContain("wti_crude");
@@ -3172,7 +3217,11 @@ describe("data-backed routes", () => {
     );
     await waitForContent(container, "CFTC S&P 500 asset manager net");
 
-    expect(container.querySelector("h2")?.textContent).toBe("Sentiment & Positioning");
+    // PR5 Task 5.4: /sentiment now redirects to /channels?tab=positioning.
+    expect(container.querySelector("h2")?.textContent).toBe("Channels");
+    expect(
+      container.querySelector('.channel-tabs button[aria-current="page"]')?.textContent
+    ).toBe("Positioning");
     expect(container.textContent).toContain("CFTC S&P 500 asset manager net");
     expect(container.textContent).toContain("CFTC S&P 500 leveraged money net");
     expect(container.textContent).toContain("cftc_sp500_asset_mgr_net");
@@ -3209,6 +3258,15 @@ describe("data-backed routes", () => {
 // W2-13: cross-route IA consistency. Verifies that every route file follows
 // the hero + slot + footer pattern from the spec slot map. JSX comments are
 // stripped at render time so we scan the source files directly.
+//
+// PR5 Task 5.4: the 10 detail routes (Rates, Volatility, Credit, Liquidity,
+// DollarGlobal, Commodities, Inflation, Growth, Housing, Sentiment) were
+// hoisted into ChannelTab bodies under src/components/channels/. The IA
+// contract still applies — the body owns the hero, slot markers, and footer
+// — so each test below treats `IaBody` entries uniformly regardless of where
+// the file lives on disk. The only per-source difference is the relative
+// import path to RouteDataFooter / PageInsightHero (`../components/...` from
+// src/routes/, `../...` from src/components/channels/).
 // ---------------------------------------------------------------------------
 
 import { readFileSync, readdirSync } from "node:fs";
@@ -3217,16 +3275,59 @@ import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __routesDir = dirname(__filename);
+const __channelsDir = join(__routesDir, "..", "components", "channels");
+
+interface IaBody {
+  /** Stable identifier used in test names; matches the historic filename. */
+  id: string;
+  /** Absolute filesystem path to the source file. */
+  filePath: string;
+  /** Import-path prefix used by this body for sibling components. */
+  importPrefix: string;
+}
 
 // Shell routes that delegate data-footer responsibility to inner tab bodies.
 // Channels.tsx is the tabbed shell introduced by PR 5; each ChannelTab body
-// carries its own <RouteDataFooter> (or the legacy detail route already
-// contains one). The shell itself only renders <ChannelTabs> + <Suspense>.
+// carries its own <RouteDataFooter>. The shell itself only renders
+// <ChannelTabs> + <Suspense>, so it is excluded from the IA contract.
 const SHELL_ROUTE_FILES = new Set<string>(["Channels.tsx"]);
 
-// All 18 route source files (every file under src/routes/ except the test
-// and shell routes that delegate the data-footer to their tab bodies).
-const ALL_ROUTE_FILES = readdirSync(__routesDir)
+// Map from the historic route filename (used by the spec slot map below) to
+// the ChannelTab file that now carries that body.
+const CHANNEL_BODY_MAP: Record<string, string> = {
+  "Rates.tsx": "RatesTab.tsx",
+  "Volatility.tsx": "VolatilityTab.tsx",
+  "Credit.tsx": "CreditTab.tsx",
+  "Liquidity.tsx": "LiquidityTab.tsx",
+  "DollarGlobal.tsx": "DollarTab.tsx",
+  "Commodities.tsx": "CommoditiesTab.tsx",
+  "Inflation.tsx": "InflationTab.tsx",
+  "Growth.tsx": "GrowthTab.tsx",
+  "Housing.tsx": "HousingTab.tsx",
+  "Sentiment.tsx": "PositioningTab.tsx"
+};
+
+function makeChannelBody(id: string): IaBody {
+  const filename = CHANNEL_BODY_MAP[id];
+  if (!filename) throw new Error(`No CHANNEL_BODY_MAP entry for ${id}`);
+  return {
+    id,
+    filePath: join(__channelsDir, filename),
+    importPrefix: ".."
+  };
+}
+
+function makeRouteBody(filename: string): IaBody {
+  return {
+    id: filename,
+    filePath: join(__routesDir, filename),
+    importPrefix: "../components"
+  };
+}
+
+// Every IA body the contract applies to. Channel bodies first (10) + route
+// bodies that still live in src/routes/ (8).
+const ROUTE_FILES_IN_DIR = readdirSync(__routesDir)
   .filter(
     (name) =>
       name.endsWith(".tsx") &&
@@ -3234,6 +3335,22 @@ const ALL_ROUTE_FILES = readdirSync(__routesDir)
       !SHELL_ROUTE_FILES.has(name)
   )
   .sort();
+
+const CHANNEL_BODIES: IaBody[] = Object.keys(CHANNEL_BODY_MAP)
+  .sort()
+  .map(makeChannelBody);
+
+const ROUTE_BODIES: IaBody[] = ROUTE_FILES_IN_DIR.map(makeRouteBody);
+
+const ALL_BODIES: IaBody[] = [...CHANNEL_BODIES, ...ROUTE_BODIES];
+
+// Legacy ID list (filename strings) kept for the test-name `%s` substitution
+// so test output continues to read e.g. "Rates.tsx renders <PageInsightHero ...>".
+const ALL_BODY_IDS = ALL_BODIES.map((b) => b.id);
+
+const BODY_BY_ID: Record<string, IaBody> = Object.fromEntries(
+  ALL_BODIES.map((b) => [b.id, b])
+);
 
 // Routes that consume PageInsightHero (the 12 single-domain content routes).
 // LongTermMacroClimate keeps HorizonScoreHeader instead; Overview, Tactical,
@@ -3273,28 +3390,40 @@ const EXPECTED_SLOTS_BY_ROUTE: Record<string, string[]> = {
   "TacticalTradingWeather.tsx": ["tactical_vol_curve_slot", "tactical_vol_complex_slot"]
 };
 
+function readBodySource(id: string): string {
+  const body = BODY_BY_ID[id];
+  if (!body) throw new Error(`Unknown IA body id: ${id}`);
+  return readFileSync(body.filePath, "utf8");
+}
+
 function readRouteSource(filename: string): string {
   return readFileSync(join(__routesDir, filename), "utf8");
 }
 
 describe("W2-13: cross-route IA consistency", () => {
-  it("discovers exactly 18 route source files (sanity check on the inventory)", () => {
-    expect(ALL_ROUTE_FILES).toHaveLength(18);
+  it("discovers exactly 18 IA body source files (10 ChannelTab bodies + 8 route bodies)", () => {
+    expect(CHANNEL_BODIES).toHaveLength(10);
+    expect(ROUTE_BODIES).toHaveLength(8);
+    expect(ALL_BODIES).toHaveLength(18);
   });
 
-  it.each(ALL_ROUTE_FILES)(
+  it.each(ALL_BODY_IDS)(
     "%s imports and uses <RouteDataFooter> so the page ends with the data footer",
-    (file) => {
-      const source = readRouteSource(file);
-      expect(source).toMatch(/import\s+RouteDataFooter\s+from\s+"\.\.\/components\/RouteDataFooter"/);
+    (id) => {
+      const body = BODY_BY_ID[id];
+      const source = readBodySource(id);
+      const importRegex = new RegExp(
+        `import\\s+RouteDataFooter\\s+from\\s+"${body.importPrefix}/RouteDataFooter"`
+      );
+      expect(source).toMatch(importRegex);
       expect(source).toMatch(/<RouteDataFooter/);
     }
   );
 
-  it.each(ALL_ROUTE_FILES)(
+  it.each(ALL_BODY_IDS)(
     "%s places <RouteDataFooter> after all <DataGapPanel>, <DataStatusTable>, <CandidateDiagnosticPanel> usages (source-gated panels live in the footer)",
-    (file) => {
-      const source = readRouteSource(file);
+    (id) => {
+      const source = readBodySource(id);
       const footerIdx = source.search(/<RouteDataFooter/);
       // The footer must appear at least once.
       expect(footerIdx).toBeGreaterThan(-1);
@@ -3313,7 +3442,7 @@ describe("W2-13: cross-route IA consistency", () => {
         for (const index of matches) {
           if (index < footerIdx) {
             throw new Error(
-              `${file}: <${component} ...> usage at offset ${index} is above <RouteDataFooter at offset ${footerIdx}; data-transparency panels must live inside the footer.`
+              `${id}: <${component} ...> usage at offset ${index} is above <RouteDataFooter at offset ${footerIdx}; data-transparency panels must live inside the footer.`
             );
           }
         }
@@ -3323,26 +3452,31 @@ describe("W2-13: cross-route IA consistency", () => {
 
   it.each(SINGLE_DOMAIN_ROUTES)(
     "%s renders <PageInsightHero ...> in the route body (single-domain routes get a hero)",
-    (file) => {
-      const source = readRouteSource(file);
-      expect(source).toMatch(/import\s+PageInsightHero\s+from\s+"\.\.\/components\/PageInsightHero"/);
+    (id) => {
+      const body = BODY_BY_ID[id];
+      if (!body) throw new Error(`SINGLE_DOMAIN_ROUTES references unknown IA body: ${id}`);
+      const source = readBodySource(id);
+      const importRegex = new RegExp(
+        `import\\s+PageInsightHero\\s+from\\s+"${body.importPrefix}/PageInsightHero"`
+      );
+      expect(source).toMatch(importRegex);
       expect(source).toMatch(/<PageInsightHero\s+route=/);
     }
   );
 
-  it("non-hero routes do NOT import PageInsightHero (keeps the IA boundary explicit)", () => {
-    const heroless = ALL_ROUTE_FILES.filter((file) => !SINGLE_DOMAIN_ROUTES.includes(file));
-    for (const file of heroless) {
-      const source = readRouteSource(file);
+  it("non-hero bodies do NOT import PageInsightHero (keeps the IA boundary explicit)", () => {
+    const heroless = ALL_BODY_IDS.filter((id) => !SINGLE_DOMAIN_ROUTES.includes(id));
+    for (const id of heroless) {
+      const source = readBodySource(id);
       expect(source).not.toMatch(/<PageInsightHero/);
     }
   });
 
   it.each(Object.keys(EXPECTED_SLOTS_BY_ROUTE))(
     "%s contains exactly the slot-comment markers the spec slot map says it should",
-    (file) => {
-      const source = readRouteSource(file);
-      const expectedSlots = EXPECTED_SLOTS_BY_ROUTE[file];
+    (id) => {
+      const source = readBodySource(id);
+      const expectedSlots = EXPECTED_SLOTS_BY_ROUTE[id];
       for (const slotId of expectedSlots) {
         const markerPattern = new RegExp(`\\{/\\* SLOT:${slotId} \\*/\\}`);
         expect(source).toMatch(markerPattern);
