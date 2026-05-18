@@ -46,21 +46,34 @@ describe("App routing", () => {
     expect(container.querySelector("h2")?.textContent).toBe("Channels");
     const activeTab = container.querySelector('.channel-tabs button[aria-current="page"]');
     expect(activeTab?.textContent).toBe("Credit");
-    // The nav link for /credit still exists in the sidebar (Task 5.5 will
-    // restructure nav). Post-redirect, react-router's NavLink active state
-    // tracks the resolved path (/channels), so the /credit link no longer
-    // carries the .active class — we just assert the link is still in the DOM.
-    expect(container.querySelector('a[href="/credit"]')).toBeTruthy();
+    // PR5 Task 5.5: the legacy /credit nav pill has been removed in the nav
+    // consolidation. After the redirect to /channels, the "Channels" pill in
+    // the new flat 7-pill nav carries the .active class.
+    const channelsLink = Array.from(container.querySelectorAll(".site-nav .nav-link")).find(
+      (a) => a.textContent?.trim() === "Channels"
+    );
+    expect(channelsLink?.classList.contains("active")).toBe(true);
   });
 
-  it("primary navigation exposes commodities, positioning, and decision views", () => {
+  it("primary navigation exposes the consolidated 7-pill bar plus the More disclosure", () => {
     const container = renderAt("/methodology");
 
-    expect(container.textContent).toContain("Primary Views");
-    expect(container.textContent).toContain("Data Library");
-    expect(container.textContent).toContain("Reference");
-    expect(container.querySelector('a[href="/commodities"]')?.textContent).toBe("Commodities");
-    expect(container.querySelector('a[href="/sentiment"]')?.textContent).toBe("Positioning");
+    // Top-level pills: 6 NavLinks + the "More" disclosure summary.
+    const directPills = container.querySelectorAll(
+      ".site-nav > .nav-link, .site-nav > details > summary.nav-link"
+    );
+    const labels = Array.from(directPills).map((el) => el.textContent?.trim());
+    expect(labels).toEqual([
+      "Overview",
+      "Short-Term",
+      "Long-Term",
+      "Fragility",
+      "Channels",
+      "History",
+      "More"
+    ]);
+
+    // Surviving direct hrefs in the visible bar.
     expect(container.querySelector('a[href="/short-term"]')?.textContent).toBe("Short-Term");
     expect(container.querySelector('a[href="/short-term"]')?.getAttribute("aria-label")).toBe(
       "Short-Term Market Reaction"
@@ -69,13 +82,22 @@ describe("App routing", () => {
     expect(container.querySelector('a[href="/long-term"]')?.getAttribute("aria-label")).toBe(
       "Long-Term Macro / Allocation Climate"
     );
+
+    // Legacy detail-route pills (commodities, positioning, replay, etc.) were
+    // removed in PR5 Task 5.5 — they live behind /channels now.
+    expect(container.querySelector('a[href="/commodities"]')).toBeNull();
+    expect(container.querySelector('a[href="/sentiment"]')).toBeNull();
+    expect(container.querySelector('a[href="/replay"]')).toBeNull();
     expect(container.querySelector('a[href="/tactical"]')).toBeNull();
     expect(container.querySelector('a[href="/macro-climate"]')).toBeNull();
-    expect(container.querySelector('a[href="/regime-map"]')?.textContent).toBe("Regime Map");
-    expect(container.querySelector('a[href="/replay"]')?.textContent).toBe("Replay");
-    expect(container.querySelector('a[href="/replay"]')?.getAttribute("aria-label")).toBe(
-      "Historical Regime Replay"
+
+    // Calendar + Methodology are now inside the More disclosure.
+    const moreDetails = container.querySelector(".site-nav__more");
+    expect(moreDetails?.tagName.toLowerCase()).toBe("details");
+    const moreLinks = Array.from(moreDetails?.querySelectorAll("a") ?? []).map((a) =>
+      a.textContent?.trim()
     );
+    expect(moreLinks).toEqual(["Calendar", "Methodology"]);
   });
 
   it("redirects unknown routes to the overview", async () => {

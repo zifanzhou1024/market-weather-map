@@ -73,35 +73,13 @@ select {
   text-transform: uppercase;
 }
 
+/* Post-PR-5 nav: flat 7-pill bar (6 NavLinks + More disclosure). */
 .site-nav {
-  align-items: stretch;
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 6px;
   justify-content: flex-end;
-  max-width: 980px;
-}
-
-.nav-section {
-  border-left: 1px solid var(--border);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  padding-left: 0.75rem;
-}
-
-.nav-section:first-child {
-  border-left: 0;
-  padding-left: 0;
-}
-
-.nav-section__label {
-  color: var(--muted);
-  flex-basis: 100%;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .nav-link {
@@ -119,6 +97,64 @@ select {
   border-color: #31483a;
   color: #ffffff;
   background: #31483a;
+}
+
+.site-nav__more {
+  position: relative;
+}
+
+.site-nav__more > summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.site-nav__more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.site-nav__more > summary::after {
+  content: " \25BE";
+  color: var(--muted);
+  font-size: 0.7rem;
+  margin-left: 4px;
+}
+
+.site-nav__more[open] > summary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.site-nav__more[open] > summary::after {
+  color: #ffffff;
+}
+
+.site-nav__more-menu {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(33, 45, 37, 0.12);
+  display: grid;
+  gap: 4px;
+  min-width: 160px;
+  padding: 8px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 10;
+}
+
+.site-nav__more-menu .nav-link {
+  border: 0;
+  border-radius: 6px;
+  text-align: left;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.site-nav__more-menu .nav-link:hover {
+  background: #edf0e8;
 }
 
 .page-heading {
@@ -1333,27 +1369,8 @@ code {
   }
 
   .site-nav {
-    width: calc(100vw - 32px);
-    max-width: none;
-    margin-inline: 0;
-    padding-bottom: 8px;
-    overflow-x: auto;
     flex-wrap: wrap;
     justify-content: flex-start;
-    scrollbar-gutter: stable;
-  }
-
-  .nav-section {
-    border-left: 0;
-    border-top: 1px solid var(--border);
-    flex: 1 1 100%;
-    padding-left: 0;
-    padding-top: 0.65rem;
-  }
-
-  .nav-section:first-child {
-    border-top: 0;
-    padding-top: 0;
   }
 
   .nav-link {
@@ -1361,6 +1378,11 @@ code {
     max-width: 100%;
     overflow-wrap: anywhere;
     white-space: normal;
+  }
+
+  .site-nav__more-menu {
+    right: auto;
+    left: 0;
   }
 }
 

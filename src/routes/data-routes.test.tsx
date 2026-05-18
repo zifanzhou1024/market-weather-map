@@ -1930,7 +1930,10 @@ describe("data-backed routes", () => {
     expect(macroPath).toBe("/long-term");
   });
 
-  it("renders grouped navigation with primary views before the data library", async () => {
+  it("renders the consolidated 7-pill nav with Short-Term and Long-Term visible", async () => {
+    // PR5 Task 5.5: the old 3-section grouped nav ("Primary Views" / "Data
+    // Library" / "Reference") collapsed into a flat 7-pill bar plus a "More"
+    // disclosure. The headers are gone; the assertion now checks pill order.
     mockStaticFetch(routeFetchFiles());
 
     const container = render(
@@ -1939,15 +1942,28 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
 
-    await waitForContent(container, "Primary Views");
-    const text = container.textContent ?? "";
-    expect(text.indexOf("Primary Views")).toBeLessThan(text.indexOf("Data Library"));
-    expect(text.indexOf("Data Library")).toBeLessThan(text.indexOf("Reference"));
-    expect(text).toContain("Short-Term");
-    expect(text).toContain("Long-Term");
+    await waitForContent(container, "Short-Term");
+    const directPills = container.querySelectorAll(
+      ".site-nav > .nav-link, .site-nav > details > summary.nav-link"
+    );
+    const labels = Array.from(directPills).map((el) => el.textContent?.trim());
+    expect(labels).toEqual([
+      "Overview",
+      "Short-Term",
+      "Long-Term",
+      "Fragility",
+      "Channels",
+      "History",
+      "More"
+    ]);
   });
 
-  it("routes every grouped navigation link to its page heading", async () => {
+  it("routes every consolidated nav link to its page heading", async () => {
+    // PR5 Task 5.5: the nav now exposes 6 visible NavLinks + 2 inside the
+    // "More" disclosure. The legacy 10 detail-route pills + Replay pill are
+    // gone — channel destinations live behind the /channels shell, reached via
+    // the Channels pill or in-app tabs. This test traverses the 8 surviving
+    // nav links and asserts each lands on the expected page.
     mockStaticFetch(routeFetchFiles());
 
     const container = render(
@@ -1958,12 +1974,6 @@ describe("data-backed routes", () => {
 
     await waitForContent(container, "Overview");
 
-    // PR5 Task 5.4: the 10 detail routes redirect to /channels?tab=... and
-    // render under the shared Channels shell whose h2 is "Channels". Each
-    // channel link still resolves, but the page-level h2 is no longer the
-    // per-channel heading. We assert per-route h2 for the 8 standalone
-    // pages, and assert h2="Channels" + the active tab button carries
-    // aria-current="page" for the 10 channel labels.
     interface StandaloneExpectation { kind: "standalone"; label: string; heading: string; }
     interface ChannelExpectation { kind: "channel"; label: string; tabId: string; tabLabel: string; }
     type NavExpectation = StandaloneExpectation | ChannelExpectation;
@@ -1973,18 +1983,11 @@ describe("data-backed routes", () => {
       { kind: "standalone", label: "Short-Term", heading: "Short-Term Market Reaction" },
       { kind: "standalone", label: "Long-Term", heading: "Long-Term Macro / Allocation Climate" },
       { kind: "standalone", label: "Fragility", heading: "Fragility / Shock Risk" },
-      { kind: "standalone", label: "Regime Map", heading: "TIPS x Dollar Regime Map" },
-      { kind: "standalone", label: "Replay", heading: "Historical Regime Replay" },
-      { kind: "channel", label: "Volatility", tabId: "volatility", tabLabel: "Volatility" },
-      { kind: "channel", label: "Rates", tabId: "rates", tabLabel: "Rates" },
-      { kind: "channel", label: "Liquidity", tabId: "liquidity", tabLabel: "Liquidity" },
-      { kind: "channel", label: "Credit", tabId: "credit", tabLabel: "Credit" },
-      { kind: "channel", label: "Dollar", tabId: "dollar", tabLabel: "Dollar" },
-      { kind: "channel", label: "Commodities", tabId: "commodities", tabLabel: "Commodities" },
-      { kind: "channel", label: "Growth", tabId: "growth", tabLabel: "Growth" },
-      { kind: "channel", label: "Housing", tabId: "housing", tabLabel: "Housing" },
-      { kind: "channel", label: "Inflation", tabId: "inflation", tabLabel: "Inflation" },
-      { kind: "channel", label: "Positioning", tabId: "positioning", tabLabel: "Positioning" },
+      // Channels pill lands on the shared shell whose h2 is "Channels" with
+      // the default Volatility tab active.
+      { kind: "channel", label: "Channels", tabId: "volatility", tabLabel: "Volatility" },
+      // History pill is a PR5 placeholder → /regime-map. PR6 wires /history.
+      { kind: "standalone", label: "History", heading: "TIPS x Dollar Regime Map" },
       { kind: "standalone", label: "Calendar", heading: "Macro Calendar" },
       { kind: "standalone", label: "Methodology", heading: "How the map works" }
     ];
@@ -2004,9 +2007,8 @@ describe("data-backed routes", () => {
         await waitForContent(container, expectation.heading);
         expect(container.querySelector("h2")?.textContent).toBe(expectation.heading);
       } else {
-        // Channel routes share the "Channels" page h2 — each tab is identified
-        // by its tab-button label being aria-current="page" inside the
-        // ChannelTabs strip.
+        // Channels pill lands on the shared shell; the default-selected tab
+        // (volatility) is asserted via aria-current on the .channel-tabs strip.
         await waitForContent(container, expectation.tabLabel);
         expect(container.querySelector("h2")?.textContent).toBe("Channels");
         const activeTab = container.querySelector('.channel-tabs button[aria-current="page"]');
