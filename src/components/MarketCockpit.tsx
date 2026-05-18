@@ -1,5 +1,5 @@
 import type { CockpitFile } from "../lib/types";
-import type { Mode } from "./CockpitCell";
+import type { Mode } from "../lib/mode";
 import CockpitCell from "./CockpitCell";
 import CompositeScoresRow from "./CompositeScoresRow";
 

@@ -1,4 +1,5 @@
 import type { CockpitVitalSign } from "../lib/types";
+import type { Mode } from "../lib/mode";
 import Sparkline from "./Sparkline";
 import PercentileBand from "./PercentileBand";
 import FreshnessPill from "./FreshnessPill";
@@ -28,12 +29,9 @@ import FreshnessPill from "./FreshnessPill";
  *   progressive enhancement only — the dialog (Task 2.7) is the primary
  *   place to read the rationale.
  *
- * Local `Mode` type is exported so sibling cockpit components (CompositeScoresRow,
- * MarketCockpit) can share it during PR 2. PR 3 Task 3.4 will move the canonical
- * declaration to `src/lib/mode.ts` and swap this to a re-export.
+ * `Mode` is imported from `../lib/mode` — the canonical home (PR 3 Task 3.4
+ * moved it there so `useMode()` and `ModeProvider` live alongside the type).
  */
-export type Mode = "brief" | "detail";
-
 interface Props {
   sign: CockpitVitalSign;
   mode: Mode;
