@@ -21,6 +21,7 @@ const navItems: readonly NavItem[] = [
 ];
 
 const moreItems: readonly NavItem[] = [
+  { to: "/diff", label: "Diff" },
   { to: "/calendar", label: "Calendar" },
   { to: "/methodology", label: "Methodology" }
 ];
