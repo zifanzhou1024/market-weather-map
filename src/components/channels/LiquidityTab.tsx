@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 import LiquidityDecompositionHero from "../charts/LiquidityDecompositionHero";
 import DataGapPanel from "../DataGapPanel";
 import DataStatusTable from "../DataStatusTable";
+import FocusBlock from "../FocusBlock";
 import InterpretationPanel from "../InterpretationPanel";
 import MetricCard from "../MetricCard";
 import PageInsightHero from "../PageInsightHero";
 import RouteDataFooter from "../RouteDataFooter";
 import TimeSeriesChart from "../TimeSeriesChart";
-import { loadCatalog, loadDataStatus } from "../../lib/data";
-import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { loadCatalog, loadDataStatus, loadPageInsights } from "../../lib/data";
+import type {
+  DataStatusFile,
+  DerivedSeriesFile,
+  PageInsightsFile,
+  SeriesCatalogEntry,
+  TimeSeriesFile
+} from "../../lib/types";
 import { hasObservations, loadRouteDerivedSeries, loadRouteSeries } from "../../routes/routeSeries";
 
 const liquiditySeriesIds = ["fed_assets", "reverse_repo", "treasury_general_account", "sofr", "reserve_balances"];
@@ -24,9 +31,18 @@ interface RouteState {
 export default function LiquidityTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadLiquidity() {
       try {
@@ -82,6 +98,24 @@ export default function LiquidityTab() {
       {data ? (
         <div className="route-stack">
           <PageInsightHero route="liquidity" />
+          {(() => {
+            const section = pageInsights?.routes?.liquidity?.sections?.find(
+              (s) => s.id === "liquidity_funding"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           {/* SLOT:liquidity_primary_chart */}
           {data.netLiquidity.observations.length > 0 ? (
             <LiquidityDecompositionHero netLiquidity={data.netLiquidity} />

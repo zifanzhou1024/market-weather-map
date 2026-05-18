@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 import CreditSpreadMatrixHero from "../charts/CreditSpreadMatrixHero";
 import DataGapPanel from "../DataGapPanel";
 import DataStatusTable from "../DataStatusTable";
+import FocusBlock from "../FocusBlock";
 import InterpretationPanel from "../InterpretationPanel";
 import MetricCard from "../MetricCard";
 import PageInsightHero from "../PageInsightHero";
 import RouteDataFooter from "../RouteDataFooter";
 import TimeSeriesChart from "../TimeSeriesChart";
-import { loadCatalog, loadDataStatus } from "../../lib/data";
-import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { loadCatalog, loadDataStatus, loadPageInsights } from "../../lib/data";
+import type {
+  DataStatusFile,
+  DerivedSeriesFile,
+  PageInsightsFile,
+  SeriesCatalogEntry,
+  TimeSeriesFile
+} from "../../lib/types";
 import { hasObservations, loadRouteDerivedSeries, loadRouteSeries } from "../../routes/routeSeries";
 
 const creditSeriesIds = [
@@ -57,9 +64,18 @@ function creditDerivedEntry(series: DerivedSeriesFile): SeriesCatalogEntry {
 export default function CreditTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadCredit() {
       try {
@@ -105,6 +121,24 @@ export default function CreditTab() {
       {data ? (
         <div className="route-stack">
           <PageInsightHero route="credit" />
+          {(() => {
+            const section = pageInsights?.routes?.credit?.sections?.find(
+              (s) => s.id === "credit_dispersion"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           {/* SLOT:credit_primary_chart */}
           {heroDataReady && heroHasObservations ? (
             <CreditSpreadMatrixHero

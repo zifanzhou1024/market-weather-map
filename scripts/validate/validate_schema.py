@@ -1132,6 +1132,14 @@ SECTION_IDS = frozenset(
         "regime_drivers",
         "positioning_vs_candidate_sentiment",
         "tactical_stress_board",
+        # PR follow-up: 7 channel-tab FocusBlock placements.
+        "liquidity_funding",
+        "credit_dispersion",
+        "dollar_pressure",
+        "commodity_impulse",
+        "growth_breadth",
+        "housing_pulse",
+        "inflation_dispersion",
     }
 )
 SECTION_FRESHNESS_STATUSES = frozenset({"ok", "stale", "unavailable", "degraded"})

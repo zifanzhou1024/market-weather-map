@@ -2,13 +2,19 @@ import { useEffect, useState } from "react";
 import HousingActivityHero from "../charts/HousingActivityHero";
 import DataGapPanel from "../DataGapPanel";
 import DataStatusTable from "../DataStatusTable";
+import FocusBlock from "../FocusBlock";
 import InterpretationPanel from "../InterpretationPanel";
 import MetricCard from "../MetricCard";
 import PageInsightHero from "../PageInsightHero";
 import RouteDataFooter from "../RouteDataFooter";
 import TimeSeriesChart from "../TimeSeriesChart";
-import { loadCatalog, loadDataStatus } from "../../lib/data";
-import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { loadCatalog, loadDataStatus, loadPageInsights } from "../../lib/data";
+import type {
+  DataStatusFile,
+  PageInsightsFile,
+  SeriesCatalogEntry,
+  TimeSeriesFile
+} from "../../lib/types";
 import { hasObservations, loadRouteSeries } from "../../routes/routeSeries";
 
 const housingSeriesIds = ["housing_starts", "building_permits", "mortgage_rate_30y"];
@@ -22,9 +28,18 @@ interface RouteState {
 export default function HousingTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadHousing() {
       try {
@@ -65,6 +80,24 @@ export default function HousingTab() {
       {data ? (
         <div className="route-stack">
           <PageInsightHero route="housing" />
+          {(() => {
+            const section = pageInsights?.routes?.housing?.sections?.find(
+              (s) => s.id === "housing_pulse"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           {/* SLOT:housing_primary_chart */}
           {heroAllReady && heroHasObservations ? (
             <HousingActivityHero

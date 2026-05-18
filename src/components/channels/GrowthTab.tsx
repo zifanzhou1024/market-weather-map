@@ -2,13 +2,19 @@ import { useEffect, useState } from "react";
 import GrowthLaborMatrixHero from "../charts/GrowthLaborMatrixHero";
 import DataGapPanel from "../DataGapPanel";
 import DataStatusTable from "../DataStatusTable";
+import FocusBlock from "../FocusBlock";
 import InterpretationPanel from "../InterpretationPanel";
 import MetricCard from "../MetricCard";
 import PageInsightHero from "../PageInsightHero";
 import RouteDataFooter from "../RouteDataFooter";
 import TimeSeriesChart from "../TimeSeriesChart";
-import { loadCatalog, loadDataStatus } from "../../lib/data";
-import type { DataStatusFile, SeriesCatalogEntry, TimeSeriesFile } from "../../lib/types";
+import { loadCatalog, loadDataStatus, loadPageInsights } from "../../lib/data";
+import type {
+  DataStatusFile,
+  PageInsightsFile,
+  SeriesCatalogEntry,
+  TimeSeriesFile
+} from "../../lib/types";
 import { hasObservations, loadRouteSeries } from "../../routes/routeSeries";
 
 const growthSeriesIds = [
@@ -30,9 +36,18 @@ interface RouteState {
 export default function GrowthTab() {
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    loadPageInsights()
+      .then((result) => {
+        if (active) setPageInsights(result);
+      })
+      .catch(() => {
+        // pageInsights is optional — swallow errors; FocusBlock will not render
+      });
 
     async function loadGrowth() {
       try {
@@ -107,6 +122,24 @@ export default function GrowthTab() {
       {data ? (
         <div className="route-stack">
           <PageInsightHero route="growth" />
+          {(() => {
+            const section = pageInsights?.routes?.growth?.sections?.find(
+              (s) => s.id === "growth_breadth"
+            );
+            return section ? (
+              <FocusBlock
+                variant="section"
+                eyebrow={section.eyebrow}
+                question={section.question}
+                answer={section.answer}
+                why={section.why}
+                risk={section.risk}
+                support={section.support}
+                caveat={section.caveat}
+                freshnessStatus={section.freshness_status}
+              />
+            ) : null;
+          })()}
           {/* SLOT:growth_primary_chart */}
           {heroAllReady && heroHasObservations ? (
             <GrowthLaborMatrixHero
