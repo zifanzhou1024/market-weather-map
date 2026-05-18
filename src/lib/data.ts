@@ -1,5 +1,6 @@
 import type {
   BucketScoresFile,
+  CockpitFile,
   DataStatusFile,
   DerivedSeriesFile,
   MacroCalendarFile,
@@ -148,4 +149,8 @@ export function loadRatesDashboard(): Promise<RatesDashboardFile | null> {
 
 export function loadRegimeDashboard(): Promise<RegimeDashboardFile | null> {
   return loadJsonOrNull<RegimeDashboardFile>("/data/derived/regime_dashboard.json");
+}
+
+export function loadCockpit(): Promise<CockpitFile> {
+  return loadJson<CockpitFile>("/data/derived/cockpit.json");
 }
