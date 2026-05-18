@@ -27,6 +27,7 @@ DASHBOARD_FRESHNESS_TOLERANCE_DAYS: dict[str, int] = {
     "volatility_dashboard.json": 7,
     "rates_dashboard.json": 7,
     "regime_dashboard.json": 10,
+    "cockpit.json": 4,  # daily refresh + weekend/holiday tolerance
 }
 
 

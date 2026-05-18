@@ -63,6 +63,12 @@ MODULES_TRANSFORM_PHASE_C: list[str] = [
     "scripts.transform.build_tradingview_vix_term_metrics",
 ]
 
+# Phase E (cockpit) transform modules. Runs last after all upstream
+# artifacts (score_summary, signal_priority, regime_snapshot) are present.
+MODULES_TRANSFORM_PHASE_E: list[str] = [
+    "scripts.transform.build_cockpit",
+]
+
 MODULES_VALIDATE = [
     "scripts.validate.validate_schema",
     "scripts.validate.validate_freshness",
@@ -79,6 +85,7 @@ MODULES = (
     + MODULES_TRANSFORM_EXISTING
     + MODULES_TRANSFORM_PHASE_B
     + MODULES_TRANSFORM_PHASE_C
+    + MODULES_TRANSFORM_PHASE_E
     + MODULES_VALIDATE
 )
 
