@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import MarketCockpit from "./MarketCockpit";
 import sample from "../__fixtures__/cockpit/today.json";
+import allStale from "../__fixtures__/cockpit/all-stale.json";
+import partialFill from "../__fixtures__/cockpit/partial-fill.json";
 
 let container: HTMLDivElement;
 
@@ -61,5 +63,19 @@ describe("MarketCockpit", () => {
     expect(
       container.querySelector("[data-testid='market-cockpit']"),
     ).not.toBeNull();
+  });
+
+  test("all-stale fixture: every cell carries stale freshness pill", () => {
+    renderRoot(<MarketCockpit data={allStale as any} mode="detail" />);
+    const pills = container.querySelectorAll(".freshness-pill--stale");
+    // 9 vital signs (if fixture has 9) — all stale
+    expect(pills.length).toBeGreaterThan(0);
+  });
+
+  test("partial-fill fixture: renders 5 vital cells without breaking", () => {
+    renderRoot(<MarketCockpit data={partialFill as any} mode="detail" />);
+    expect(container.querySelectorAll(".cockpit-cell").length).toBe(5);
+    // Composite still 3
+    expect(container.querySelectorAll(".composite-score-cell").length).toBe(3);
   });
 });

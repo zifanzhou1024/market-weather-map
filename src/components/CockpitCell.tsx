@@ -100,7 +100,7 @@ export default function CockpitCell({ sign, mode }: Props) {
             <li key={s.label}>
               <span className="cockpit-cell__secondary-label">{s.label}</span>{" "}
               <span className="cockpit-cell__secondary-value">
-                {s.value}
+                {s.value.toFixed(1)}
                 {s.unit}
               </span>
             </li>

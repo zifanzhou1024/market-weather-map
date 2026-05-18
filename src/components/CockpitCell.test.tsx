@@ -83,4 +83,20 @@ describe("CockpitCell", () => {
     const article = container.querySelector("article");
     expect(article?.tabIndex).toBe(0);
   });
+
+  test("secondary values are formatted to 1 decimal (no raw float spill)", () => {
+    // Regression: previously the secondary value rendered as
+    // "3.2027589069747022% YoY" because the raw float was passed straight to JSX.
+    const signWithSecondary = {
+      ...topSign,
+      secondary_values: [
+        { label: "Core PCE", value: 3.2027589069747022, unit: "% YoY" },
+      ],
+    };
+    renderCell(<CockpitCell sign={signWithSecondary as any} mode="detail" />);
+    const secondary = container.querySelector(".cockpit-cell__secondary-value");
+    expect(secondary).not.toBeNull();
+    expect(secondary?.textContent).toContain("3.2");
+    expect(secondary?.textContent).not.toContain("3.2027589069747022");
+  });
 });
