@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { lookupGlossary } from "../lib/glossary";
+import { useT } from "../lib/i18n";
 
 /**
  * Wrap a jargon term with a native browser tooltip explaining it.
@@ -27,7 +28,8 @@ interface Props {
 }
 
 export default function GlossaryTerm({ term, children, className }: Props) {
-  const definition = lookupGlossary(term);
+  const { locale } = useT();
+  const definition = lookupGlossary(term, locale);
   const label = children ?? term;
 
   if (!definition) {

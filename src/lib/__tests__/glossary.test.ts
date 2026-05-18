@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { GLOSSARY, lookupGlossary } from "../glossary";
 
 describe("glossary", () => {
-  test("known term returns its definition", () => {
+  test("known term returns its English definition by default", () => {
     // The canonical cockpit headline-row term — exercises both the volatility
     // and rates families of definitions.
     expect(lookupGlossary("VIX")).toMatch(/Cboe Volatility Index/);
@@ -10,10 +10,17 @@ describe("glossary", () => {
     expect(lookupGlossary("HY OAS")).toMatch(/option-adjusted spread/);
   });
 
+  test("known term returns its Chinese definition under zh locale", () => {
+    expect(lookupGlossary("VIX", "zh")).toMatch(/波动率指数/);
+    expect(lookupGlossary("10Y Breakeven", "zh")).toMatch(/通胀预期/);
+    expect(lookupGlossary("HY OAS", "zh")).toMatch(/期权调整利差/);
+  });
+
   test("unknown term returns undefined (caller falls through to bare label)", () => {
     expect(lookupGlossary("Market Weather")).toBeUndefined();
     expect(lookupGlossary("")).toBeUndefined();
     expect(lookupGlossary("not-a-term")).toBeUndefined();
+    expect(lookupGlossary("nope", "zh")).toBeUndefined();
   });
 
   test("lookup is case-sensitive — labels render verbatim, keys match exactly", () => {
@@ -22,17 +29,20 @@ describe("glossary", () => {
     expect(lookupGlossary("Vix")).toBeUndefined();
   });
 
-  test("all definitions ≤ 200 chars so native title tooltip stays readable", () => {
+  test("all en definitions ≤ 200 chars so native title tooltip stays readable", () => {
     // Lenient guard against bloat. The native <abbr title> tooltip browsers
     // render starts to wrap awkwardly past ~200 chars on narrow viewports.
-    for (const [term, def] of Object.entries(GLOSSARY)) {
-      expect(def.length, `definition for "${term}" exceeds 200 chars`).toBeLessThanOrEqual(200);
+    for (const [term, entry] of Object.entries(GLOSSARY)) {
+      expect(entry.en.length, `en definition for "${term}" exceeds 200 chars`).toBeLessThanOrEqual(200);
     }
   });
 
-  test("no empty definitions", () => {
-    for (const [term, def] of Object.entries(GLOSSARY)) {
-      expect(def.length, `definition for "${term}" is empty`).toBeGreaterThan(0);
+  test("every entry has both non-empty en and zh strings", () => {
+    for (const [term, entry] of Object.entries(GLOSSARY)) {
+      expect(entry.en, `entry.en for "${term}"`).toBeTruthy();
+      expect(entry.zh, `entry.zh for "${term}"`).toBeTruthy();
+      expect(entry.en.length, `en definition for "${term}" is empty`).toBeGreaterThan(0);
+      expect(entry.zh.length, `zh definition for "${term}" is empty`).toBeGreaterThan(0);
     }
   });
 
