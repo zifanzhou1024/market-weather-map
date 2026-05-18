@@ -16,13 +16,15 @@ Tone is descriptive only; the ``why_it_matters`` text comes verbatim
 from the underlying ranked signal so it inherits the existing tone
 review.
 
-The ``SECTION_CATALOG`` constant maps each of five route keys to one
+The ``SECTION_CATALOG`` constant maps each section's route key to a
 ``SectionTemplate``. Each template carries static question text and a
 ``derive`` callable that reads the ``loaded_data_bundle`` dict to produce
 dynamic answer/why/risk/support/caveat/freshness_status fields. Routes
 that appear in SECTION_CATALOG are always included in the output even if
 they carry no ranked signals, so the ``sections`` array is always present
-for the five FocusBlock placements.
+for FocusBlock placements. Twelve placements ship: Volatility, Rates,
+Regime map, Sentiment, Tactical, Liquidity, Credit, Dollar / Global,
+Commodities, Growth, Housing, Inflation.
 """
 from __future__ import annotations
 
@@ -409,6 +411,605 @@ def _derive_positioning(loaded: dict) -> dict:
     }
 
 
+def _yoy_pct_change(observations: list[dict]) -> float | None:
+    """Compute year-over-year percent change from a monthly index series.
+
+    Returns ``None`` when the series is too short or the prior-year value is
+    zero or missing. Uses the latest observation versus the observation 12
+    rows back (assuming monthly cadence with no gaps).
+    """
+    if not observations or len(observations) < 13:
+        return None
+    try:
+        latest = float(observations[-1].get("value"))
+        prior = float(observations[-13].get("value"))
+    except (TypeError, ValueError):
+        return None
+    if prior == 0:
+        return None
+    return (latest / prior - 1.0) * 100.0
+
+
+def _change_over_window(observations: list[dict], window: int) -> float | None:
+    """Absolute change between the latest observation and ``window`` rows back."""
+    if not observations or len(observations) < window + 1:
+        return None
+    try:
+        latest = float(observations[-1].get("value"))
+        prior = float(observations[-1 - window].get("value"))
+    except (TypeError, ValueError):
+        return None
+    return latest - prior
+
+
+def _pct_change_over_window(observations: list[dict], window: int) -> float | None:
+    """Percent change between the latest observation and ``window`` rows back."""
+    if not observations or len(observations) < window + 1:
+        return None
+    try:
+        latest = float(observations[-1].get("value"))
+        prior = float(observations[-1 - window].get("value"))
+    except (TypeError, ValueError):
+        return None
+    if prior == 0:
+        return None
+    return (latest / prior - 1.0) * 100.0
+
+
+def _derive_liquidity_funding(loaded: dict) -> dict:
+    """Read net_liquidity derived series and characterise its short-term trend.
+
+    Branches on the sign of the 4-week change. Mentions the dominant
+    component driver in text — distinct from the route's why_it_matters which
+    focuses on net liquidity as the funding backdrop.
+    """
+    net_liq = loaded.get("net_liquidity")
+    if net_liq is None:
+        return {
+            "answer": "Data not yet active for this section.",
+            "freshness_status": "unavailable",
+        }
+    obs = net_liq.get("observations") or []
+    if len(obs) < 5:
+        return {
+            "answer": "Net liquidity history partially loaded; awaiting 4-week change context.",
+            "freshness_status": "stale",
+        }
+    latest_value = float(obs[-1].get("value", 0.0))
+    delta_4w = _change_over_window(obs, 4)
+    if delta_4w is None:
+        return {
+            "answer": "Net liquidity history partially loaded; awaiting 4-week change context.",
+            "freshness_status": "stale",
+        }
+
+    latest_b = latest_value / 1_000.0  # millions to billions for readability
+    delta_b = delta_4w / 1_000.0
+    if delta_4w > 0:
+        answer = (
+            f"Net liquidity is expanding (+${delta_b:,.0f}B over four weeks to "
+            f"${latest_b:,.0f}B); Fed balance sheet outpaces TGA and reverse repo drain."
+        )
+        why = "Rising net liquidity loosens funding conditions across risk assets and credit."
+        risk = None
+        support = "Expanding net liquidity supports risk-asset funding."
+    elif delta_4w < 0:
+        answer = (
+            f"Net liquidity is contracting (${delta_b:,.0f}B over four weeks to "
+            f"${latest_b:,.0f}B); TGA and reverse repo drain outpaces Fed balance sheet."
+        )
+        why = "Falling net liquidity tightens funding conditions and historically pressures risk assets."
+        risk = "Net liquidity drains historically precede risk-off episodes."
+        support = None
+    else:
+        answer = (
+            f"Net liquidity is roughly flat over the past four weeks at ${latest_b:,.0f}B; "
+            f"Fed balance sheet, TGA, and reverse repo components are offsetting."
+        )
+        why = "Flat net liquidity describes a balanced funding backdrop with no dominant driver."
+        risk = None
+        support = "Stable net liquidity is not adding to funding pressure."
+
+    return {
+        "answer": answer,
+        "why": why,
+        "risk": risk,
+        "support": support,
+        "caveat": "Net liquidity is a derived weekly proxy from Fed assets, TGA, and reverse repo — not a measure of funding-market stress.",
+        "freshness_status": "ok",
+    }
+
+
+def _derive_credit_dispersion(loaded: dict) -> dict:
+    """Read HY-IG OAS spread and characterise the 30-day trend.
+
+    Widening HY-IG dispersion is an early credit-stress signal; tightening
+    describes risk-on conditions or stress not yet propagating from equity vol.
+    """
+    spread = loaded.get("hy_minus_ig_oas")
+    if spread is None:
+        return {
+            "answer": "Data not yet active for this section.",
+            "freshness_status": "unavailable",
+        }
+    obs = spread.get("observations") or []
+    if len(obs) < 22:
+        return {
+            "answer": "Credit dispersion history partially loaded; awaiting 30-day change context.",
+            "freshness_status": "stale",
+        }
+    latest = float(obs[-1].get("value", 0.0))
+    delta_30d = _change_over_window(obs, 21)  # ~21 trading days
+    if delta_30d is None:
+        return {
+            "answer": "Credit dispersion history partially loaded; awaiting 30-day change context.",
+            "freshness_status": "stale",
+        }
+
+    # Threshold of +/- 15 bps over 30 days as a noise filter
+    if delta_30d > 0.15:
+        answer = (
+            f"The HY-IG OAS spread is widening (+{delta_30d:.2f} pp over 30 days "
+            f"to {latest:.2f} pp), an early sign of credit-quality dispersion."
+        )
+        why = "Widening HY-IG dispersion signals lower-quality credit underperforming higher-quality credit."
+        risk = "HY-IG widening typically leads broader risk-off."
+        support = None
+    elif delta_30d < -0.15:
+        answer = (
+            f"The HY-IG OAS spread is tightening ({delta_30d:.2f} pp over 30 days "
+            f"to {latest:.2f} pp), describing a risk-on credit backdrop."
+        )
+        why = "Tighter HY-IG dispersion describes broad credit risk appetite and limited cross-asset stress propagation."
+        risk = None
+        support = "Tight HY-IG dispersion suggests stress is not spreading from equity vol into credit."
+    else:
+        answer = (
+            f"The HY-IG OAS spread is roughly stable ({delta_30d:+.2f} pp over 30 days "
+            f"at {latest:.2f} pp); credit dispersion is not currently widening or tightening."
+        )
+        why = "Stable HY-IG dispersion describes a credit market without a directional impulse."
+        risk = None
+        support = "Steady credit dispersion is not amplifying cross-asset stress."
+
+    return {
+        "answer": answer,
+        "why": why,
+        "risk": risk,
+        "support": support,
+        "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
+        "freshness_status": "ok",
+    }
+
+
+def _derive_dollar_pressure(loaded: dict) -> dict:
+    """Read broad_dollar series and characterise its 1-month change.
+
+    Strengthening dollar tightens global financial conditions; weakening
+    eases them.
+    """
+    broad = loaded.get("broad_dollar")
+    if broad is None:
+        return {
+            "answer": "Data not yet active for this section.",
+            "freshness_status": "unavailable",
+        }
+    obs = broad.get("observations") or []
+    if len(obs) < 22:
+        return {
+            "answer": "Broad-dollar history partially loaded; awaiting 1-month change context.",
+            "freshness_status": "stale",
+        }
+    latest = float(obs[-1].get("value", 0.0))
+    pct_1m = _pct_change_over_window(obs, 21)
+    if pct_1m is None:
+        return {
+            "answer": "Broad-dollar history partially loaded; awaiting 1-month change context.",
+            "freshness_status": "stale",
+        }
+
+    # +/- 0.5% over 21 trading days threshold
+    if pct_1m > 0.5:
+        answer = (
+            f"The broad dollar is strengthening ({pct_1m:+.2f}% over one month "
+            f"to {latest:.2f}); global financial conditions are tightening from the FX side."
+        )
+        why = "A rising broad dollar transmits tighter global liquidity and pressures dollar-funded borrowers."
+        risk = "Strong broad dollar tightens global financial conditions and stresses dollar-funded borrowers."
+        support = None
+    elif pct_1m < -0.5:
+        answer = (
+            f"The broad dollar is weakening ({pct_1m:+.2f}% over one month "
+            f"to {latest:.2f}); global financial conditions are easing from the FX side."
+        )
+        why = "A falling broad dollar loosens global liquidity and tends to support EM and risk assets."
+        risk = None
+        support = "Easing dollar pressure typically supports global risk assets and EM."
+    else:
+        answer = (
+            f"The broad dollar is roughly stable ({pct_1m:+.2f}% over one month "
+            f"at {latest:.2f}); dollar pressure is not adding to global conditions in either direction."
+        )
+        why = "A stable broad dollar describes a balanced FX channel for global liquidity."
+        risk = None
+        support = "Stable dollar is not amplifying global financial-condition pressure."
+
+    return {
+        "answer": answer,
+        "why": why,
+        "risk": risk,
+        "support": support,
+        "caveat": "Broad dollar uses Fed's nominal trade-weighted index; FX series can be stale around holidays.",
+        "freshness_status": "ok",
+    }
+
+
+def _derive_commodity_impulse(loaded: dict) -> dict:
+    """Read commodity_inflation_impulse and characterise its direction.
+
+    Positive impulse adds to headline inflation pressure; negative impulse
+    subtracts from it.
+    """
+    impulse = loaded.get("commodity_inflation_impulse")
+    if impulse is None:
+        return {
+            "answer": "Data not yet active for this section.",
+            "freshness_status": "unavailable",
+        }
+    obs = impulse.get("observations") or []
+    if not obs:
+        return {
+            "answer": "Commodity-impulse history partially loaded.",
+            "freshness_status": "stale",
+        }
+    latest_value = float(obs[-1].get("value", 0.0))
+    latest_percentile = float(obs[-1].get("percentile_252d", 50.0))
+
+    # The impulse is mapped so positive impulse score corresponds to inflation
+    # pressure; the derived series field returns positive when commodities are
+    # adding inflation pressure (per the upstream method note).
+    # Threshold of +/- 5 score units to filter noise
+    if latest_value > 5:
+        answer = (
+            f"Commodity prices are adding to inflation pressure (impulse {latest_value:+.1f}, "
+            f"{latest_percentile:.0f}th percentile of the past year)."
+        )
+        why = "A positive commodity impulse feeds headline inflation and can pressure rate-cut expectations."
+        risk = "Rising commodity prices add to headline inflation pressure and may pressure the Fed."
+        support = None
+    elif latest_value < -5:
+        answer = (
+            f"Commodity prices are subtracting from inflation pressure (impulse {latest_value:+.1f}, "
+            f"{latest_percentile:.0f}th percentile of the past year)."
+        )
+        why = "A negative commodity impulse eases headline inflation pressure and supports disinflation."
+        risk = None
+        support = "Easing commodity prices reduce inflation pressure and rate-cut risk."
+    else:
+        answer = (
+            f"Commodity prices are roughly neutral for inflation pressure (impulse {latest_value:+.1f}, "
+            f"{latest_percentile:.0f}th percentile of the past year)."
+        )
+        why = "A flat commodity impulse describes a balanced backdrop for headline inflation."
+        risk = None
+        support = "Neutral commodity pressure is not amplifying headline inflation in either direction."
+
+    return {
+        "answer": answer,
+        "why": why,
+        "risk": risk,
+        "support": support,
+        "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
+        "freshness_status": "ok",
+    }
+
+
+def _derive_growth_breadth(loaded: dict) -> dict:
+    """Read growth and labor series and compute a simple breadth score.
+
+    Counts how many of unemployment, payrolls, claims, CFNAI 3M average,
+    and industrial production are in their constructive zones.
+    """
+    series_keys = (
+        "unemployment_rate",
+        "nonfarm_payrolls",
+        "cfnai_3m_avg",
+        "industrial_production",
+        "initial_claims",
+    )
+    series_payloads: dict[str, Any] = {key: loaded.get(key) for key in series_keys}
+    if not any(series_payloads.values()):
+        return {
+            "answer": "Data not yet active for this section.",
+            "freshness_status": "unavailable",
+        }
+    # Need at least 3 of 5 series to compute a breadth read
+    available = [k for k, v in series_payloads.items() if v is not None]
+    if len(available) < 3:
+        return {
+            "answer": "Growth and labor history partially loaded; breadth read awaiting more inputs.",
+            "freshness_status": "stale",
+        }
+
+    firm_count = 0
+    eval_count = 0
+
+    # Unemployment rate: firm if 12m change is non-positive (jobless rate not rising)
+    ur = series_payloads.get("unemployment_rate")
+    if ur is not None:
+        ur_obs = ur.get("observations") or []
+        change_12m = _change_over_window(ur_obs, 12)
+        if change_12m is not None:
+            eval_count += 1
+            if change_12m <= 0:
+                firm_count += 1
+
+    # Payrolls: firm if latest month-over-month change is positive
+    nfp = series_payloads.get("nonfarm_payrolls")
+    if nfp is not None:
+        nfp_obs = nfp.get("observations") or []
+        nfp_change = _change_over_window(nfp_obs, 1)
+        if nfp_change is not None:
+            eval_count += 1
+            if nfp_change > 0:
+                firm_count += 1
+
+    # CFNAI 3M average: firm if latest value >= -0.7 (expansion)
+    cfnai = series_payloads.get("cfnai_3m_avg")
+    if cfnai is not None:
+        cfnai_obs = cfnai.get("observations") or []
+        if cfnai_obs:
+            try:
+                cfnai_val = float(cfnai_obs[-1].get("value", 0.0))
+                eval_count += 1
+                if cfnai_val >= -0.7:
+                    firm_count += 1
+            except (TypeError, ValueError):
+                pass
+
+    # Industrial production: firm if 3m change is non-negative
+    ip = series_payloads.get("industrial_production")
+    if ip is not None:
+        ip_obs = ip.get("observations") or []
+        ip_change = _change_over_window(ip_obs, 3)
+        if ip_change is not None:
+            eval_count += 1
+            if ip_change >= 0:
+                firm_count += 1
+
+    # Initial claims: firm if latest is below 350k (rough recession-risk floor)
+    claims = series_payloads.get("initial_claims")
+    if claims is not None:
+        claims_obs = claims.get("observations") or []
+        if claims_obs:
+            try:
+                claims_val = float(claims_obs[-1].get("value", 0.0))
+                eval_count += 1
+                if claims_val < 350.0:
+                    firm_count += 1
+            except (TypeError, ValueError):
+                pass
+
+    if eval_count == 0:
+        return {
+            "answer": "Growth and labor history partially loaded; breadth read awaiting more inputs.",
+            "freshness_status": "stale",
+        }
+
+    if firm_count >= max(4, eval_count - 1):
+        answer = (
+            f"Growth breadth is firm: {firm_count} of {eval_count} growth and labor inputs "
+            f"are in their constructive zones."
+        )
+        why = "Broad-based firmness across labor and production inputs describes a resilient cyclical backdrop."
+        risk = None
+        support = "Firm growth breadth supports cyclical risk assets."
+    elif firm_count <= max(1, eval_count - 4):
+        answer = (
+            f"Growth breadth is softening: only {firm_count} of {eval_count} growth and "
+            f"labor inputs are currently in constructive territory."
+        )
+        why = "Narrow growth breadth across labor and production inputs raises recession-risk attention."
+        risk = "Softening growth breadth raises recession risk."
+        support = None
+    else:
+        answer = (
+            f"Growth breadth is mixed: {firm_count} of {eval_count} growth and labor inputs "
+            f"are constructive while others have softened."
+        )
+        why = "Mixed growth breadth describes an economy with both expansionary and contractionary pockets."
+        risk = None
+        support = None
+
+    return {
+        "answer": answer,
+        "why": why,
+        "risk": risk,
+        "support": support,
+        "caveat": "Breadth uses heuristic thresholds; release timing varies by indicator and some inputs may lag.",
+        "freshness_status": "ok",
+    }
+
+
+def _derive_housing_pulse(loaded: dict) -> dict:
+    """Read housing_starts, building_permits, and mortgage_rate_30y to
+    characterise housing activity given mortgage-rate level.
+    """
+    starts = loaded.get("housing_starts")
+    permits = loaded.get("building_permits")
+    mortgage = loaded.get("mortgage_rate_30y")
+    if starts is None and permits is None and mortgage is None:
+        return {
+            "answer": "Data not yet active for this section.",
+            "freshness_status": "unavailable",
+        }
+    starts_obs = (starts or {}).get("observations") or []
+    permits_obs = (permits or {}).get("observations") or []
+    mortgage_obs = (mortgage or {}).get("observations") or []
+    if not starts_obs or not permits_obs or not mortgage_obs:
+        return {
+            "answer": "Housing activity history partially loaded; awaiting starts, permits, and mortgage rate context.",
+            "freshness_status": "stale",
+        }
+
+    starts_change_3m = _change_over_window(starts_obs, 3)
+    permits_change_3m = _change_over_window(permits_obs, 3)
+    if starts_change_3m is None or permits_change_3m is None:
+        return {
+            "answer": "Housing activity history partially loaded; awaiting starts, permits, and mortgage rate context.",
+            "freshness_status": "stale",
+        }
+    try:
+        mortgage_latest = float(mortgage_obs[-1].get("value", 0.0))
+    except (TypeError, ValueError):
+        return {
+            "answer": "Housing activity history partially loaded; awaiting starts, permits, and mortgage rate context.",
+            "freshness_status": "stale",
+        }
+
+    activity_up = starts_change_3m + permits_change_3m
+    elevated_rate = mortgage_latest >= 6.0
+
+    if activity_up > 0 and elevated_rate:
+        answer = (
+            f"Housing activity is resilient despite elevated rates: starts and permits are "
+            f"rising over three months with the 30Y mortgage at {mortgage_latest:.2f}%."
+        )
+        why = "Housing turnover is holding up despite the most rate-sensitive sector facing high financing costs."
+        risk = None
+        support = "Resilient housing activity despite elevated rates suggests demand backstop."
+    elif activity_up < 0 and elevated_rate:
+        answer = (
+            f"Housing activity is contracting at elevated rates: starts and permits are falling "
+            f"over three months with the 30Y mortgage at {mortgage_latest:.2f}%."
+        )
+        why = "Rate transmission is working through the most rate-sensitive sector of the economy."
+        risk = "Falling housing activity at elevated mortgage rates suggests rate transmission is working through the most rate-sensitive sector."
+        support = None
+    elif activity_up > 0:
+        answer = (
+            f"Housing activity is expanding with the 30Y mortgage at {mortgage_latest:.2f}%; "
+            f"starts and permits are rising over three months."
+        )
+        why = "Rising starts and permits at moderate rates describe a supportive housing pulse."
+        risk = None
+        support = "Expanding housing activity supports cyclical growth."
+    else:
+        answer = (
+            f"Housing activity is softening with the 30Y mortgage at {mortgage_latest:.2f}%; "
+            f"starts and permits are falling over three months."
+        )
+        why = "Falling starts and permits at moderate rates describe a softening housing pulse."
+        risk = "Slowing housing activity reduces residential construction's contribution to growth."
+        support = None
+
+    return {
+        "answer": answer,
+        "why": why,
+        "risk": risk,
+        "support": support,
+        "caveat": "Housing starts and permits are monthly; mortgage rate updates weekly. Series can move in opposite directions over short horizons.",
+        "freshness_status": "ok",
+    }
+
+
+def _derive_inflation_dispersion(loaded: dict) -> dict:
+    """Read CPI, core CPI, core PCE, and PPI to characterise inflation alignment.
+
+    Computes YoY changes from monthly index series and branches on whether
+    core and headline are moving in the same direction.
+    """
+    headline = loaded.get("headline_cpi")
+    core_cpi = loaded.get("core_cpi")
+    core_pce = loaded.get("core_pce")
+    ppi = loaded.get("ppi_final_demand")
+    if headline is None and core_cpi is None and core_pce is None and ppi is None:
+        return {
+            "answer": "Data not yet active for this section.",
+            "freshness_status": "unavailable",
+        }
+    headline_obs = (headline or {}).get("observations") or []
+    core_obs = (core_cpi or {}).get("observations") or []
+    if len(headline_obs) < 25 or len(core_obs) < 25:
+        return {
+            "answer": "Inflation history partially loaded; awaiting CPI and core CPI YoY context.",
+            "freshness_status": "stale",
+        }
+
+    headline_yoy_now = _yoy_pct_change(headline_obs)
+    headline_yoy_prior = _yoy_pct_change(headline_obs[:-1])
+    core_yoy_now = _yoy_pct_change(core_obs)
+    core_yoy_prior = _yoy_pct_change(core_obs[:-1])
+    if (
+        headline_yoy_now is None
+        or headline_yoy_prior is None
+        or core_yoy_now is None
+        or core_yoy_prior is None
+    ):
+        return {
+            "answer": "Inflation history partially loaded; awaiting CPI and core CPI YoY context.",
+            "freshness_status": "stale",
+        }
+
+    headline_dir = headline_yoy_now - headline_yoy_prior
+    core_dir = core_yoy_now - core_yoy_prior
+    # Threshold of 0.05 pp to filter near-zero noise
+    headline_rising = headline_dir > 0.05
+    headline_falling = headline_dir < -0.05
+    core_rising = core_dir > 0.05
+    core_falling = core_dir < -0.05
+
+    if headline_falling and core_falling:
+        answer = (
+            f"Core and headline inflation are aligned and disinflating "
+            f"(headline {headline_yoy_now:.1f}% YoY, core CPI {core_yoy_now:.1f}% YoY, both easing)."
+        )
+        why = "Aligned disinflation describes broad-based easing of price pressure."
+        risk = None
+        support = "Aligned disinflation supports rate-cut conditions."
+    elif headline_rising and core_rising:
+        answer = (
+            f"Core and headline inflation are aligned and rising "
+            f"(headline {headline_yoy_now:.1f}% YoY, core CPI {core_yoy_now:.1f}% YoY, both firming)."
+        )
+        why = "Aligned reacceleration in headline and core describes a broad rebuild of inflation pressure."
+        risk = "Headline and core re-accelerating together complicates Fed easing expectations."
+        support = None
+    elif headline_rising and core_falling:
+        answer = (
+            f"Headline and core inflation are diverging upward in headline (headline "
+            f"{headline_yoy_now:.1f}% YoY firming, core CPI {core_yoy_now:.1f}% YoY easing)."
+        )
+        why = "Divergence between headline and core may reflect food/energy passthrough rather than persistent pressure."
+        risk = "Headline and core diverging upward complicates the Fed's reaction function."
+        support = None
+    elif headline_falling and core_rising:
+        answer = (
+            f"Headline is easing while core is firming (headline {headline_yoy_now:.1f}% YoY, "
+            f"core CPI {core_yoy_now:.1f}% YoY rising)."
+        )
+        why = "Core firming despite headline easing describes sticky underlying inflation."
+        risk = "Sticky core inflation extends the policy-rate path even as headline cools."
+        support = None
+    else:
+        answer = (
+            f"Headline and core inflation are roughly stable "
+            f"(headline {headline_yoy_now:.1f}% YoY, core CPI {core_yoy_now:.1f}% YoY)."
+        )
+        why = "Stable headline and core describe a holding pattern for inflation."
+        risk = None
+        support = "Stable inflation backdrop is not currently amplifying policy uncertainty."
+
+    return {
+        "answer": answer,
+        "why": why,
+        "risk": risk,
+        "support": support,
+        "caveat": "YoY changes are computed from monthly index levels; release timing differs across CPI, PCE, and PPI.",
+        "freshness_status": "ok",
+    }
+
+
 def _derive_tactical_stress(loaded: dict) -> dict:
     """Read signal_priority.json and count the number of active warning signals.
 
@@ -531,6 +1132,63 @@ SECTION_CATALOG: dict[str, list[SectionTemplate]] = {
             "eyebrow": "Tactical stress",
             "question": "Which warnings are clustering on the short-term board today?",
             "derive": _derive_tactical_stress,
+        },
+    ],
+    # PR follow-up: FocusBlock placements on the remaining 7 channel tabs.
+    "liquidity": [
+        {
+            "id": "liquidity_funding",
+            "eyebrow": "Liquidity & funding",
+            "question": "Is net liquidity expanding or contracting, and which Fed components are driving it?",
+            "derive": _derive_liquidity_funding,
+        },
+    ],
+    "credit": [
+        {
+            "id": "credit_dispersion",
+            "eyebrow": "Credit dispersion",
+            "question": "Is the HY-IG spread widening (early credit stress) or tightening (risk-on)?",
+            "derive": _derive_credit_dispersion,
+        },
+    ],
+    "dollar_global": [
+        {
+            "id": "dollar_pressure",
+            "eyebrow": "Dollar pressure",
+            "question": "Is the broad dollar tightening or easing global financial conditions?",
+            "derive": _derive_dollar_pressure,
+        },
+    ],
+    "commodities": [
+        {
+            "id": "commodity_impulse",
+            "eyebrow": "Commodity impulse",
+            "question": "Are commodity prices adding to or subtracting from inflation pressure?",
+            "derive": _derive_commodity_impulse,
+        },
+    ],
+    "growth": [
+        {
+            "id": "growth_breadth",
+            "eyebrow": "Growth breadth",
+            "question": "Is broad-based growth firm, mixed, or softening across labor and production inputs?",
+            "derive": _derive_growth_breadth,
+        },
+    ],
+    "housing": [
+        {
+            "id": "housing_pulse",
+            "eyebrow": "Housing pulse",
+            "question": "Is housing activity expanding or contracting given current mortgage rates?",
+            "derive": _derive_housing_pulse,
+        },
+    ],
+    "inflation": [
+        {
+            "id": "inflation_dispersion",
+            "eyebrow": "Inflation dispersion",
+            "question": "Are core and headline inflation moving in the same direction or diverging?",
+            "derive": _derive_inflation_dispersion,
         },
     ],
 }
@@ -735,6 +1393,24 @@ def _load_data_bundle(derived: Any) -> dict[str, Any]:
     # NAAIM is a candidate source — gracefully absent.
     naaim_path = derived_path.parent / "candidates" / "naaim_exposure_candidate.json"
     _try_load(naaim_path, "naaim_exposure_candidate")
+
+    # PR follow-up: inputs for the 7 channel-tab FocusBlock placements.
+    _try_load(derived_path / "net_liquidity.json", "net_liquidity")
+    _try_load(derived_path / "hy_minus_ig_oas.json", "hy_minus_ig_oas")
+    _try_load(derived_path / "commodity_inflation_impulse.json", "commodity_inflation_impulse")
+    _try_load(series_path / "broad_dollar.json", "broad_dollar")
+    _try_load(series_path / "unemployment_rate.json", "unemployment_rate")
+    _try_load(series_path / "nonfarm_payrolls.json", "nonfarm_payrolls")
+    _try_load(series_path / "cfnai_3m_avg.json", "cfnai_3m_avg")
+    _try_load(series_path / "industrial_production.json", "industrial_production")
+    _try_load(series_path / "initial_claims.json", "initial_claims")
+    _try_load(series_path / "housing_starts.json", "housing_starts")
+    _try_load(series_path / "building_permits.json", "building_permits")
+    _try_load(series_path / "mortgage_rate_30y.json", "mortgage_rate_30y")
+    _try_load(series_path / "headline_cpi.json", "headline_cpi")
+    _try_load(series_path / "core_cpi.json", "core_cpi")
+    _try_load(series_path / "core_pce.json", "core_pce")
+    _try_load(series_path / "ppi_final_demand.json", "ppi_final_demand")
 
     return bundle
 
