@@ -15,10 +15,14 @@ afterEach(() => { document.body.removeChild(container); });
 
 async function flushLazy() {
   // React.lazy resolves via a dynamic import (microtask) and then renders the
-  // resolved component on the next act-flushed pass. Two short awaits inside
-  // act covers both the dynamic-import settle and the post-resolve re-render
-  // under any vitest worker load.
-  for (let i = 0; i < 5; i++) {
+  // resolved component on the next act-flushed pass. Tab bodies (post-5.3
+  // extraction) pull in ECharts modules and large dependency graphs, so the
+  // dynamic-import settle can take longer than a few microtasks. We loop a
+  // generous number of short awaits inside act so the resolved component has
+  // time to mount on any vitest worker load. The outer `<section data-testid>`
+  // renders synchronously after lazy resolution; the test only asserts the
+  // testid, not the data-loaded body, so this is sufficient.
+  for (let i = 0; i < 50; i++) {
     await act(async () => {
       await new Promise(resolve => setTimeout(resolve, 5));
     });
