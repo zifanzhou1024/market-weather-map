@@ -1,0 +1,121 @@
+// src/lib/i18n/en.ts
+export const en = {
+  nav: {
+    overview: "Overview",
+    shortTerm: "Short-Term",
+    longTerm: "Long-Term",
+    fragility: "Fragility",
+    channels: "Channels",
+    history: "History",
+    more: "More",
+    diff: "Diff",
+    calendar: "Calendar",
+    methodology: "Methodology",
+  },
+  chrome: {
+    mastheadTitle: "Market Weather Map",
+    eyebrow: "Delayed public data",
+    briefMode: "Brief",
+    detailMode: "Detail",
+    switchTo: "Switch to {{mode}} mode",
+    keyboardShortcuts: "Keyboard shortcuts",
+    asOfPrefix: "As of",
+    loading: "Loading...",
+    loadFailed: "Failed to load",
+    languageToggle: "Switch language",
+    english: "EN",
+    chinese: "中",
+  },
+  regime: {
+    riskOn: "Risk-On",
+    riskOff: "Risk-Off",
+    neutral: "Neutral",
+    stress: "Stress",
+    fragility: "Fragility",
+    regimeLabel: "Regime",
+  },
+  readings: {
+    stretched: "stretched",
+    neutral: "neutral",
+    tight: "tight",
+    wide: "wide",
+    rich: "rich",
+    cheap: "cheap",
+    rising: "rising",
+    falling: "falling",
+    flat: "flat",
+    normal: "normal",
+  },
+  dataQuality: {
+    title: "Data quality",
+    tierHigh: "High",
+    tierMedium: "Medium",
+    tierLow: "Low",
+    tierThin: "Thin",
+    coverage: "Coverage",
+    freshness: "Freshness",
+    model: "Model",
+    sourceMix: "Source mix",
+    aggregate: "Aggregate",
+  },
+  cadence: {
+    daily: "daily",
+    weekly: "weekly",
+    monthly: "monthly",
+    quarterly: "quarterly",
+  },
+  focus: {
+    // section.id → eyebrow + question (the static FocusBlock fields)
+    volatility: {
+      eyebrow: "Volatility complex",
+      question: "What is volatility telling us?",
+    },
+    rates: {
+      eyebrow: "Rates and curve",
+      question: "Where is the rates story?",
+    },
+    regime_map: {
+      eyebrow: "Regime map",
+      question: "What regime are we in?",
+    },
+    sentiment: {
+      eyebrow: "Sentiment and positioning",
+      question: "What is sentiment doing?",
+    },
+    tactical: {
+      eyebrow: "Tactical lens",
+      question: "What does the tactical setup look like?",
+    },
+  },
+  routes: {
+    overviewHeading: "Overview",
+    overviewSubtitle: "What matters today",
+    shortTermHeading: "Short-Term Market Reaction",
+    longTermHeading: "Long-Term Macro / Allocation Climate",
+    fragilityHeading: "Fragility & Shock Risk",
+    channelsHeading: "Cross-Asset Channels",
+    historyHeading: "Historical Regime Replay",
+    diffHeading: "Day-over-day Diff",
+    calendarHeading: "Event Calendar",
+    methodologyHeading: "Methodology",
+  },
+  shortcuts: {
+    goOverview: "Overview",
+    goShortTerm: "Short-Term",
+    goLongTerm: "Long-Term",
+    goFragility: "Fragility",
+    goChannels: "Channels",
+    goHistory: "History",
+    goDiff: "Diff",
+    goCalendar: "Calendar",
+    toggleMode: "Toggle Brief/Detail",
+    toggleLanguage: "Toggle language",
+    showHelp: "Show this help",
+  },
+} as const;
+
+// Widen the literal types from `as const` to plain strings so zh.ts (with
+// different string values) can satisfy the same shape via `const zh: En = {...}`.
+type Widen<T> = T extends string ? string : { [K in keyof T]: Widen<T[K]> };
+export type En = Widen<typeof en>;
+export type EnKeys = En;  // re-exported for the t() typing
