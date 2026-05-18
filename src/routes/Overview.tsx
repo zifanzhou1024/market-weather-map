@@ -30,6 +30,7 @@ import {
   loadSignalPriority
 } from "../lib/data";
 import { countSourceGaps, firstText, scoreLabel } from "../lib/horizon";
+import { useMode } from "../lib/mode";
 import type {
   CockpitFile,
   ConfidenceBreakdownData,
@@ -140,6 +141,7 @@ function fragilityPhrase(value: unknown) {
 export default function Overview() {
   const [data, setData] = useState<OverviewState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const mode = useMode();
 
   useEffect(() => {
     let active = true;
@@ -210,7 +212,7 @@ export default function Overview() {
       ) : null}
       {data ? (
         <>
-          <MarketCockpit data={data.cockpit} mode="detail" />
+          <MarketCockpit data={data.cockpit} mode={mode} />
           {(() => {
             const { scoreSummary } = data;
             const market = scoreSummary.scores.market_weather;

@@ -1,4 +1,8 @@
+import { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import PersistentRegimeHeader from "./PersistentRegimeHeader";
+import { loadCockpit } from "../lib/data";
+import type { CockpitFile } from "../lib/types";
 
 const navSections = [
   {
@@ -37,8 +41,25 @@ const navSections = [
 ];
 
 export default function AppLayout() {
+  const [cockpit, setCockpit] = useState<CockpitFile | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    loadCockpit()
+      .then((data) => {
+        if (alive) setCockpit(data);
+      })
+      .catch(() => {
+        // Leave cockpit null - header renders its loading placeholder gracefully.
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
     <div className="app">
+      <PersistentRegimeHeader cockpit={cockpit} />
       <header className="site-header">
         <div>
           <p className="eyebrow">Delayed public data</p>

@@ -1,5 +1,5 @@
 import type { CockpitCompositeScore } from "../lib/types";
-import type { Mode } from "./CockpitCell";
+import type { Mode } from "../lib/mode";
 import Sparkline from "./Sparkline";
 import PercentileBand from "./PercentileBand";
 
