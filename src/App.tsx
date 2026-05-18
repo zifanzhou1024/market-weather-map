@@ -1,15 +1,21 @@
+import { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
 import { ModeProvider } from "./lib/mode";
-import Calendar from "./routes/Calendar";
-import Channels from "./routes/Channels";
-import Diff from "./routes/Diff";
-import FragilityShockRisk from "./routes/FragilityShockRisk";
-import History from "./routes/History";
-import LongTermMacroClimate from "./routes/LongTermMacroClimate";
-import Methodology from "./routes/Methodology";
 import Overview from "./routes/Overview";
-import TacticalTradingWeather from "./routes/TacticalTradingWeather";
+
+// Lazy-loaded top-level routes. Suspense fallback lives inside AppLayout so the
+// header/nav shell stays mounted while only the route body shows the fallback.
+// Overview stays eagerly imported because it is the primary landing route and a
+// Suspense flash on first paint would harm perceived performance.
+const TacticalTradingWeather = lazy(() => import("./routes/TacticalTradingWeather"));
+const LongTermMacroClimate = lazy(() => import("./routes/LongTermMacroClimate"));
+const FragilityShockRisk = lazy(() => import("./routes/FragilityShockRisk"));
+const Channels = lazy(() => import("./routes/Channels"));
+const History = lazy(() => import("./routes/History"));
+const Calendar = lazy(() => import("./routes/Calendar"));
+const Methodology = lazy(() => import("./routes/Methodology"));
+const Diff = lazy(() => import("./routes/Diff"));
 
 export default function App() {
   return (

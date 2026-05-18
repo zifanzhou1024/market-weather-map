@@ -9,6 +9,19 @@ import App from "./App";
 
 let root: Root | undefined;
 
+// Top-level routes are React.lazy() in App.tsx — the destination component
+// resolves via a dynamic import (microtask) plus an act-flushed render pass.
+// Mirrors the 50×5ms = 250ms budget used by Channels.test.tsx and
+// History.test.tsx so slow CI workers and ECharts-heavy chunks still have
+// time to settle before the test asserts.
+async function flushLazyRoutes() {
+  for (let i = 0; i < 50; i += 1) {
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    });
+  }
+}
+
 function renderAt(path: string) {
   const container = document.createElement("div");
   document.body.appendChild(container);
@@ -34,12 +47,19 @@ afterEach(() => {
 });
 
 describe("App routing", () => {
-  it("renders the shared layout when /credit redirects into the Channels shell", () => {
+  it("renders the shared layout when /credit redirects into the Channels shell", async () => {
     // PR5 Task 5.4: /credit redirects to /channels?tab=credit. The synchronous
     // render path only resolves the shell (the channel-tab body is lazy and
     // resolves after Suspense). We verify layout chrome + the Channels page
     // heading + that the Credit tab button is the active tab.
+    //
+    // Top-level routes are now lazy in App.tsx, so Channels does not paint
+    // until its dynamic import settles. Flush the lazy budget after the
+    // redirect before asserting on the Channels shell + NavLink active state
+    // — the NavLink active class is recomputed on the same pass as the lazy
+    // resolution, so the assertion has to follow flushLazyRoutes().
     const container = renderAt("/credit");
+    await flushLazyRoutes();
 
     expect(container.querySelector("h1")?.textContent).toBe("Market Weather Map");
     expect(container.querySelector(".eyebrow")?.textContent).toBe("Delayed public data");

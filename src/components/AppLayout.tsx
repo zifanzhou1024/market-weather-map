@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import PersistentRegimeHeader from "./PersistentRegimeHeader";
+import RouteLoading from "./RouteLoading";
 import { loadCockpit } from "../lib/data";
 import type { CockpitFile } from "../lib/types";
 
@@ -79,7 +80,9 @@ export default function AppLayout() {
           </details>
         </nav>
       </header>
-      <Outlet />
+      <Suspense fallback={<RouteLoading />}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 }

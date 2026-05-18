@@ -107,7 +107,18 @@ function LocationObserver({ onPathChange }: { onPathChange: (pathname: string) =
 // RegimeTab via lazy()), so we match that budget here. Early return when the
 // expected content lands keeps the fast path cheap; the budget only matters on
 // slow CI workers or when the assertion is going to fail anyway.
-async function waitForContent(container: HTMLElement, text: string) {
+//
+// Optional `scope` selector — top-level routes are now React.lazy() (App.tsx),
+// so during route transitions the prior route's body can briefly remain mounted
+// while the next route's chunk resolves. Without scoping, generic search terms
+// like "Volatility" or "Channels" may match the previous route's lingering
+// content. Pass a selector (e.g. "h2") to require the text appear inside that
+// element before resolving.
+async function waitForContent(
+  container: HTMLElement,
+  text: string,
+  scope?: string
+) {
   for (let attempt = 0; attempt < 60; attempt += 1) {
     await act(async () => {
       // First few attempts stay at 0ms so synchronous-content tests don't pay
@@ -116,10 +127,19 @@ async function waitForContent(container: HTMLElement, text: string) {
       const delay = attempt < 10 ? 0 : 5;
       await new Promise((resolve) => setTimeout(resolve, delay));
     });
-    if (container.textContent?.includes(text)) return;
+    if (scope) {
+      const scoped = container.querySelector(scope);
+      if (scoped?.textContent?.includes(text)) return;
+    } else if (container.textContent?.includes(text)) {
+      return;
+    }
   }
 
-  expect(container.textContent).toContain(text);
+  if (scope) {
+    expect(container.querySelector(scope)?.textContent ?? "").toContain(text);
+  } else {
+    expect(container.textContent).toContain(text);
+  }
 }
 
 function h3Texts(container: HTMLElement) {
@@ -2022,12 +2042,19 @@ describe("data-backed routes", () => {
       });
 
       if (expectation.kind === "standalone") {
-        await waitForContent(container, expectation.heading);
+        // Top-level routes are now lazy; pass an h2 scope so the wait only
+        // resolves once the destination route's heading has actually mounted
+        // (otherwise the prior route's h2 satisfies a body-wide match during
+        // the Suspense transition).
+        await waitForContent(container, expectation.heading, "h2");
         expect(container.querySelector("h2")?.textContent).toBe(expectation.heading);
       } else {
         // Channels pill lands on the shared shell; the default-selected tab
         // (volatility) is asserted via aria-current on the .channel-tabs strip.
-        await waitForContent(container, expectation.tabLabel);
+        // Channels is lazy too — wait until the shell h2 ("Channels") has
+        // rendered, not just the body-wide "Volatility" string which can match
+        // a prior route still mounted during the lazy transition.
+        await waitForContent(container, "Channels", "h2");
         expect(container.querySelector("h2")?.textContent).toBe("Channels");
         const activeTab = container.querySelector('.channel-tabs button[aria-current="page"]');
         expect(activeTab, `No active tab after clicking ${expectation.label}`).toBeTruthy();
@@ -3272,6 +3299,9 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
 
+    // Methodology is now a React.lazy() route; wait for the page heading to
+    // mount before asserting on the inner h3 panels.
+    await waitForContent(container, "How the map works", "h2");
     expect(h3Texts(container)).toContain("Market Weather Score");
     expect(h3Texts(container)).toContain("Macro Climate Score");
     expect(h3Texts(container)).toContain("Fragility Score");

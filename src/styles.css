@@ -3390,6 +3390,13 @@ code {
   color: var(--muted);
 }
 
+.route-loading {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 /* ── Diff route ─────────────────────────────────────────── */
 
 .diff { padding-bottom: 32px; }
