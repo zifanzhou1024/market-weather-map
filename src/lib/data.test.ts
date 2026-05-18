@@ -463,6 +463,7 @@ test("type contracts support phase 3 source governance and score summary", () =>
       model_confidence: 0.75,
       source_confidence: 0.68,
       overall_confidence: 0.73,
+      tier: "medium",
       reasons: ["Sentiment is limited to CFTC positioning."]
     }
   };

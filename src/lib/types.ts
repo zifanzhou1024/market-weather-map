@@ -150,7 +150,7 @@ export interface ScoreBlock {
     | "Elevated Fragility"
     | "High Fragility";
   confidence: number;
-  confidence_breakdown?: Omit<ConfidenceBreakdownData, "reasons">;
+  confidence_breakdown?: Omit<ConfidenceBreakdownData, "reasons" | "tier">;
   confidence_reasons: string[];
   bucket_scores: Record<string, number>;
   bucket_weights: Record<string, number>;
@@ -160,12 +160,20 @@ export interface ScoreBlock {
   missing_or_stale_notes: string[];
 }
 
+export type DataQualityTier = "high" | "medium" | "low" | "thin";
+
 export interface ConfidenceBreakdownData {
   coverage_confidence: number;
   freshness_confidence: number;
   model_confidence: number;
   source_confidence: number;
   overall_confidence: number;
+  /**
+   * Categorical tier mapped from overall_confidence. Required at the
+   * top-level `data_quality` block; absent on per-score `confidence_breakdown`
+   * (which is derived via `Omit<..., "reasons" | "tier">`).
+   */
+  tier: DataQualityTier;
   reasons: string[];
 }
 

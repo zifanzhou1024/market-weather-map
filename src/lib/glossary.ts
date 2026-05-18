@@ -80,6 +80,18 @@ export const GLOSSARY: Record<string, string> = {
   weekly: "Series updates once per week.",
   monthly: "Series updates once per month.",
   quarterly: "Series updates once per quarter.",
+
+  // Data quality banner — categorical tier pill + expand details.
+  "data quality":
+    "How much the dashboard trusts today's read - combines coverage, freshness, model breadth, and source gating.",
+  coverage:
+    "Fraction of expected market and macro series successfully fetched, importance-weighted.",
+  freshness:
+    "How recent the active series are vs their expected release cadence, on a linear ramp.",
+  model:
+    "Fraction of score-model buckets that received at least one active signal today.",
+  "confidence aggregate":
+    "Geometric mean of coverage, freshness, model, and source - overall trust in today's read.",
 };
 
 /**

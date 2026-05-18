@@ -1360,6 +1360,7 @@ const scoreSummary: ScoreSummaryFile = {
     model_confidence: 0.75,
     source_confidence: 0.68,
     overall_confidence: 0.92,
+    tier: "high",
     reasons: ["Treasury/bond volatility source is not active."]
   }
 };

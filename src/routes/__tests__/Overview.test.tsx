@@ -139,6 +139,7 @@ function minimalScoreSummary() {
       model_confidence: 0.9,
       source_confidence: 0.9,
       overall_confidence: 0.9,
+      tier: "high",
       reasons: []
     }
   };
