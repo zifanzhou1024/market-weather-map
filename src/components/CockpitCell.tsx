@@ -41,6 +41,10 @@ interface Props {
 
 function formatDelta(d: number | null, decimals: number): string | null {
   if (d === null) return null;
+  // Hide near-zero deltas. Without this guard, values like -0.001 round to "-0"
+  // at decimals=0 and read as misleading negative signals to the eye.
+  const threshold = Math.pow(10, -decimals) / 2;
+  if (Math.abs(d) < threshold) return null;
   const prefix = d >= 0 ? "+" : "";
   return `${prefix}${d.toFixed(decimals)}`;
 }

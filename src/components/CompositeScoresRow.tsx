@@ -37,6 +37,10 @@ interface Props {
 
 function formatDelta(d: number | null): string | null {
   if (d === null) return null;
+  // Hide near-zero deltas — keeps an effectively-zero change from rendering as
+  // a misleading signed "-0.0" / "+0.0" badge. 0.05 is the round-half-up
+  // threshold for the toFixed(1) below.
+  if (Math.abs(d) < 0.05) return null;
   const prefix = d >= 0 ? "+" : "";
   return `${prefix}${d.toFixed(1)}`;
 }
