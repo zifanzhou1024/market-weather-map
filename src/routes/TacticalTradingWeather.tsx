@@ -33,6 +33,7 @@ import {
   loadSignalPriority,
   loadVolatilityDashboard
 } from "../lib/data";
+import { useT } from "../lib/i18n";
 import { useMode } from "../lib/mode";
 import type {
   CockpitFile,
@@ -141,6 +142,7 @@ function findDerived(derived: DerivedSeriesFile[], seriesId: string) {
 }
 
 export default function TacticalTradingWeather() {
+  const { t } = useT();
   const mode = useMode();
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -207,9 +209,9 @@ export default function TacticalTradingWeather() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow">Tactical Trading Weather</p>
-        <h2>Short-Term Market Reaction</h2>
-        <p>Current regime, volatility curve, credit, dollar, real-yield, and liquidity inputs.</p>
+        <p className="eyebrow" lang="en">Tactical Trading Weather</p>
+        <h2>{t("routes.shortTermHeading")}</h2>
+        <p lang="en">Current regime, volatility curve, credit, dollar, real-yield, and liquidity inputs.</p>
       </section>
       {error ? (
         <p className="data-error" role="alert">
@@ -256,6 +258,7 @@ export default function TacticalTradingWeather() {
             return section ? (
               <FocusBlock
                 variant="section"
+                sectionId={section.id}
                 eyebrow={section.eyebrow}
                 question={section.question}
                 answer={section.answer}

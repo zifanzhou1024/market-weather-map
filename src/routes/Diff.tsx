@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import FreshnessPill from "../components/FreshnessPill";
 import GlossaryTerm from "../components/GlossaryTerm";
 import { loadDiff } from "../lib/data";
+import { useT } from "../lib/i18n";
 import { useMode, type Mode } from "../lib/mode";
 import type { DiffFile, DiffRow, DiffWindowKey } from "../lib/types";
 
@@ -46,6 +47,7 @@ function formatDeltaPct(d: number | null): string {
 }
 
 export default function Diff() {
+  const { t } = useT();
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = useMode();
   const rawWindow = searchParams.get("window");
@@ -97,9 +99,9 @@ export default function Diff() {
   return (
     <main className="page-shell diff">
       <section className="page-heading">
-        <p className="eyebrow">What flipped</p>
-        <h2>Diff</h2>
-        <p>
+        <p className="eyebrow" lang="en">What flipped</p>
+        <h2>{t("routes.diffHeading")}</h2>
+        <p lang="en">
           Value-level changes across the cockpit signals over the selected
           window. Composite scores first; vital signs sorted by absolute change.
         </p>

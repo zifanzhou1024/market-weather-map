@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import RouteDataFooter from "../components/RouteDataFooter";
 import { loadMacroCalendar } from "../lib/data";
+import { useT } from "../lib/i18n";
 import type { MacroCalendarEvent, MacroCalendarFile, MacroEventImportance, MacroEventStatus } from "../lib/types";
 
 const importanceGroups: Array<{ key: MacroEventImportance; label: string }> = [
@@ -33,6 +34,7 @@ function formatWhen(event: MacroCalendarEvent) {
 }
 
 export default function Calendar() {
+  const { t } = useT();
   const [data, setData] = useState<MacroCalendarFile | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,9 +75,9 @@ export default function Calendar() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow">Event risk</p>
-        <h2>Macro Calendar</h2>
-        <p>Descriptive release and policy-event context from official public source pages.</p>
+        <p className="eyebrow" lang="en">Event risk</p>
+        <h2>{t("routes.calendarHeading")}</h2>
+        <p lang="en">Descriptive release and policy-event context from official public source pages.</p>
       </section>
       {error ? (
         <p className="data-error" role="alert">

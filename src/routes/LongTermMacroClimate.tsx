@@ -23,6 +23,7 @@ import {
   loadRegimeSnapshot,
   loadScoreSummary
 } from "../lib/data";
+import { useT } from "../lib/i18n";
 import { useMode } from "../lib/mode";
 import type {
   CockpitFile,
@@ -183,6 +184,7 @@ function netLiquidityCatalogEntry(series: DerivedSeriesFile): SeriesCatalogEntry
 }
 
 export default function LongTermMacroClimate() {
+  const { t } = useT();
   const mode = useMode();
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -236,9 +238,9 @@ export default function LongTermMacroClimate() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow">Strategic</p>
-        <h2>Long-Term Macro / Allocation Climate</h2>
-        <p>Macro Climate score, strategic bucket context, and yield-decomposition history.</p>
+        <p className="eyebrow" lang="en">Strategic</p>
+        <h2>{t("routes.longTermHeading")}</h2>
+        <p lang="en">Macro Climate score, strategic bucket context, and yield-decomposition history.</p>
       </section>
       {error ? (
         <p className="data-error" role="alert">

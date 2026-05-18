@@ -67,25 +67,53 @@ export const zh: En = {
     quarterly: "季频",
   },
   focus: {
-    volatility: {
+    volatility_complex: {
       eyebrow: "波动率综合",
       question: "波动率在告诉我们什么?",
     },
-    rates: {
+    rates_pressure: {
       eyebrow: "利率与曲线",
       question: "利率叙事在哪里?",
     },
-    regime_map: {
-      eyebrow: "市场状态图",
+    regime_drivers: {
+      eyebrow: "市场状态驱动",
       question: "我们处于什么市场状态?",
     },
-    sentiment: {
+    positioning_vs_candidate_sentiment: {
       eyebrow: "情绪与持仓",
       question: "情绪在做什么?",
     },
-    tactical: {
+    tactical_stress_board: {
       eyebrow: "战术视角",
       question: "战术格局如何?",
+    },
+    liquidity_funding: {
+      eyebrow: "流动性与资金面",
+      question: "流动性环境如何?",
+    },
+    credit_dispersion: {
+      eyebrow: "信用分散度",
+      question: "信用利差在说什么?",
+    },
+    dollar_pressure: {
+      eyebrow: "美元压力",
+      question: "美元在做什么?",
+    },
+    commodity_impulse: {
+      eyebrow: "大宗商品脉冲",
+      question: "大宗商品通胀脉冲如何?",
+    },
+    growth_breadth: {
+      eyebrow: "增长广度",
+      question: "增长广度如何?",
+    },
+    housing_pulse: {
+      eyebrow: "房地产脉冲",
+      question: "房地产周期如何?",
+    },
+    inflation_dispersion: {
+      eyebrow: "通胀分散度",
+      question: "通胀分散度在告诉我们什么?",
     },
   },
   routes: {
@@ -94,11 +122,11 @@ export const zh: En = {
     shortTermHeading: "短期市场反应",
     longTermHeading: "长期宏观 / 配置环境",
     fragilityHeading: "脆弱度与冲击风险",
-    channelsHeading: "跨资产传导渠道",
-    historyHeading: "历史市场状态回放",
-    diffHeading: "每日差异对比",
-    calendarHeading: "事件日历",
-    methodologyHeading: "方法论",
+    channelsHeading: "渠道",
+    historyHeading: "历史",
+    diffHeading: "对比",
+    calendarHeading: "宏观日历",
+    methodologyHeading: "本仪表盘工作原理",
   },
   shortcuts: {
     groupNavigation: "导航",

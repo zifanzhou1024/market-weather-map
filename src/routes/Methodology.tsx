@@ -1,12 +1,14 @@
 import RouteDataFooter from "../components/RouteDataFooter";
+import { useT } from "../lib/i18n";
 
 export default function Methodology() {
+  const { t } = useT();
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow">Methodology</p>
-        <h2>How the map works</h2>
-        <p>This static site explains market regimes. It does not provide financial advice.</p>
+        <p className="eyebrow" lang="en">Methodology</p>
+        <h2>{t("routes.methodologyHeading")}</h2>
+        <p lang="en">This static site explains market regimes. It does not provide financial advice.</p>
       </section>
       <div className="methodology-grid">
         <section className="panel">

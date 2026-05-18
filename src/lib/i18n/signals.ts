@@ -56,4 +56,11 @@ export const COCKPIT_ID_TO_SIGNAL_KEY: Record<string, string> = {
   labor_claims: "initialClaims",  // legacy alias
   nonfarm_payrolls: "nonfarmPayrolls",
   payrolls: "nonfarmPayrolls",  // legacy alias
+  breakeven_10y: "breakeven10y",
+  us10y: "treasury10y",
+  us_10y: "treasury10y",  // safety alias
+  us2y: "treasury2y",
+  us_2y: "treasury2y",
+  sp500_positioning: "sp500LevMoney",
+  sp500_lev_money: "sp500LevMoney",
 };

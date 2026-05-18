@@ -65,26 +65,57 @@ export const en = {
     quarterly: "quarterly",
   },
   focus: {
-    // section.id → eyebrow + question (the static FocusBlock fields)
-    volatility: {
+    // section.id → eyebrow + question (the static FocusBlock fields).
+    // Keys mirror the SectionId union in src/lib/types.ts. When a key is
+    // absent or t() returns the bare key, FocusBlock falls back to the
+    // section.eyebrow / section.question from public/data JSON.
+    volatility_complex: {
       eyebrow: "Volatility complex",
       question: "What is volatility telling us?",
     },
-    rates: {
+    rates_pressure: {
       eyebrow: "Rates and curve",
       question: "Where is the rates story?",
     },
-    regime_map: {
-      eyebrow: "Regime map",
+    regime_drivers: {
+      eyebrow: "Regime drivers",
       question: "What regime are we in?",
     },
-    sentiment: {
+    positioning_vs_candidate_sentiment: {
       eyebrow: "Sentiment and positioning",
       question: "What is sentiment doing?",
     },
-    tactical: {
+    tactical_stress_board: {
       eyebrow: "Tactical lens",
       question: "What does the tactical setup look like?",
+    },
+    liquidity_funding: {
+      eyebrow: "Liquidity and funding",
+      question: "What is the liquidity backdrop?",
+    },
+    credit_dispersion: {
+      eyebrow: "Credit dispersion",
+      question: "What are credit spreads saying?",
+    },
+    dollar_pressure: {
+      eyebrow: "Dollar pressure",
+      question: "What is the dollar doing?",
+    },
+    commodity_impulse: {
+      eyebrow: "Commodity impulse",
+      question: "What is the commodity inflation impulse?",
+    },
+    growth_breadth: {
+      eyebrow: "Growth breadth",
+      question: "What does growth breadth show?",
+    },
+    housing_pulse: {
+      eyebrow: "Housing pulse",
+      question: "What does the housing cycle show?",
+    },
+    inflation_dispersion: {
+      eyebrow: "Inflation dispersion",
+      question: "What is inflation dispersion telling us?",
     },
   },
   routes: {
@@ -92,12 +123,12 @@ export const en = {
     overviewSubtitle: "What matters today",
     shortTermHeading: "Short-Term Market Reaction",
     longTermHeading: "Long-Term Macro / Allocation Climate",
-    fragilityHeading: "Fragility & Shock Risk",
-    channelsHeading: "Cross-Asset Channels",
-    historyHeading: "Historical Regime Replay",
-    diffHeading: "Day-over-day Diff",
-    calendarHeading: "Event Calendar",
-    methodologyHeading: "Methodology",
+    fragilityHeading: "Fragility / Shock Risk",
+    channelsHeading: "Channels",
+    historyHeading: "History",
+    diffHeading: "Diff",
+    calendarHeading: "Macro Calendar",
+    methodologyHeading: "How the map works",
   },
   shortcuts: {
     groupNavigation: "Navigation",
