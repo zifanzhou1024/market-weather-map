@@ -60,6 +60,7 @@ REQUIRED_GENERATED_FILES = [
     data_dir() / "derived" / "volatility_dashboard.json",
     data_dir() / "derived" / "rates_dashboard.json",
     data_dir() / "derived" / "regime_dashboard.json",
+    data_dir() / "derived" / "diff.json",
     data_dir() / "status" / "data_status.json",
 ]
 ROOT_STATUSES = {"ok", "stale", "partial", "failed"}
@@ -1358,6 +1359,117 @@ def check_cockpit_schema(path: Path) -> None:
         assert len(cell["sparkline_90d"]) <= 90, "sparkline_90d too long"
 
 
+# ----- /diff route schema -------------------------------------------------
+
+DIFF_REQUIRED_TOP_KEYS = {
+    "generated_at_utc",
+    "date",
+    "method_version",
+    "composite_scores",
+    "vital_signs",
+}
+DIFF_COMPOSITE_ORDER = ("market_weather", "macro_climate", "fragility")
+DIFF_ROW_REQUIRED_KEYS = {
+    "id",
+    "label",
+    "direction",
+    "primary_unit",
+    "primary_decimals",
+    "current_value",
+    "current_date",
+    "windows",
+    "freshness_status",
+}
+DIFF_WINDOW_KEYS = {"1d", "7d", "30d"}
+DIFF_WINDOW_ENTRY_KEYS = {"value", "date", "delta", "delta_pct"}
+DIFF_DIRECTIONS = {"risk", "support", "neutral"}
+DIFF_FRESHNESS_VALUES = {"ok", "stale", "unavailable"}
+
+
+def _validate_diff_row(row: Any, *, context: str) -> None:
+    if not isinstance(row, dict):
+        raise ValueError(f"diff.json {context} must be an object")
+    missing = DIFF_ROW_REQUIRED_KEYS - set(row.keys())
+    if missing:
+        raise ValueError(f"diff.json {context} missing keys: {sorted(missing)}")
+    if row["direction"] not in DIFF_DIRECTIONS:
+        raise ValueError(
+            f"diff.json {context}.direction must be one of {sorted(DIFF_DIRECTIONS)}; "
+            f"got {row['direction']!r}"
+        )
+    if row["freshness_status"] not in DIFF_FRESHNESS_VALUES:
+        raise ValueError(
+            f"diff.json {context}.freshness_status must be one of "
+            f"{sorted(DIFF_FRESHNESS_VALUES)}; got {row['freshness_status']!r}"
+        )
+    windows = row["windows"]
+    if not isinstance(windows, dict):
+        raise ValueError(f"diff.json {context}.windows must be an object")
+    if set(windows.keys()) != DIFF_WINDOW_KEYS:
+        raise ValueError(
+            f"diff.json {context}.windows keys must be exactly "
+            f"{sorted(DIFF_WINDOW_KEYS)}; got {sorted(windows.keys())}"
+        )
+    for window_key, entry in windows.items():
+        if not isinstance(entry, dict):
+            raise ValueError(
+                f"diff.json {context}.windows.{window_key} must be an object"
+            )
+        missing_window = DIFF_WINDOW_ENTRY_KEYS - set(entry.keys())
+        if missing_window:
+            raise ValueError(
+                f"diff.json {context}.windows.{window_key} missing keys: "
+                f"{sorted(missing_window)}"
+            )
+
+
+def check_diff_schema(path: Path) -> None:
+    """Validate ``public/data/derived/diff.json`` shape.
+
+    Pinned invariants:
+      * top-level keys: ``generated_at_utc``, ``method_version``,
+        ``composite_scores``, ``vital_signs``.
+      * ``composite_scores`` has exactly 3 entries in the fixed order
+        ``market_weather`` / ``macro_climate`` / ``fragility``.
+      * Each row carries the required value-level keys.
+      * Each ``windows`` object has exactly the keys ``"1d"``, ``"7d"``,
+        ``"30d"``, and each window entry has ``value`` / ``date`` /
+        ``delta`` / ``delta_pct`` (any of which may be ``None``).
+    """
+    data = json.loads(path.read_text())
+    if not isinstance(data, dict):
+        raise ValueError(f"{path} must be an object")
+    missing = DIFF_REQUIRED_TOP_KEYS - set(data.keys())
+    if missing:
+        raise ValueError(
+            f"diff.json missing top-level keys: {sorted(missing)}"
+        )
+
+    composite = data["composite_scores"]
+    if not isinstance(composite, list):
+        raise ValueError("diff.json composite_scores must be a list")
+    if len(composite) != 3:
+        raise ValueError(
+            f"diff.json composite_scores must have 3 entries, got {len(composite)}"
+        )
+    ids = tuple(row.get("id") for row in composite)
+    if ids != DIFF_COMPOSITE_ORDER:
+        raise ValueError(
+            f"diff.json composite_scores order must be {DIFF_COMPOSITE_ORDER}; "
+            f"got {ids}"
+        )
+    for idx, row in enumerate(composite):
+        _validate_diff_row(row, context=f"composite_scores[{idx}]")
+
+    vital = data["vital_signs"]
+    if not isinstance(vital, list):
+        raise ValueError("diff.json vital_signs must be a list")
+    if not vital:
+        raise ValueError("diff.json vital_signs must be non-empty")
+    for idx, row in enumerate(vital):
+        _validate_diff_row(row, context=f"vital_signs[{idx}]")
+
+
 def main() -> None:
     for entry in available_catalog_entries():
         validate_series_file(str(entry["id"]))
@@ -1377,6 +1489,7 @@ def main() -> None:
     check_access_status_enum()
     check_section_insight_schema()
     check_cockpit_schema(data_dir() / "derived" / "cockpit.json")
+    check_diff_schema(data_dir() / "derived" / "diff.json")
     run_candidate_isolation()
     validate_vix_term_candidate_file()
     validate_vix_term_metrics_candidate_file()
