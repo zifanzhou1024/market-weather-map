@@ -4,17 +4,31 @@ import { loadMacroCalendar } from "../lib/data";
 import { useT } from "../lib/i18n";
 import type { MacroCalendarEvent, MacroCalendarFile, MacroEventImportance, MacroEventStatus } from "../lib/types";
 
-const importanceGroups: Array<{ key: MacroEventImportance; label: string }> = [
-  { key: "high", label: "High" },
-  { key: "medium", label: "Medium" },
-  { key: "low", label: "Low" }
-];
-
-const statusLabels: Record<MacroEventStatus, string> = {
-  estimated: "Estimated",
-  scheduled: "Scheduled",
-  source_link: "Source link"
+// Importance keys map onto the i18n labels rendered in the section header,
+// the empty-state copy, and the per-event "Importance" dd.
+const IMPORTANCE_LABEL_KEYS: Record<MacroEventImportance, string> = {
+  high: "calendar.impactHigh",
+  medium: "calendar.impactMedium",
+  low: "calendar.impactLow"
 };
+
+const IMPORTANCE_EMPTY_KEYS: Record<MacroEventImportance, string> = {
+  high: "calendar.emptyHigh",
+  medium: "calendar.emptyMedium",
+  low: "calendar.emptyLow"
+};
+
+const STATUS_LABEL_KEYS: Record<MacroEventStatus, string> = {
+  estimated: "calendar.statusEstimated",
+  scheduled: "calendar.statusScheduled",
+  source_link: "calendar.statusSourceLink"
+};
+
+const IMPORTANCE_GROUP_KEYS: readonly MacroEventImportance[] = [
+  "high",
+  "medium",
+  "low"
+];
 
 function isMacroEventImportance(value: unknown): value is MacroEventImportance {
   return value === "high" || value === "medium" || value === "low";
@@ -86,17 +100,18 @@ export default function Calendar() {
       ) : null}
       {data ? (
         <div className="route-stack">
-          {importanceGroups.map((group) => {
-            const events = eventsByImportance[group.key];
+          {IMPORTANCE_GROUP_KEYS.map((groupKey) => {
+            const events = eventsByImportance[groupKey];
+            const groupLabel = t(IMPORTANCE_LABEL_KEYS[groupKey]);
 
             return (
-              <section className="panel" key={group.key}>
+              <section className="panel" key={groupKey}>
                 <div className="section-header">
                   <div>
-                    <p className="eyebrow">Importance</p>
-                    <h3>{group.label}</h3>
+                    <p className="eyebrow">{t("calendar.importanceEyebrow")}</p>
+                    <h3>{groupLabel}</h3>
                   </div>
-                  <p>{events.length} events</p>
+                  <p>{events.length} {t("calendar.eventsCountSuffix")}</p>
                 </div>
                 {events.length > 0 ? (
                   <div className="calendar-list">
@@ -104,31 +119,32 @@ export default function Calendar() {
                       <article className="calendar-event" key={event.id}>
                         <div className="calendar-event__summary">
                           <div>
-                            <p className="metric-source">{event.source}</p>
-                            <h4>{event.title}</h4>
+                            <p className="metric-source" lang="en">{event.source}</p>
+                            <h4 lang="en">{event.title}</h4>
                           </div>
-                          <span className="status-pill">{statusLabels[event.status]}</span>
+                          <span className="status-pill">{t(STATUS_LABEL_KEYS[event.status])}</span>
                         </div>
-                        <p>{event.notes}</p>
+                        <p lang="en">{event.notes}</p>
                         <dl>
                           <div>
-                            <dt>Category</dt>
-                            <dd>{event.category}</dd>
+                            <dt>{t("calendar.catLabel")}</dt>
+                            <dd lang="en">{event.category}</dd>
                           </div>
                           <div>
-                            <dt>When</dt>
+                            <dt>{t("calendar.whenLabel")}</dt>
                             <dd>{formatWhen(event)}</dd>
                           </div>
                           <div>
-                            <dt>Importance</dt>
-                            <dd>{group.label}</dd>
+                            <dt>{t("calendar.importanceLabel")}</dt>
+                            <dd>{groupLabel}</dd>
                           </div>
                           <div>
-                            <dt>Source</dt>
+                            <dt>{t("calendar.sourceLabel")}</dt>
                             <dd>
                               <a
                                 aria-label={`Source calendar for ${event.title} (${event.source})`}
                                 href={event.source_url}
+                                lang="en"
                               >
                                 {event.source}
                               </a>
@@ -139,7 +155,7 @@ export default function Calendar() {
                     ))}
                   </div>
                 ) : (
-                  <p>No {group.label.toLowerCase()} importance events in this file.</p>
+                  <p>{t(IMPORTANCE_EMPTY_KEYS[groupKey])}</p>
                 )}
               </section>
             );

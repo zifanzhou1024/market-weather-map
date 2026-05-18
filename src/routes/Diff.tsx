@@ -3,17 +3,26 @@ import { useSearchParams } from "react-router-dom";
 import FreshnessPill from "../components/FreshnessPill";
 import GlossaryTerm from "../components/GlossaryTerm";
 import { loadDiff } from "../lib/data";
-import { useT } from "../lib/i18n";
+import { useT, type UseT } from "../lib/i18n";
 import { useMode, type Mode } from "../lib/mode";
 import type { DiffFile, DiffRow, DiffWindowKey } from "../lib/types";
 
 // "What flipped since yesterday?" surface for the daily pro user.
 // All math runs in build_diff.py; this component is a thin render layer.
 
-const WINDOW_LABELS: Record<DiffWindowKey, string> = {
-  "1d": "1 Day",
-  "7d": "1 Week",
-  "30d": "1 Month"
+// Mapping the diff window key onto the i18n string. Used inside the component
+// so the labels update on locale change.
+const WINDOW_LABEL_KEYS: Record<DiffWindowKey, string> = {
+  "1d": "diff.window1d",
+  "7d": "diff.window7d",
+  "30d": "diff.window30d"
+};
+
+const CADENCE_KEYS: Record<string, string> = {
+  daily: "cadence.daily",
+  weekly: "cadence.weekly",
+  monthly: "cadence.monthly",
+  quarterly: "cadence.quarterly"
 };
 
 const WINDOW_KEYS: readonly DiffWindowKey[] = ["1d", "7d", "30d"] as const;
@@ -121,7 +130,7 @@ export default function Diff() {
             aria-current={w === activeWindow ? "page" : undefined}
             data-testid={`diff-window-tab-${w}`}
           >
-            {WINDOW_LABELS[w]}
+            {t(WINDOW_LABEL_KEYS[w])}
           </button>
         ))}
       </nav>
@@ -132,7 +141,7 @@ export default function Diff() {
         </p>
       ) : diff === null ? (
         <p className="diff__loading" data-testid="diff-loading">
-          Loading diff&hellip;
+          {t("diff.loading")}
         </p>
       ) : (
         <>
@@ -140,12 +149,13 @@ export default function Diff() {
             className="diff-table-section"
             aria-label="Composite scores diff"
           >
-            <h3 className="diff-section-title">Composite Scores</h3>
+            <h3 className="diff-section-title">{t("diff.compositeScores")}</h3>
             <DiffTable
               rows={diff.composite_scores}
               window={activeWindow}
               mode={mode}
               testId="diff-table-composite"
+              t={t}
             />
           </section>
           <section
@@ -153,13 +163,14 @@ export default function Diff() {
             aria-label="Vital signs diff"
           >
             <h3 className="diff-section-title">
-              Vital Signs (sorted by absolute change)
+              {t("diff.vitalSigns")}
             </h3>
             <DiffTable
               rows={sortedVitals}
               window={activeWindow}
               mode={mode}
               testId="diff-table-vitals"
+              t={t}
             />
           </section>
         </>
@@ -173,19 +184,27 @@ interface DiffTableProps {
   window: DiffWindowKey;
   mode: Mode;
   testId: string;
+  t: UseT["t"];
 }
 
-function DiffTable({ rows, window, mode, testId }: DiffTableProps) {
+function DiffTable({ rows, window, mode, testId, t }: DiffTableProps) {
+  if (rows.length === 0) {
+    return (
+      <p className="diff-table-empty" data-testid={`${testId}-empty`}>
+        {t("diff.empty")}
+      </p>
+    );
+  }
   return (
     <table className="diff-table" data-testid={testId}>
       <thead>
         <tr>
-          <th scope="col">Signal</th>
-          <th scope="col">Now</th>
-          <th scope="col">Then</th>
-          <th scope="col">&Delta;</th>
-          {mode === "detail" && <th scope="col">&Delta;%</th>}
-          <th scope="col">Freshness</th>
+          <th scope="col">{t("diff.colSignal")}</th>
+          <th scope="col">{t("diff.colNow")}</th>
+          <th scope="col">{t("diff.colThen")}</th>
+          <th scope="col">{t("diff.colDelta")}</th>
+          {mode === "detail" && <th scope="col">{t("diff.colDeltaPct")}</th>}
+          <th scope="col">{t("diff.colFreshness")}</th>
         </tr>
       </thead>
       <tbody>
@@ -198,8 +217,10 @@ function DiffTable({ rows, window, mode, testId }: DiffTableProps) {
           const insufficientHistory =
             entry?.value === null && row.current_value !== null;
           const thenCellTitle = insufficientHistory
-            ? "Insufficient history for this window"
+            ? t("diff.insufficientHistory")
             : undefined;
+          const cadenceKey = CADENCE_KEYS[row.frequency];
+          const cadenceText = cadenceKey ? t(cadenceKey) : row.frequency;
           return (
             <tr
               key={row.id}
@@ -212,7 +233,7 @@ function DiffTable({ rows, window, mode, testId }: DiffTableProps) {
                   className={`diff-cadence diff-cadence--${row.frequency}`}
                   data-testid={`diff-row-${row.id}-cadence`}
                 >
-                  <GlossaryTerm term={row.frequency}>{row.frequency}</GlossaryTerm>
+                  <GlossaryTerm term={row.frequency}>{cadenceText}</GlossaryTerm>
                 </span>
               </th>
               <td className="diff-cell diff-cell--current">
