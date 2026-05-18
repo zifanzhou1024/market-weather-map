@@ -27,64 +27,123 @@ afterEach(() => {
   document.body.replaceChildren();
 });
 
+function baseQuality(overrides: Record<string, unknown> = {}) {
+  return {
+    coverage_confidence: 0.85,
+    freshness_confidence: 0.82,
+    model_confidence: 0.9,
+    source_confidence: 0.6,
+    overall_confidence: 0.78,
+    tier: "medium",
+    reasons: [],
+    ...overrides
+  };
+}
+
 describe("DataQualityBanner", () => {
   it("renders an unavailable fallback for malformed data quality", () => {
-    const container = render(<DataQualityBanner dataQuality={{ overall_confidence: Number.NaN, reasons: [] }} />);
+    const container = render(<DataQualityBanner dataQuality={{ overall_confidence: Number.NaN, tier: "high", reasons: [] }} />);
 
     expect(container.textContent).toContain("Data quality unavailable");
     expect(container.textContent).toContain("Score-summary data quality is missing or malformed.");
   });
 
-  it("labels high, mixed, and low data quality from overall confidence", () => {
-    const high = render(<DataQualityBanner dataQuality={{ overall_confidence: 0.91, reasons: [] }} />);
-    expect(high.textContent).toContain("High data quality");
-    expect(high.textContent).toContain("0.91");
+  it("renders the tier pill text and tone class for a high-quality read", () => {
+    const container = render(
+      <DataQualityBanner dataQuality={baseQuality({ overall_confidence: 0.91, tier: "high" })} />
+    );
 
-    act(() => root?.unmount());
-    root = undefined;
-    high.remove();
-
-    const mixed = render(<DataQualityBanner dataQuality={{ overall_confidence: 0.72, reasons: [] }} />);
-    expect(mixed.textContent).toContain("Mixed data quality");
-
-    act(() => root?.unmount());
-    root = undefined;
-    mixed.remove();
-
-    const low = render(<DataQualityBanner dataQuality={{ overall_confidence: 0.63, reasons: [] }} />);
-    expect(low.textContent).toContain("Low data quality");
+    const tierEl = container.querySelector(".data-quality-banner__tier");
+    expect(tierEl).not.toBeNull();
+    expect(tierEl?.textContent).toContain("High data quality");
+    expect(tierEl?.classList.contains("tone-positive")).toBe(true);
+    expect(tierEl?.getAttribute("data-tier")).toBe("high");
+    expect(container.textContent).toContain("aggregate 91%");
   });
 
-  it("prioritizes source-quality caveats and limits the list to four reasons", () => {
+  it("renders tone-warning for the low tier", () => {
+    const container = render(
+      <DataQualityBanner dataQuality={baseQuality({ overall_confidence: 0.5, tier: "low" })} />
+    );
+
+    const tierEl = container.querySelector(".data-quality-banner__tier");
+    expect(tierEl?.textContent).toContain("Low data quality");
+    expect(tierEl?.classList.contains("tone-warning")).toBe(true);
+  });
+
+  it("renders tone-negative for the thin tier", () => {
+    const container = render(
+      <DataQualityBanner dataQuality={baseQuality({ overall_confidence: 0.2, tier: "thin" })} />
+    );
+
+    const tierEl = container.querySelector(".data-quality-banner__tier");
+    expect(tierEl?.textContent).toContain("Thin data quality");
+    expect(tierEl?.classList.contains("tone-negative")).toBe(true);
+  });
+
+  it("falls back to deriving the tier from overall_confidence when tier is missing or invalid", () => {
+    const container = render(
+      <DataQualityBanner dataQuality={baseQuality({ tier: undefined, overall_confidence: 0.45 })} />
+    );
+
+    const tierEl = container.querySelector(".data-quality-banner__tier");
+    expect(tierEl?.classList.contains("tone-warning")).toBe(true);
+    expect(tierEl?.getAttribute("data-tier")).toBe("low");
+  });
+
+  it("renders the four component values inside the details disclosure", () => {
     const container = render(
       <DataQualityBanner
-        dataQuality={{
-          overall_confidence: 0.76,
-          reasons: [
-            "General lower-priority note.",
-            "Housing source is stale.",
-            "Treasury/bond volatility source is not active.",
-            "Options source remains under terms review.",
-            "Candidate calendar source needs review.",
-            "Another lower-priority note."
-          ]
-        }}
+        dataQuality={baseQuality({
+          coverage_confidence: 0.83,
+          freshness_confidence: 0.94,
+          model_confidence: 0.97,
+          source_confidence: 0.58,
+          overall_confidence: 0.85,
+          tier: "high"
+        })}
       />
     );
 
-    const reasons = Array.from(container.querySelectorAll("li"), (item) => item.textContent);
+    const dl = container.querySelector(".data-quality-banner__components");
+    expect(dl).not.toBeNull();
+    const text = dl?.textContent ?? "";
+    expect(text).toContain("Coverage");
+    expect(text).toContain("83%");
+    expect(text).toContain("Freshness");
+    expect(text).toContain("94%");
+    expect(text).toContain("Model");
+    expect(text).toContain("97%");
+    expect(text).toContain("Source");
+    expect(text).toContain("58%");
+  });
 
+  it("renders reasons inside the details disclosure when present", () => {
+    const container = render(
+      <DataQualityBanner
+        dataQuality={baseQuality({
+          tier: "medium",
+          overall_confidence: 0.72,
+          reasons: [
+            "High-importance stale series: broad_dollar.",
+            "Bucket missing active inputs: treasury_bond_volatility."
+          ]
+        })}
+      />
+    );
+
+    const reasons = Array.from(container.querySelectorAll(".data-quality-banner__reasons li"), (item) => item.textContent);
     expect(reasons).toEqual([
-      "Housing source is stale.",
-      "Treasury/bond volatility source is not active.",
-      "Options source remains under terms review.",
-      "Candidate calendar source needs review."
+      "High-importance stale series: broad_dollar.",
+      "Bucket missing active inputs: treasury_bond_volatility."
     ]);
   });
 
-  it("renders a no-caveats note when valid data quality has no reasons", () => {
-    const container = render(<DataQualityBanner dataQuality={{ overall_confidence: 0.93, reasons: [] }} />);
+  it("renders a no-issues note when valid data quality has no reasons", () => {
+    const container = render(
+      <DataQualityBanner dataQuality={baseQuality({ tier: "high", overall_confidence: 0.93, reasons: [] })} />
+    );
 
-    expect(container.textContent).toContain("No data-quality caveats in the current score summary.");
+    expect(container.textContent).toContain("No active data-quality issues.");
   });
 });

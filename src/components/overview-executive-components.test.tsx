@@ -137,6 +137,7 @@ const scoreSummary: ScoreSummaryFile = {
     model_confidence: 1,
     source_confidence: 1,
     overall_confidence: 1,
+    tier: "high",
     reasons: []
   },
   scores: {

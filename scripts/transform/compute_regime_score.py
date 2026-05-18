@@ -95,6 +95,110 @@ DERIVED_STATUS_METADATA = {
     "commodity_inflation_impulse": {"max_stale_days": 75},
 }
 
+# Importance weights drive coverage/freshness confidence so the aggregate is
+# discriminating: losing VIX or US10Y is a big hit; losing corn_price is a
+# rounding error. The high-importance set mirrors the importance>=5 signals in
+# build_signal_priority.SIGNAL_CATALOG plus the canonical macro+rates anchors.
+HIGH_IMPORTANCE_SERIES: frozenset[str] = frozenset(
+    {
+        "vix",
+        "us10y",
+        "us2y",
+        "real_yield_10y",
+        "high_yield_oas",
+        "broad_dollar",
+        "net_liquidity",
+        "core_cpi",
+        "initial_claims",
+        "nonfarm_payrolls",
+    }
+)
+_HIGH_IMPORTANCE_WEIGHT = 5.0
+_DEFAULT_IMPORTANCE_WEIGHT = 1.0
+
+
+def _series_importance_weight(series_id: str) -> float:
+    """Return the 1-5 importance weight for a series (used in confidence math).
+
+    High-importance series (defined in HIGH_IMPORTANCE_SERIES) carry weight 5;
+    everything else carries weight 1. The ratio gives a coverage gap of one
+    high-importance series roughly the same impact as five low-importance ones,
+    matching the spec's design intent.
+    """
+    if series_id in HIGH_IMPORTANCE_SERIES:
+        return _HIGH_IMPORTANCE_WEIGHT
+    return _DEFAULT_IMPORTANCE_WEIGHT
+
+
+def _series_freshness_weight(days_old: int, max_stale: int) -> float:
+    """Linear freshness ramp used by recalibrated freshness confidence.
+
+    At or below ``max_stale_days`` the series is fully fresh (1.0). It then
+    linearly decays to 0.5 at ``2 * max_stale_days`` and to 0.0 at or beyond
+    ``3 * max_stale_days``. ``max_stale`` of 0 collapses to a binary check.
+    """
+    if days_old <= max_stale:
+        return 1.0
+    if max_stale <= 0:
+        return 0.0
+    if days_old >= 3 * max_stale:
+        return 0.0
+    return max(0.0, 1.0 - (days_old - max_stale) / (2 * max_stale))
+
+
+_DATA_QUALITY_TIER_THRESHOLDS: tuple[tuple[float, str], ...] = (
+    (0.80, "high"),
+    (0.60, "medium"),
+    (0.40, "low"),
+)
+
+
+def _compute_data_quality_tier(overall_confidence: float) -> str:
+    """Map a 0-1 overall_confidence to a discrete tier label.
+
+    See spec: >=0.80 -> high, 0.60-0.79 -> medium, 0.40-0.59 -> low, <0.40 -> thin.
+    """
+    for threshold, tier in _DATA_QUALITY_TIER_THRESHOLDS:
+        if overall_confidence >= threshold:
+            return tier
+    return "thin"
+
+
+# Ordering reflects what most reduces overall_confidence today: high-importance
+# series gaps first, then bucket-level breadth misses, then access/candidate
+# gating, then everything else. Two to four entries surface in the banner.
+_QUALITY_REASON_PRIORITY_PATTERNS: tuple[str, ...] = (
+    "High-importance",
+    "Bucket missing active inputs",
+    "Series gated",
+    "Series at candidate-only",
+)
+
+
+def _prioritized_quality_reasons(reasons: list[str], limit: int = 4) -> list[str]:
+    """Return the top ``limit`` reasons ordered by impact bucket.
+
+    Reasons are sorted into priority buckets so the banner can surface the
+    2-4 most-impactful items. Within a priority bucket, ordering is the
+    caller's natural order (already de-duplicated by ``sorted(set(...))`` in
+    ``_confidence_breakdown``).
+    """
+    if not reasons:
+        return []
+    buckets: list[list[str]] = [[] for _ in _QUALITY_REASON_PRIORITY_PATTERNS]
+    fallback: list[str] = []
+    for reason in reasons:
+        placed = False
+        for index, pattern in enumerate(_QUALITY_REASON_PRIORITY_PATTERNS):
+            if pattern in reason:
+                buckets[index].append(reason)
+                placed = True
+                break
+        if not placed:
+            fallback.append(reason)
+    ordered = [item for bucket in buckets for item in bucket] + fallback
+    return ordered[:limit]
+
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -1151,88 +1255,339 @@ def _source_coverage(
     )
 
 
-def _ratio_confidence(numerator: int, denominator: int) -> float:
+def _access_status_by_series_id() -> dict[str, str]:
+    """Return a series_id -> access_status map sourced from the catalog.
+
+    Wraps catalog_entries() so confidence math can ask "is this series gated?"
+    without re-implementing AccessStatus derivation. Falls back to an empty
+    map if the catalog raises (e.g. in test fixtures that don't depend on the
+    catalog) so source_confidence keeps working in a degraded mode.
+    """
+    try:
+        return {
+            str(entry["id"]): str(entry.get("access_status", ""))
+            for entry in catalog_entries()
+            if entry.get("id") is not None
+        }
+    except Exception:
+        return {}
+
+
+# Maps AccessStatus values to their tier weight for source_confidence.
+# See spec: ``free_public_active`` and ``proxy_only`` count full;
+# ``free_public_candidate`` counts half; everything else counts 0.
+_ACCESS_STATUS_SOURCE_WEIGHT: dict[str, float] = {
+    "free_public_active": 1.0,
+    "proxy_only": 1.0,
+    "free_public_candidate": 0.5,
+    "terms_review_needed": 0.0,
+    "authenticated_candidate": 0.0,
+    "restricted_vendor": 0.0,
+    "unavailable": 0.0,
+}
+
+
+def _catalog_source_confidence(
+    access_status_by_id: dict[str, str],
+) -> tuple[float, list[str]]:
+    """Tier-weighted source confidence across the entire catalog.
+
+    Walks every catalog entry (not just per-block coverage groups) so the
+    aggregate registers structural source gating — the dozens of TradingView
+    mirror candidates and terms-review feeds that exist but cannot score.
+    Returns the [0, 1] ratio plus a short reason describing the gating
+    breakdown when it's not 1.0.
+    """
+    if not access_status_by_id:
+        return 1.0, []
+    numerator = 0.0
+    denominator = 0.0
+    gated_high_importance: list[str] = []
+    tier_counts: dict[str, int] = {}
+    for series_id, access_status in access_status_by_id.items():
+        weight = _ACCESS_STATUS_SOURCE_WEIGHT.get(access_status, 0.0)
+        denominator += 1.0
+        numerator += weight
+        tier_counts[access_status] = tier_counts.get(access_status, 0) + 1
+        if (
+            series_id in HIGH_IMPORTANCE_SERIES
+            and weight < 1.0
+        ):
+            gated_high_importance.append(series_id)
+    confidence = _ratio_confidence(numerator, denominator)
+    reasons: list[str] = []
+    gated_total = sum(
+        count
+        for status, count in tier_counts.items()
+        if _ACCESS_STATUS_SOURCE_WEIGHT.get(status, 0.0) == 0.0
+    )
+    candidate_total = tier_counts.get("free_public_candidate", 0)
+    if gated_total or candidate_total:
+        parts: list[str] = []
+        if gated_total:
+            parts.append(f"{gated_total} sources gated")
+        if candidate_total:
+            parts.append(f"{candidate_total} candidate-only")
+        reasons.append(
+            f"Catalog source tier mix: {', '.join(parts)} of {int(denominator)} total."
+        )
+    if gated_high_importance:
+        reasons.append(
+            f"High-importance sources gated: {', '.join(sorted(gated_high_importance))}."
+        )
+    return confidence, reasons
+
+
+def _ratio_confidence(numerator: float, denominator: float) -> float:
+    """Clamp ``numerator/denominator`` into [0, 1] with a two-decimal round.
+
+    Accepts floats so importance-weighted ratios (where the numerator is a sum
+    of 1.0/5.0 weights, not raw counts) can reuse the same clamping.
+    """
     if denominator <= 0:
         return 1.0
     return round(max(0.0, min(1.0, numerator / denominator)), 2)
 
 
-def _coverage_confidence(coverage: dict[str, object]) -> float:
-    available = coverage.get("available", [])
+def _coverage_confidence(coverage: dict[str, object]) -> tuple[float, list[str]]:
+    """Importance-weighted coverage confidence.
+
+    Each expected series contributes its importance weight to the denominator;
+    available series contribute the same weight to the numerator. Losing a
+    high-importance series (VIX, US10Y, etc.) therefore drops the metric far
+    more than losing a low-importance one (e.g. corn_price).
+    """
     expected = coverage.get("expected", [])
-    return _ratio_confidence(
-        len(available) if isinstance(available, list) else 0,
-        len(expected) if isinstance(expected, list) else 0,
-    )
+    available = coverage.get("available", [])
+    if not isinstance(expected, list) or not expected:
+        return 1.0, []
+    available_set = set(available) if isinstance(available, list) else set()
+    numerator = 0.0
+    denominator = 0.0
+    missing_high_importance: list[str] = []
+    for series_id in expected:
+        series_id_str = str(series_id)
+        weight = _series_importance_weight(series_id_str)
+        denominator += weight
+        if series_id_str in available_set:
+            numerator += weight
+        elif series_id_str in HIGH_IMPORTANCE_SERIES:
+            missing_high_importance.append(series_id_str)
+    reasons: list[str] = []
+    if missing_high_importance:
+        reasons.append(
+            f"High-importance coverage gap: {', '.join(sorted(missing_high_importance))}."
+        )
+    return _ratio_confidence(numerator, denominator), reasons
 
 
 def _freshness_confidence(
     status_by_id: dict[str, dict[str, Any]],
     series_ids: list[str],
 ) -> tuple[float, list[str]]:
-    considered = [series_id for series_id in series_ids if series_id in status_by_id]
-    if not considered:
-        return 0.75, ["No status rows are available for confidence freshness checks."]
-    penalties = 0.0
-    reasons: list[str] = []
-    for series_id in considered:
-        row = status_by_id[series_id]
-        status = row.get("status")
-        if status == "stale":
-            penalties += 0.25
-            reasons.append(f"{series_id} is stale: {row.get('message', 'no message')}")
-        elif status == "failed":
-            penalties += 0.5
-            reasons.append(f"{series_id} failed: {row.get('message', 'no message')}")
-        elif status == "unavailable":
-            penalties += 0.2
-            reasons.append(f"{series_id} is unavailable for active scoring.")
-    confidence = max(0.0, 1.0 - min(0.8, penalties / max(1, len(considered))))
-    return round(confidence, 2), reasons
+    """Importance-weighted linear-ramp freshness confidence.
 
-
-def _model_confidence(coverage: dict[str, object]) -> tuple[float, list[str]]:
-    groups = coverage.get("groups", {})
-    if not isinstance(groups, dict) or not groups:
-        return 0.75, ["Model breadth cannot be evaluated without coverage groups."]
-    thin_groups = []
-    for group, row in groups.items():
-        if not isinstance(row, dict):
+    Each expected series contributes its importance weight. Its per-series
+    freshness contribution is 1.0 at or below ``max_stale_days``, 0.5 at twice
+    that, 0.0 at or beyond 3x. Series with no status row, ``failed``, or
+    ``unavailable`` count as 0.0. ``terms_review_needed`` series are excluded
+    from the denominator entirely (they belong to source_confidence).
+    """
+    considered_ids: list[str] = []
+    for series_id in series_ids:
+        series_id_str = str(series_id)
+        row = status_by_id.get(series_id_str)
+        if row is None:
+            considered_ids.append(series_id_str)
             continue
-        available = row.get("available", [])
-        expected = row.get("expected", [])
-        if (
-            isinstance(available, list)
-            and isinstance(expected, list)
-            and len(expected) > 1
-            and len(available) <= 1
-        ):
-            thin_groups.append(str(group))
-    confidence = max(0.5, 1.0 - (0.08 * len(thin_groups)))
-    notes = [f"{group} depends on limited active inputs." for group in thin_groups]
-    return round(confidence, 2), notes
+        status = row.get("status")
+        if status == "terms_review_needed":
+            # Source gating problem, not a freshness problem.
+            continue
+        considered_ids.append(series_id_str)
+
+    if not considered_ids:
+        return 0.75, ["No active series available for freshness assessment."]
+
+    numerator = 0.0
+    denominator = 0.0
+    reasons: list[str] = []
+    stale_high_importance: list[str] = []
+    failed_high_importance: list[str] = []
+
+    for series_id in considered_ids:
+        weight = _series_importance_weight(series_id)
+        denominator += weight
+        row = status_by_id.get(series_id)
+        if row is None:
+            # No status entry. Treat as missing freshness signal.
+            continue
+        status = row.get("status")
+        max_stale = row.get("max_stale_days")
+        days_old = row.get("freshness_days")
+        if status == "ok":
+            numerator += weight
+            continue
+        if status == "stale" and isinstance(days_old, int | float) and isinstance(max_stale, int | float):
+            contribution = _series_freshness_weight(int(days_old), int(max_stale))
+            numerator += weight * contribution
+            if series_id in HIGH_IMPORTANCE_SERIES and contribution < 1.0:
+                stale_high_importance.append(series_id)
+            continue
+        if status in {"failed", "unavailable"}:
+            if series_id in HIGH_IMPORTANCE_SERIES:
+                failed_high_importance.append(series_id)
+            # numerator += 0
+            continue
+        # Unknown status (e.g. partial): treat as moderately stale.
+        numerator += weight * 0.5
+
+    if stale_high_importance:
+        reasons.append(
+            f"High-importance stale series: {', '.join(sorted(stale_high_importance))}."
+        )
+    if failed_high_importance:
+        reasons.append(
+            f"High-importance unavailable series: {', '.join(sorted(failed_high_importance))}."
+        )
+    return _ratio_confidence(numerator, denominator), reasons
 
 
-def _source_confidence(notes: list[str]) -> tuple[float, list[str]]:
-    candidate_notes = [
-        note for note in notes
-        if "not active" in note or "Missing" in note or "candidate" in note.lower()
+def _model_confidence(
+    bucket_weights: dict[str, float],
+    coverage: dict[str, object],
+) -> tuple[float, list[str]]:
+    """Fraction of bucket weights that received at least one active signal.
+
+    A bucket counts toward the numerator iff its coverage group has at least
+    one available series. Buckets whose coverage group has no expected series
+    (e.g. fragility's treasury_bond_volatility — MOVE is gated) count as
+    unfed, surfacing the model-breadth gap that the prior heuristic masked.
+    """
+    if not bucket_weights:
+        return 1.0, []
+    groups = coverage.get("groups", {})
+    if not isinstance(groups, dict):
+        groups = {}
+    # Groups are keyed by either the bucket name or a humanized variant
+    # (macro_climate uses "consumer balance sheet" and "consumer/production").
+    normalized_groups = {
+        str(name).replace(" ", "_").replace("/", "_"): row
+        for name, row in groups.items()
+        if isinstance(row, dict)
+    }
+
+    numerator = 0.0
+    denominator = 0.0
+    unfed: list[str] = []
+    for bucket, weight in bucket_weights.items():
+        denominator += weight
+        group = normalized_groups.get(bucket)
+        if group is None:
+            unfed.append(bucket)
+            continue
+        available = group.get("available", [])
+        if isinstance(available, list) and len(available) > 0:
+            numerator += weight
+        else:
+            unfed.append(bucket)
+
+    reasons = [
+        f"Bucket missing active inputs: {bucket}." for bucket in unfed
     ]
-    confidence = max(0.5, 1.0 - (0.08 * len(candidate_notes)))
-    return round(confidence, 2), candidate_notes
+    return _ratio_confidence(numerator, denominator), reasons
+
+
+def _source_confidence(
+    series_ids: list[str],
+    status_by_id: dict[str, dict[str, Any]],
+    access_status_by_id: dict[str, str] | None = None,
+) -> tuple[float, list[str]]:
+    """Tier-weighted source confidence.
+
+    Each expected series contributes 1.0 to the denominator. The numerator
+    contribution depends on the underlying source's AccessStatus:
+
+      * ``free_public_active`` / ``proxy_only`` -> 1.0 (active, scoring-eligible)
+      * ``free_public_candidate``                -> 0.5 (validated but not active)
+      * ``terms_review_needed`` / ``authenticated_candidate`` / ``restricted_vendor`` / ``unavailable`` -> 0.0
+
+    When the catalog lookup is unavailable we fall back to the status row's
+    ``status`` field — ``terms_review_needed`` and ``unavailable`` count as 0,
+    everything else as 1.0 (the conservative read).
+    """
+    if not series_ids:
+        return 1.0, []
+    access = access_status_by_id or {}
+    numerator = 0.0
+    denominator = 0.0
+    gated: list[str] = []
+    candidate: list[str] = []
+    for raw_id in series_ids:
+        series_id = str(raw_id)
+        denominator += 1.0
+        access_status = access.get(series_id)
+        if access_status is None:
+            row = status_by_id.get(series_id, {})
+            status = row.get("status")
+            if status in {"terms_review_needed", "unavailable"}:
+                gated.append(series_id)
+                continue
+            numerator += 1.0
+            continue
+        if access_status in {"free_public_active", "proxy_only"}:
+            numerator += 1.0
+        elif access_status == "free_public_candidate":
+            numerator += 0.5
+            candidate.append(series_id)
+        else:
+            gated.append(series_id)
+    reasons: list[str] = []
+    if gated:
+        reasons.append(
+            f"Series gated by access status: {', '.join(sorted(set(gated)))}."
+        )
+    if candidate:
+        reasons.append(
+            f"Series at candidate-only status: {', '.join(sorted(set(candidate)))}."
+        )
+    return _ratio_confidence(numerator, denominator), reasons
+
+
+def _geometric_mean(values: list[float]) -> float:
+    """Geometric mean of non-negative values. Returns 0 if any value is 0."""
+    if not values:
+        return 0.0
+    product = 1.0
+    for value in values:
+        if value <= 0.0:
+            return 0.0
+        product *= value
+    return product ** (1.0 / len(values))
 
 
 def _confidence_breakdown(
     coverage: dict[str, object],
     status_by_id: dict[str, dict[str, Any]],
     notes: list[str],
+    bucket_weights: dict[str, float] | None = None,
+    access_status_by_id: dict[str, str] | None = None,
 ) -> tuple[dict[str, float], list[str]]:
+    """Recalibrated confidence breakdown.
+
+    Coverage, freshness, model, and source confidences each carry real
+    information now (typical reading 0.5-0.85 instead of 0.97-1.00). The
+    aggregate is the geometric mean of the four components so a single weak
+    component meaningfully drags the headline down.
+    """
     expected = coverage.get("expected", [])
     expected_ids = [str(item) for item in expected] if isinstance(expected, list) else []
-    coverage_confidence = _coverage_confidence(coverage)
+    coverage_confidence, coverage_reasons = _coverage_confidence(coverage)
     freshness_confidence, freshness_reasons = _freshness_confidence(status_by_id, expected_ids)
-    model_confidence, model_reasons = _model_confidence(coverage)
-    source_confidence, source_reasons = _source_confidence(notes)
+    model_confidence, model_reasons = _model_confidence(bucket_weights or {}, coverage)
+    source_confidence, source_reasons = _source_confidence(
+        expected_ids, status_by_id, access_status_by_id
+    )
     breakdown = {
         "coverage_confidence": coverage_confidence,
         "freshness_confidence": freshness_confidence,
@@ -1240,33 +1595,26 @@ def _confidence_breakdown(
         "source_confidence": source_confidence,
     }
     breakdown["overall_confidence"] = round(
-        (coverage_confidence * 0.4)
-        + (freshness_confidence * 0.3)
-        + (model_confidence * 0.2)
-        + (source_confidence * 0.1),
+        _geometric_mean(
+            [
+                coverage_confidence,
+                freshness_confidence,
+                model_confidence,
+                source_confidence,
+            ]
+        ),
         2,
     )
-    reasons = sorted(set(freshness_reasons + model_reasons + source_reasons + notes))
-    return breakdown, reasons
-
-
-def _weighted_confidence_with_caveat_cap(
-    components: dict[str, float],
-    weights: dict[str, float],
-    reasons: list[str],
-) -> float:
-    total_weight = sum(weight for key, weight in weights.items() if key in components)
-    if total_weight == 0:
-        return 0.0
-    raw_confidence = (
-        sum(components[key] * weights[key] for key in weights if key in components)
-        / total_weight
+    reasons = sorted(
+        set(
+            coverage_reasons
+            + freshness_reasons
+            + model_reasons
+            + source_reasons
+            + notes
+        )
     )
-    confidence = round(raw_confidence, 2)
-    has_caveats = bool(reasons) or any(value < 1.0 for value in components.values())
-    if has_caveats and confidence >= 1.0:
-        return 0.99
-    return confidence
+    return breakdown, reasons
 
 
 def _series_driver(
@@ -1687,14 +2035,27 @@ def build_score_summary(
         fragility_notes.remove("Missing fragility treasury_bond_volatility coverage: move_index.")
     fragility_notes.append("Treasury/bond volatility source is not active.")
 
+    access_status_by_id = _access_status_by_series_id()
     market_confidence, market_confidence_reasons = _confidence_breakdown(
-        market_coverage, statuses, market_notes
+        market_coverage,
+        statuses,
+        market_notes,
+        bucket_weights=MARKET_WEIGHTS,
+        access_status_by_id=access_status_by_id,
     )
     macro_confidence, macro_confidence_reasons = _confidence_breakdown(
-        macro_coverage, statuses, macro_notes
+        macro_coverage,
+        statuses,
+        macro_notes,
+        bucket_weights=MACRO_WEIGHTS,
+        access_status_by_id=access_status_by_id,
     )
     fragility_confidence, fragility_confidence_reasons = _confidence_breakdown(
-        fragility_coverage, statuses, fragility_notes
+        fragility_coverage,
+        statuses,
+        fragility_notes,
+        bucket_weights=FRAGILITY_WEIGHTS,
+        access_status_by_id=access_status_by_id,
     )
 
     market_block = score_block(
@@ -1739,6 +2100,17 @@ def build_score_summary(
     quality_reasons = sorted(
         set(market_confidence_reasons + macro_confidence_reasons + fragility_confidence_reasons)
     )
+    # Top-level source_confidence draws from the FULL catalog (not per-block
+    # coverage groups) so structural source gating — the dozens of TradingView
+    # candidate mirrors and terms_review_needed feeds — register in the
+    # aggregate. The other three components average the per-block values
+    # because they reflect today's read of the scoring model, which is
+    # the per-block scope.
+    catalog_source_confidence, catalog_source_reasons = _catalog_source_confidence(
+        access_status_by_id
+    )
+    if catalog_source_reasons:
+        quality_reasons = sorted(set(quality_reasons + catalog_source_reasons))
     data_quality_components = {
         "coverage_confidence": round(
             (
@@ -1767,29 +2139,24 @@ def build_score_summary(
             / 3,
             2,
         ),
-        "source_confidence": round(
-            (
-                market_confidence["source_confidence"]
-                + macro_confidence["source_confidence"]
-                + fragility_confidence["source_confidence"]
-            )
-            / 3,
-            2,
-        ),
+        "source_confidence": catalog_source_confidence,
     }
+    aggregate_overall = round(
+        _geometric_mean(
+            [
+                data_quality_components["coverage_confidence"],
+                data_quality_components["freshness_confidence"],
+                data_quality_components["model_confidence"],
+                data_quality_components["source_confidence"],
+            ]
+        ),
+        2,
+    )
     data_quality = {
         **data_quality_components,
-        "overall_confidence": _weighted_confidence_with_caveat_cap(
-            data_quality_components,
-            {
-                "coverage_confidence": 0.4,
-                "freshness_confidence": 0.3,
-                "model_confidence": 0.2,
-                "source_confidence": 0.1,
-            },
-            quality_reasons,
-        ),
-        "reasons": quality_reasons,
+        "overall_confidence": aggregate_overall,
+        "tier": _compute_data_quality_tier(aggregate_overall),
+        "reasons": _prioritized_quality_reasons(quality_reasons),
     }
 
     return {

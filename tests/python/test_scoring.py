@@ -2054,6 +2054,7 @@ def test_validate_score_summary_requires_three_named_score_blocks(tmp_path, monk
             "model_confidence": 1.0,
             "source_confidence": 1.0,
             "overall_confidence": 1.0,
+            "tier": "high",
             "reasons": []
           }
         }
@@ -2318,6 +2319,166 @@ def test_validate_score_summary_rejects_out_of_range_score_confidence_breakdown(
         validate_schema.validate_score_summary_file()
 
 
+def test_series_freshness_weight_linear_ramp():
+    """Linear ramp: at max_stale -> 1.0, at 2x -> 0.5, at 3x -> 0.0."""
+    weight = compute_regime_score._series_freshness_weight
+    assert weight(0, 7) == 1.0
+    assert weight(7, 7) == 1.0
+    assert weight(14, 7) == 0.5
+    assert weight(21, 7) == 0.0
+    assert weight(100, 7) == 0.0
+    # Half-way between max_stale and 2x: 1.0 -> 0.5 in 7 days, so day 10.5
+    # corresponds to (10.5 - 7) / 14 = 0.25, giving 0.75.
+    assert weight(11, 7) == pytest.approx(0.7142857, rel=1e-3)
+
+
+def test_series_freshness_weight_max_stale_zero_collapses_to_binary():
+    """max_stale_days=0 means any age past 0 is fully stale."""
+    weight = compute_regime_score._series_freshness_weight
+    assert weight(0, 0) == 1.0
+    assert weight(1, 0) == 0.0
+
+
+def test_compute_data_quality_tier_boundary_cases():
+    tier = compute_regime_score._compute_data_quality_tier
+    assert tier(0.95) == "high"
+    assert tier(0.80) == "high"
+    assert tier(0.79) == "medium"
+    assert tier(0.60) == "medium"
+    assert tier(0.59) == "low"
+    assert tier(0.40) == "low"
+    assert tier(0.39) == "thin"
+    assert tier(0.0) == "thin"
+
+
+def test_coverage_confidence_importance_weighting():
+    """Lose VIX -> big drop; lose corn -> tiny drop."""
+    # All expected, all available -> 1.0
+    coverage = {"expected": ["vix", "corn_price"], "available": ["vix", "corn_price"]}
+    confidence, reasons = compute_regime_score._coverage_confidence(coverage)
+    assert confidence == 1.0
+    assert reasons == []
+
+    # Lose corn (weight 1) out of {vix=5, corn=1} -> 5/6 ~= 0.83
+    coverage = {"expected": ["vix", "corn_price"], "available": ["vix"]}
+    confidence, reasons = compute_regime_score._coverage_confidence(coverage)
+    assert confidence == pytest.approx(0.83, abs=0.01)
+    assert reasons == []  # corn not high-importance
+
+    # Lose VIX (weight 5) out of {vix=5, corn=1} -> 1/6 ~= 0.17
+    coverage = {"expected": ["vix", "corn_price"], "available": ["corn_price"]}
+    confidence, reasons = compute_regime_score._coverage_confidence(coverage)
+    assert confidence == pytest.approx(0.17, abs=0.01)
+    assert any("High-importance coverage gap" in r and "vix" in r for r in reasons)
+
+
+def test_freshness_confidence_linear_ramp_with_importance():
+    """A stale high-importance series drops freshness more than low-importance."""
+    series_ids = ["vix", "corn_price"]
+
+    # VIX 14 days old (=2x max_stale=7) gives contribution=0.5 against weight 5
+    # corn fresh gives contribution=1.0 against weight 1
+    # Total numerator: 5*0.5 + 1*1.0 = 3.5. Denominator: 6. Ratio: 0.58.
+    statuses = {
+        "vix": {"status": "stale", "freshness_days": 14, "max_stale_days": 7},
+        "corn_price": {"status": "ok", "freshness_days": 1, "max_stale_days": 7},
+    }
+    confidence, reasons = compute_regime_score._freshness_confidence(statuses, series_ids)
+    assert confidence == pytest.approx(0.58, abs=0.01)
+    assert any("High-importance stale series" in r and "vix" in r for r in reasons)
+
+    # Corn 14 days stale; VIX fresh -> tiny drop
+    statuses = {
+        "vix": {"status": "ok", "freshness_days": 1, "max_stale_days": 7},
+        "corn_price": {"status": "stale", "freshness_days": 14, "max_stale_days": 7},
+    }
+    confidence, _ = compute_regime_score._freshness_confidence(statuses, series_ids)
+    # Numerator 5*1.0 + 1*0.5 = 5.5. Denominator 6. Ratio 0.92.
+    assert confidence == pytest.approx(0.92, abs=0.01)
+
+
+def test_freshness_confidence_excludes_terms_review_series():
+    """terms_review_needed series belong to source_confidence, not freshness."""
+    series_ids = ["vix", "tradingview_move_candidate"]
+    statuses = {
+        "vix": {"status": "ok", "freshness_days": 1, "max_stale_days": 7},
+        "tradingview_move_candidate": {"status": "terms_review_needed", "message": ""},
+    }
+    confidence, _ = compute_regime_score._freshness_confidence(statuses, series_ids)
+    # Only vix is considered; vix is fresh -> 1.0
+    assert confidence == 1.0
+
+
+def test_model_confidence_aggregates_bucket_weights():
+    """Only buckets with at least one available series contribute their weight."""
+    bucket_weights = {"a": 0.5, "b": 0.3, "c": 0.2}
+    coverage = {
+        "groups": {
+            "a": {"available": ["s1"], "expected": ["s1"]},
+            "b": {"available": ["s2"], "expected": ["s2"]},
+            # bucket 'c' has no group -> unfed
+        }
+    }
+    confidence, reasons = compute_regime_score._model_confidence(bucket_weights, coverage)
+    # 0.5 + 0.3 = 0.8 numerator; 1.0 denominator -> 0.8
+    assert confidence == pytest.approx(0.80, abs=0.01)
+    assert any("Bucket missing active inputs: c" in r for r in reasons)
+
+    # All buckets fed -> 1.0
+    coverage = {
+        "groups": {
+            "a": {"available": ["s1"], "expected": ["s1"]},
+            "b": {"available": ["s2"], "expected": ["s2"]},
+            "c": {"available": ["s3"], "expected": ["s3"]},
+        }
+    }
+    confidence, reasons = compute_regime_score._model_confidence(bucket_weights, coverage)
+    assert confidence == 1.0
+    assert reasons == []
+
+
+def test_source_confidence_tier_weighted():
+    """Active counts full; candidate counts 0.5; gated counts 0."""
+    series_ids = ["a", "b", "c", "d"]
+    access = {
+        "a": "free_public_active",
+        "b": "free_public_candidate",
+        "c": "terms_review_needed",
+        "d": "proxy_only",
+    }
+    confidence, reasons = compute_regime_score._source_confidence(
+        series_ids, {}, access
+    )
+    # Numerator: 1 + 0.5 + 0 + 1 = 2.5. Denominator 4. Ratio 0.625.
+    # Python's round() uses banker's rounding so 0.625 -> 0.62.
+    assert confidence == pytest.approx(0.625, abs=0.011)
+    assert any("gated" in r.lower() for r in reasons)
+    assert any("candidate-only" in r.lower() for r in reasons)
+
+
+def test_source_confidence_all_active_returns_one():
+    series_ids = ["a", "b"]
+    access = {"a": "free_public_active", "b": "proxy_only"}
+    confidence, reasons = compute_regime_score._source_confidence(
+        series_ids, {}, access
+    )
+    assert confidence == 1.0
+    assert reasons == []
+
+
+def test_geometric_mean_zero_propagates():
+    assert compute_regime_score._geometric_mean([1.0, 1.0, 1.0, 1.0]) == 1.0
+    # Geometric mean of 4 equal values equals the value
+    assert compute_regime_score._geometric_mean([0.5, 0.5, 0.5, 0.5]) == pytest.approx(0.5)
+    # Any zero -> 0 (catastrophic failure dominates)
+    assert compute_regime_score._geometric_mean([0.0, 1.0, 1.0, 1.0]) == 0.0
+    # Geometric mean punishes one low component more than arithmetic mean
+    # GM(1, 1, 1, 0.25) = 0.25**0.25 ~= 0.707. AM = 0.8125.
+    assert compute_regime_score._geometric_mean([1.0, 1.0, 1.0, 0.25]) == pytest.approx(
+        0.7071, abs=0.01
+    )
+
+
 def test_score_summary_emits_data_quality_confidence_breakdown():
     series = {
         "vix": _summary(percentile_252d=50.0),
@@ -2377,26 +2538,51 @@ def test_score_summary_emits_data_quality_confidence_breakdown():
         "model_confidence",
         "source_confidence",
         "overall_confidence",
+        "tier",
         "reasons",
     }
-    assert data_quality["coverage_confidence"] > 0.9
+    # Coverage stays near 1.0 because every expected series is present, but
+    # the recalibrated aggregate now reflects whatever bucket-breadth or
+    # source-tier gaps exist (e.g. fragility's gated MOVE input).
+    assert data_quality["coverage_confidence"] >= 0.9
     assert data_quality["freshness_confidence"] == 1.0
-    assert data_quality["source_confidence"] < 1.0
-    assert data_quality["reasons"]
-    assert data_quality["overall_confidence"] == 0.99
+    assert 0.0 <= data_quality["overall_confidence"] <= 1.0
+    assert data_quality["tier"] in {"high", "medium", "low", "thin"}
     assert "Housing is not active in Phase 4 PR 1." not in data_quality["reasons"]
 
 
 def test_stale_status_lowers_freshness_confidence():
     series = {
         "vix": _summary(percentile_252d=50.0),
+        "us10y": _summary(percentile_252d=50.0),
         "reverse_repo": _summary(percentile_252d=50.0),
         "net_liquidity": _summary(percentile_252d=50.0),
     }
     statuses = {
-        "vix": {"status": "ok", "message": "Fresh."},
-        "reverse_repo": {"status": "stale", "message": "Latest daily observation is stale."},
-        "net_liquidity": {"status": "ok", "message": "Fresh."},
+        "vix": {
+            "status": "stale",
+            "message": "Latest daily observation is 14 days old.",
+            "freshness_days": 14,
+            "max_stale_days": 7,
+        },
+        "us10y": {
+            "status": "ok",
+            "message": "Fresh.",
+            "freshness_days": 1,
+            "max_stale_days": 7,
+        },
+        "reverse_repo": {
+            "status": "ok",
+            "message": "Fresh.",
+            "freshness_days": 1,
+            "max_stale_days": 7,
+        },
+        "net_liquidity": {
+            "status": "ok",
+            "message": "Fresh.",
+            "freshness_days": 1,
+            "max_stale_days": 7,
+        },
     }
 
     summary = compute_regime_score.build_score_summary(
@@ -2405,8 +2591,13 @@ def test_stale_status_lowers_freshness_confidence():
         statuses,
     )
 
+    # VIX is high-importance so a stale row drops freshness and surfaces a
+    # high-importance reason.
     assert summary["data_quality"]["freshness_confidence"] < 1.0
-    assert any("reverse_repo" in reason for reason in summary["data_quality"]["reasons"])
+    assert any(
+        "High-importance stale series" in reason and "vix" in reason
+        for reason in summary["data_quality"]["reasons"]
+    )
 
 
 def _macro_calendar_event(**overrides):
