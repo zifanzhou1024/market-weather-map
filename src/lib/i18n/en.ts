@@ -100,6 +100,9 @@ export const en = {
     methodologyHeading: "Methodology",
   },
   shortcuts: {
+    groupNavigation: "Navigation",
+    groupView: "View",
+    groupHelp: "Help",
     goOverview: "Overview",
     goShortTerm: "Short-Term",
     goLongTerm: "Long-Term",
@@ -108,9 +111,14 @@ export const en = {
     goHistory: "History",
     goDiff: "Diff",
     goCalendar: "Calendar",
-    toggleMode: "Toggle Brief/Detail",
-    toggleLanguage: "Toggle language",
-    showHelp: "Show this help",
+    goMethodology: "Methodology",
+    toggleMode: "Toggle Brief / Detail mode",
+    toggleLanguage: "Toggle language (EN / 中)",
+    showHelp: "Toggle this overlay",
+    closeHelp: "Close overlay / cancel g prefix",
+    closeAria: "Close keyboard shortcuts help",
+    footerPrefix: "Press",
+    footerSuffix: "anytime to toggle this overlay.",
   },
 } as const;
 

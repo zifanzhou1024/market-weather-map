@@ -1,36 +1,10 @@
 import { useEffect, useRef } from "react";
+import { useT } from "../lib/i18n";
 
 interface Group {
   title: string;
   items: Array<{ keys: string; label: string }>;
 }
-
-const GROUPS: Group[] = [
-  {
-    title: "Navigation",
-    items: [
-      { keys: "g o", label: "Overview" },
-      { keys: "g s", label: "Short-Term" },
-      { keys: "g l", label: "Long-Term" },
-      { keys: "g f", label: "Fragility" },
-      { keys: "g c", label: "Channels" },
-      { keys: "g h", label: "History" },
-      { keys: "g d", label: "Diff" },
-      { keys: "g m", label: "Methodology" }
-    ]
-  },
-  {
-    title: "View",
-    items: [{ keys: "b", label: "Toggle Brief / Detail mode" }]
-  },
-  {
-    title: "Help",
-    items: [
-      { keys: "?", label: "Toggle this overlay" },
-      { keys: "Esc", label: "Close overlay / cancel g prefix" }
-    ]
-  }
-];
 
 interface Props {
   open: boolean;
@@ -38,6 +12,7 @@ interface Props {
 }
 
 export default function KeyboardShortcutsHelp({ open, onClose }: Props) {
+  const { t } = useT();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   // Focus the close button when the overlay opens, so keyboard users land
@@ -47,6 +22,36 @@ export default function KeyboardShortcutsHelp({ open, onClose }: Props) {
   }, [open]);
 
   if (!open) return null;
+
+  const groups: Group[] = [
+    {
+      title: t("shortcuts.groupNavigation"),
+      items: [
+        { keys: "g o", label: t("shortcuts.goOverview") },
+        { keys: "g s", label: t("shortcuts.goShortTerm") },
+        { keys: "g l", label: t("shortcuts.goLongTerm") },
+        { keys: "g f", label: t("shortcuts.goFragility") },
+        { keys: "g c", label: t("shortcuts.goChannels") },
+        { keys: "g h", label: t("shortcuts.goHistory") },
+        { keys: "g d", label: t("shortcuts.goDiff") },
+        { keys: "g m", label: t("shortcuts.goMethodology") }
+      ]
+    },
+    {
+      title: t("shortcuts.groupView"),
+      items: [
+        { keys: "b", label: t("shortcuts.toggleMode") },
+        { keys: "g i", label: t("shortcuts.toggleLanguage") }
+      ]
+    },
+    {
+      title: t("shortcuts.groupHelp"),
+      items: [
+        { keys: "?", label: t("shortcuts.showHelp") },
+        { keys: "Esc", label: t("shortcuts.closeHelp") }
+      ]
+    }
+  ];
 
   return (
     <div className="kbd-help-backdrop" role="presentation" onClick={onClose}>
@@ -59,20 +64,20 @@ export default function KeyboardShortcutsHelp({ open, onClose }: Props) {
       >
         <header className="kbd-help__header">
           <h2 id="kbd-help-title" className="kbd-help__title">
-            Keyboard shortcuts
+            {t("chrome.keyboardShortcuts")}
           </h2>
           <button
             ref={closeRef}
             type="button"
             className="kbd-help__close"
             onClick={onClose}
-            aria-label="Close keyboard shortcuts help"
+            aria-label={t("shortcuts.closeAria")}
           >
             ×
           </button>
         </header>
         <div className="kbd-help__body">
-          {GROUPS.map((group) => (
+          {groups.map((group) => (
             <section key={group.title} className="kbd-help__group">
               <h3 className="kbd-help__group-title">{group.title}</h3>
               <dl className="kbd-help__list">
@@ -90,7 +95,7 @@ export default function KeyboardShortcutsHelp({ open, onClose }: Props) {
         </div>
         <footer className="kbd-help__footer">
           <p>
-            Press <kbd>?</kbd> anytime to toggle this overlay.
+            {t("shortcuts.footerPrefix")} <kbd>?</kbd> {t("shortcuts.footerSuffix")}
           </p>
         </footer>
       </div>
