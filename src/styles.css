@@ -3264,3 +3264,53 @@ code {
 @media (max-width: 760px) {
   .persistent-regime-header__date { display: none; }
 }
+
+/* ── RouteScoreStrip ────────────────────────────────────── */
+
+.route-score-strip {
+  display: grid;
+  gap: 10px;
+  padding: 16px 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 12px 28px rgba(33, 45, 37, 0.07);
+}
+
+.route-score-strip__eyebrow {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.route-score-strip__primary {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.route-score-strip__value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #1f3730;
+  font-variant-numeric: tabular-nums;
+}
+
+.route-score-strip__regime {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #344238;
+}
+
+.route-score-strip__spark { color: var(--accent); }
+
+.route-score-strip__delta {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
