@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import BondVolatilityProxyChart from "../components/BondVolatilityProxyChart";
 import CandidateDiagnosticPanel from "../components/CandidateDiagnosticPanel";
 import DataGapPanel from "../components/DataGapPanel";
-import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
 import HiddenStressMismatchPanel from "../components/HiddenStressMismatchPanel";
 import HiddenStressSummary from "../components/HiddenStressSummary";
@@ -10,6 +9,7 @@ import InterpretationPanel from "../components/InterpretationPanel";
 import MismatchWarningPanel from "../components/MismatchWarningPanel";
 import PageInsightHero from "../components/PageInsightHero";
 import RouteDataFooter from "../components/RouteDataFooter";
+import RouteScoreStrip from "../components/RouteScoreStrip";
 import ScoreCard from "../components/ScoreCard";
 import ShockRiskContributionChart from "../components/ShockRiskContributionChart";
 import ShockRiskDashboard from "../components/ShockRiskDashboard";
@@ -19,14 +19,17 @@ import TailRiskReadinessMatrix from "../components/TailRiskReadinessMatrix";
 import VixVvixHiddenStressPanel from "../components/VixVvixHiddenStressPanel";
 import {
   loadCatalog,
+  loadCockpit,
   loadDataStatus,
   loadRegimeSnapshot,
   loadScoreSummary,
   loadShockRiskSnapshot
 } from "../lib/data";
+import { useMode } from "../lib/mode";
 import { sanitizeShockRiskSnapshot } from "../lib/shockRisk";
 import { loadRouteDerivedSeries } from "./routeSeries";
 import type {
+  CockpitFile,
   DataStatusFile,
   DerivedSeriesFile,
   RegimeSnapshotFile,
@@ -49,6 +52,7 @@ const fragilityDiagnosticIds = ["bond_volatility_proxy"];
 
 interface RouteState {
   catalog: SeriesCatalogEntry[];
+  cockpit: CockpitFile | null;
   diagnosticSeries: DerivedSeriesFile[];
   scoreSummary: ScoreSummaryFile;
   shockSnapshot: ShockRiskSnapshotFile;
@@ -57,6 +61,7 @@ interface RouteState {
 }
 
 export default function FragilityShockRisk() {
+  const mode = useMode();
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,12 +70,13 @@ export default function FragilityShockRisk() {
 
     async function loadFragilityShockRisk() {
       try {
-        const [scoreSummary, snapshot, shockSnapshot, status, catalog] = await Promise.all([
+        const [scoreSummary, snapshot, shockSnapshot, status, catalog, cockpit] = await Promise.all([
           loadScoreSummary(),
           loadRegimeSnapshot(),
           loadShockRiskSnapshot(),
           loadDataStatus(),
-          loadCatalog()
+          loadCatalog(),
+          loadCockpit().catch(() => null)
         ]);
         const diagnosticSeries = await loadRouteDerivedSeries(fragilityDiagnosticIds, catalog, status, {
           allowMissing: new Set(fragilityDiagnosticIds)
@@ -78,6 +84,7 @@ export default function FragilityShockRisk() {
         if (active) {
           setData({
             catalog,
+            cockpit,
             diagnosticSeries,
             scoreSummary,
             shockSnapshot: sanitizeShockRiskSnapshot(shockSnapshot),
@@ -113,7 +120,12 @@ export default function FragilityShockRisk() {
       ) : null}
       {data ? (
         <div className="route-stack">
-          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
+          {(() => {
+            const fragility = data.cockpit?.composite_scores.find(
+              (score) => score.id === "fragility"
+            );
+            return fragility ? <RouteScoreStrip composite={fragility} mode={mode} /> : null;
+          })()}
           <ShockRiskReadHeader
             catalog={data.catalog}
             scoreSummary={data.scoreSummary}

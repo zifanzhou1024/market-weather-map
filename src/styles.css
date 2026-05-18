@@ -543,40 +543,11 @@ select {
   color: #607066;
 }
 
-.confidence-grid,
 .interpretation-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-}
-
-.confidence-grid {
-  margin: 0 0 16px;
-}
-
-.interpretation-grid {
   margin-top: 16px;
-}
-
-.confidence-grid div {
-  min-width: 0;
-  border: 1px solid #e4e8df;
-  border-radius: 8px;
-  padding: 12px;
-  background: #f8faf5;
-}
-
-.confidence-grid dt {
-  color: #607066;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.confidence-grid dd {
-  margin: 3px 0 0;
-  color: #24332a;
-  font-weight: 700;
 }
 
 .interpretation-panel > p {
@@ -874,29 +845,6 @@ select {
 
 .confirmation-matrix__item {
   display: grid;
-}
-
-.decision-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  display: grid;
-  gap: 0.75rem;
-  padding: 1rem;
-}
-
-.decision-card h3,
-.decision-card p {
-  margin-top: 0;
-}
-
-.decision-card p {
-  margin-bottom: 0;
-}
-
-.decision-card__link {
-  color: var(--accent);
-  font-weight: 700;
 }
 
 .horizon-header {
@@ -1401,7 +1349,6 @@ code {
   .driver-attribution-grid,
   .replay-scenario-tabs,
   .replay-summary,
-  .confidence-grid,
   .interpretation-grid {
     grid-template-columns: 1fr;
   }
@@ -1669,100 +1616,6 @@ code {
 @media (max-width: 760px) {
   .signal-priority-grid--two-column {
     grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-.market-brief-header {
-  background: linear-gradient(135deg, #fffef9 0%, #edf4ef 58%, #eef3f8 100%);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 18px 20px 20px;
-  margin-bottom: 16px;
-}
-
-.market-brief-header-eyebrow {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 12px;
-}
-
-.market-brief-header-date {
-  letter-spacing: 0.04em;
-  font-weight: 600;
-}
-
-.market-brief-header-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.market-brief-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px 14px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  border-top: 3px solid var(--accent);
-}
-
-.market-brief-card--short_term {
-  border-top-color: #b04a3a;
-}
-
-.market-brief-card--long_term {
-  border-top-color: #31516b;
-}
-
-.market-brief-card--fragility {
-  border-top-color: #c08b32;
-}
-
-.market-brief-card--regime {
-  border-top-color: #7a5b92;
-}
-
-.market-brief-card__heading {
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0;
-}
-
-.market-brief-card__label {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #1f3730;
-  margin: 0;
-}
-
-.market-brief-card__score {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: #233029;
-  margin: 4px 0 0;
-  font-variant-numeric: tabular-nums;
-}
-
-.market-brief-card__confidence {
-  font-size: 0.78rem;
-  color: var(--muted);
-  margin: 0;
-}
-
-@media (max-width: 760px) {
-  .market-brief-header-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

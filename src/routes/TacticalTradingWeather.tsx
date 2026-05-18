@@ -3,19 +3,18 @@ import type { CandidateSourceItem } from "../components/CandidateSourcePanel";
 import CreditPulsePanel from "../components/CreditPulsePanel";
 import CreditStressMatrix from "../components/CreditStressMatrix";
 import DataGapPanel from "../components/DataGapPanel";
-import DataQualityBanner from "../components/DataQualityBanner";
 import DataStatusTable from "../components/DataStatusTable";
 import DollarRealYieldPressurePanel from "../components/DollarRealYieldPressurePanel";
 import EventRiskPanel from "../components/EventRiskPanel";
 import EventRiskTimeline from "../components/EventRiskTimeline";
 import FocusBlock from "../components/FocusBlock";
-import HorizonScoreHeader from "../components/HorizonScoreHeader";
 import LiquidityDollarPressureChart from "../components/LiquidityDollarPressureChart";
 import LiquidityPulsePanel from "../components/LiquidityPulsePanel";
 import type { MultiSeriesChartSeries } from "../components/MultiSeriesChart";
 import OptionsSentimentPanel from "../components/OptionsSentimentPanel";
 import RatesPressureChart from "../components/RatesPressureChart";
 import RouteDataFooter from "../components/RouteDataFooter";
+import RouteScoreStrip from "../components/RouteScoreStrip";
 import SignalChecklist from "../components/SignalChecklist";
 import TopSignalList from "../components/TopSignalList";
 import VixCurveTermStructureChart from "../components/charts/VixCurveTermStructureChart";
@@ -23,9 +22,9 @@ import VixFuturesReadinessPanel from "../components/VixFuturesReadinessPanel";
 import VolatilityHiddenStressChart from "../components/charts/VolatilityHiddenStressChart";
 import VolatilityTermStructurePanel from "../components/VolatilityTermStructurePanel";
 import { applyCandidateDisplayOverride } from "../lib/candidateDisplay";
-import { scoreLabel } from "../lib/horizon";
 import {
   loadCatalog,
+  loadCockpit,
   loadDataStatus,
   loadMacroCalendar,
   loadPageInsights,
@@ -34,7 +33,9 @@ import {
   loadSignalPriority,
   loadVolatilityDashboard
 } from "../lib/data";
+import { useMode } from "../lib/mode";
 import type {
+  CockpitFile,
   DataStatusFile,
   DerivedSeriesFile,
   MacroCalendarFile,
@@ -86,6 +87,7 @@ const tacticalStatusIds = [
 interface RouteState {
   calendar: MacroCalendarFile;
   catalog: SeriesCatalogEntry[];
+  cockpit: CockpitFile | null;
   derived: DerivedSeriesFile[];
   scoreSummary: ScoreSummaryFile;
   series: TimeSeriesFile[];
@@ -138,11 +140,8 @@ function findDerived(derived: DerivedSeriesFile[], seriesId: string) {
   return derived.find((item) => item.series_id === seriesId);
 }
 
-function driverLabel(driver: RegimeSnapshotFile["regime"]["yield_driver"]) {
-  return driver.replace(/_/g, " ");
-}
-
 export default function TacticalTradingWeather() {
+  const mode = useMode();
   const [data, setData] = useState<RouteState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pageInsights, setPageInsights] = useState<PageInsightsFile | null>(null);
@@ -160,7 +159,7 @@ export default function TacticalTradingWeather() {
 
     async function loadTacticalTradingWeather() {
       try {
-        const [catalog, status, scoreSummary, snapshot, signalPriority, calendar, volDashboard] =
+        const [catalog, status, scoreSummary, snapshot, signalPriority, calendar, volDashboard, cockpit] =
           await Promise.all([
             loadCatalog(),
             loadDataStatus(),
@@ -168,7 +167,8 @@ export default function TacticalTradingWeather() {
             loadRegimeSnapshot(),
             loadSignalPriority().catch(() => null),
             loadMacroCalendar(),
-            loadVolatilityDashboard()
+            loadVolatilityDashboard(),
+            loadCockpit().catch(() => null)
           ]);
         const [series, derived] = await Promise.all([
           loadRouteSeries(tacticalSeriesIds, catalog, status),
@@ -180,6 +180,7 @@ export default function TacticalTradingWeather() {
           setData({
             calendar,
             catalog,
+            cockpit,
             derived,
             scoreSummary,
             series,
@@ -217,22 +218,12 @@ export default function TacticalTradingWeather() {
       ) : null}
       {data ? (
         <div className="route-stack">
-          <DataQualityBanner dataQuality={data.scoreSummary.data_quality} />
-          <HorizonScoreHeader
-            eyebrow="Short-term"
-            facts={[
-              { label: "Regime", value: data.snapshot.regime.label },
-              { label: "Market weather", value: scoreLabel(data.scoreSummary.scores.market_weather) },
-              { label: "Fragility", value: scoreLabel(data.scoreSummary.scores.fragility) },
-              { label: "Yield driver", value: driverLabel(data.snapshot.regime.yield_driver) }
-            ]}
-            risks={data.scoreSummary.scores.fragility.top_risks}
-            score={data.scoreSummary.scores.market_weather}
-            secondaryScore={data.scoreSummary.scores.fragility}
-            summary="The current tactical read combines active volatility, credit, dollar, real-yield, liquidity, and confirmation signals."
-            supports={data.scoreSummary.scores.market_weather.top_supports}
-            title="Current Tactical Read"
-          />
+          {(() => {
+            const marketWeather = data.cockpit?.composite_scores.find(
+              (score) => score.id === "market_weather"
+            );
+            return marketWeather ? <RouteScoreStrip composite={marketWeather} mode={mode} /> : null;
+          })()}
           {data.signalPriority ? (
             <section
               className="signal-priority-grid"

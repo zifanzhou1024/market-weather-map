@@ -11,6 +11,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 // the route-count and URL math.
 import RatesTab from "../components/channels/RatesTab";
 import App from "../App";
+import cockpitFixture from "../__fixtures__/cockpit/today.json";
 import type {
   DataStatusFile,
   DerivedSeriesFile,
@@ -199,6 +200,7 @@ function diagnosticSeriesFile(
 function routeFetchFiles(overrides: Record<string, unknown> = {}) {
   return {
     "/data/catalog/series_catalog.json": catalog,
+    "/data/derived/cockpit.json": cockpitFixture,
     "/data/events/macro_calendar.json": macroCalendar,
     "/data/derived/brent_wti_spread.json": {
       ...derivedFile("brent_wti_spread", 3.21),
@@ -1878,9 +1880,11 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
     await waitForContent(shortTerm, "Short-Term Market Reaction");
-    expect(shortTerm.textContent).toContain("High data quality");
-    expect(shortTerm.textContent).toContain("Treasury/bond volatility source is not active.");
-    expect(shortTerm.textContent).toContain("Current Tactical Read");
+    // PR7 Tasks 7.1/7.2: per-route DataQualityBanner + HorizonScoreHeader were
+    // removed. Freshness/confidence now ride on the ambient
+    // PersistentRegimeHeader; the route-level composite read comes from
+    // RouteScoreStrip (Market Weather composite on /short-term).
+    expect(shortTerm.textContent).toContain("Market Weather");
     expect(shortTerm.textContent).toContain("Volatility term-structure");
     expect(shortTerm.textContent).toContain("Credit pulse");
     expect(shortTerm.textContent).toContain("Dollar + real-yield pressure");
@@ -1896,8 +1900,9 @@ describe("data-backed routes", () => {
       </MemoryRouter>
     );
     await waitForContent(longTerm, "Long-Term Macro / Allocation Climate");
-    expect(longTerm.textContent).toContain("High data quality");
-    expect(longTerm.textContent).toContain("Treasury/bond volatility source is not active.");
+    // PR7 Tasks 7.1/7.2: DataQualityBanner removed; long-term composite (Macro
+    // Climate) renders via RouteScoreStrip instead of HorizonScoreHeader.
+    expect(longTerm.textContent).toContain("Macro Climate");
   });
 
   it("keeps tactical and macro-climate deep links compatible", async () => {
@@ -2618,12 +2623,15 @@ describe("data-backed routes", () => {
     expect(container.textContent).toContain("OPEX calendar");
     expect(container.textContent).toContain("OPEX calendar source remains under review.");
 
-    expect(container.textContent).toContain("Market weather");
+    // PR7 Tasks 7.1/7.2: HorizonScoreHeader is replaced with RouteScoreStrip,
+    // which renders the Market Weather composite from cockpit.json. The old
+    // facts grid (Market weather / Fragility cards with raw score-summary
+    // values like 19.17 and -4.10) and the secondary Fragility ScoreCard are
+    // both gone on tactical; the route now leans on PersistentRegimeHeader
+    // for cross-score context and RouteScoreStrip for the primary composite.
+    expect(container.textContent).toContain("Market Weather");
     expect(container.textContent).toContain("Mixed");
-    expect(container.textContent).toContain("19.17");
-    expect(container.textContent).toContain("Fragility");
-    expect(container.textContent).toContain("Moderate");
-    expect(container.textContent).toContain("-4.10");
+    expect(container.textContent).toContain("4.3"); // market_weather composite value
     expect(fetch).not.toHaveBeenCalledWith("/data/series/put_call_spxw.json");
     expect(fetch).not.toHaveBeenCalledWith("/data/series/vx1.json");
     expect(fetch).toHaveBeenCalledWith("/data/events/macro_calendar.json");
@@ -2681,8 +2689,11 @@ describe("data-backed routes", () => {
     );
 
     await waitForContent(container, "Fragility / Shock Risk");
-    expect(container.textContent).toContain("High data quality");
-    expect(container.textContent).toContain("Treasury/bond volatility source is not active.");
+    // PR7 Task 7.2: per-route DataQualityBanner removed; freshness/confidence
+    // now ride on the ambient PersistentRegimeHeader. RouteScoreStrip renders
+    // the Fragility composite from cockpit.json above ShockRiskReadHeader.
+    expect(container.textContent).toContain("Fragility"); // composite label
+    expect(container.textContent).toContain("Low Fragility"); // composite regime_label
     expect(container.textContent).toContain("Visible vs gated stress");
     expect(container.textContent).toContain("Public bond-volatility diagnostic");
     expect(container.textContent).toContain("Realized 10-Year Yield Volatility Proxy");
@@ -2785,7 +2796,10 @@ describe("data-backed routes", () => {
     );
 
     await waitForContent(container, "Long-Term Macro / Allocation Climate");
-    expect(container.textContent).toContain("Current Long-Term Read");
+    // PR7 Tasks 7.1/7.2: HorizonScoreHeader's "Current Long-Term Read" panel
+    // is replaced with RouteScoreStrip carrying the Macro Climate composite
+    // from cockpit.json. The standalone Macro Climate ScoreCard is preserved.
+    expect(container.textContent).toContain("Macro Climate"); // composite label + ScoreCard title
     expect(container.textContent).toContain("Macro bucket grid");
     expect(container.textContent).toContain("Generated official diagnostics");
     expect(container.textContent).toContain("Philadelphia Fed Manufacturing General Activity");
@@ -2887,11 +2901,13 @@ describe("data-backed routes", () => {
 
     await waitForContent(container, "Long-Term Macro / Allocation Climate");
     expect(container.querySelector(".data-error")).toBeNull();
-    expect(container.textContent).toContain("Current Long-Term Read");
-
-    const factCards = Array.from(container.querySelectorAll(".horizon-header__facts .metric-card"));
-    const realYieldsFact = factCards.find((card) => card.textContent?.includes("Real yields"));
-    expect(realYieldsFact?.textContent).toContain("N/A");
+    // PR7 Tasks 7.1/7.2: HorizonScoreHeader replaced by RouteScoreStrip. The
+    // previous Real-yields-N/A facts-grid assertion targeted longTermFacts()
+    // inside HorizonScoreHeader; that helper is gone. The route-doesn't-crash
+    // intent is preserved: header + Macro Climate composite still render
+    // when strategic bucket scores are missing.
+    expect(container.textContent).toContain("Macro Climate");
+    expect(container.textContent).toContain("Macro bucket grid");
   });
 
   it("long-term macro route renders the W3B YieldDecompositionStackChart from the rates dashboard fixture", async () => {
@@ -3389,8 +3405,10 @@ const BODY_BY_ID: Record<string, IaBody> = Object.fromEntries(
 );
 
 // Routes that consume PageInsightHero (the 12 single-domain content routes).
-// LongTermMacroClimate keeps HorizonScoreHeader instead; Overview, Tactical,
-// Calendar, Methodology, HistoricalRegimeReplay also do NOT get a hero.
+// PR7 Tasks 7.1/7.2: LongTermMacroClimate (and Tactical, Fragility) now use
+// RouteScoreStrip — HorizonScoreHeader was removed from those three routes.
+// Overview, Tactical, Calendar, Methodology, HistoricalRegimeReplay all do
+// NOT get a hero.
 const SINGLE_DOMAIN_ROUTES = [
   "Rates.tsx",
   "Volatility.tsx",

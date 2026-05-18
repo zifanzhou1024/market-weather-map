@@ -53,6 +53,7 @@ vi.mock("echarts/renderers", () => ({
 
 vi.mock("../../lib/data", () => ({
   loadCatalog: vi.fn(),
+  loadCockpit: vi.fn(),
   loadDataStatus: vi.fn(),
   loadMacroCalendar: vi.fn(),
   loadPageInsights: vi.fn(),
@@ -70,6 +71,7 @@ vi.mock("../routeSeries", () => ({
 
 import {
   loadCatalog,
+  loadCockpit,
   loadDataStatus,
   loadMacroCalendar,
   loadPageInsights,
@@ -165,6 +167,7 @@ function minimalMacroCalendar() {
 
 function setupDataMocks() {
   vi.mocked(loadCatalog).mockResolvedValue([] as never);
+  vi.mocked(loadCockpit).mockResolvedValue(null as never);
   vi.mocked(loadDataStatus).mockResolvedValue({
     generated_at_utc: "2026-05-11T00:00:00Z",
     series: {},
