@@ -1,6 +1,7 @@
 import type { ScoreHistoryFile, SignalPriorityFile } from "../lib/types";
 import TopSignalList from "./TopSignalList";
 import WhatChangedColumn from "./WhatChangedColumn";
+import { useT } from "../lib/i18n";
 
 interface Props {
   signals: SignalPriorityFile | null;
@@ -8,21 +9,22 @@ interface Props {
 }
 
 export default function TodaysNotable({ signals, history }: Props) {
+  const { t } = useT();
   return (
     <section
       className="todays-notable"
       data-testid="todays-notable"
-      aria-label="Today's notable signals"
+      aria-label={t("panels.todaysNotableLabel")}
     >
       <TopSignalList
-        title="Top Active Warnings"
-        emptyText="No top active warnings in the current snapshot."
+        title={t("sections.topActiveWarnings")}
+        emptyText={t("panels.noTopActiveWarnings")}
         variant="warning"
         signals={signals?.top_warnings ?? []}
       />
       <TopSignalList
-        title="Top Active Supports"
-        emptyText="No top active supports in the current snapshot."
+        title={t("sections.topActiveSupports")}
+        emptyText={t("panels.noTopActiveSupports")}
         variant="support"
         signals={signals?.top_supports ?? []}
       />

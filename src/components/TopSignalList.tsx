@@ -4,29 +4,29 @@ import type {
   SignalMissingEntry
 } from "../lib/types";
 import ExternalResearchLinks from "./ExternalResearchLinks";
+import { useT } from "../lib/i18n";
 
 type SignalEntry = SignalActiveEntry | SignalMissingEntry;
 
 interface TopSignalListProps {
+  /**
+   * Caller-supplied title — used directly for rendering. Callers should pass
+   * the already-translated string (via `t("sections.topActiveWarnings")` etc.)
+   * so this component stays render-only and tests can keep passing literal
+   * English titles.
+   */
   title: string;
   emptyText: string;
   variant: "warning" | "support" | "missing";
   signals: ReadonlyArray<SignalEntry>;
 }
 
-function horizonLabel(horizon: SignalHorizon): string {
-  switch (horizon) {
-    case "short_term":
-      return "Short-term";
-    case "long_term":
-      return "Long-term";
-    case "fragility":
-      return "Fragility";
-    case "both":
-    default:
-      return "Both";
-  }
-}
+const HORIZON_KEY: Record<SignalHorizon, string> = {
+  short_term: "Short-term",
+  long_term: "Long-term",
+  fragility: "Fragility",
+  both: "Both",
+};
 
 function isActive(entry: SignalEntry): entry is SignalActiveEntry {
   return entry.source_status === "active";
@@ -38,6 +38,7 @@ export default function TopSignalList({
   variant,
   signals
 }: TopSignalListProps) {
+  const { t, tCategorical } = useT();
   const sectionClassName = `top-signal-list top-signal-list--${variant}`;
 
   return (
@@ -52,7 +53,7 @@ export default function TopSignalList({
               <div className="top-signal-list-item-header">
                 <span className="top-signal-list-item-label">{signal.label}</span>
                 <span className="top-signal-list-item-horizon">
-                  {horizonLabel(signal.horizon)}
+                  {tCategorical("horizon", HORIZON_KEY[signal.horizon] ?? "Both")}
                 </span>
               </div>
               <p className="top-signal-list-item-message">{signal.message}</p>
@@ -64,22 +65,22 @@ export default function TopSignalList({
               />
               <div className="top-signal-list-item-meta">
                 <span className="top-signal-list-item-importance">
-                  Importance {signal.importance}/5
+                  {t("narrative.importanceOfFive", { vars: { value: signal.importance } })}
                 </span>
                 {isActive(signal) ? (
                   <>
                     <span className="top-signal-list-item-severity">
-                      Severity {signal.severity.toFixed(0)}
+                      {t("narrative.severityValue", { vars: { value: signal.severity.toFixed(0) } })}
                     </span>
                     {signal.freshness_status !== "ok" ? (
                       <span className="top-signal-list-item-freshness">
-                        Freshness: {signal.freshness_status}
+                        {t("narrative.freshnessValue", { vars: { value: signal.freshness_status } })}
                       </span>
                     ) : null}
                   </>
                 ) : (
                   <span className="top-signal-list-item-source">
-                    Source: {signal.source_status}
+                    {t("narrative.sourceValue", { vars: { value: signal.source_status } })}
                   </span>
                 )}
               </div>

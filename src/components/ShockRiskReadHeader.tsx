@@ -6,6 +6,7 @@ import type {
   ShockRiskSnapshotFile
 } from "../lib/types";
 import SignalList from "./SignalList";
+import { useT } from "../lib/i18n";
 
 interface ShockRiskReadHeaderProps {
   catalog?: SeriesCatalogEntry[];
@@ -25,42 +26,50 @@ function hasUsableLabel(value: unknown): value is { label: string } {
 }
 
 export default function ShockRiskReadHeader({ scoreSummary, shockSnapshot }: ShockRiskReadHeaderProps) {
+  const { t, tCategorical } = useT();
   const activeSignals = safeArray<unknown>(shockSnapshot.active_signals).filter(hasUsableLabel);
   const sourceGaps = safeArray<unknown>(shockSnapshot.source_gaps).filter(hasUsableLabel);
   const mismatchWarnings = safeArray<ShockRiskSnapshotFile["mismatch_warnings"][number]>(
     shockSnapshot.mismatch_warnings
   );
+  const shockLabel = tCategorical("compositeReading", shockSnapshot.label);
+  const fragilityLabel = tCategorical("compositeReading", scoreSummary.scores.fragility.label);
 
   return (
     <section className="panel interpretation-panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Current Shock-Risk Read</p>
-          <h3>{shockSnapshot.label}</h3>
+          <p className="eyebrow">{t("sections.currentShockRiskRead")}</p>
+          <h3>{shockLabel}</h3>
           <p>
-            Fragility score {formatNumber(scoreSummary.scores.fragility.score)} ({scoreSummary.scores.fragility.label}).
+            {t("narrative.fragilityScoreHint", {
+              vars: {
+                value: formatNumber(scoreSummary.scores.fragility.score),
+                label: fragilityLabel,
+              },
+            })}
           </p>
         </div>
         <strong className="score-card__value">{formatNumber(shockSnapshot.score)}</strong>
       </div>
       <div className="interpretation-grid">
         <SignalList
-          emptyText="No active stress channels in the current shock-risk snapshot."
+          emptyText={t("narrative.emptyActiveStressChannels")}
           items={activeSignals.map((signal) => signal.label)}
-          title="Active stress channels"
+          title={t("sections.activeStressChannels")}
         />
         <SignalList
-          emptyText="No candidate stress channels in the current shock-risk snapshot."
+          emptyText={t("narrative.emptyCandidateStressChannels")}
           items={sourceGaps.map((gap) => gap.label)}
-          title="Candidate stress channels"
+          title={t("sections.candidateStressChannels")}
         />
         <section>
-          <h4>Mismatch warnings</h4>
-          <p className="score-note">{mismatchWarnings.length} mismatch warning rows.</p>
+          <h4>{t("sections.mismatchWarnings")}</h4>
+          <p className="score-note">{t("panels.shockRiskMismatchCount", { vars: { count: mismatchWarnings.length } })}</p>
         </section>
         <section>
-          <h4>Source gaps</h4>
-          <p className="score-note">{sourceGaps.length} source-gap rows.</p>
+          <h4>{t("sections.sourceGaps")}</h4>
+          <p className="score-note">{t("panels.shockRiskSourceGapsCountShort", { vars: { count: sourceGaps.length } })}</p>
         </section>
       </div>
     </section>

@@ -1,60 +1,42 @@
 import type { SignalCategory, SignalHorizon, SignalMissingEntry } from "../lib/types";
 import ExternalResearchLinks from "./ExternalResearchLinks";
+import { useT } from "../lib/i18n";
 
 interface MissingSignalPanelProps {
   signals: ReadonlyArray<SignalMissingEntry>;
 }
 
-function categoryLabel(category: SignalCategory): string {
-  switch (category) {
-    case "volatility":
-      return "Volatility";
-    case "rates":
-      return "Rates";
-    case "credit":
-      return "Credit";
-    case "liquidity":
-      return "Liquidity";
-    case "dollar":
-      return "Dollar";
-    case "positioning":
-      return "Positioning";
-    case "macro":
-      return "Macro";
-    case "event":
-      return "Event";
-    default:
-      return category;
-  }
-}
+const CATEGORY_KEY: Record<SignalCategory, string> = {
+  volatility: "Volatility",
+  rates: "Rates",
+  credit: "Credit",
+  liquidity: "Liquidity",
+  dollar: "Dollar",
+  positioning: "Positioning",
+  macro: "Macro",
+  event: "Event",
+};
 
-function horizonLabel(horizon: SignalHorizon): string {
-  switch (horizon) {
-    case "short_term":
-      return "Short-term";
-    case "long_term":
-      return "Long-term";
-    case "fragility":
-      return "Fragility";
-    case "both":
-    default:
-      return "Both";
-  }
-}
+const HORIZON_KEY: Record<SignalHorizon, string> = {
+  short_term: "Short-term",
+  long_term: "Long-term",
+  fragility: "Fragility",
+  both: "Both",
+};
 
 export default function MissingSignalPanel({ signals }: MissingSignalPanelProps) {
+  const { t, tCategorical } = useT();
   return (
     <section className="missing-signal-panel" aria-label="Missing high-value signals">
       <header className="missing-signal-panel-header">
-        <h3 className="missing-signal-panel-title">Missing High-Value Signals</h3>
+        <h3 className="missing-signal-panel-title">{t("sections.missingHighValueSignals")}</h3>
         <p className="missing-signal-panel-summary">
-          High-importance signals whose source is not yet active. Surfaced so users know what the
-          read is currently blind to.
+          {t("panels.missingHighValueSummary")}
         </p>
       </header>
       {signals.length === 0 ? (
         <p className="missing-signal-panel-empty">
-          All high-value signals have an active source in the current snapshot.
+          {t("panels.allHighValueActive")}
         </p>
       ) : (
         <ol className="missing-signal-panel-table">
@@ -64,10 +46,10 @@ export default function MissingSignalPanel({ signals }: MissingSignalPanelProps)
                 <span className="missing-signal-panel-label">{signal.label}</span>
                 <div className="missing-signal-panel-badges">
                   <span className="missing-signal-panel-badge missing-signal-panel-badge--category">
-                    {categoryLabel(signal.category)}
+                    {tCategorical("category", CATEGORY_KEY[signal.category] ?? signal.category)}
                   </span>
                   <span className="missing-signal-panel-badge missing-signal-panel-badge--horizon">
-                    {horizonLabel(signal.horizon)}
+                    {tCategorical("horizon", HORIZON_KEY[signal.horizon] ?? "Both")}
                   </span>
                 </div>
               </div>
@@ -79,8 +61,10 @@ export default function MissingSignalPanel({ signals }: MissingSignalPanelProps)
                 label={signal.label}
               />
               <div className="missing-signal-panel-meta">
-                <span>Importance {signal.importance}/5</span>
-                <span className="missing-signal-panel-source">Source: {signal.source_status}</span>
+                <span>{t("narrative.importanceOfFive", { vars: { value: signal.importance } })}</span>
+                <span className="missing-signal-panel-source">
+                  {t("narrative.sourceValue", { vars: { value: signal.source_status } })}
+                </span>
               </div>
             </li>
           ))}

@@ -1,4 +1,5 @@
 import type { ScoreHistoryFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface Props {
   history: ScoreHistoryFile | null;
@@ -7,15 +8,16 @@ interface Props {
 const MAX_ROWS = 6;
 
 export default function WhatChangedColumn({ history }: Props) {
+  const { t } = useT();
   if (history === null) {
     return (
       <section
         className="what-changed-column what-changed-column--loading"
         aria-busy="true"
       >
-        <h3 className="what-changed-column__title">What Changed</h3>
+        <h3 className="what-changed-column__title">{t("sections.whatChanged")}</h3>
         <p className="what-changed-column__placeholder">
-          — loading attribution —
+          {t("panels.whatChangedLoading")}
         </p>
       </section>
     );
@@ -43,10 +45,10 @@ export default function WhatChangedColumn({ history }: Props) {
       className="what-changed-column"
       aria-label="What changed since last refresh"
     >
-      <h3 className="what-changed-column__title">What Changed</h3>
+      <h3 className="what-changed-column__title">{t("sections.whatChanged")}</h3>
       {unique.length === 0 ? (
         <p className="what-changed-column__empty">
-          All quiet — no recent attribution changes.
+          {t("panels.whatChangedEmpty")}
         </p>
       ) : (
         <ul className="what-changed-column__list">

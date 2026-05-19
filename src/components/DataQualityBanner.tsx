@@ -30,6 +30,15 @@ const TIER_KEYS: Record<DataQualityTier, string> = {
   thin: "dataQuality.tierThin"
 };
 
+// Tier badge keys yield idiomatic full-string labels ("High data quality" /
+// "数据质量评级: 高") instead of awkward "tier_word + title" concatenation.
+const TIER_BADGE_KEYS: Record<DataQualityTier, string> = {
+  high: "dataQuality.tierBadgeHigh",
+  medium: "dataQuality.tierBadgeMedium",
+  low: "dataQuality.tierBadgeLow",
+  thin: "dataQuality.tierBadgeThin"
+};
+
 const VALID_TIERS: ReadonlySet<DataQualityTier> = new Set<DataQualityTier>([
   "high",
   "medium",
@@ -93,16 +102,18 @@ export default function DataQualityBanner({ dataQuality }: DataQualityBannerProp
       <section className="panel data-quality-banner" aria-label={title}>
         <div className="data-quality-banner__summary">
           <p className="eyebrow">{title}</p>
-          <h3>{title} unavailable</h3>
+          <h3>{t("dataQuality.unavailable")}</h3>
         </div>
-        <p className="score-note">Score-summary data quality is missing or malformed.</p>
+        <p className="score-note">{t("dataQuality.malformed")}</p>
       </section>
     );
   }
 
   const { tier, overallConfidence, coverage, freshness, model, source, reasons } = validDataQuality;
   const tierTone = TIER_TONE[tier];
-  const tierWord = t(TIER_KEYS[tier]);
+  // Idiomatic full string ("High data quality" / "数据质量评级: 高") instead of
+  // English-style concatenation that read awkwardly under zh.
+  const tierBadge = t(TIER_BADGE_KEYS[tier]);
 
   return (
     <section className="panel data-quality-banner" aria-label={title}>
@@ -115,7 +126,7 @@ export default function DataQualityBanner({ dataQuality }: DataQualityBannerProp
             className={`data-quality-banner__tier status-pill ${tierTone}`}
             data-tier={tier}
           >
-            {tierWord} {title.toLowerCase()}
+            {tierBadge}
           </span>
           <span className="data-quality-banner__overall">
             <GlossaryTerm term="confidence aggregate">
@@ -125,7 +136,7 @@ export default function DataQualityBanner({ dataQuality }: DataQualityBannerProp
         </div>
       </div>
       <details className="data-quality-banner__details">
-        <summary>Why this tier?</summary>
+        <summary>{t("dataQuality.whyThisTier")}</summary>
         {reasons.length > 0 ? (
           <ul className="score-list data-quality-banner__reasons">
             {reasons.map((reason, index) => (
@@ -133,7 +144,7 @@ export default function DataQualityBanner({ dataQuality }: DataQualityBannerProp
             ))}
           </ul>
         ) : (
-          <p className="score-note">No active data-quality issues.</p>
+          <p className="score-note">{t("dataQuality.noActiveIssues")}</p>
         )}
         <dl className="data-quality-banner__components">
           <div>
