@@ -26,7 +26,7 @@ function hasUsableLabel(value: unknown): value is { label: string } {
 }
 
 export default function ShockRiskReadHeader({ scoreSummary, shockSnapshot }: ShockRiskReadHeaderProps) {
-  const { t, tCategorical } = useT();
+  const { t, tCategorical, tDriver } = useT();
   const activeSignals = safeArray<unknown>(shockSnapshot.active_signals).filter(hasUsableLabel);
   const sourceGaps = safeArray<unknown>(shockSnapshot.source_gaps).filter(hasUsableLabel);
   const mismatchWarnings = safeArray<ShockRiskSnapshotFile["mismatch_warnings"][number]>(
@@ -55,12 +55,12 @@ export default function ShockRiskReadHeader({ scoreSummary, shockSnapshot }: Sho
       <div className="interpretation-grid">
         <SignalList
           emptyText={t("narrative.emptyActiveStressChannels")}
-          items={activeSignals.map((signal) => signal.label)}
+          items={activeSignals.map((signal) => tDriver(signal.label))}
           title={t("sections.activeStressChannels")}
         />
         <SignalList
           emptyText={t("narrative.emptyCandidateStressChannels")}
-          items={sourceGaps.map((gap) => gap.label)}
+          items={sourceGaps.map((gap) => tDriver(gap.label))}
           title={t("sections.candidateStressChannels")}
         />
         <section>

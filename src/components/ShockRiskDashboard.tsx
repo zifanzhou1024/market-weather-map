@@ -11,7 +11,7 @@ function safeArray<T>(value: unknown): T[] {
 }
 
 export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps) {
-  const { t, tCategorical } = useT();
+  const { t, tCategorical, tDriver, tNarrative, locale } = useT();
   const activeSignals = safeArray<(typeof snapshot.active_signals)[number]>(snapshot.active_signals);
   const sourceGaps = safeArray<(typeof snapshot.source_gaps)[number]>(snapshot.source_gaps);
   const label = tCategorical("compositeReading", snapshot.label);
@@ -51,18 +51,21 @@ export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps
       </div>
       {activeSignals.length > 0 ? (
         <div className="candidate-source-list" role="list">
-          {activeSignals.map((signal) => (
-            <article className="candidate-source-row" key={signal.id} role="listitem">
-              <div>
-                <h4>{signal.label}</h4>
-                <p>{signal.message}</p>
-                <p>
-                  {t("panels.valuePrefix")} {formatNumber(signal.value)}; {t("panels.changePrefix")} {formatSigned(signal.change)}.
-                </p>
-              </div>
-              <span className="status-pill status-partial">{t("panels.scorePrefix")} {formatSigned(signal.score)}</span>
-            </article>
-          ))}
+          {activeSignals.map((signal) => {
+            const msg = tNarrative(signal.message);
+            return (
+              <article className="candidate-source-row" key={signal.id} role="listitem">
+                <div>
+                  <h4>{tDriver(signal.label)}</h4>
+                  <p lang={locale === "zh" && !msg.matched ? "en" : undefined}>{msg.text}</p>
+                  <p>
+                    {t("panels.valuePrefix")} {formatNumber(signal.value)}; {t("panels.changePrefix")} {formatSigned(signal.change)}.
+                  </p>
+                </div>
+                <span className="status-pill status-partial">{t("panels.scorePrefix")} {formatSigned(signal.score)}</span>
+              </article>
+            );
+          })}
         </div>
       ) : (
         <p className="score-note">{t("panels.noVisibleSignals")}</p>
@@ -73,17 +76,20 @@ export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps
       </div>
       {sourceGaps.length > 0 ? (
         <div className="candidate-source-list" role="list">
-          {sourceGaps.map((gap) => (
-            <article className="candidate-source-row" key={gap.id} role="listitem">
-              <div>
-                <h4>{gap.label}</h4>
-                <p>{gap.message}</p>
-              </div>
-              <span className={`status-pill status-${gap.status}`}>
-                {tCategorical("status", statusLabel(gap.status))}
-              </span>
-            </article>
-          ))}
+          {sourceGaps.map((gap) => {
+            const gapMsg = tNarrative(gap.message);
+            return (
+              <article className="candidate-source-row" key={gap.id} role="listitem">
+                <div>
+                  <h4>{tDriver(gap.label)}</h4>
+                  <p lang={locale === "zh" && !gapMsg.matched ? "en" : undefined}>{gapMsg.text}</p>
+                </div>
+                <span className={`status-pill status-${gap.status}`}>
+                  {tCategorical("status", statusLabel(gap.status))}
+                </span>
+              </article>
+            );
+          })}
         </div>
       ) : (
         <p className="score-note">{t("panels.sourceGapsEmpty")}</p>

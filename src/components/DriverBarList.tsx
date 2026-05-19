@@ -47,17 +47,26 @@ function formatConfidence(value: number): string {
   return value.toFixed(2);
 }
 
-function buildTooltip(driver: Driver): string {
+interface BuildTooltipDeps {
+  // Resolved status / freshness / confidence labels — the caller resolves them
+  // through `useT()` (which is a hook and cannot be called outside the
+  // component body) and threads them in.
+  freshnessLabel: string;
+  freshnessPrefix: string;
+  confidencePrefix: string;
+}
+
+function buildTooltip(driver: Driver, deps: BuildTooltipDeps): string {
   const parts = [
     driver.why_it_matters,
-    `freshness: ${driver.freshness_status}`,
-    `confidence: ${formatConfidence(driver.confidence)}`
+    `${deps.freshnessPrefix}: ${deps.freshnessLabel}`,
+    `${deps.confidencePrefix}: ${formatConfidence(driver.confidence)}`
   ];
   return parts.join(" — ");
 }
 
 export default function DriverBarList({ items, max }: DriverBarListProps) {
-  const { t } = useT();
+  const { t, tCategorical, tNarrative } = useT();
   if (items.length === 0) {
     return (
       <p className="driver-bar-list__empty">{t("narrative.emptyDrivers")}</p>
@@ -72,15 +81,32 @@ export default function DriverBarList({ items, max }: DriverBarListProps) {
   const peak = Math.max(...visible.map((d) => d.priority), 0);
   const denominator = peak > 0 ? peak : 1;
 
+  // Resolve prefixes once for the tooltip. These are static UI chrome
+  // strings, not Python-emitted, so the dictionary lookup is safe.
+  const freshnessPrefix = t("narrative.freshnessPrefix");
+  const confidencePrefix = t("narrative.confidence");
+
   return (
     <ul className="driver-bar-list">
       {visible.map((driver) => {
         const widthPct = Math.max(0, Math.min(100, (driver.priority / denominator) * 100));
+        // Map cockpit freshness ("ok" / "stale" / "unavailable") through the
+        // status categorical so the tooltip shows "新鲜 / 过时 / 不可用" under zh.
+        const freshnessLabel = tCategorical("status", driver.freshness_status);
+        const tooltipDriver: Driver = {
+          ...driver,
+          why_it_matters: tNarrative(driver.why_it_matters).text,
+        };
+        const tooltip = buildTooltip(tooltipDriver, {
+          freshnessLabel,
+          freshnessPrefix,
+          confidencePrefix,
+        });
         return (
           <li
             key={driver.id}
             className="driver-bar-list__row"
-            title={buildTooltip(driver)}
+            title={tooltip}
             aria-label={`${driver.label} (${driver.direction}, priority ${driver.priority.toFixed(0)})`}
           >
             <div className="driver-bar-list__label-row">

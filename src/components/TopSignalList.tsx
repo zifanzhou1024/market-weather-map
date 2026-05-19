@@ -38,7 +38,7 @@ export default function TopSignalList({
   variant,
   signals
 }: TopSignalListProps) {
-  const { t, tCategorical } = useT();
+  const { t, tCategorical, tDriver, tNarrative, locale } = useT();
   const sectionClassName = `top-signal-list top-signal-list--${variant}`;
 
   return (
@@ -48,44 +48,60 @@ export default function TopSignalList({
         <p className="top-signal-list-empty">{emptyText}</p>
       ) : (
         <ol className="top-signal-list-items">
-          {signals.map((signal) => (
-            <li key={signal.id} className="top-signal-list-item">
-              <div className="top-signal-list-item-header">
-                <span className="top-signal-list-item-label">{signal.label}</span>
-                <span className="top-signal-list-item-horizon">
-                  {tCategorical("horizon", HORIZON_KEY[signal.horizon] ?? "Both")}
-                </span>
-              </div>
-              <p className="top-signal-list-item-message">{signal.message}</p>
-              <p className="top-signal-list-item-why">{signal.why_it_matters}</p>
-              <ExternalResearchLinks
-                className="top-signal-list-item-links"
-                id={signal.id}
-                label={signal.label}
-              />
-              <div className="top-signal-list-item-meta">
-                <span className="top-signal-list-item-importance">
-                  {t("narrative.importanceOfFive", { vars: { value: signal.importance } })}
-                </span>
-                {isActive(signal) ? (
-                  <>
-                    <span className="top-signal-list-item-severity">
-                      {t("narrative.severityValue", { vars: { value: signal.severity.toFixed(0) } })}
-                    </span>
-                    {signal.freshness_status !== "ok" ? (
-                      <span className="top-signal-list-item-freshness">
-                        {t("narrative.freshnessValue", { vars: { value: signal.freshness_status } })}
-                      </span>
-                    ) : null}
-                  </>
-                ) : (
-                  <span className="top-signal-list-item-source">
-                    {t("narrative.sourceValue", { vars: { value: signal.source_status } })}
+          {signals.map((signal) => {
+            const messageNarr = tNarrative(signal.message);
+            const whyNarr = tNarrative(signal.why_it_matters);
+            return (
+              <li key={signal.id} className="top-signal-list-item">
+                <div className="top-signal-list-item-header">
+                  <span className="top-signal-list-item-label">{tDriver(signal.label)}</span>
+                  <span className="top-signal-list-item-horizon">
+                    {tCategorical("horizon", HORIZON_KEY[signal.horizon] ?? "Both")}
                   </span>
-                )}
-              </div>
-            </li>
-          ))}
+                </div>
+                <p
+                  className="top-signal-list-item-message"
+                  lang={locale === "zh" && !messageNarr.matched ? "en" : undefined}
+                >
+                  {messageNarr.text}
+                </p>
+                <p
+                  className="top-signal-list-item-why"
+                  lang={locale === "zh" && !whyNarr.matched ? "en" : undefined}
+                >
+                  {whyNarr.text}
+                </p>
+                <ExternalResearchLinks
+                  className="top-signal-list-item-links"
+                  id={signal.id}
+                  label={signal.label}
+                />
+                <div className="top-signal-list-item-meta">
+                  <span className="top-signal-list-item-importance">
+                    {t("narrative.importanceOfFive", { vars: { value: signal.importance } })}
+                  </span>
+                  {isActive(signal) ? (
+                    <>
+                      <span className="top-signal-list-item-severity">
+                        {t("narrative.severityValue", { vars: { value: signal.severity.toFixed(0) } })}
+                      </span>
+                      {signal.freshness_status !== "ok" ? (
+                        <span className="top-signal-list-item-freshness">
+                          {t("narrative.freshnessValue", {
+                            vars: { value: tCategorical("status", signal.freshness_status) },
+                          })}
+                        </span>
+                      ) : null}
+                    </>
+                  ) : (
+                    <span className="top-signal-list-item-source">
+                      {t("narrative.sourceValue", { vars: { value: tCategorical("status", signal.source_status) } })}
+                    </span>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </ol>
       )}
     </section>

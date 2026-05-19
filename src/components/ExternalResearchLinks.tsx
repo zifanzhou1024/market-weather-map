@@ -1,4 +1,5 @@
 import { mergeExternalResearchLinks, type ExternalResearchLink } from "../lib/externalResearchLinks";
+import { useT } from "../lib/i18n";
 
 interface ExternalResearchLinksProps {
   id: string;
@@ -13,6 +14,7 @@ export default function ExternalResearchLinks({
   links,
   className
 }: ExternalResearchLinksProps) {
+  const { tDriver } = useT();
   const externalLinks = mergeExternalResearchLinks(id, links);
   if (!externalLinks.length) return null;
 
@@ -23,7 +25,7 @@ export default function ExternalResearchLinks({
     >
       {externalLinks.map((link) => (
         <a href={link.url} key={`${id}-${link.label}-${link.url}`} rel="noreferrer" target="_blank">
-          {link.label}
+          {tDriver(link.label)}
         </a>
       ))}
     </span>

@@ -39,7 +39,10 @@ function safeScore(score: number | null): number {
   return score;
 }
 
-function buildSortedRows(signals: ShockRiskSignal[]): BarDatum[] {
+function buildSortedRows(
+  signals: ShockRiskSignal[],
+  labelFor: (label: string) => string,
+): BarDatum[] {
   return (
     signals
       .slice()
@@ -51,7 +54,7 @@ function buildSortedRows(signals: ShockRiskSignal[]): BarDatum[] {
           score,
           signalValue: signal.value,
           change: signal.change,
-          label: signal.label
+          label: labelFor(signal.label)
         };
       })
       // ECharts horizontal bars draw with the first y-category at the bottom; sort
@@ -63,8 +66,15 @@ function buildSortedRows(signals: ShockRiskSignal[]): BarDatum[] {
 export default function ShockRiskContributionChart({
   activeSignals
 }: ShockRiskContributionChartProps) {
-  const { t } = useT();
-  const rows = useMemo(() => buildSortedRows(activeSignals), [activeSignals]);
+  const { t, tDriver } = useT();
+  const rows = useMemo(
+    () => buildSortedRows(activeSignals, (label) => tDriver(label)),
+    // tDriver is a stable per-locale function but not memoized itself —
+    // depending on activeSignals plus tDriver identity is acceptable since
+    // the cost is tiny and re-rendering on locale change is the desired
+    // behavior.
+    [activeSignals, tDriver],
+  );
 
   if (activeSignals.length === 0) {
     return (
