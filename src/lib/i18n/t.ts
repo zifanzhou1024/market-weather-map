@@ -3,6 +3,8 @@ import { useLocale } from "./locale";
 import { en, type En } from "./en";
 import { zh } from "./zh";
 import { SIGNAL_NAMES, COCKPIT_ID_TO_SIGNAL_KEY } from "./signals";
+import { DRIVER_TITLE_TRANSLATIONS } from "./drivers";
+import { tNarrative as runNarrativeMatcher } from "./narrative";
 
 type Dict = En;
 
@@ -40,6 +42,23 @@ export interface UseT {
    * the original separator, so multi-token labels still localize.
    */
   tCategorical: (group: string, value: string | null | undefined) => string;
+  /**
+   * Translate a Python-emitted driver title / signal label / sub-component
+   * label via the `DRIVER_TITLE_TRANSLATIONS` lookup table in `drivers.ts`.
+   * Returns the input unchanged under `en`. Under `zh`, returns the matched
+   * Chinese string when present, otherwise the original English string.
+   */
+  tDriver: (title: string | null | undefined) => string;
+  /**
+   * Best-effort narrative-prose translator for Python-emitted driver
+   * messages (`signal.message`) and why-it-matters strings
+   * (`signal.why_it_matters`, `routeInsight.why_it_matters`). See
+   * `narrative.ts` for the template list and SUBJECT_TRANSLATIONS lookup.
+   *
+   * Returns a tuple-like object so callers can distinguish "translated" from
+   * "fell back to English" and render the fallback with `lang="en"`.
+   */
+  tNarrative: (text: string | null | undefined) => { text: string; matched: boolean };
   locale: "en" | "zh";
 }
 
@@ -148,7 +167,18 @@ export function useT(): UseT {
     return categoricalDirect(dict, group, trimmed) ?? value;
   };
 
-  return { t, tCategorical, locale };
+  const tDriver = (title: string | null | undefined): string => {
+    if (title === null || title === undefined || title === "") return title ?? "";
+    if (locale !== "zh") return title;
+    const trimmed = title.trim();
+    if (!trimmed) return title;
+    return DRIVER_TITLE_TRANSLATIONS[trimmed] ?? title;
+  };
+
+  const tNarrative = (text: string | null | undefined): { text: string; matched: boolean } =>
+    runNarrativeMatcher(text, locale);
+
+  return { t, tCategorical, tDriver, tNarrative, locale };
 }
 
 export { SIGNAL_NAMES, COCKPIT_ID_TO_SIGNAL_KEY };

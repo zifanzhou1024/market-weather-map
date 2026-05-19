@@ -125,7 +125,7 @@ export const zh: En = {
     sourceGating: "源准入控制",
     limitations: "局限性",
     marketWeather: "市场天气评分",
-    macroClimate: "宏观气候评分",
+    macroClimate: "宏观环境评分",
     fragility: "脆弱度评分",
     transformations: "转换与说明",
     sourceAccess: "源访问状态",
@@ -134,7 +134,7 @@ export const zh: En = {
     marketWeatherBody2:
       "活跃的桶键包括 {{credit}}、{{liquidity}}、{{rates}}、{{volatility}}、{{dollar}}、{{commodities}} 与 {{sentiment}}。",
     macroClimateBody1:
-      "宏观气候评分将较慢的经济输入与当前市场行情区分开。增长、就业、通胀、消费与生产活动、住房、10 年期实际收益率被作为背景读取,用以判断宏观底色是改善、混合、过热还是放缓。",
+      "宏观环境评分将较慢的经济输入与当前市场行情区分开。增长、就业、通胀、消费与生产活动、住房、10 年期实际收益率被作为背景读取,用以判断宏观底色是改善、混合、过热还是放缓。",
     macroClimateBody2:
       "对外输出的宏观桶包括 growth(增长)、labor(就业)、inflation(通胀)、consumer_production(消费与生产)、housing(住房)与 real_yields(实际收益率)。",
     fragilityBody1:
@@ -207,7 +207,7 @@ export const zh: En = {
     shortTermHeading: "短期市场反应",
     shortTermIntro: "当前市场状态、波动率曲线、信用、美元、实际收益率与流动性输入。",
     longTermHeading: "长期宏观 / 配置环境",
-    longTermIntro: "宏观气候评分、战略桶背景与收益率分解历史。",
+    longTermIntro: "宏观环境评分、战略桶背景与收益率分解历史。",
     fragilityHeading: "脆弱度与冲击风险",
     fragilityIntro: "当前脆弱度评分、冲击风险压力、尾部风险源就绪度及数据缺口。",
     channelsHeading: "渠道",
@@ -218,7 +218,7 @@ export const zh: En = {
     methodologyHeading: "本仪表盘工作原理",
     methodologyIntro: "本静态站点解释市场状态(regime),不提供投资建议。",
     marketWeatherEyebrow: "市场天气",
-    macroClimateEyebrow: "宏观气候",
+    macroClimateEyebrow: "宏观环境",
     strategicEyebrow: "战略",
     fragilityEyebrow: "脆弱度",
     tacticalEyebrow: "战术交易天气",
@@ -245,7 +245,7 @@ export const zh: En = {
     dailyChecklist: "每日检查清单",
     strategicBuckets: "战略桶",
     macroBucketGrid: "宏观桶网格",
-    macroClimateBucketContribution: "宏观气候桶贡献",
+    macroClimateBucketContribution: "宏观环境桶贡献",
     growthLaborInflationPulse: "增长 / 就业 / 通胀脉冲",
     cycleRead: "周期读数",
     whatThisPageSays: "本页说明",
@@ -265,7 +265,7 @@ export const zh: En = {
     vixVvixMismatch: "VIX 与 VVIX 百分位错位",
     fragilityContext: "脆弱度背景",
     fragilityScore: "脆弱度评分",
-    macroClimateScoreAria: "宏观气候评分",
+    macroClimateScoreAria: "宏观环境评分",
     todaysNotableAria: "今日关注信号",
     score: "分数",
     weight: "权重",
@@ -273,7 +273,7 @@ export const zh: En = {
     activeStressChannels: "活跃压力通道",
     candidateStressChannels: "候选压力通道",
     mismatchWarnings: "错位警告",
-    mismatchSeverity: "错位严重度",
+    mismatchSeverity: "错位严重程度",
     sourceGaps: "源缺口",
     visibleStress: "可见压力",
     gatedStress: "受限压力",
@@ -353,7 +353,8 @@ export const zh: En = {
     caveats: "注意事项",
     recentChanges: "近期变化",
     importance: "重要性",
-    severity: "严重度",
+    // Mainland press idiom: 严重程度 (vs the more literal 严重度).
+    severity: "严重程度",
     confidence: "置信度",
     sourcePrefix: "来源",
     freshnessPrefix: "新鲜度",
@@ -374,7 +375,7 @@ export const zh: En = {
     fragilityCombines: "脆弱度结合了已观测的跨资产压力与受限尾部风险输入的源就绪度。",
     fragilityScoreHint: "脆弱度评分 {{value}} ({{label}})。",
     importanceOfFive: "重要性 {{value}}/5",
-    severityValue: "严重度 {{value}}",
+    severityValue: "严重程度 {{value}}",
     freshnessValue: "新鲜度:{{value}}",
     sourceValue: "来源:{{value}}",
     notRated: "未计入评分",
@@ -519,19 +520,35 @@ export const zh: En = {
   },
   categoricals: {
     regime: {
+      // Mainland press idiom: 紧缩 / 避险. (风险规避 is also widely used —
+      // documented as an alternative for the formal register; 避险 fits
+      // compact UI cells better.)
       "Tightening / risk-off": "紧缩 / 避险",
       "Easing / risk-on": "宽松 / 风险偏好",
+      // Piecewise tokens for slash phrases like "Real-yield / dollar".
+      Tightening: "紧缩",
+      Easing: "宽松",
+      "risk-off": "避险",
+      "risk-on": "风险偏好",
       Mixed: "混合",
       "Risk-On": "风险偏好",
       "Risk-Off": "避险",
       Neutral: "中性",
       Stress: "压力",
-      "Reallocation / rotation": "再配置 / 轮动",
+      // Mainland press idiom: 再平衡 = rebalancing (standard);
+      // 板块轮动 = sector rotation (standard).
+      "Reallocation / rotation": "再平衡 / 板块轮动",
+      Reallocation: "再平衡",
+      Rotation: "板块轮动",
       "Late-cycle stress": "晚周期压力",
-      "Early expansion": "早期扩张",
-      "Mid expansion": "中期扩张",
-      Slowdown: "放缓",
+      // Press convention: 扩张初期 / 扩张中期 lead with the cycle, then the phase.
+      "Early expansion": "扩张初期",
+      "Mid expansion": "扩张中期",
+      Slowdown: "增速放缓",
       Recovery: "复苏",
+      // The page-insight regime line sometimes emits "Calm" / "Mixed" — covered
+      // in compositeReading. Slash-phrase tokens for "Real-yield / dollar" etc.
+      // are covered above and in the piecewise translator.
     },
     compositeReading: {
       Mixed: "混合",
@@ -549,23 +566,53 @@ export const zh: En = {
       Stressed: "承压",
       "Mixed shock risk": "混合冲击风险",
       "Not scored": "未计入评分",
+      // Reading labels that also appear in `composite_scores[].label`.
+      "Volatility tail risk": "波动率尾部风险",
+      "Credit spread pressure": "信用利差压力",
+      "Real yields": "实际收益率",
+      // Piecewise translation tokens that compose into slash phrases:
+      "Tightening": "紧缩",
+      "Easing": "宽松",
+      "risk-off": "避险",
+      "risk-on": "风险偏好",
+      "Risk-off": "避险",
+      "Risk-on": "风险偏好",
     },
     bucketReading: {
       Supportive: "支撑",
       Pressure: "承压",
       Mixed: "混合",
       "Not scored": "未计入评分",
+      Calm: "平静",
+      Stressed: "承压",
+      // Slash-phrase building blocks reused for bucket reads.
+      Tightening: "紧缩",
+      Easing: "宽松",
+      "risk-off": "避险",
+      "risk-on": "风险偏好",
+      Reallocation: "再平衡",
+      Rotation: "板块轮动",
+      "Real yields": "实际收益率",
     },
     status: {
       OK: "正常",
-      Stale: "陈旧",
+      // Mainland data-freshness press idiom: 过时 (out-of-date) reads more
+      // naturally than 陈旧 ("old / obsolete") for stale market data.
+      Stale: "过时",
       Partial: "部分",
       Failed: "失败",
       "Terms Review Needed": "待条款审核",
       Unavailable: "不可用",
       Fresh: "新鲜",
       FRESH: "新鲜",
-      STALE: "陈旧",
+      STALE: "过时",
+      // Lowercase forms also emitted by the freshness-state value pipeline.
+      fresh: "新鲜",
+      stale: "过时",
+      ok: "新鲜",
+      unknown: "未知",
+      missing: "缺失",
+      unavailable: "不可用",
       Missing: "缺失",
       "Active data": "活跃数据",
       "Source review required": "需源审核",

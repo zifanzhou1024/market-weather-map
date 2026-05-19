@@ -8,7 +8,7 @@ interface Props {
 const MAX_ROWS = 6;
 
 export default function WhatChangedColumn({ history }: Props) {
-  const { t } = useT();
+  const { t, tNarrative, locale } = useT();
   if (history === null) {
     return (
       <section
@@ -52,11 +52,18 @@ export default function WhatChangedColumn({ history }: Props) {
         </p>
       ) : (
         <ul className="what-changed-column__list">
-          {unique.map((line, i) => (
-            <li key={`${i}:${line}`} className="what-changed-column__item">
-              {line}
-            </li>
-          ))}
+          {unique.map((line, i) => {
+            const narr = tNarrative(line);
+            return (
+              <li
+                key={`${i}:${line}`}
+                className="what-changed-column__item"
+                lang={locale === "zh" && !narr.matched ? "en" : undefined}
+              >
+                {narr.text}
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>
