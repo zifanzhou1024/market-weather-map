@@ -11,9 +11,9 @@ export const SIGNAL_NAMES: Record<string, SignalName> = {
   vvix: { zh: "波动率的波动率", original: "VVIX" },
   move: { zh: "MOVE 债券波动率指数", original: "MOVE" },
   skew: { zh: "偏度指数", original: "SKEW" },
-  hyOas: { zh: "高收益债期权调整利差", original: "HY OAS" },
-  igOas: { zh: "投资级期权调整利差", original: "IG OAS" },
-  bbbOas: { zh: "BBB 期权调整利差", original: "BBB OAS" },
+  hyOas: { zh: "高收益债期权调整价差", original: "HY OAS" },
+  igOas: { zh: "投资级期权调整价差", original: "IG OAS" },
+  bbbOas: { zh: "BBB 期权调整价差", original: "BBB OAS" },
   treasury10y: { zh: "10 年期美债收益率", original: "US 10Y" },
   treasury2y: { zh: "2 年期美债收益率", original: "US 2Y" },
   treasury30y: { zh: "30 年期美债收益率", original: "US 30Y" },
@@ -33,7 +33,9 @@ export const SIGNAL_NAMES: Record<string, SignalName> = {
   acm: { zh: "ACM 模型", original: "ACM" },
   // Composite scores — rendered as row labels in Diff and elsewhere.
   marketWeather: { zh: "市场天气", original: "Market Weather" },
-  macroClimate: { zh: "宏观气候", original: "Macro Climate" },
+  // Mainland press idiom: 宏观环境 reads as macro environment / backdrop;
+  // the prior 宏观气候 was a literal but unusual phrase.
+  macroClimate: { zh: "宏观环境", original: "Macro Climate" },
   fragility: { zh: "脆弱度", original: "Fragility" },
 };
 

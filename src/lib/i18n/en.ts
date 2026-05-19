@@ -522,19 +522,26 @@ export const en = {
   categoricals: {
     // Regime labels emitted by Python (cockpit.regime.label) — full strings.
     regime: {
-      "Tightening / risk-off": "紧缩 / 避险",
-      "Easing / risk-on": "宽松 / 风险偏好",
-      Mixed: "混合",
+      "Tightening / risk-off": "Tightening / risk-off",
+      "Easing / risk-on": "Easing / risk-on",
+      Mixed: "Mixed",
       "Risk-On": "Risk-On",
       "Risk-Off": "Risk-Off",
       Neutral: "Neutral",
       Stress: "Stress",
       "Reallocation / rotation": "Reallocation / rotation",
+      Reallocation: "Reallocation",
+      Rotation: "Rotation",
       "Late-cycle stress": "Late-cycle stress",
       "Early expansion": "Early expansion",
       "Mid expansion": "Mid expansion",
       Slowdown: "Slowdown",
       Recovery: "Recovery",
+      // Piecewise slash-tokens reused for multi-token labels.
+      Tightening: "Tightening",
+      Easing: "Easing",
+      "risk-off": "risk-off",
+      "risk-on": "risk-on",
     },
     // Composite-score reading labels (cockpit.composite_scores[].regime_label / label / cycle reads).
     compositeReading: {
@@ -553,6 +560,15 @@ export const en = {
       Stressed: "Stressed",
       "Mixed shock risk": "Mixed shock risk",
       "Not scored": "Not scored",
+      "Volatility tail risk": "Volatility tail risk",
+      "Credit spread pressure": "Credit spread pressure",
+      "Real yields": "Real yields",
+      Tightening: "Tightening",
+      Easing: "Easing",
+      "risk-off": "risk-off",
+      "risk-on": "risk-on",
+      "Risk-off": "Risk-off",
+      "Risk-on": "Risk-on",
     },
     // Cycle-bucket reading words used by MacroCyclePanel.
     bucketReading: {
@@ -560,6 +576,15 @@ export const en = {
       Pressure: "Pressure",
       Mixed: "Mixed",
       "Not scored": "Not scored",
+      Calm: "Calm",
+      Stressed: "Stressed",
+      Tightening: "Tightening",
+      Easing: "Easing",
+      "risk-off": "risk-off",
+      "risk-on": "risk-on",
+      Reallocation: "Reallocation",
+      Rotation: "Rotation",
+      "Real yields": "Real yields",
     },
     // Status pills emitted by lib/formatters.statusLabel().
     status: {
@@ -572,6 +597,13 @@ export const en = {
       Fresh: "Fresh",
       FRESH: "FRESH",
       STALE: "STALE",
+      // Lowercase forms emitted by the freshness-state value pipeline.
+      fresh: "fresh",
+      stale: "stale",
+      ok: "fresh",
+      unknown: "unknown",
+      missing: "missing",
+      unavailable: "unavailable",
       Missing: "Missing",
       "Active data": "Active data",
       "Source review required": "Source review required",
