@@ -18,12 +18,12 @@ export default function History() {
   return (
     <main className="page-shell history">
       <section className="page-heading">
-        <p className="eyebrow" lang="en">Cross-asset history</p>
+        <p className="eyebrow">{t("routes.historyEyebrow")}</p>
         <h2>{t("routes.historyHeading")}</h2>
-        <p lang="en">Regime quadrant trail + descriptive analogues of prior real-yield / dollar / credit / VIX-curve patterns.</p>
+        <p>{t("routes.historyIntro")}</p>
       </section>
       <HistoryTabs />
-      <Suspense fallback={<div className="channels__loading">Loading…</div>}>
+      <Suspense fallback={<div className="channels__loading">{t("routes.historyLoading")}</div>}>
         <Body />
       </Suspense>
     </main>

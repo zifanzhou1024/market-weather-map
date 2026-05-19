@@ -89,13 +89,13 @@ export default function Calendar() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow" lang="en">Event risk</p>
+        <p className="eyebrow">{t("routes.calendarEyebrow")}</p>
         <h2>{t("routes.calendarHeading")}</h2>
-        <p lang="en">Descriptive release and policy-event context from official public source pages.</p>
+        <p>{t("routes.calendarIntro")}</p>
       </section>
       {error ? (
         <p className="data-error" role="alert">
-          Data error: {error}
+          {t("chrome.dataErrorPrefix")}: {error}
         </p>
       ) : null}
       {data ? (
