@@ -3,7 +3,7 @@
     "treasury_auction_supply"
   ],
   "frequency": "weekly",
-  "generated_at_utc": "2026-05-16T16:14:11Z",
+  "generated_at_utc": "2026-05-19T01:29:46Z",
   "method": "30-day trailing sum of Treasury auction amounts divided by the trailing 365-day rolling mean of those sums.",
   "observations": [
     {
@@ -10370,6 +10370,11 @@
       "date": "2026-05-11",
       "value": 0.9912,
       "window_sum": 2852000.0
+    },
+    {
+      "date": "2026-05-18",
+      "value": 0.9016,
+      "window_sum": 2593000.0
     }
   ],
   "series_id": "treasury_supply_pressure",
