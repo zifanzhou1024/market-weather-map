@@ -88,3 +88,111 @@ describe("useT", () => {
     expect(readOut(c)).toBe("notReal");
   });
 });
+
+// ---- tDriver -------------------------------------------------------------
+
+function DriverProbe({ title }: { title: string }) {
+  const { tDriver } = useT();
+  return <span data-testid="out">{tDriver(title)}</span>;
+}
+
+describe("useT.tDriver", () => {
+  it("returns zh translation for known driver title under zh", () => {
+    const c = render(
+      <LocaleProvider initialLocale="zh">
+        <DriverProbe title="10Y real yields" />
+      </LocaleProvider>
+    );
+    expect(readOut(c)).toBe("10年期实际收益率");
+  });
+
+  it("returns original under en", () => {
+    const c = render(
+      <LocaleProvider initialLocale="en">
+        <DriverProbe title="10Y real yields" />
+      </LocaleProvider>
+    );
+    expect(readOut(c)).toBe("10Y real yields");
+  });
+
+  it("falls back to input for unknown title under zh", () => {
+    const c = render(
+      <LocaleProvider initialLocale="zh">
+        <DriverProbe title="Some Unmapped Driver" />
+      </LocaleProvider>
+    );
+    expect(readOut(c)).toBe("Some Unmapped Driver");
+  });
+
+  it("translates sub-component breakout labels", () => {
+    const c = render(
+      <LocaleProvider initialLocale="zh">
+        <DriverProbe title="Treasury General Account" />
+      </LocaleProvider>
+    );
+    expect(readOut(c)).toBe("财政部一般账户");
+  });
+});
+
+// ---- tNarrative ----------------------------------------------------------
+
+function NarrativeProbe({ text }: { text: string }) {
+  const { tNarrative } = useT();
+  const res = tNarrative(text);
+  return (
+    <span data-testid="out" data-matched={res.matched ? "true" : "false"}>
+      {res.text}
+    </span>
+  );
+}
+
+describe("useT.tNarrative", () => {
+  it("matches the `X is elevated.` template under zh", () => {
+    const c = render(
+      <LocaleProvider initialLocale="zh">
+        <NarrativeProbe text="Inflation pressure is elevated." />
+      </LocaleProvider>
+    );
+    const out = c.querySelector('[data-testid="out"]') as HTMLElement;
+    expect(out.textContent).toBe("通胀压力 处于高位。");
+    expect(out.dataset.matched).toBe("true");
+  });
+
+  it("translates the `Higher X tighten financial conditions and weigh on Y.` template", () => {
+    const c = render(
+      <LocaleProvider initialLocale="zh">
+        <NarrativeProbe text="Higher real yields tighten financial conditions and weigh on valuation-sensitive assets." />
+      </LocaleProvider>
+    );
+    expect(readOut(c)).toBe("实际收益率走高会收紧金融条件并压制 估值敏感资产。");
+  });
+
+  it("returns input unchanged under en", () => {
+    const c = render(
+      <LocaleProvider initialLocale="en">
+        <NarrativeProbe text="Inflation pressure is elevated." />
+      </LocaleProvider>
+    );
+    expect(readOut(c)).toBe("Inflation pressure is elevated.");
+  });
+
+  it("falls back to original text and reports matched=false for unknown phrase", () => {
+    const c = render(
+      <LocaleProvider initialLocale="zh">
+        <NarrativeProbe text="Some completely unmapped sentence about nothing." />
+      </LocaleProvider>
+    );
+    const out = c.querySelector('[data-testid="out"]') as HTMLElement;
+    expect(out.textContent).toBe("Some completely unmapped sentence about nothing.");
+    expect(out.dataset.matched).toBe("false");
+  });
+
+  it("uses the override map for fixed canned phrases", () => {
+    const c = render(
+      <LocaleProvider initialLocale="zh">
+        <NarrativeProbe text="Candidate source requires access or terms review before scoring." />
+      </LocaleProvider>
+    );
+    expect(readOut(c)).toBe("该候选源需在评分前完成访问与条款审核。");
+  });
+});

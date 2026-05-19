@@ -129,7 +129,7 @@ function statusLabelFor(status: string): string {
 }
 
 export default function TailRiskReadinessMatrix({ status }: TailRiskReadinessMatrixProps) {
-  const { t } = useT();
+  const { t, tDriver } = useT();
   return (
     <section className="tail-risk-readiness-matrix" aria-label="Tail-risk readiness matrix">
       <header>
@@ -144,7 +144,7 @@ export default function TailRiskReadinessMatrix({ status }: TailRiskReadinessMat
             return (
               <div key={signal.id} className="tail-risk-readiness-row">
                 <span className="tail-risk-readiness-main">
-                  <span className="tail-risk-readiness-label">{signal.label}</span>
+                  <span className="tail-risk-readiness-label">{tDriver(signal.label)}</span>
                   <ExternalResearchLinks
                     className="tail-risk-readiness-links"
                     id={signal.id}

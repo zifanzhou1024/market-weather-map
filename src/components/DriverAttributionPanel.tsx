@@ -35,11 +35,21 @@ function safeScore(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
-function signalList(items: string[], emptyText: string) {
+interface SignalListItem {
+  text: string;
+  matched: boolean;
+}
+
+function signalList(items: SignalListItem[], emptyText: string, locale: "en" | "zh") {
   return items.length ? (
     <ul className="score-list">
       {items.map((item, index) => (
-        <li key={`${item}-${index}`}>{item}</li>
+        <li
+          key={`${item.text}-${index}`}
+          lang={locale === "zh" && !item.matched ? "en" : undefined}
+        >
+          {item.text}
+        </li>
       ))}
     </ul>
   ) : (
@@ -56,7 +66,8 @@ export default function DriverAttributionPanel({
   history,
   title
 }: DriverAttributionPanelProps) {
-  const { t } = useT();
+  const { t, tNarrative, locale } = useT();
+  const localize = (items: string[]): SignalListItem[] => items.map((text) => tNarrative(text));
   const resolvedTitle = title ?? t("sections.whyScoresChanged");
   const observations = Array.isArray(history?.observations) ? history.observations : [];
   const latest = observations.length ? observations[observations.length - 1] : null;
@@ -124,15 +135,15 @@ export default function DriverAttributionPanel({
               <div className="driver-attribution-card__lists">
                 <div>
                   <h5>{t("narrative.recentChanges")}</h5>
-                  {signalList(rowAttribution.recent_changes, t("narrative.emptyRecentChanges"))}
+                  {signalList(localize(rowAttribution.recent_changes), t("narrative.emptyRecentChanges"), locale)}
                 </div>
                 <div>
                   <h5>{t("narrative.supports")}</h5>
-                  {signalList(rowAttribution.top_supports, t("narrative.emptySupportDrivers"))}
+                  {signalList(localize(rowAttribution.top_supports), t("narrative.emptySupportDrivers"), locale)}
                 </div>
                 <div>
                   <h5>{t("narrative.risks")}</h5>
-                  {signalList(rowAttribution.top_risks, t("narrative.emptyRiskDrivers"))}
+                  {signalList(localize(rowAttribution.top_risks), t("narrative.emptyRiskDrivers"), locale)}
                 </div>
               </div>
             </article>

@@ -21,14 +21,34 @@ function formatConfidence(value: unknown) {
   return `${Math.round(confidence * 100)}%`;
 }
 
-function ScoreList({ items, title, emptyText }: { items: string[]; title: string; emptyText: string }) {
+interface ScoreListEntry {
+  text: string;
+  matched: boolean;
+}
+
+function ScoreList({
+  items,
+  title,
+  emptyText,
+  locale,
+}: {
+  items: ScoreListEntry[];
+  title: string;
+  emptyText: string;
+  locale: "en" | "zh";
+}) {
   return (
     <section>
       <h4>{title}</h4>
       {items.length ? (
         <ul className="score-list">
           {items.map((item, index) => (
-            <li key={`${title}-${index}-${item}`}>{item}</li>
+            <li
+              key={`${title}-${index}-${item.text}`}
+              lang={locale === "zh" && !item.matched ? "en" : undefined}
+            >
+              {item.text}
+            </li>
           ))}
         </ul>
       ) : (
@@ -39,7 +59,8 @@ function ScoreList({ items, title, emptyText }: { items: string[]; title: string
 }
 
 export default function ScoreCard({ title, score }: ScoreCardProps) {
-  const { t } = useT();
+  const { t, tNarrative, locale } = useT();
+  const localize = (items: string[]): ScoreListEntry[] => items.map((text) => tNarrative(text));
   const numericScore = finiteNumber(score.score);
   const label = typeof score.label === "string" ? score.label : "Unknown";
   const topSupports = safeList(score.top_supports);
@@ -63,16 +84,21 @@ export default function ScoreCard({ title, score }: ScoreCardProps) {
       </p>
 
       <div className="score-card__lists">
-        <ScoreList items={topSupports} title={t("narrative.supports")} emptyText={t("chrome.notAvailable")} />
-        <ScoreList items={topRisks} title={t("narrative.risks")} emptyText={t("chrome.notAvailable")} />
+        <ScoreList items={localize(topSupports)} title={t("narrative.supports")} emptyText={t("chrome.notAvailable")} locale={locale} />
+        <ScoreList items={localize(topRisks)} title={t("narrative.risks")} emptyText={t("chrome.notAvailable")} locale={locale} />
       </div>
 
       {recentChanges.length ? (
         <section className="score-notes">
           <h4>{t("narrative.recentChanges")}</h4>
           <ul className="score-list">
-            {recentChanges.map((item, index) => (
-              <li key={`recent-${index}-${item}`}>{item}</li>
+            {localize(recentChanges).map((item, index) => (
+              <li
+                key={`recent-${index}-${item.text}`}
+                lang={locale === "zh" && !item.matched ? "en" : undefined}
+              >
+                {item.text}
+              </li>
             ))}
           </ul>
         </section>
@@ -82,8 +108,13 @@ export default function ScoreCard({ title, score }: ScoreCardProps) {
         <section className="score-notes">
           <h4>{t("narrative.confidenceNotes")}</h4>
           <ul className="score-list">
-            {confidenceReasons.map((item, index) => (
-              <li key={`confidence-${index}-${item}`}>{item}</li>
+            {localize(confidenceReasons).map((item, index) => (
+              <li
+                key={`confidence-${index}-${item.text}`}
+                lang={locale === "zh" && !item.matched ? "en" : undefined}
+              >
+                {item.text}
+              </li>
             ))}
           </ul>
         </section>
@@ -93,8 +124,13 @@ export default function ScoreCard({ title, score }: ScoreCardProps) {
         <section className="score-notes">
           <h4>{t("narrative.dataNotes")}</h4>
           <ul className="score-list">
-            {missingOrStaleNotes.map((item, index) => (
-              <li key={`data-note-${index}-${item}`}>{item}</li>
+            {localize(missingOrStaleNotes).map((item, index) => (
+              <li
+                key={`data-note-${index}-${item.text}`}
+                lang={locale === "zh" && !item.matched ? "en" : undefined}
+              >
+                {item.text}
+              </li>
             ))}
           </ul>
         </section>

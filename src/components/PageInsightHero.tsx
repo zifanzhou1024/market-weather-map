@@ -97,7 +97,7 @@ function FallbackHero() {
 }
 
 export default function PageInsightHero({ route }: PageInsightHeroProps) {
-  const { t } = useT();
+  const { t, tDriver, tNarrative, locale } = useT();
   const [file, setFile] = useState<PageInsightsFile | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -140,31 +140,36 @@ export default function PageInsightHero({ route }: PageInsightHeroProps) {
   const freshnessNotes = insight.freshness_notes ?? [];
   const hasCaveat = freshnessNotes.length > 0 || Number.isFinite(insight.confidence);
 
+  const translatedTitle = tDriver(insight.title);
+  const whyNarr = tNarrative(insight.why_it_matters);
+  // Translate driver labels in the Driver[] array so DriverBarList renders zh.
+  const localizedDrivers: Driver[] = drivers.map((d) => ({ ...d, label: tDriver(d.label) }));
+
   return (
     <section className="page-insight-hero" aria-label={`${insight.title} hero`}>
       <div className="page-insight-hero__title-row">
         <div className="page-insight-hero__title-group">
-          <h3 className="page-insight-hero__title">{insight.title}</h3>
+          <h3 className="page-insight-hero__title">{translatedTitle}</h3>
           <ChartStateBadge state={badgeState} />
         </div>
         <p className="page-insight-hero__generated-at">{t("narrative.asOf")} {date}</p>
       </div>
-      {drivers.length > 0 ? (
+      {localizedDrivers.length > 0 ? (
         <div className="page-insight-hero__drivers" role="group" aria-label="Primary drivers">
-          {insight.primary_warning && drivers.some((d) => d.direction === "risk") ? (
+          {insight.primary_warning && localizedDrivers.some((d) => d.direction === "risk") ? (
             <div className="page-insight-hero__driver-slot page-insight-hero__driver-slot--warning">
               <p className="page-insight-hero__driver-eyebrow">{t("sections.primaryWarning")}</p>
               <DriverBarList
-                items={drivers.filter((d) => d.direction === "risk")}
+                items={localizedDrivers.filter((d) => d.direction === "risk")}
                 max={1}
               />
             </div>
           ) : null}
-          {insight.primary_support && drivers.some((d) => d.direction === "support") ? (
+          {insight.primary_support && localizedDrivers.some((d) => d.direction === "support") ? (
             <div className="page-insight-hero__driver-slot page-insight-hero__driver-slot--support">
               <p className="page-insight-hero__driver-eyebrow">{t("sections.primarySupport")}</p>
               <DriverBarList
-                items={drivers.filter((d) => d.direction === "support")}
+                items={localizedDrivers.filter((d) => d.direction === "support")}
                 max={1}
               />
             </div>
@@ -172,7 +177,12 @@ export default function PageInsightHero({ route }: PageInsightHeroProps) {
         </div>
       ) : null}
       {insight.why_it_matters ? (
-        <p className="page-insight-hero__why">{insight.why_it_matters}</p>
+        <p
+          className="page-insight-hero__why"
+          lang={locale === "zh" && !whyNarr.matched ? "en" : undefined}
+        >
+          {whyNarr.text}
+        </p>
       ) : null}
       {hasCaveat ? (
         <div className="page-insight-hero__caveat">
