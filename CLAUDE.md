@@ -38,6 +38,47 @@ See `docs/source_reviews/` for each review doc and `docs/superpowers/plans/2026-
 
 **FocusBlock section pattern.** Routes consume `routeInsight.sections` (populated in `scripts/transform/build_page_insights.py` via `SECTION_CATALOG`) and render `<FocusBlock variant="section" ...>` above multi-chart sections. The `SectionInsight` interface in `src/lib/types.ts` mirrors the JSON shape. Five placements are active: Volatility, Rates, RegimeMap, Sentiment, Tactical. Compact placements are implemented in the component but deferred — no compact placements ship until a follow-up audit.
 
+## Internationalization (i18n)
+
+The dashboard supports English (default) and Simplified Chinese display. Architecture is **frontend-only** — no Python pipeline change, no new JSON. `src/lib/i18n/` mirrors the `useMode()` pattern (`src/lib/mode.tsx`).
+
+**Module layout (single source of truth):**
+- `src/lib/i18n/locale.tsx` — `LocaleProvider`, `useLocale`, `setLocale`, `resolveLocale`. Precedence: URL `?lang=` → `localStorage["mwm.locale"]` → `"en"`. Sets `document.documentElement.lang` and listens for cross-tab `storage` events.
+- `src/lib/i18n/en.ts` — English dictionary. **Source of truth for the key shape.** Uses `as const` then a `Widen<T>` mapped type so leaves become `string` (not literal types) for `zh.ts` assignment.
+- `src/lib/i18n/zh.ts` — Simplified Chinese. Typed as `En` so missing keys are a compile error.
+- `src/lib/i18n/signals.ts` — `SIGNAL_NAMES` (curated index/jargon labels) + `COCKPIT_ID_TO_SIGNAL_KEY` (snake_case cockpit IDs → camelCase signal keys).
+- `src/lib/i18n/drivers.ts` — `DRIVER_TITLE_TRANSLATIONS` + `tDriver()` for Python-emitted driver card titles + component-breakout labels (`Fed assets`, `Treasury General Account`, `Reverse repo`).
+- `src/lib/i18n/narrative.ts` — `NARRATIVE_OVERRIDES` (exact-match phrases) + ~22 regex templates + `tNarrative()` for the most common driver-detail / why-it-matters f-string patterns. Best-effort: unmatched paragraphs wrap in `<span lang="en">`.
+- `src/lib/i18n/t.ts` — `useT()` returning `{ t, tCategorical, tDriver, tNarrative, locale }`. `t(key, { withOriginal: true })` returns `中文 (Original)` under zh for `signals.*` keys.
+- `src/lib/i18n/index.ts` — barrel re-export.
+
+**Toggle UI:** `<LanguageToggle />` sits in `PersistentRegimeHeader` (segmented `EN | 中` pill). Keyboard binding `g i` (not `g l` — that's already `/long-term` in `NAV_BINDINGS`).
+
+**Adding a new translatable string:**
+1. Add the English value at the appropriate path in `src/lib/i18n/en.ts`.
+2. Add the matching key/value in `src/lib/i18n/zh.ts` (the type system catches the missing key).
+3. In the component, `const { t } = useT();` then render `{t("path.to.key")}`.
+
+**Adding a new curated index/jargon label** (renders as `中文 (Original)` under zh):
+1. Add an entry to `SIGNAL_NAMES` in `src/lib/i18n/signals.ts` with `{ zh, original }`.
+2. If the cockpit ID differs from the signal key (snake_case → camelCase), add a `COCKPIT_ID_TO_SIGNAL_KEY` entry.
+3. At the render site, `t("signals.<key>", { withOriginal: true })`.
+
+**Adding translations for Python-emitted strings:**
+- **Driver titles** (from `signal_priority.json` `title` field): extend `DRIVER_TITLE_TRANSLATIONS` in `drivers.ts`. Call `tDriver(title)` at the render site.
+- **Driver narrative templates** (driver `detail` / `why_it_matters` fields): add a regex template + zh template to `narrative.ts`. The narrative matcher captures subject phrases via `$1`, `$2`, etc., and optionally substitutes individual subject nouns via `SUBJECT_TRANSLATIONS`.
+- **Categorical labels** (regime, composite reading, bucket reading, status, horizon, freshness): extend `en.ts` / `zh.ts` `categoricals` blocks and call `tCategorical("group", value)`. Piecewise-translates slash-separated phrases like `Tightening / risk-off`.
+
+**Stays English under zh (Tier 3 — do not retrofit without a Python pipeline change):**
+- FocusBlock dynamic narrative (`answer`, `why`, `risk`, `support`, `caveat`) from `build_page_insights.py` — Python f-strings with numeric interpolation. Wrap output in `<span lang="en">`.
+- Driver narrative paragraphs that don't match a template — ~17% fall-through, wrap in `<span lang="en">`.
+- DataGapPanel observation / note column content from `data_status.json`.
+- Numeric values, dates, tickers (VIX/MOVE/SKEW), FRED series IDs, provider names (Cboe, ICE, NY Fed, BLS, FRED, Treasury.gov).
+
+Translation accuracy follows Mainland financial-press conventions (财新, 第一财经, CICC). Specific terminology choices: OAS → `期权调整价差` (not `利差`); Macro Climate → `宏观环境` (not `宏观气候`); Severity → `严重程度`; Confidence → `置信度`; Stale → `过时`.
+
+See `docs/I18N.md` for the user-facing reference and `docs/superpowers/specs/2026-05-18-simplified-chinese-localization-design.md` for the design spec.
+
 ## Verification before claiming done
 
 ```bash
@@ -67,8 +108,10 @@ Run Python commands as `.venv/bin/python -m ...` locally (or activate the venv).
 - Source reviews: `docs/source_reviews/<source>.md`.
 - Generated JSON: `public/data/{catalog,derived,events,series,status}/`.
 - Frontend: routes in `src/routes/`, components in `src/components/`.
+- i18n: `src/lib/i18n/` — single source of truth for English/Chinese dictionaries, lookup tables, and translation helpers.
 - Python: `scripts/{ingest,transform,validate,shared}/`.
 - Methodology and limits: `docs/METHODOLOGY.md`, `docs/LIMITATIONS.md`.
+- Internationalization reference: `docs/I18N.md`.
 - Next-phase playbook: `.claude/skills/market-weather-map-next-phase/SKILL.md`.
 
 ## Style
