@@ -1,77 +1,121 @@
 import RouteDataFooter from "../components/RouteDataFooter";
 import { useT } from "../lib/i18n";
 
+/**
+ * The Methodology route renders five long-form panels describing how the
+ * dashboard works. The narrative text is wired through i18n so zh users see
+ * idiomatic Chinese paragraphs; the inline `<code>` bucket-key identifiers
+ * stay English (they are machine-readable keys, not prose).
+ *
+ * Variable substitution lets us interpolate `<code>` JSX nodes via vars —
+ * each `t()` paragraph that contains `<code>` keys passes those code spans
+ * as React children and the en/zh prose carries `{{name}}` placeholders.
+ *
+ * Because vars must be strings, we render the variable-bearing paragraphs by
+ * splitting the translated text around the placeholders and interleaving
+ * the code spans. The simplest readable approach: precompute substring
+ * templates and stitch them.
+ */
+function withCodes(
+  template: string,
+  codes: Record<string, string>
+): React.ReactNode[] {
+  // Replace each {{name}} with a marker, split, and re-interleave with
+  // `<code>{name}</code>` spans so we preserve the JSX semantics.
+  const parts: React.ReactNode[] = [];
+  const regex = /\{\{(\w+)\}\}/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let i = 0;
+  while ((match = regex.exec(template)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(template.slice(lastIndex, match.index));
+    }
+    const name = match[1];
+    const code = codes[name];
+    parts.push(
+      code !== undefined ? (
+        <code key={`code-${i}`}>{code}</code>
+      ) : (
+        `{{${name}}}`
+      )
+    );
+    lastIndex = match.index + match[0].length;
+    i += 1;
+  }
+  if (lastIndex < template.length) {
+    parts.push(template.slice(lastIndex));
+  }
+  return parts;
+}
+
 export default function Methodology() {
   const { t } = useT();
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow" lang="en">Methodology</p>
+        <p className="eyebrow">{t("routes.methodologyEyebrow")}</p>
         <h2>{t("routes.methodologyHeading")}</h2>
-        <p lang="en">This static site explains market regimes. It does not provide financial advice.</p>
+        <p>{t("routes.methodologyIntro")}</p>
       </section>
       <div className="methodology-grid">
         <section className="panel">
           <h3>{t("methodology.marketWeather")}</h3>
-          <p lang="en">
-            The market weather score summarizes observable market conditions: volatility, rates, liquidity,
-            credit, commodities, and positioning. Positive readings describe more supportive current conditions;
-            negative readings describe more stressed or fragile current conditions.
-          </p>
-          <p lang="en">
-            Active bucket keys include <code>credit_spreads</code>, <code>liquidity_funding</code>,
-            <code>rates_real_yields</code>, <code>volatility_tail_risk</code>, <code>dollar_global</code>,
-            <code>commodities_inflation_impulse</code>, and <code>sentiment_positioning</code>.
+          <p>{t("methodology.marketWeatherBody1")}</p>
+          <p>
+            {withCodes(t("methodology.marketWeatherBody2"), {
+              credit: "credit_spreads",
+              liquidity: "liquidity_funding",
+              rates: "rates_real_yields",
+              volatility: "volatility_tail_risk",
+              dollar: "dollar_global",
+              commodities: "commodities_inflation_impulse",
+              sentiment: "sentiment_positioning",
+            })}
           </p>
         </section>
         <section className="panel">
           <h3>{t("methodology.macroClimate")}</h3>
-          <p lang="en">
-            The macro climate score separates slower economic inputs from the market tape. Growth, labor,
-            inflation, consumer and production activity, housing, and 10Y real yield are read as context for
-            whether the backdrop is improving, mixed, overheating, or slowing.
-          </p>
-          <p lang="en">
-            The emitted macro buckets are growth, labor, inflation, consumer_production, housing, and real_yields.
-          </p>
+          <p>{t("methodology.macroClimateBody1")}</p>
+          <p>{t("methodology.macroClimateBody2")}</p>
         </section>
         <section className="panel">
           <h3>{t("methodology.fragility")}</h3>
-          <p lang="en">
-            The fragility score focuses on stress channels that can amplify market moves, including credit
-            spreads, financial conditions, dollar pressure, banking data, liquidity, volatility, and candidate
-            flow or survey inputs when access has been reviewed.
-          </p>
-          <p lang="en">
-            Active drivers include <code>credit_spread_widening</code>, <code>volatility_term_structure</code>,
-            <code>dollar_spike</code>, <code>liquidity_drain</code>, <code>positioning_crowding</code>, and
-            candidate <code>treasury_bond_volatility</code>.
+          <p>{t("methodology.fragilityBody1")}</p>
+          <p>
+            {withCodes(t("methodology.fragilityBody2"), {
+              creditWidening: "credit_spread_widening",
+              volTerm: "volatility_term_structure",
+              dollarSpike: "dollar_spike",
+              liquidityDrain: "liquidity_drain",
+              positioning: "positioning_crowding",
+              treasuryVol: "treasury_bond_volatility",
+            })}
           </p>
         </section>
         <section className="panel">
           <h3>{t("methodology.transformations")}</h3>
-          <p lang="en">
-            Net liquidity is transformed as Fed assets minus Treasury General Account minus Reverse Repo.
-            Commodity pressure is summarized through <code>commodity_inflation_impulse</code>;
-            <code>breakeven_10y</code> can confirm commodity inflation pressure when available. CFTC
-            positioning is transformed into net exposure as a share of open interest.
+          <p>
+            {withCodes(t("methodology.transformsBody1"), {
+              commodityImpulse: "commodity_inflation_impulse",
+              breakeven: "breakeven_10y",
+            })}
           </p>
-          <p lang="en">
-            Missing or stale inputs lower confidence and can enter the weighted model as 0.0 neutral fallbacks.
-            Scores are descriptive context, not forecasts, signals, or financial advice.
-          </p>
+          <p>{t("methodology.transformsBody2")}</p>
         </section>
         <section className="panel">
           <h3>{t("methodology.sourceAccess")}</h3>
-          <p lang="en">
-            <code>free_public</code> marks active no-secret public feeds that GitHub Actions can fetch and
-            publish as static JSON. <code>terms_review_needed</code> marks candidates that stay inactive until
-            access, automation, attribution, and redistribution terms are reviewed.
+          <p>
+            {withCodes(t("methodology.sourceAccessBody1"), {
+              freePublic: "free_public",
+              termsReview: "terms_review_needed",
+            })}
           </p>
-          <p lang="en">
-            <code>restricted</code> marks paid, gated, or license-restricted sources. <code>unavailable</code>
-            {" "}marks sources that cannot currently be fetched or redistributed by the static no-secret workflow.
-            Restricted and unavailable sources are documented but excluded from production scoring.
+          <p>
+            {withCodes(t("methodology.sourceAccessBody2"), {
+              restricted: "restricted",
+              unavailable: "unavailable",
+            })}
           </p>
         </section>
       </div>

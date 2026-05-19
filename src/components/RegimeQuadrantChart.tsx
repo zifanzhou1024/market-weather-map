@@ -14,6 +14,7 @@ import type {
   RegimeWindowKey,
   RegimeWindowPoint
 } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 /**
  * Regime quadrant chart — rebuilt in ECharts (W3C) replacing the legacy
@@ -294,6 +295,7 @@ function windowAriaLabel(window: RegimeWindowKey): string {
 }
 
 export default function RegimeQuadrantChart() {
+  const { t } = useT();
   const [dashboard, setDashboard] = useState<RegimeDashboardFile | null | undefined>(undefined);
   const [window, setWindow] = useState<RegimeWindowKey>(DEFAULT_WINDOW);
 
@@ -321,13 +323,13 @@ export default function RegimeQuadrantChart() {
 
   const isLoading = dashboard === undefined;
   const hasData = points.length > 0;
-  const eyebrow = `${window} change`;
+  const eyebrow = `${window} ${t("sections.change").toLowerCase()}`;
 
   return (
     <section className="panel chart-panel regime-quadrant-panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Regime map</p>
+          <p className="eyebrow">{t("focus.regime_drivers.eyebrow")}</p>
           <h3>Dollar and real-yield quadrant</h3>
         </div>
         <p aria-label="Active lookback window">{eyebrow}</p>
@@ -385,22 +387,22 @@ export default function RegimeQuadrantChart() {
           height={360}
         />
       )}
-      <dl className="quadrant-legend" aria-label="Quadrant meaning legend">
+      <dl className="quadrant-legend" aria-label={t("panels.quadrantLegendAria")}>
         <div>
-          <dt>Bottom-left (real yield down, dollar weaker)</dt>
-          <dd>risk-on easing</dd>
+          <dt>{t("panels.quadrantBottomLeft")}</dt>
+          <dd>{t("panels.quadrantRiskOnEasing")}</dd>
         </div>
         <div>
-          <dt>Top-right (real yield up, dollar stronger)</dt>
-          <dd>global tightening / risk-off</dd>
+          <dt>{t("panels.quadrantTopRight")}</dt>
+          <dd>{t("panels.quadrantGlobalTightening")}</dd>
         </div>
         <div>
-          <dt>Top-left (real yield down, dollar stronger)</dt>
-          <dd>safe-haven / growth scare</dd>
+          <dt>{t("panels.quadrantTopLeft")}</dt>
+          <dd>{t("panels.quadrantSafeHaven")}</dd>
         </div>
         <div>
-          <dt>Bottom-right (real yield up, dollar weaker)</dt>
-          <dd>rotation / reflation / mixed</dd>
+          <dt>{t("panels.quadrantBottomRight")}</dt>
+          <dd>{t("panels.quadrantRotation")}</dd>
         </div>
       </dl>
     </section>

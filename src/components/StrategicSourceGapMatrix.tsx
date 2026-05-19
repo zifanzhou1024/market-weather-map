@@ -1,4 +1,5 @@
 import ExternalResearchLinks from "./ExternalResearchLinks";
+import { useT } from "../lib/i18n";
 
 interface StrategicGapRow {
   id: string;
@@ -8,6 +9,15 @@ interface StrategicGapRow {
   status: "terms_review_needed";
   unlocks: string;
 }
+
+// Each English category maps to a categoricals.bucket key for translation.
+const CATEGORY_TO_BUCKET: Record<StrategicGapRow["category"], string> = {
+  "Activity breadth": "Activity breadth",
+  Banking: "Banking",
+  "Fiscal / supply": "Fiscal / supply",
+  Valuation: "Valuation",
+  Earnings: "Earnings",
+};
 
 const STRATEGIC_GAPS: ReadonlyArray<StrategicGapRow> = [
   {
@@ -122,6 +132,7 @@ function importanceDots(importance: number): string {
 }
 
 export default function StrategicSourceGapMatrix() {
+  const { t, tCategorical } = useT();
   const categories = uniqueCategoriesInDeclarationOrder(STRATEGIC_GAPS);
 
   return (
@@ -130,11 +141,8 @@ export default function StrategicSourceGapMatrix() {
       aria-label="Strategic source-gap matrix"
     >
       <header>
-        <h3>Strategic source-gap matrix</h3>
-        <p>
-          Strategic candidate sources grouped by category. Importance indicates likely scoring
-          weight if promoted; all rows remain candidate-only and do not affect active scores.
-        </p>
+        <h3>{t("panels.strategicGapHeading")}</h3>
+        <p>{t("panels.strategicGapDesc")}</p>
       </header>
       {categories.map((category) => {
         const rows = STRATEGIC_GAPS.filter((row) => row.category === category)
@@ -142,7 +150,9 @@ export default function StrategicSourceGapMatrix() {
           .sort((a, b) => b.importance - a.importance);
         return (
           <div key={category} className="strategic-source-gap-group">
-            <h4 className="strategic-source-gap-group-heading">{category}</h4>
+            <h4 className="strategic-source-gap-group-heading">
+              {tCategorical("bucket", CATEGORY_TO_BUCKET[category])}
+            </h4>
             {rows.map((row) => (
               <div key={row.id} className="strategic-source-gap-row-wrapper">
                 <div className="strategic-source-gap-row">

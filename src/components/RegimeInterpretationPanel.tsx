@@ -1,6 +1,7 @@
 import { yieldDriverLabel } from "../lib/regime";
 import type { RegimeSnapshotFile, ScoreSummaryFile } from "../lib/types";
 import SignalList from "./SignalList";
+import { useT } from "../lib/i18n";
 
 interface RegimeInterpretationPanelProps {
   scoreSummary: ScoreSummaryFile;
@@ -48,6 +49,7 @@ function confirmationText(confirmation: RegimeSnapshotFile["confirmations"][numb
 }
 
 export default function RegimeInterpretationPanel({ scoreSummary, snapshot }: RegimeInterpretationPanelProps) {
+  const { t, tCategorical } = useT();
   const confirmations = safeArray<unknown>(snapshot.confirmations)
     .filter(isUsableConfirmation)
     .map((confirmation) => ({ ...confirmation, normalizedStatus: normalizedStatus(confirmation.status) }))
@@ -69,27 +71,29 @@ export default function RegimeInterpretationPanel({ scoreSummary, snapshot }: Re
       (confirmation) => confirmation.normalizedStatus === "mixed" || confirmation.normalizedStatus === "unavailable"
     )
     .map(confirmationText);
+  const regimeLabel = tCategorical("regime", snapshot.regime.label);
+  const driverLabel = tCategorical("yieldDriver", yieldDriverLabel(snapshot.regime.yield_driver));
 
   return (
     <section className="panel interpretation-panel">
-      <p className="eyebrow">Current regime read</p>
-      <h3>{snapshot.regime.label}</h3>
-      <p>Yield driver: {yieldDriverLabel(snapshot.regime.yield_driver)}</p>
+      <p className="eyebrow">{t("panels.currentRegimeRead")}</p>
+      <h3>{regimeLabel}</h3>
+      <p>{t("panels.yieldDriverLabel", { vars: { driver: driverLabel } })}</p>
       <div className="interpretation-grid">
         <SignalList
-          emptyText="No confirming regime signals in the current snapshot."
+          emptyText={t("panels.emptyConfirming")}
           items={confirmingSignals}
-          title="What confirms it"
+          title={t("panels.whatConfirmsIt")}
         />
         <SignalList
-          emptyText="No conflicting regime signals in the current snapshot."
+          emptyText={t("panels.emptyConflicting")}
           items={conflicts}
-          title="What conflicts with it"
+          title={t("panels.whatConflictsWithIt")}
         />
         <SignalList
-          emptyText="No weak-confidence regime signals in the current snapshot."
+          emptyText={t("panels.emptyWeakConfidence")}
           items={weakConfidenceSignals}
-          title="What weakens confidence"
+          title={t("panels.whatWeakensConfidence")}
         />
       </div>
     </section>

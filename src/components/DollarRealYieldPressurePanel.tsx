@@ -1,5 +1,6 @@
 import { formatDate, formatNumber, formatSigned } from "../lib/formatters";
 import type { RegimeSnapshotFile, SeriesCatalogEntry, TimeSeriesFile, YieldDriver } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface DollarRealYieldPressurePanelProps {
   broadDollar?: TimeSeriesFile;
@@ -30,15 +31,25 @@ function seriesName(seriesId: string, catalog: SeriesCatalogEntry[]) {
   return catalog.find((entry) => entry.id === seriesId)?.name ?? seriesId;
 }
 
-function PressureMetric({
-  catalog,
-  series,
-  seriesId
-}: {
+interface PressureMetricProps {
   catalog: SeriesCatalogEntry[];
   series?: TimeSeriesFile;
   seriesId: string;
-}) {
+  unavailableLabel: string;
+  unavailableMessage: string;
+  changePrefix: string;
+  lastObservationPrefix: string;
+}
+
+function PressureMetric({
+  catalog,
+  series,
+  seriesId,
+  unavailableLabel,
+  unavailableMessage,
+  changePrefix,
+  lastObservationPrefix,
+}: PressureMetricProps) {
   const current = latest(series);
   const catalogEntry = catalog.find((entry) => entry.id === seriesId);
   const units = catalogEntry?.units ?? series?.units ?? "";
@@ -47,11 +58,11 @@ function PressureMetric({
   return (
     <article className="metric-card">
       <p className="metric-source">{seriesName(seriesId, catalog)}</p>
-      <strong>{isAvailable ? `${formatNumber(current.value)} ${units}` : "Unavailable"}</strong>
+      <strong>{isAvailable ? `${formatNumber(current.value)} ${units}` : unavailableLabel}</strong>
       <p>
         {isAvailable
-          ? `1W change ${formatSigned(current.change)}; last observation ${formatDate(current.date)}.`
-          : "This row is unavailable in the loaded static data."}
+          ? `${changePrefix} ${formatSigned(current.change)}; ${lastObservationPrefix} ${formatDate(current.date)}.`
+          : unavailableMessage}
       </p>
     </article>
   );
@@ -63,22 +74,34 @@ export default function DollarRealYieldPressurePanel({
   realYield10y,
   snapshot
 }: DollarRealYieldPressurePanelProps) {
+  const { t, tCategorical } = useT();
+  const labels = {
+    unavailableLabel: t("chrome.unavailable"),
+    unavailableMessage: t("panels.metricUnavailable"),
+    changePrefix: t("panels.metricChange1W"),
+    lastObservationPrefix: t("panels.lastObservationPrefix"),
+  };
+  const driverLabel = tCategorical("yieldDriver", yieldDriverLabels[snapshot.regime.yield_driver]);
   return (
     <section className="panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Pressure</p>
-          <h3>Dollar + real-yield pressure</h3>
-          <p>Dollar direction, real-yield row availability, and the current regime snapshot yield driver.</p>
+          <p className="eyebrow">{t("sections.pressure")}</p>
+          <h3>{t("sections.dollarRealYieldPressure")}</h3>
+          <p>{t("panels.dollarRealYieldDesc")}</p>
         </div>
       </div>
       <div className="metric-grid">
-        <PressureMetric catalog={catalog} series={broadDollar} seriesId="broad_dollar" />
-        <PressureMetric catalog={catalog} series={realYield10y} seriesId="real_yield_10y" />
+        <PressureMetric catalog={catalog} series={broadDollar} seriesId="broad_dollar" {...labels} />
+        <PressureMetric catalog={catalog} series={realYield10y} seriesId="real_yield_10y" {...labels} />
         <article className="metric-card">
-          <p className="metric-source">Yield driver</p>
-          <strong>{yieldDriverLabels[snapshot.regime.yield_driver]}</strong>
-          <p>Dollar direction {snapshot.regime.dollar_direction}; TIPS direction {snapshot.regime.tips_direction}.</p>
+          <p className="metric-source">{t("sections.yieldDriver")}</p>
+          <strong>{driverLabel}</strong>
+          <p>
+            {t("panels.yieldDriverDesc", {
+              vars: { dollar: snapshot.regime.dollar_direction, tips: snapshot.regime.tips_direction },
+            })}
+          </p>
         </article>
       </div>
     </section>

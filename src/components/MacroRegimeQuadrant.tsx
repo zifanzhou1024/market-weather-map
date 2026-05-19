@@ -14,6 +14,7 @@ import type {
   RegimeWindowKey,
   RegimeWindowPoint
 } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 /**
  * Macro regime quadrant — strategic counterpart to `RegimeQuadrantChart`.
@@ -266,6 +267,7 @@ function buildOption(points: RegimeWindowPoint[]) {
 }
 
 export default function MacroRegimeQuadrant() {
+  const { t } = useT();
   const [dashboard, setDashboard] = useState<RegimeDashboardFile | null | undefined>(undefined);
   const [window, setWindow] = useState<RegimeWindowKey>(DEFAULT_WINDOW);
 
@@ -298,14 +300,13 @@ export default function MacroRegimeQuadrant() {
     <section className="panel chart-panel macro-regime-panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Strategic regime</p>
-          <h3>Macro regime quadrant trail</h3>
+          <p className="eyebrow">{t("sections.strategicRegime")}</p>
+          <h3>{t("sections.macroRegimeQuadrant")}</h3>
         </div>
-        <p aria-label="Active lookback window">{`${window} change`}</p>
+        <p aria-label="Active lookback window">{`${window} ${t("sections.change").toLowerCase()}`}</p>
       </div>
       <p className="chart-panel__description">
-        Recent strategic backdrop: real-yield change vs dollar change. Quadrants describe whether
-        the policy / USD regime is tightening, easing, or rotating across this window.
+        {t("sections.macroRegimeQuadrantDesc")}
       </p>
       <div
         className="chart-range-controls macro-regime-window-controls"
@@ -360,22 +361,22 @@ export default function MacroRegimeQuadrant() {
           height={420}
         />
       )}
-      <dl className="quadrant-legend" aria-label="Quadrant meaning legend">
+      <dl className="quadrant-legend" aria-label={t("panels.quadrantLegendAria")}>
         <div>
-          <dt>Bottom-left (real yield down, dollar weaker)</dt>
-          <dd>risk-on easing</dd>
+          <dt>{t("panels.quadrantBottomLeft")}</dt>
+          <dd>{t("panels.quadrantRiskOnEasing")}</dd>
         </div>
         <div>
-          <dt>Top-right (real yield up, dollar stronger)</dt>
-          <dd>global tightening / risk-off</dd>
+          <dt>{t("panels.quadrantTopRight")}</dt>
+          <dd>{t("panels.quadrantGlobalTightening")}</dd>
         </div>
         <div>
-          <dt>Top-left (real yield down, dollar stronger)</dt>
-          <dd>safe-haven / growth scare</dd>
+          <dt>{t("panels.quadrantTopLeft")}</dt>
+          <dd>{t("panels.quadrantSafeHaven")}</dd>
         </div>
         <div>
-          <dt>Bottom-right (real yield up, dollar weaker)</dt>
-          <dd>rotation / reflation / mixed</dd>
+          <dt>{t("panels.quadrantBottomRight")}</dt>
+          <dd>{t("panels.quadrantRotation")}</dd>
         </div>
       </dl>
     </section>

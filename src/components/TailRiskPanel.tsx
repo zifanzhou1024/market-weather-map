@@ -7,6 +7,7 @@ import type {
   ShockRiskSnapshotFile,
   ShockRiskSourceGap
 } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface TailRiskPanelProps {
   snapshot: ShockRiskSnapshotFile;
@@ -37,6 +38,7 @@ function sourceGapById(sourceGaps: ShockRiskSourceGap[], id: string) {
 }
 
 export default function TailRiskPanel({ snapshot, catalog, status }: TailRiskPanelProps) {
+  const { t, tCategorical } = useT();
   const sourceGaps = safeArray<ShockRiskSourceGap>(snapshot.source_gaps);
   const rows = tailRiskIds.map((id) => {
     const gap = sourceGapById(sourceGaps, id);
@@ -56,11 +58,9 @@ export default function TailRiskPanel({ snapshot, catalog, status }: TailRiskPan
     <section className="panel candidate-source-panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Tail risk readiness</p>
-          <h3>MOVE and SKEW source readiness</h3>
-          <p>
-            Bond volatility and equity tail-risk rows stay gated until source access and terms review are complete.
-          </p>
+          <p className="eyebrow">{t("sections.tailRiskReadiness")}</p>
+          <h3>{t("panels.tailRiskMoveTitle")}</h3>
+          <p>{t("panels.tailRiskMoveDesc")}</p>
         </div>
       </div>
       <div className="candidate-source-list" role="list">
@@ -71,7 +71,9 @@ export default function TailRiskPanel({ snapshot, catalog, status }: TailRiskPan
               <p>{row.message}</p>
               <p>{fallbackNote(row.id)}</p>
             </div>
-            <span className={`status-pill status-${row.status}`}>{statusLabel(row.status)}</span>
+            <span className={`status-pill status-${row.status}`}>
+              {tCategorical("status", statusLabel(row.status))}
+            </span>
           </article>
         ))}
       </div>

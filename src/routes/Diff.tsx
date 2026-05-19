@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import FreshnessPill from "../components/FreshnessPill";
 import GlossaryTerm from "../components/GlossaryTerm";
 import { loadDiff } from "../lib/data";
-import { useT, type UseT } from "../lib/i18n";
+import { useT, type UseT, COCKPIT_ID_TO_SIGNAL_KEY } from "../lib/i18n";
 import { useMode, type Mode } from "../lib/mode";
 import type { DiffFile, DiffRow, DiffWindowKey } from "../lib/types";
 
@@ -108,12 +108,9 @@ export default function Diff() {
   return (
     <main className="page-shell diff">
       <section className="page-heading">
-        <p className="eyebrow" lang="en">What flipped</p>
+        <p className="eyebrow">{t("routes.whatFlippedEyebrow")}</p>
         <h2>{t("routes.diffHeading")}</h2>
-        <p lang="en">
-          Value-level changes across the cockpit signals over the selected
-          window. Composite scores first; vital signs sorted by absolute change.
-        </p>
+        <p>{t("routes.diffIntro")}</p>
       </section>
 
       <nav
@@ -221,6 +218,14 @@ function DiffTable({ rows, window, mode, testId, t }: DiffTableProps) {
             : undefined;
           const cadenceKey = CADENCE_KEYS[row.frequency];
           const cadenceText = cadenceKey ? t(cadenceKey) : row.frequency;
+          // Translate row label via the signal lookup if the cockpit id maps;
+          // fall back to the Python-emitted row.label otherwise. Under en this
+          // resolves to the original English; under zh it shows 中文 (Original)
+          // which keeps the canonical English visible for power users.
+          const signalKey = COCKPIT_ID_TO_SIGNAL_KEY[row.id];
+          const displayLabel = signalKey
+            ? t(`signals.${signalKey}`, { withOriginal: true })
+            : row.label;
           return (
             <tr
               key={row.id}
@@ -228,7 +233,7 @@ function DiffTable({ rows, window, mode, testId, t }: DiffTableProps) {
               data-testid={`diff-row-${row.id}`}
             >
               <th scope="row" className="diff-cell diff-cell--label">
-                <GlossaryTerm term={row.label} />
+                <GlossaryTerm term={row.label}>{displayLabel}</GlossaryTerm>
                 <span
                   className={`diff-cadence diff-cadence--${row.frequency}`}
                   data-testid={`diff-row-${row.id}-cadence`}

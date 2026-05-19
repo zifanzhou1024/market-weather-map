@@ -66,14 +66,17 @@ const rows = [
   }
 ];
 
+import { useT } from "../lib/i18n";
+
 export default function HorizonImpactMatrix() {
+  const { t } = useT();
   return (
     <section className="panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Horizon map</p>
-          <h3>Signal Impact Matrix</h3>
-          <p>Shared context for how each signal family maps into short-term reactions and longer-term climate.</p>
+          <p className="eyebrow">{t("sections.horizonMap")}</p>
+          <h3>{t("sections.signalImpactMatrix")}</h3>
+          <p>{t("panels.horizonImpactSubtitle")}</p>
         </div>
       </div>
       <div className="horizon-impact-grid">
@@ -82,11 +85,11 @@ export default function HorizonImpactMatrix() {
             <p className="metric-source">{row.driver}</p>
             <dl className="detail-list">
               <div>
-                <dt>Short-term</dt>
+                <dt>{t("sections.shortTermColumn")}</dt>
                 <dd>{row.shortTerm}</dd>
               </div>
               <div>
-                <dt>Long-term</dt>
+                <dt>{t("sections.longTermColumn")}</dt>
                 <dd>{row.longTerm}</dd>
               </div>
             </dl>

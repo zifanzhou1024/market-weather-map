@@ -1,5 +1,6 @@
 import CandidateSourcePanel, { normalizeCandidateStatus, type CandidateSourceItem } from "./CandidateSourcePanel";
 import type { MacroCalendarEvent, MacroCalendarFile, MacroEventStatus } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 const eventRiskItems: CandidateSourceItem[] = [
   {
@@ -39,10 +40,10 @@ interface EventRiskPanelProps {
   items?: CandidateSourceItem[];
 }
 
-const eventStatusLabels: Record<MacroEventStatus, string> = {
-  estimated: "Estimated",
-  scheduled: "Scheduled",
-  source_link: "Source link"
+const eventStatusKeyMap: Record<MacroEventStatus, string> = {
+  estimated: "calendar.statusEstimated",
+  scheduled: "calendar.statusScheduled",
+  source_link: "calendar.statusSourceLink"
 };
 
 function statusClassName(status: string) {
@@ -59,13 +60,14 @@ function formatWhen(event: MacroCalendarEvent) {
 }
 
 export default function EventRiskPanel({ calendar, items = eventRiskItems }: EventRiskPanelProps) {
+  const { t, tCategorical } = useT();
   if (!calendar) {
     return (
       <CandidateSourcePanel
-        eyebrow="Candidate sources"
+        eyebrow={t("sections.candidateSources")}
         items={items}
-        summary="Source-gated calendar rows only; this panel does not publish event predictions."
-        title="Event risk"
+        summary={t("panels.eventRiskSummary")}
+        title={t("sections.eventRisk")}
       />
     );
   }
@@ -74,15 +76,11 @@ export default function EventRiskPanel({ calendar, items = eventRiskItems }: Eve
     <section className="panel event-risk-panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Official source-linked calendar context</p>
-          <h3>Event risk</h3>
-          <p>
-            Static official calendar context is a generated candidate diagnostic, not a live alert. It remains
-            descriptive release context only and does not affect active scores, regime labels, checklist states, or
-            confidence.
-          </p>
+          <p className="eyebrow">{t("sections.officialCalendarEyebrow")}</p>
+          <h3>{t("sections.eventRisk")}</h3>
+          <p>{t("panels.eventRiskOfficialDesc")}</p>
         </div>
-        <span className="status-pill status-not_scored">Not scored</span>
+        <span className="status-pill status-not_scored">{t("sections.notScored")}</span>
       </div>
       <div className="calendar-list calendar-list--compact">
         {calendar.events.map((event) => (
@@ -92,20 +90,20 @@ export default function EventRiskPanel({ calendar, items = eventRiskItems }: Eve
                 <p className="metric-source">{event.source}</p>
                 <h4>{event.title}</h4>
               </div>
-              <span className="status-pill">{eventStatusLabels[event.status]}</span>
+              <span className="status-pill">{t(eventStatusKeyMap[event.status])}</span>
             </div>
             <p>{event.notes}</p>
             <dl>
               <div>
-                <dt>When</dt>
+                <dt>{t("sections.when")}</dt>
                 <dd>{formatWhen(event)}</dd>
               </div>
               <div>
-                <dt>Importance</dt>
+                <dt>{t("sections.importance")}</dt>
                 <dd>{event.importance}</dd>
               </div>
               <div>
-                <dt>Source</dt>
+                <dt>{t("sections.source")}</dt>
                 <dd>
                   <a href={event.source_url}>{event.source}</a>
                 </dd>
@@ -123,7 +121,7 @@ export default function EventRiskPanel({ calendar, items = eventRiskItems }: Eve
                 <p>{item.note}</p>
               </div>
               <span className={`status-pill ${statusClassName(item.status)}`}>
-                {normalizeCandidateStatus(item.status)}
+                {tCategorical("status", normalizeCandidateStatus(item.status))}
               </span>
             </article>
           ))}

@@ -14,6 +14,7 @@ import type {
   VolatilityHiddenStressPoint,
   VolatilityHiddenStressState
 } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 /**
  * Compact panel that surfaces the latest VIX vs VVIX percentile mismatch
@@ -92,6 +93,7 @@ function buildSparkOption(
 }
 
 export default function VixVvixHiddenStressPanel() {
+  const { t } = useT();
   const [dashboard, setDashboard] = useState<VolatilityDashboardFile | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -135,11 +137,11 @@ export default function VixVvixHiddenStressPanel() {
       >
         <header className="vix-vvix-hidden-stress-panel__header">
           <h3 className="vix-vvix-hidden-stress-panel__title">
-            VIX vs VVIX percentile mismatch
+            {t("sections.vixVvixMismatch")}
           </h3>
         </header>
         <p className="vix-vvix-hidden-stress-panel__fallback">
-          VIX/VVIX percentile history is not currently active.
+          {t("panels.vixVvixUnavailable")}
         </p>
       </section>
     );
@@ -157,7 +159,7 @@ export default function VixVvixHiddenStressPanel() {
     >
       <header className="vix-vvix-hidden-stress-panel__header">
         <h3 className="vix-vvix-hidden-stress-panel__title">
-          VIX vs VVIX percentile mismatch
+          {t("sections.vixVvixMismatch")}
         </h3>
         <ChartStateBadge state={badgeState} />
       </header>
@@ -169,7 +171,7 @@ export default function VixVvixHiddenStressPanel() {
           {formatNumber(latest.hidden_stress_score, 1)}
         </span>
         <span className="vix-vvix-hidden-stress-panel__score-caption">
-          Hidden stress score, percentile gap
+          {t("panels.vixVvixCaption")}
         </span>
       </div>
       <div className="vix-vvix-hidden-stress-panel__spark">
@@ -182,9 +184,7 @@ export default function VixVvixHiddenStressPanel() {
         />
       </div>
       <p className="vix-vvix-hidden-stress-panel__footer">
-        When VVIX percentile leads VIX percentile, options markets price tail risk
-        that hasn't shown up in headline vol yet. Score is the gap (VVIX percentile
-        minus VIX percentile).
+        {t("panels.vixVvixFooter")}
       </p>
     </section>
   );

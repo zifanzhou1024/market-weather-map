@@ -1,5 +1,6 @@
 import { formatStateLabel } from "../lib/regime";
 import type { RegimeSnapshotFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 const adviceTerms = /\b(buy|sell|short|long|entry|target|stop)\b/gi;
 
@@ -51,6 +52,7 @@ export default function CrossAssetConfirmationMatrix({
   candidateItems?: CandidateConfirmationItem[];
   items: RegimeSnapshotFile["confirmations"];
 }) {
+  const { t, tCategorical } = useT();
   const activeItems = items.filter(isConfirmationItem);
   const activeIds = new Set(activeItems.map((item) => normalizeConfirmationKey(item.id)));
   const activeLabels = new Set(activeItems.map((item) => normalizeConfirmationKey(item.label)));
@@ -69,11 +71,11 @@ export default function CrossAssetConfirmationMatrix({
       <section className="panel">
         <div className="section-header">
           <div>
-            <p className="eyebrow">Cross asset</p>
-            <h3>Confirmation matrix</h3>
+            <p className="eyebrow">{t("sections.crossAsset")}</p>
+            <h3>{t("sections.confirmationMatrix")}</h3>
           </div>
         </div>
-        <p>No cross-asset confirmations are available.</p>
+        <p>{t("panels.confirmationMatrixEmpty")}</p>
       </section>
     );
   }
@@ -82,10 +84,10 @@ export default function CrossAssetConfirmationMatrix({
     <section className="panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Cross asset</p>
-          <h3>Confirmation matrix</h3>
+          <p className="eyebrow">{t("sections.crossAsset")}</p>
+          <h3>{t("sections.confirmationMatrix")}</h3>
         </div>
-        <p>{activeItems.length} markets</p>
+        <p>{t("panels.confirmationMatrixCount", { vars: { count: activeItems.length } })}</p>
       </div>
       <div className="confirmation-matrix">
         {displayItems.map((item) => (
@@ -97,7 +99,9 @@ export default function CrossAssetConfirmationMatrix({
               <h4>{item.label}</h4>
               <p>{removeAdviceTerms(item.message)}</p>
             </div>
-            <span className={`status-pill ${statusClassName(item)}`}>{formatConfirmationStatus(item.status)}</span>
+            <span className={`status-pill ${statusClassName(item)}`}>
+              {tCategorical("confirmation", formatConfirmationStatus(item.status))}
+            </span>
           </article>
         ))}
       </div>

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { RouteKey } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 /**
  * Visual container that wraps the "data and sources" tail at the bottom of
@@ -26,12 +27,14 @@ export interface RouteDataFooterProps {
 }
 
 export default function RouteDataFooter({ route, children }: RouteDataFooterProps) {
-  const ariaLabel = route ? `Data and sources for ${route}` : "Data and sources";
+  const { t } = useT();
+  const heading = t("sections.dataAndSources");
+  const ariaLabel = route ? `${heading} (${route})` : heading;
 
   return (
     <footer className="route-data-footer" aria-label={ariaLabel}>
       <hr className="route-data-footer__separator" aria-hidden="true" />
-      <h3 className="route-data-footer__heading">Data and sources</h3>
+      <h3 className="route-data-footer__heading">{heading}</h3>
       <div className="route-data-footer__panels">{children}</div>
     </footer>
   );
