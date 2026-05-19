@@ -42,6 +42,17 @@
 - Publicly accessible source pages, dashboards, APIs, CSV files, or documentation are not automatically redistributable as static JSON. Each candidate still needs source-specific review for automation, attribution, transformation, and redistribution boundaries before active publication.
 - Generated public data should include only reviewed, redistributable observations and source metadata. Licensed, gated, or unresolved provider data should remain candidate-only unless later documentation approves the static-public workflow.
 
+## Internationalization Limitations
+
+- Display language can be toggled between English (default) and Simplified Chinese, but the underlying data, scoring, and provider sourcing are identical across locales.
+- Numeric values, dates, tickers (VIX, MOVE, SKEW, etc.), FRED series IDs, and provider names (Cboe, ICE, NY Fed, BLS, FRED, Treasury.gov) remain in their original form regardless of locale, so identifiers stay searchable and unambiguous.
+- Curated index and jargon labels render in `中文 (Original)` form under Simplified Chinese (for example, `高收益债期权调整价差 (HY OAS)`). The parenthetical original is intentional and is not removed in compact views.
+- A subset of dynamic Python-emitted narrative remains English under Simplified Chinese. Specifically: FocusBlock `answer`, `why`, `risk`, `support`, and `caveat` fields (Python f-strings with numeric interpolation) and roughly 17% of driver-detail paragraphs that do not match a known template pattern. These fall-through strings are wrapped in `<span lang="en">` so screen readers and CJK font fallback behave correctly.
+- DataGapPanel observation and note columns reflect text emitted directly from `data_status.json` (Python-generated freshness explanations with embedded dates) and are not translated.
+- Glossary tooltips translate their explanation text under Simplified Chinese, but the canonical key (the English label) is unchanged; the visible text wrapped by `<abbr>` is whatever the call site renders.
+- Translation choices follow Mainland financial-press conventions (财新, 第一财经, CICC research). Hong Kong or Taiwanese variants are not provided in this release.
+- Adding a new language requires a new dictionary file and a wider toggle component; the current toggle is hardcoded to English and Simplified Chinese.
+
 ## Score Confidence Limitations
 
 - Confidence is a data-quality indicator, not a probability that a market outcome will occur.

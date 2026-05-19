@@ -16,6 +16,7 @@ The current project includes:
 - Phase 5 PR 2 tactical source gates for options sentiment, VX futures readiness, and event risk.
 - Phase 5 PR 3 Fragility / Shock Risk view with a generated shock-risk snapshot from active inputs and source-readiness gaps.
 - Phase 5 PR 5 Historical Regime Replay view with descriptive prior-regime matches and score-driver attribution.
+- Simplified Chinese display mode with an `EN | 中` toggle in the persistent regime header (also reachable via the `g i` keyboard shortcut). The active locale is shareable via `?lang=zh` and persists across visits via `localStorage`.
 
 The current project does not include:
 
@@ -152,8 +153,18 @@ The data workflow runs on weekdays and can also be started manually from GitHub 
 
 The Pages workflow runs on pushes to `main` and can also be started manually. It installs dependencies with `npm ci`, builds with `GITHUB_PAGES=true npm run build`, uploads `dist`, and deploys the static site to GitHub Pages.
 
+## Languages
+
+The dashboard ships with English (default) and Simplified Chinese display modes. The toggle lives in the persistent regime header at the top of every page as a segmented `EN | 中` pill, and the same flip is reachable via the `g i` keyboard shortcut (`g` then `i`).
+
+- `?lang=en` or `?lang=zh` selects the locale and survives reload via `localStorage["mwm.locale"]`. Precedence is URL → storage → default English.
+- Curated index labels render as `中文 (Original)` under Chinese — for example, `波动率指数 (VIX)` or `高收益债期权调整价差 (HY OAS)` — so source-keyed search and screen readers still work.
+- Numeric values, dates, tickers, FRED IDs, and provider names stay in their original form regardless of locale.
+- A subset of dynamic Python-emitted narrative remains English under Chinese; see [docs/I18N.md](docs/I18N.md) for the architecture and [docs/LIMITATIONS.md](docs/LIMITATIONS.md) for the coverage caveats.
+
 ## Documentation
 
 - [Data sources](docs/DATA_SOURCES.md)
 - [Methodology](docs/METHODOLOGY.md)
 - [Limitations](docs/LIMITATIONS.md)
+- [Internationalization](docs/I18N.md)
