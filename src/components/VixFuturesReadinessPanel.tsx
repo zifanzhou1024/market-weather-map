@@ -1,5 +1,6 @@
 import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
 import { applyCandidateDisplayOverride } from "../lib/candidateDisplay";
+import { useT } from "../lib/i18n";
 
 const vxItems: CandidateSourceItem[] = Array.from({ length: 8 }, (_, index) => {
   const month = index + 1;
@@ -18,25 +19,24 @@ interface VixFuturesReadinessPanelProps {
 
 export default function VixFuturesReadinessPanel({
   items = vxItems,
-  title = "VX futures curve"
+  title
 }: VixFuturesReadinessPanelProps) {
+  const { t } = useT();
   const displayItems = items.map(applyCandidateDisplayOverride);
+  const resolvedTitle = title ?? t("sections.vxFuturesCurve");
 
   return (
     <CandidateSourcePanel
-      eyebrow="Candidate sources"
+      eyebrow={t("sections.candidateSources")}
       footer={
         <div className="fallback-proxy-note">
-          <span className="status-pill status-partial">Fallback proxy</span>
-          <p>
-            VIX9D/VIX and VIX/VIX3M can provide fallback proxy context while VX data is inactive. This is not
-            a tradable futures curve.
-          </p>
+          <span className="status-pill status-partial">{t("sections.fallbackProxy")}</span>
+          <p>{t("panels.vxFuturesFooter")}</p>
         </div>
       }
       items={displayItems}
-      summary="Cboe VX settlement candidate fetcher is implemented. Rows remain source-gated and non-scoring until redistribution review approves publication."
-      title={title}
+      summary={t("panels.vxFuturesSummary")}
+      title={resolvedTitle}
     />
   );
 }

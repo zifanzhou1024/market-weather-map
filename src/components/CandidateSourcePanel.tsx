@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { ExternalResearchLink } from "../lib/externalResearchLinks";
 import ExternalResearchLinks from "./ExternalResearchLinks";
+import { useT } from "../lib/i18n";
 
 export interface CandidateSourceItem {
   id: string;
@@ -40,9 +41,11 @@ export default function CandidateSourcePanel({
   eyebrow,
   summary,
   items,
-  emptyText = "No candidate source rows are configured for this view.",
+  emptyText,
   footer
 }: CandidateSourcePanelProps) {
+  const { t, tCategorical } = useT();
+  const resolvedEmpty = emptyText ?? t("panels.candidateSourceEmpty");
   return (
     <section className="panel candidate-source-panel">
       <div className="section-header">
@@ -67,13 +70,13 @@ export default function CandidateSourcePanel({
                 />
               </div>
               <span className={`status-pill ${statusClassName(item.status)}`}>
-                {normalizeCandidateStatus(item.status)}
+                {tCategorical("status", normalizeCandidateStatus(item.status))}
               </span>
             </article>
           ))}
         </div>
       ) : (
-        <p className="score-note">{emptyText}</p>
+        <p className="score-note">{resolvedEmpty}</p>
       )}
       {footer}
     </section>

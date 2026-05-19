@@ -10,21 +10,13 @@ interface Props {
 
 const SCROLL_THIN_THRESHOLD_PX = 80;
 
-// Map the cockpit.regime.label (English from Python) to the i18n key.
-const REGIME_LABEL_KEYS: Record<string, string> = {
-  "Risk-On": "regime.riskOn",
-  "Risk-Off": "regime.riskOff",
-  Neutral: "regime.neutral",
-  Stress: "regime.stress"
-};
-
 function findFragility(scores: CockpitCompositeScore[]): CockpitCompositeScore | undefined {
   return scores.find((s) => s.id === "fragility");
 }
 
 export default function PersistentRegimeHeader({ cockpit }: Props) {
   const mode = useMode();
-  const { t } = useT();
+  const { t, tCategorical } = useT();
   const [isThin, setIsThin] = useState(false);
 
   useEffect(() => {
@@ -53,8 +45,9 @@ export default function PersistentRegimeHeader({ cockpit }: Props) {
       : null;
   const toneClass = `persistent-regime-header__dot--${cockpit.regime.tone}`;
   const otherMode = mode === "brief" ? "detail" : "brief";
-  const regimeKey = REGIME_LABEL_KEYS[cockpit.regime.label];
-  const regimeText = regimeKey ? t(regimeKey) : cockpit.regime.label;
+  // Piecewise translation lets "Tightening / risk-off" and "Easing / risk-on"
+  // come through localized even when the exact phrase isn't in the table.
+  const regimeText = tCategorical("regime", cockpit.regime.label);
   const otherModeLabel = otherMode === "brief" ? t("chrome.briefMode") : t("chrome.detailMode");
 
   return (

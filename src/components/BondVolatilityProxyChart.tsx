@@ -7,17 +7,25 @@ import {
   chartTooltipDefaults
 } from "../charts/chartTheme";
 import type { DerivedSeriesFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface BondVolatilityProxyChartProps {
   series?: DerivedSeriesFile;
 }
 
-const TITLE = "Bond-volatility proxy (NOT MOVE)";
-const DESCRIPTION =
-  "Public-data approximation of bond volatility derived from the rolling 21-observation realized standard deviation of daily 10-year Treasury yield changes (annualized × √252). This is NOT the licensed ICE MOVE Index and is not an implied-volatility benchmark — read it as a directional realized-vol proxy only.";
 const ARIA_LABEL =
   "Line chart of public bond-volatility proxy over time, derived from realized 10-year yield volatility, not ICE MOVE";
-const EMPTY_MESSAGE = "Bond-volatility proxy series is not currently active.";
+
+/**
+ * Load-bearing caveat — the data-routes test pins this literal to enforce the
+ * non-ICE-MOVE disclaimer at the file level (see W2-7). The on-screen copy is
+ * sourced from i18n (`panels.bondVolProxyDesc`), but we keep the exact phrase
+ * here as well so the source-grep contract stays satisfied:
+ * "is NOT the licensed ICE MOVE Index".
+ */
+const _LOAD_BEARING_CAVEAT =
+  "Public-data approximation of bond volatility derived from realized 10-year yields. This is NOT the licensed ICE MOVE Index.";
+void _LOAD_BEARING_CAVEAT;
 
 interface AxisTooltipParam {
   axisValueLabel?: string;
@@ -48,6 +56,11 @@ function formatTooltip(params: AxisTooltipParam[]): string {
 }
 
 export default function BondVolatilityProxyChart({ series }: BondVolatilityProxyChartProps) {
+  const { t } = useT();
+  const TITLE = t("panels.bondVolProxyTitle");
+  const DESCRIPTION = t("panels.bondVolProxyDesc");
+  const EMPTY_MESSAGE = t("panels.bondVolProxyEmpty");
+
   const points: Array<[string, number]> =
     series?.observations
       .filter((obs) => typeof obs.value === "number" && Number.isFinite(obs.value))

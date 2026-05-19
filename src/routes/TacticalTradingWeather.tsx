@@ -209,13 +209,13 @@ export default function TacticalTradingWeather() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow" lang="en">Tactical Trading Weather</p>
+        <p className="eyebrow">{t("routes.tacticalEyebrow")}</p>
         <h2>{t("routes.shortTermHeading")}</h2>
-        <p lang="en">Current regime, volatility curve, credit, dollar, real-yield, and liquidity inputs.</p>
+        <p>{t("routes.shortTermIntro")}</p>
       </section>
       {error ? (
         <p className="data-error" role="alert">
-          Data error: {error}
+          {t("chrome.dataErrorPrefix")}: {error}
         </p>
       ) : null}
       {data ? (
@@ -232,20 +232,20 @@ export default function TacticalTradingWeather() {
               aria-label="Tactical top active warnings, supports, and missing high-value signals"
             >
               <TopSignalList
-                title="Top Active Warnings"
-                emptyText="No top active tactical warnings in the current snapshot."
+                title={t("sections.topActiveWarnings")}
+                emptyText={t("panels.noTacticalTopWarnings")}
                 variant="warning"
                 signals={data.signalPriority.top_warnings}
               />
               <TopSignalList
-                title="Top Active Supports"
-                emptyText="No top active tactical supports in the current snapshot."
+                title={t("sections.topActiveSupports")}
+                emptyText={t("panels.noTacticalTopSupports")}
                 variant="support"
                 signals={data.signalPriority.top_supports}
               />
               <TopSignalList
-                title="Missing High-Value Signals"
-                emptyText="All high-value tactical signals have an active source."
+                title={t("sections.missingHighValueSignals")}
+                emptyText={t("panels.allTacticalHighValueActive")}
                 variant="missing"
                 signals={data.signalPriority.missing_high_value_signals}
               />
@@ -310,7 +310,7 @@ export default function TacticalTradingWeather() {
             <EventRiskTimeline calendar={data.calendar} />
           </section>
           <div className="section-heading">
-            <h3>Daily checklist</h3>
+            <h3>{t("sections.dailyChecklist")}</h3>
           </div>
           <SignalChecklist items={data.snapshot.checklist} />
           <VolatilityTermStructurePanel

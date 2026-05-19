@@ -9,6 +9,7 @@ import type {
   RouteKey,
   SignalRef
 } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 /**
  * First-glance interpretive hero for single-domain routes.
@@ -81,20 +82,22 @@ function resolveInsight(
 }
 
 function FallbackHero() {
+  const { t } = useT();
   return (
     <section
       className="page-insight-hero page-insight-hero--fallback"
       aria-label="Page insight (unavailable)"
     >
-      <h3 className="page-insight-hero__title">Current read unavailable</h3>
+      <h3 className="page-insight-hero__title">{t("panels.pageInsightUnavailable")}</h3>
       <p className="page-insight-hero__caveat">
-        Current read unavailable — see data status below.
+        {t("panels.pageInsightUnavailableBody")}
       </p>
     </section>
   );
 }
 
 export default function PageInsightHero({ route }: PageInsightHeroProps) {
+  const { t } = useT();
   const [file, setFile] = useState<PageInsightsFile | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -144,13 +147,13 @@ export default function PageInsightHero({ route }: PageInsightHeroProps) {
           <h3 className="page-insight-hero__title">{insight.title}</h3>
           <ChartStateBadge state={badgeState} />
         </div>
-        <p className="page-insight-hero__generated-at">As of {date}</p>
+        <p className="page-insight-hero__generated-at">{t("narrative.asOf")} {date}</p>
       </div>
       {drivers.length > 0 ? (
         <div className="page-insight-hero__drivers" role="group" aria-label="Primary drivers">
           {insight.primary_warning && drivers.some((d) => d.direction === "risk") ? (
             <div className="page-insight-hero__driver-slot page-insight-hero__driver-slot--warning">
-              <p className="page-insight-hero__driver-eyebrow">Primary warning</p>
+              <p className="page-insight-hero__driver-eyebrow">{t("sections.primaryWarning")}</p>
               <DriverBarList
                 items={drivers.filter((d) => d.direction === "risk")}
                 max={1}
@@ -159,7 +162,7 @@ export default function PageInsightHero({ route }: PageInsightHeroProps) {
           ) : null}
           {insight.primary_support && drivers.some((d) => d.direction === "support") ? (
             <div className="page-insight-hero__driver-slot page-insight-hero__driver-slot--support">
-              <p className="page-insight-hero__driver-eyebrow">Primary support</p>
+              <p className="page-insight-hero__driver-eyebrow">{t("sections.primarySupport")}</p>
               <DriverBarList
                 items={drivers.filter((d) => d.direction === "support")}
                 max={1}
@@ -175,7 +178,7 @@ export default function PageInsightHero({ route }: PageInsightHeroProps) {
         <div className="page-insight-hero__caveat">
           {Number.isFinite(insight.confidence) ? (
             <span className="page-insight-hero__confidence">
-              Confidence {formatConfidence(insight.confidence)}
+              {t("narrative.confidenceWithValue", { vars: { value: formatConfidence(insight.confidence) } })}
             </span>
           ) : null}
           {freshnessNotes.length > 0 ? (

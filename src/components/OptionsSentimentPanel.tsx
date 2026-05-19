@@ -1,6 +1,7 @@
 import CandidateSourcePanel, { type CandidateSourceItem } from "./CandidateSourcePanel";
 import { formatNumber } from "../lib/formatters";
 import type { TimeSeriesFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface OptionsSentimentPanelProps {
   items: CandidateSourceItem[];
@@ -65,6 +66,7 @@ function uniqueActiveSeries(activeSeries: TimeSeriesFile[]) {
 }
 
 export default function OptionsSentimentPanel({ items, activeSeries = [] }: OptionsSentimentPanelProps) {
+  const { t } = useT();
   const candidatesById = new Map(items.map((item) => [item.id, item]));
   const activeOptionsSeries = uniqueActiveSeries(activeSeries);
   const activeItems = sortCandidateItems(
@@ -81,18 +83,14 @@ export default function OptionsSentimentPanel({ items, activeSeries = [] }: Opti
 
   return (
     <CandidateSourcePanel
-      eyebrow="Candidate sources"
-      emptyText="No active options sentiment candidate rows are configured."
+      eyebrow={t("sections.candidateSources")}
+      emptyText={t("panels.optionsSentimentEmpty")}
       footer={
-        <p className="score-note">
-          Useful short-term sentiment context, but automated historical access and static JSON
-          redistribution are not approved. Candidate-only options sentiment cannot affect scores,
-          regime labels, checklist states, or confidence until source review promotes it.
-        </p>
+        <p className="score-note">{t("panels.optionsSentimentFooter")}</p>
       }
       items={combinedItems}
-      summary="Source review required: SPX/SPXW, index, equity, VIX, ETP, and total put/call remain source-gated candidate context until review approves active publication."
-      title="Options sentiment"
+      summary={t("panels.optionsSentimentSummary")}
+      title={t("sections.optionsSentiment")}
     />
   );
 }

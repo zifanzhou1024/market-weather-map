@@ -1,5 +1,6 @@
 import { formatDate, formatNumber, formatSigned } from "../lib/formatters";
 import type { SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface LiquidityPulsePanelProps {
   netLiquidity?: TimeSeriesFile;
@@ -16,6 +17,7 @@ function latest(series?: TimeSeriesFile) {
 }
 
 export default function LiquidityPulsePanel({ catalog, netLiquidity }: LiquidityPulsePanelProps) {
+  const { t } = useT();
   const current = latest(netLiquidity);
   const catalogEntry = catalog.find((entry) => entry.id === "net_liquidity");
   const units = netLiquidity?.units ?? catalogEntry?.units ?? "";
@@ -25,19 +27,19 @@ export default function LiquidityPulsePanel({ catalog, netLiquidity }: Liquidity
     <section className="panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Liquidity</p>
-          <h3>Liquidity pulse</h3>
-          <p>Net liquidity from the already loaded derived static row.</p>
+          <p className="eyebrow">{t("sections.liquidity")}</p>
+          <h3>{t("sections.liquidityPulse")}</h3>
+          <p>{t("panels.liquidityPulseDesc")}</p>
         </div>
       </div>
       <div className="metric-grid">
         <article className="metric-card">
-          <p className="metric-source">{catalogEntry?.name ?? "Net liquidity proxy"}</p>
-          <strong>{isAvailable ? `${formatNumber(current.value)} ${units}` : "Unavailable"}</strong>
+          <p className="metric-source">{catalogEntry?.name ?? t("panels.netLiquidity")}</p>
+          <strong>{isAvailable ? `${formatNumber(current.value)} ${units}` : t("chrome.unavailable")}</strong>
           <p>
             {isAvailable
-              ? `Recent change ${formatSigned(current.change)}; last observation ${formatDate(current.date)}.`
-              : "This row is unavailable in the loaded static data."}
+              ? `${t("panels.metricChangePrefix")} ${formatSigned(current.change)}; ${t("panels.lastObservationPrefix")} ${formatDate(current.date)}.`
+              : t("panels.metricUnavailable")}
           </p>
         </article>
       </div>

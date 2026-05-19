@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { formatDate, formatNumber, formatSigned } from "../lib/formatters";
 import type { RegimeReplayFile, RegimeReplayOccurrence, RegimeReplayScenario } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 function safeScenarios(replay: RegimeReplayFile): RegimeReplayScenario[] {
   return Array.isArray(replay.scenarios) ? replay.scenarios : [];
@@ -10,15 +11,12 @@ function safeOccurrences(scenario: RegimeReplayScenario): RegimeReplayOccurrence
   return Array.isArray(scenario.occurrences) ? scenario.occurrences : [];
 }
 
-function countLabel(count: number) {
-  return `${formatNumber(count, 0)} ${count === 1 ? "occurrence" : "occurrences"}`;
-}
-
 interface HistoricalRegimeReplayPanelProps {
   replay: RegimeReplayFile;
 }
 
 export default function HistoricalRegimeReplayPanel({ replay }: HistoricalRegimeReplayPanelProps) {
+  const { t, tCategorical } = useT();
   const scenarios = safeScenarios(replay);
   const initialScenarioId = scenarios.find((scenario) => scenario.occurrence_count > 0)?.id ?? scenarios[0]?.id;
   const [selectedScenarioId, setSelectedScenarioId] = useState(initialScenarioId);
@@ -29,18 +27,20 @@ export default function HistoricalRegimeReplayPanel({ replay }: HistoricalRegime
     return [...safeOccurrences(selectedScenario)].slice(-20).reverse();
   }, [selectedScenario]);
 
+  function countLabel(count: number) {
+    // Singular/plural picked from i18n keys so zh stays grammatical.
+    return `${formatNumber(count, 0)} ${count === 1 ? t("panels.occurrenceSingular") : t("panels.occurrencePlural")}`;
+  }
+
   return (
     <section className="panel replay-panel" aria-label="Historical regime replay">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Research</p>
-          <h3>Historical regime replay</h3>
-          <p>
-            Finds prior dates where the same broad real-yield, dollar, credit, and VIX-curve
-            pressure pattern appeared in the active public-data history.
-          </p>
+          <p className="eyebrow">{t("sections.research")}</p>
+          <h3>{t("sections.historicalRegimeReplay")}</h3>
+          <p>{t("panels.replayDesc")}</p>
         </div>
-        <span className="status-pill status-ok">No trade recommendations</span>
+        <span className="status-pill status-ok">{t("panels.replayNoTradeRecs")}</span>
       </div>
       {scenarios.length ? (
         <>
@@ -52,7 +52,7 @@ export default function HistoricalRegimeReplayPanel({ replay }: HistoricalRegime
                 onClick={() => setSelectedScenarioId(scenario.id)}
                 type="button"
               >
-                <span>{scenario.label}</span>
+                <span>{tCategorical("regime", scenario.label)}</span>
                 <strong>{countLabel(scenario.occurrence_count)}</strong>
               </button>
             ))}
@@ -61,22 +61,23 @@ export default function HistoricalRegimeReplayPanel({ replay }: HistoricalRegime
             <div className="replay-detail">
               <div className="replay-summary">
                 <article>
-                  <p className="metric-source">Selected regime</p>
-                  <h4>{selectedScenario.label}</h4>
+                  <p className="metric-source">{t("sections.selectedRegime")}</p>
+                  <h4>{tCategorical("regime", selectedScenario.label)}</h4>
                   <p>{selectedScenario.description}</p>
                 </article>
                 <dl>
                   <div>
-                    <dt>Matches</dt>
+                    <dt>{t("sections.matches")}</dt>
                     <dd>{countLabel(selectedScenario.occurrence_count)}</dd>
                   </div>
                   <div>
-                    <dt>Last match</dt>
+                    <dt>{t("sections.lastMatch")}</dt>
                     <dd>{formatDate(selectedScenario.last_occurrence_date)}</dd>
                   </div>
                   <div>
-                    <dt>Method</dt>
-                    <dd>20-observation changes</dd>
+                    <dt>{t("sections.method")}</dt>
+                    {/* Load-bearing literal — data-routes pins "20-observation changes" at line 79. */}
+                    <dd>{t("sections.twentyObsMethod")}</dd>
                   </div>
                 </dl>
               </div>
@@ -115,13 +116,13 @@ export default function HistoricalRegimeReplayPanel({ replay }: HistoricalRegime
                   </table>
                 </div>
               ) : (
-                <p className="score-note">No matching observations for this scenario in the current file.</p>
+                <p className="score-note">{t("panels.replayNoOccurrences")}</p>
               )}
             </div>
           ) : null}
         </>
       ) : (
-        <p className="score-note">No replay scenarios are available in the current file.</p>
+        <p className="score-note">{t("panels.replayNoScenarios")}</p>
       )}
     </section>
   );

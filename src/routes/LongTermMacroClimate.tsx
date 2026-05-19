@@ -238,13 +238,13 @@ export default function LongTermMacroClimate() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow" lang="en">Strategic</p>
+        <p className="eyebrow">{t("routes.strategicEyebrow")}</p>
         <h2>{t("routes.longTermHeading")}</h2>
-        <p lang="en">Macro Climate score, strategic bucket context, and yield-decomposition history.</p>
+        <p>{t("routes.longTermIntro")}</p>
       </section>
       {error ? (
         <p className="data-error" role="alert">
-          Data error: {error}
+          {t("chrome.dataErrorPrefix")}: {error}
         </p>
       ) : null}
       {data ? (
@@ -255,29 +255,30 @@ export default function LongTermMacroClimate() {
             );
             return macroClimate ? <RouteScoreStrip composite={macroClimate} mode={mode} /> : null;
           })()}
-          <section className="score-grid" aria-label="Macro climate score">
-            <ScoreCard score={data.scoreSummary.scores.macro_climate} title="Macro Climate" />
+          <section className="score-grid" aria-label={t("sections.macroClimateScoreAria")}>
+            <ScoreCard score={data.scoreSummary.scores.macro_climate} title={t("signals.macroClimate")} />
           </section>
           <MacroClimateHeatmap scoreSummary={data.scoreSummary} />
           <GrowthLaborInflationMatrix scoreSummary={data.scoreSummary} />
           <InterpretationPanel
-            label="Strategic regime summary"
+            label={t("panels.strategicRegimeSummaryLabel")}
             notes={data.scoreSummary.scores.macro_climate.missing_or_stale_notes}
             risks={data.scoreSummary.scores.macro_climate.top_risks}
-            summary={`Growth ${bucketScore(data.scoreSummary, "growth")}, labor ${bucketScore(
-              data.scoreSummary,
-              "labor"
-            )}, inflation ${bucketScore(data.scoreSummary, "inflation")}, real-yield ${bucketScore(
-              data.scoreSummary,
-              "real_yields"
-            )}.`}
+            summary={t("panels.growthLaborInflationSummary", {
+              vars: {
+                growth: bucketScore(data.scoreSummary, "growth"),
+                labor: bucketScore(data.scoreSummary, "labor"),
+                inflation: bucketScore(data.scoreSummary, "inflation"),
+                realYield: bucketScore(data.scoreSummary, "real_yields"),
+              },
+            })}
             supports={data.scoreSummary.scores.macro_climate.top_supports}
           />
           <section className="route-stack" aria-labelledby="macro-bucket-grid-heading">
             <div className="section-header">
               <div>
-                <p className="eyebrow">Strategic buckets</p>
-                <h3 id="macro-bucket-grid-heading">Macro bucket grid</h3>
+                <p className="eyebrow">{t("sections.strategicBuckets")}</p>
+                <h3 id="macro-bucket-grid-heading">{t("sections.macroBucketGrid")}</h3>
               </div>
             </div>
             <section className="macro-cycle-grid" aria-label="Strategic macro cycle panels">
@@ -301,7 +302,7 @@ export default function LongTermMacroClimate() {
             <YieldDecompositionStackChart data={data.ratesDashboard.current_decomposition} />
           ) : (
             <p className="data-loading" role="status">
-              Current-decomposition view loading…
+              {t("sections.yieldDecompositionLoading")}
             </p>
           )}
           <YieldDecompositionChart data={data.snapshot.yield_decomposition} />
@@ -309,9 +310,9 @@ export default function LongTermMacroClimate() {
             <section className="route-stack" key={group.label}>
               <InterpretationPanel
                 label={group.label}
-                notes={["Strategic data can update at daily, weekly, or monthly frequencies."]}
+                notes={[t("panels.macroPanelNote")]}
                 summary={group.summary}
-                title="Macro panel"
+                title={t("panels.macroPanelTitle")}
               />
               <section className="metric-grid" aria-label={`${group.label} metrics`}>
                 {group.ids.map((seriesId) => {
@@ -330,7 +331,7 @@ export default function LongTermMacroClimate() {
               </section>
             </section>
           ))}
-          <section className="metric-grid" aria-label="Real-yield metrics">
+          <section className="metric-grid" aria-label={t("sections.realYieldMetrics")}>
             {ratesIds.map((seriesId) => {
               const series = data.series.find((item) => item.series_id === seriesId);
               return series ? (
@@ -346,11 +347,11 @@ export default function LongTermMacroClimate() {
             <CandidateDiagnosticPanel
               catalog={data.catalog}
               diagnosticIds={macroDiagnosticIds}
-              eyebrow="Official/public diagnostics"
+              eyebrow={t("panels.candidateDiagOfficialPublic")}
               series={data.diagnosticSeries}
               status={data.status}
-              summary="These generated static diagnostics are sourced from official/public paths and shown for context only."
-              title="Generated official diagnostics"
+              summary={t("panels.candidateDiagSummaryLong")}
+              title={t("panels.candidateDiagOfficialTitle")}
             />
             <StrategicSourceGapMatrix />
             <StrategicSourceGapsPanel />
@@ -372,7 +373,9 @@ function bucketScoreValue(scoreSummary: ScoreSummaryFile, bucket: string) {
   return scoreSummary.scores.macro_climate.bucket_scores[bucket];
 }
 
-function cycleLabel(score: number | undefined) {
+// English bucket-reading labels — translated downstream via
+// `tCategorical("bucketReading", ...)` in MacroCyclePanel.
+function cycleLabel(score: number | undefined): "Not scored" | "Supportive" | "Pressure" | "Mixed" {
   if (typeof score !== "number" || !Number.isFinite(score)) return "Not scored";
   if (score >= 15) return "Supportive";
   if (score <= -15) return "Pressure";

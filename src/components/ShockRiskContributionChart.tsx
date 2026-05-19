@@ -9,6 +9,7 @@ import {
 } from "../charts/chartTheme";
 import { formatNumber, formatSignedScore } from "../charts/chartFormatters";
 import type { ShockRiskSignal } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface ShockRiskContributionChartProps {
   activeSignals: ShockRiskSignal[];
@@ -62,15 +63,16 @@ function buildSortedRows(signals: ShockRiskSignal[]): BarDatum[] {
 export default function ShockRiskContributionChart({
   activeSignals
 }: ShockRiskContributionChartProps) {
+  const { t } = useT();
   const rows = useMemo(() => buildSortedRows(activeSignals), [activeSignals]);
 
   if (activeSignals.length === 0) {
     return (
       <EChartPanel
-        title="Active shock-risk contribution"
-        description="Each bar shows how much an active signal is currently pushing on the shock-risk score. Red bars add risk; green bars subtract it."
+        title={t("panels.activeShockRiskTitle")}
+        description={t("panels.activeShockRiskDesc")}
         state="empty"
-        emptyMessage="No active shock-risk signals in the current snapshot."
+        emptyMessage={t("panels.noVisibleSignals")}
       />
     );
   }
@@ -110,8 +112,8 @@ export default function ShockRiskContributionChart({
 
   return (
     <EChartPanel
-      title="Active shock-risk contribution"
-      description="Each bar shows how much an active signal is currently pushing on the shock-risk score. Red bars add risk; green bars subtract it."
+      title={t("panels.activeShockRiskTitle")}
+      description={t("panels.activeShockRiskDesc")}
       state="ready"
       option={option}
       ariaLabel="Horizontal bar chart of active shock-risk signal contributions, sorted by magnitude"

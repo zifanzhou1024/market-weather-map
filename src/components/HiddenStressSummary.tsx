@@ -7,6 +7,7 @@ import type {
   ShockRiskMismatchWarning,
   ShockRiskSourceGap
 } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface HiddenStressSummaryProps {
   shockSnapshot: ShockRiskSnapshotFile;
@@ -86,7 +87,7 @@ function gatedRows(sourceGaps: ShockRiskSourceGap[]) {
   return rows;
 }
 
-function mismatchSeverity(message: string) {
+function mismatchSeverityKey(message: string): "High" | "Medium" | "Low" {
   const normalized = message.toLowerCase();
   const hasCredit = /\bcredit\b/.test(normalized);
   const hasDollar = /\bdollar\b/.test(normalized);
@@ -99,26 +100,32 @@ function mismatchSeverity(message: string) {
 }
 
 export default function HiddenStressSummary({ shockSnapshot }: HiddenStressSummaryProps) {
+  const { t, tCategorical } = useT();
   const sanitizedSnapshot = sanitizeShockRiskSnapshot(shockSnapshot);
   const visibleRows = safeArray<ShockRiskSignal>(sanitizedSnapshot.active_signals);
   const sourceGaps = safeArray<ShockRiskSourceGap>(sanitizedSnapshot.source_gaps);
   const warnings = safeArray<ShockRiskMismatchWarning>(sanitizedSnapshot.mismatch_warnings);
   const gatedStressRows = gatedRows(sourceGaps);
+  const severityLabel: Record<"High" | "Medium" | "Low", string> = {
+    High: t("panels.severityHigh"),
+    Medium: t("panels.severityMedium"),
+    Low: t("panels.severityLow"),
+  };
 
   return (
     <section className="panel hidden-stress-summary">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Stress channels</p>
-          <h3>Visible vs gated stress</h3>
-          <p>Active rows are observed shock-risk signals. Gated rows are source-readiness gaps, not warnings.</p>
+          <p className="eyebrow">{t("sections.stressChannels")}</p>
+          <h3>{t("sections.visibleVsGatedStress")}</h3>
+          <p>{t("panels.visibleVsGatedDesc")}</p>
         </div>
       </div>
 
       <div className="metric-grid" aria-label="Visible and gated stress summary">
         <article className="candidate-source-row">
           <div>
-            <h4>Visible stress</h4>
+            <h4>{t("sections.visibleStress")}</h4>
             {visibleRows.length > 0 ? (
               <ul>
                 {visibleRows.map((row) => (
@@ -128,17 +135,17 @@ export default function HiddenStressSummary({ shockSnapshot }: HiddenStressSumma
                 ))}
               </ul>
             ) : (
-              <p className="score-note">No active shock-risk signals in the current snapshot.</p>
+              <p className="score-note">{t("panels.noVisibleSignals")}</p>
             )}
           </div>
         </article>
         <article className="candidate-source-row">
           <div>
-            <h4>Gated stress</h4>
+            <h4>{t("sections.gatedStress")}</h4>
             <ul>
               {gatedStressRows.map((row) => (
                 <li key={row.id}>
-                  <strong>{row.label}</strong>: {row.message} ({statusLabel(row.status)})
+                  <strong>{row.label}</strong>: {row.message} ({tCategorical("status", statusLabel(row.status))})
                 </li>
               ))}
             </ul>
@@ -147,7 +154,7 @@ export default function HiddenStressSummary({ shockSnapshot }: HiddenStressSumma
       </div>
 
       <div className="section-heading">
-        <h3>Mismatch severity</h3>
+        <h3>{t("sections.mismatchSeverity")}</h3>
       </div>
       {warnings.length > 0 ? (
         <div className="candidate-source-list" role="list">
@@ -157,12 +164,12 @@ export default function HiddenStressSummary({ shockSnapshot }: HiddenStressSumma
                 <h4>{warning.label}</h4>
                 <p>{warning.message}</p>
               </div>
-              <span className="status-pill status-partial">{mismatchSeverity(warning.message)}</span>
+              <span className="status-pill status-partial">{severityLabel[mismatchSeverityKey(warning.message)]}</span>
             </article>
           ))}
         </div>
       ) : (
-        <p className="score-note">No mismatch warnings in the current shock-risk snapshot.</p>
+        <p className="score-note">{t("panels.mismatchWarningsEmpty")}</p>
       )}
     </section>
   );

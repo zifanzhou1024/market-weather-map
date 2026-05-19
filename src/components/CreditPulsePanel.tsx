@@ -1,5 +1,6 @@
 import { formatDate, formatNumber, formatSigned } from "../lib/formatters";
 import type { SeriesCatalogEntry, TimeSeriesFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface CreditPulsePanelProps {
   highYieldOas?: TimeSeriesFile;
@@ -23,15 +24,25 @@ function seriesName(seriesId: string, catalog: SeriesCatalogEntry[]) {
   return catalog.find((entry) => entry.id === seriesId)?.name ?? derivedNames[seriesId] ?? seriesId;
 }
 
-function PulseMetric({
-  catalog,
-  series,
-  seriesId
-}: {
+interface PulseMetricProps {
   catalog: SeriesCatalogEntry[];
   series?: TimeSeriesFile;
   seriesId: string;
-}) {
+  unavailableLabel: string;
+  unavailableMessage: string;
+  changePrefix: string;
+  lastObservationPrefix: string;
+}
+
+function PulseMetric({
+  catalog,
+  series,
+  seriesId,
+  unavailableLabel,
+  unavailableMessage,
+  changePrefix,
+  lastObservationPrefix,
+}: PulseMetricProps) {
   const current = latest(series);
   const catalogEntry = catalog.find((entry) => entry.id === seriesId);
   const units = catalogEntry?.units ?? series?.units ?? "";
@@ -40,29 +51,36 @@ function PulseMetric({
   return (
     <article className="metric-card">
       <p className="metric-source">{seriesName(seriesId, catalog)}</p>
-      <strong>{isAvailable ? `${formatNumber(current.value)} ${units}` : "Unavailable"}</strong>
+      <strong>{isAvailable ? `${formatNumber(current.value)} ${units}` : unavailableLabel}</strong>
       <p>
         {isAvailable
-          ? `1W change ${formatSigned(current.change)}; last observation ${formatDate(current.date)}.`
-          : "This row is unavailable in the loaded static data."}
+          ? `${changePrefix} ${formatSigned(current.change)}; ${lastObservationPrefix} ${formatDate(current.date)}.`
+          : unavailableMessage}
       </p>
     </article>
   );
 }
 
 export default function CreditPulsePanel({ catalog, highYieldOas, hyMinusIgOas }: CreditPulsePanelProps) {
+  const { t } = useT();
+  const labels = {
+    unavailableLabel: t("chrome.unavailable"),
+    unavailableMessage: t("panels.metricUnavailable"),
+    changePrefix: t("panels.metricChange1W"),
+    lastObservationPrefix: t("panels.lastObservationPrefix"),
+  };
   return (
     <section className="panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Credit</p>
-          <h3>Credit pulse</h3>
-          <p>High-yield spread level and the HY minus IG spread gap from already loaded credit rows.</p>
+          <p className="eyebrow">{t("sections.credit")}</p>
+          <h3>{t("sections.creditPulse")}</h3>
+          <p>{t("panels.creditPulseDesc")}</p>
         </div>
       </div>
       <div className="metric-grid">
-        <PulseMetric catalog={catalog} series={highYieldOas} seriesId="high_yield_oas" />
-        <PulseMetric catalog={catalog} series={hyMinusIgOas} seriesId="hy_minus_ig_oas" />
+        <PulseMetric catalog={catalog} series={highYieldOas} seriesId="high_yield_oas" {...labels} />
+        <PulseMetric catalog={catalog} series={hyMinusIgOas} seriesId="hy_minus_ig_oas" {...labels} />
       </div>
     </section>
   );

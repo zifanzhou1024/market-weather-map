@@ -9,6 +9,7 @@ import {
 } from "../charts/chartTheme";
 import { formatSignedScore } from "../charts/chartFormatters";
 import type { ScoreSummaryFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface MacroClimateHeatmapProps {
   scoreSummary: ScoreSummaryFile;
@@ -174,6 +175,7 @@ function buildOption(payload: MacroClimateHeatmapPayload) {
 }
 
 export default function MacroClimateHeatmap({ scoreSummary }: MacroClimateHeatmapProps) {
+  const { t } = useT();
   const payload = useMemo(
     () => buildMacroClimateHeatmapPayload(scoreSummary),
     [scoreSummary]
@@ -183,17 +185,17 @@ export default function MacroClimateHeatmap({ scoreSummary }: MacroClimateHeatma
   if (payload.bucketKeys.length === 0) {
     return (
       <EChartPanel
-        title="Macro Climate bucket contribution"
+        title={t("sections.macroClimateBucketContribution")}
         description="Macro Climate buckets ranked by weighted contribution: red is risk pressure, green is support."
         state="empty"
-        emptyMessage="No macro_climate bucket scores available in the current score summary."
+        emptyMessage={t("panels.macroHeatmapEmpty")}
       />
     );
   }
 
   return (
     <EChartPanel
-      title="Macro Climate bucket contribution"
+      title={t("sections.macroClimateBucketContribution")}
       description="Macro Climate buckets ranked by weighted contribution: red is risk pressure, green is support."
       state="ready"
       option={option}

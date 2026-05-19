@@ -7,6 +7,7 @@ import {
   chartTooltipDefaults
 } from "../charts/chartTheme";
 import type { MacroCalendarFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface EventRiskTimelineProps {
   calendar: MacroCalendarFile;
@@ -53,6 +54,7 @@ export default function EventRiskTimeline({
   today = todayIsoUtc(),
   limit = DEFAULT_LIMIT
 }: EventRiskTimelineProps) {
+  const { t } = useT();
   const cutoff = new Date(`${today}T00:00:00Z`).getTime();
   const upcoming: RowEntry[] = (calendar.events ?? [])
     .filter((event) => typeof event.date === "string")
@@ -76,10 +78,10 @@ export default function EventRiskTimeline({
   if (upcoming.length === 0) {
     return (
       <EChartPanel
-        title="Event risk timeline"
-        description="Upcoming high- and medium-importance macro events from the public calendar."
+        title={t("sections.eventRiskTimeline")}
+        description={t("panels.eventTimelineDesc")}
         state="empty"
-        emptyMessage="No upcoming events in the current calendar window."
+        emptyMessage={t("panels.eventTimelineEmpty")}
       />
     );
   }
@@ -102,7 +104,7 @@ export default function EventRiskTimeline({
     xAxis: {
       ...chartAxisDefaults,
       type: "value" as const,
-      name: "Days ahead",
+      name: t("sections.daysAhead"),
       nameLocation: "middle" as const,
       nameGap: 24,
       min: 0
@@ -129,8 +131,11 @@ export default function EventRiskTimeline({
 
   return (
     <EChartPanel
-      title="Event risk timeline"
-      description={`${upcoming.length} upcoming event${upcoming.length === 1 ? "" : "s"} from the public macro calendar; high importance shown in red, medium in amber.`}
+      title={t("sections.eventRiskTimeline")}
+      description={t(
+        upcoming.length === 1 ? "panels.eventTimelineCountSingular" : "panels.eventTimelineCount",
+        { vars: { count: upcoming.length } }
+      )}
       state="ready"
       option={option}
       ariaLabel="Horizontal bar timeline of upcoming macro events ordered by date"

@@ -111,13 +111,13 @@ export default function FragilityShockRisk() {
   return (
     <main className="page-shell">
       <section className="page-heading">
-        <p className="eyebrow" lang="en">Fragility</p>
+        <p className="eyebrow">{t("routes.fragilityEyebrow")}</p>
         <h2>{t("routes.fragilityHeading")}</h2>
-        <p lang="en">Current fragility score, shock-risk pressure, tail-risk source readiness, and data gaps.</p>
+        <p>{t("routes.fragilityIntro")}</p>
       </section>
       {error ? (
         <p className="data-error" role="alert">
-          Data error: {error}
+          {t("chrome.dataErrorPrefix")}: {error}
         </p>
       ) : null}
       {data ? (
@@ -149,23 +149,23 @@ export default function FragilityShockRisk() {
             caveats={data.scoreSummary.scores.fragility.missing_or_stale_notes}
             label={data.snapshot.regime.label}
             risks={data.scoreSummary.scores.fragility.top_risks}
-            summary="Fragility combines observed cross-asset stress with source readiness for gated tail-risk inputs."
+            summary={t("narrative.fragilityCombines")}
             supports={data.scoreSummary.scores.fragility.top_supports}
-            title="Fragility context"
+            title={t("panels.fragilityContextTitle")}
           />
-          <section className="score-grid" aria-label="Fragility score">
-            <ScoreCard score={data.scoreSummary.scores.fragility} title="Fragility" />
+          <section className="score-grid" aria-label={t("sections.fragilityScore")}>
+            <ScoreCard score={data.scoreSummary.scores.fragility} title={t("signals.fragility")} />
           </section>
           <ShockRiskDashboard snapshot={data.shockSnapshot} />
           <RouteDataFooter route="fragility">
             <CandidateDiagnosticPanel
               catalog={data.catalog}
               diagnosticIds={fragilityDiagnosticIds}
-              eyebrow="Generated diagnostics"
+              eyebrow={t("panels.candidateDiagGenerated")}
               series={data.diagnosticSeries}
               status={data.status}
-              summary="This public realized-yield-volatility proxy is generated from static Treasury-yield data for context only; it is not ICE MOVE."
-              title="Public bond-volatility diagnostic"
+              summary={t("panels.publicBondVolDiagnosticDesc")}
+              title={t("panels.publicBondVolDiagnostic")}
             />
             <TailRiskPanel catalog={data.catalog} snapshot={data.shockSnapshot} status={data.status} />
             <MismatchWarningPanel warnings={data.shockSnapshot.mismatch_warnings} />

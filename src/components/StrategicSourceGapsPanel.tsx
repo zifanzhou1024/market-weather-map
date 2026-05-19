@@ -1,4 +1,5 @@
 import CandidateSourcePanel from "./CandidateSourcePanel";
+import { useT } from "../lib/i18n";
 
 const strategicRows = [
   {
@@ -70,12 +71,13 @@ const strategicRows = [
 ];
 
 export default function StrategicSourceGapsPanel() {
+  const { t } = useT();
   return (
     <CandidateSourcePanel
-      eyebrow="Candidate sources"
+      eyebrow={t("sections.candidateSources")}
       items={strategicRows}
-      summary="Strategic source gaps remain candidate-only until source access, transformation, and redistribution review promotes them."
-      title="Strategic source gaps"
+      summary={t("panels.strategicGapsSummary")}
+      title={t("sections.strategicSourceGapsTitle")}
     />
   );
 }

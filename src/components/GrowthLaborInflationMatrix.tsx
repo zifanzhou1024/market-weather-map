@@ -1,5 +1,6 @@
 import { formatNumber, formatSignedScore } from "../charts/chartFormatters";
 import type { ScoreSummaryFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface GrowthLaborInflationMatrixProps {
   scoreSummary: ScoreSummaryFile;
@@ -44,6 +45,7 @@ function pickReadLine(
 export default function GrowthLaborInflationMatrix({
   scoreSummary
 }: GrowthLaborInflationMatrixProps) {
+  const { t, tCategorical } = useT();
   const macro = scoreSummary.scores?.macro_climate;
   const bucketScores = macro?.bucket_scores ?? {};
   const bucketWeights = macro?.bucket_weights ?? {};
@@ -56,11 +58,8 @@ export default function GrowthLaborInflationMatrix({
       aria-label="Growth, labor, and inflation pulse"
     >
       <header>
-        <h3>Growth / labor / inflation pulse</h3>
-        <p>
-          Strategic-cycle core: bucket score, weight, and weighted contribution for the three
-          durable inputs.
-        </p>
+        <h3>{t("sections.growthLaborInflationPulse")}</h3>
+        <p>{t("panels.gliRowDesc")}</p>
       </header>
       <div className="growth-labor-inflation-row">
         {FOCUS_BUCKETS.map((bucketKey) => {
@@ -76,29 +75,29 @@ export default function GrowthLaborInflationMatrix({
             contribution !== null ? formatSignedScore(contribution) : EM_DASH;
 
           const readLine = hasScore
-            ? pickReadLine(bucketKey, supports, risks) ??
-              "No bucket-specific note in the latest read."
-            : "Bucket not scored in current run.";
+            ? pickReadLine(bucketKey, supports, risks) ?? t("panels.gliReadEmpty")
+            : t("panels.gliReadNotScored");
+          const bucketLabel = tCategorical("bucket", humaniseBucketKey(bucketKey));
 
           return (
             <article
               key={bucketKey}
               className="growth-labor-inflation-card"
-              aria-label={`${humaniseBucketKey(bucketKey)} bucket pulse`}
+              aria-label={t("panels.bucketPulseAria", { vars: { bucket: bucketLabel } })}
             >
               <h4 className="growth-labor-inflation-card-heading">
-                {humaniseBucketKey(bucketKey)}
+                {bucketLabel}
               </h4>
               <div className="gli-stat">
-                <span className="gli-stat-label">Score</span>
+                <span className="gli-stat-label">{t("sections.score")}</span>
                 <span className="gli-stat-value">{scoreText}</span>
               </div>
               <div className="gli-stat">
-                <span className="gli-stat-label">Weight</span>
+                <span className="gli-stat-label">{t("sections.weight")}</span>
                 <span className="gli-stat-value">{weightText}</span>
               </div>
               <div className="gli-stat">
-                <span className="gli-stat-label">Contribution</span>
+                <span className="gli-stat-label">{t("sections.contribution")}</span>
                 <span className="gli-stat-value">{contributionText}</span>
               </div>
               <p className="growth-labor-inflation-read">{readLine}</p>

@@ -2,6 +2,7 @@ import MultiSeriesChart, { type MultiSeriesChartSeries } from "./MultiSeriesChar
 import { formatNumber } from "../lib/formatters";
 import { classifyNearTermEventVol, classifyVixProxy } from "../lib/horizon";
 import type { TimeSeriesFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface VolatilityTermStructurePanelProps {
   vix?: TimeSeriesFile;
@@ -25,6 +26,7 @@ export default function VolatilityTermStructurePanel({
   vix3m,
   vix9d
 }: VolatilityTermStructurePanelProps) {
+  const { t } = useT();
   const vixValue = latestValue(vix);
   const vix3mValue = latestValue(vix3m);
   const vix9dValue = latestValue(vix9d);
@@ -36,9 +38,9 @@ export default function VolatilityTermStructurePanel({
       <section className="panel">
         <div className="section-header">
           <div>
-            <p className="eyebrow">Volatility</p>
-            <h3>Volatility term-structure</h3>
-            <p>VIX, VIX9D, and VIX3M define the active short-term volatility curve proxy.</p>
+            <p className="eyebrow">{t("sections.volatility")}</p>
+            <h3>{t("sections.volatilityTermStructure")}</h3>
+            <p>{t("panels.volatilityTermDesc")}</p>
           </div>
         </div>
         <div className="metric-grid">

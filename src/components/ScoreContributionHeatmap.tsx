@@ -9,6 +9,7 @@ import {
 } from "../charts/chartTheme";
 import { formatSignedScore } from "../charts/chartFormatters";
 import type { ScoreSummaryFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface ScoreContributionHeatmapProps {
   scoreSummary: ScoreSummaryFile;
@@ -125,23 +126,24 @@ function buildOption(payload: HeatmapPayload) {
 }
 
 export default function ScoreContributionHeatmap({ scoreSummary }: ScoreContributionHeatmapProps) {
+  const { t } = useT();
   const payload = useMemo(() => buildHeatmap(scoreSummary), [scoreSummary]);
 
   if (payload.cells.length === 0) {
     return (
       <EChartPanel
-        title="Score Contribution Heatmap"
-        description="Bucket scores per score family, signed: red is risk, green is support."
+        title={t("panels.scoreHeatmapTitle")}
+        description={t("panels.scoreHeatmapDesc")}
         state="empty"
-        emptyMessage="No bucket scores available in the current score summary."
+        emptyMessage={t("panels.scoreHeatmapEmpty")}
       />
     );
   }
 
   return (
     <EChartPanel
-      title="Score Contribution Heatmap"
-      description="Bucket scores per score family, signed: red is risk, green is support."
+      title={t("panels.scoreHeatmapTitle")}
+      description={t("panels.scoreHeatmapDesc")}
       state="ready"
       option={buildOption(payload)}
       ariaLabel="Heatmap of bucket scores per Market Weather, Macro Climate, and Fragility families"

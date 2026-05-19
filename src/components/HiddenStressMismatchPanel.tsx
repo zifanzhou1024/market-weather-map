@@ -1,22 +1,24 @@
 import type { ShockRiskMismatchWarning } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface HiddenStressMismatchPanelProps {
   warnings: ShockRiskMismatchWarning[];
 }
 
 export default function HiddenStressMismatchPanel({ warnings }: HiddenStressMismatchPanelProps) {
+  const { t } = useT();
   return (
     <section
       className="hidden-stress-mismatch-panel"
       aria-label="Hidden stress mismatches between active channels"
     >
       <header>
-        <h3>Hidden stress mismatches</h3>
-        <p>Cross-asset conflicts where one channel is calm while another is stressed.</p>
+        <h3>{t("sections.hiddenStressMismatches")}</h3>
+        <p>{t("panels.hiddenMismatchesDesc")}</p>
       </header>
       {warnings.length === 0 ? (
         <p className="hidden-stress-mismatch-panel-empty">
-          No mismatches between active stress channels in the current snapshot.
+          {t("panels.hiddenMismatchesEmpty")}
         </p>
       ) : (
         <ol>

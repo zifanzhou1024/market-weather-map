@@ -1,4 +1,5 @@
 import type { SignalFreshnessStatus } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 /**
  * Ranked list of "what's driving this read" with proportional horizontal bars.
@@ -56,9 +57,10 @@ function buildTooltip(driver: Driver): string {
 }
 
 export default function DriverBarList({ items, max }: DriverBarListProps) {
+  const { t } = useT();
   if (items.length === 0) {
     return (
-      <p className="driver-bar-list__empty">No drivers available for this view.</p>
+      <p className="driver-bar-list__empty">{t("narrative.emptyDrivers")}</p>
     );
   }
 

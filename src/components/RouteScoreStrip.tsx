@@ -2,6 +2,13 @@ import type { CockpitCompositeScore } from "../lib/types";
 import type { Mode } from "../lib/mode";
 import Sparkline from "./Sparkline";
 import PercentileBand from "./PercentileBand";
+import { useT } from "../lib/i18n";
+
+const COMPOSITE_SIGNAL_KEYS: Record<CockpitCompositeScore["id"], string> = {
+  market_weather: "marketWeather",
+  macro_climate: "macroClimate",
+  fragility: "fragility",
+};
 
 interface Props {
   composite: CockpitCompositeScore;
@@ -22,8 +29,12 @@ function formatDelta(d: number | null): string | null {
 }
 
 export default function RouteScoreStrip({ composite, mode }: Props) {
+  const { t, tCategorical } = useT();
   const value = formatValue(composite.value);
   const delta = formatDelta(composite.delta_7d);
+  const sigKey = COMPOSITE_SIGNAL_KEYS[composite.id];
+  const displayLabel = sigKey ? t(`signals.${sigKey}`) : composite.label;
+  const regimeLabel = tCategorical("compositeReading", composite.regime_label);
 
   return (
     <section
@@ -31,12 +42,12 @@ export default function RouteScoreStrip({ composite, mode }: Props) {
       aria-label={`${composite.label}: ${value} (${composite.regime_label})`}
     >
       <header className="route-score-strip__header">
-        <span className="route-score-strip__eyebrow">{composite.label}</span>
+        <span className="route-score-strip__eyebrow">{displayLabel}</span>
       </header>
 
       <div className="route-score-strip__primary">
         <span className="route-score-strip__value">{value}</span>
-        <span className="route-score-strip__regime">{composite.regime_label}</span>
+        <span className="route-score-strip__regime">{regimeLabel}</span>
       </div>
 
       <Sparkline

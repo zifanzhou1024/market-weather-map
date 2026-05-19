@@ -2,6 +2,7 @@ import type { CockpitFile } from "../lib/types";
 import type { Mode } from "../lib/mode";
 import CockpitCell from "./CockpitCell";
 import CompositeScoresRow from "./CompositeScoresRow";
+import { useT } from "../lib/i18n";
 
 /**
  * Top-level orchestrator for the cockpit on Overview.
@@ -32,6 +33,7 @@ interface Props {
 }
 
 export default function MarketCockpit({ data, mode }: Props) {
+  const { t } = useT();
   if (data === null) {
     return (
       <section
@@ -40,7 +42,7 @@ export default function MarketCockpit({ data, mode }: Props) {
         aria-busy="true"
         aria-label="Loading market cockpit"
       >
-        <div className="market-cockpit__skeleton">Loading cockpit…</div>
+        <div className="market-cockpit__skeleton">{t("chrome.loadingCockpit")}</div>
       </section>
     );
   }
@@ -67,7 +69,7 @@ export default function MarketCockpit({ data, mode }: Props) {
         </div>
       ) : (
         <p className="vital-signs-grid__empty">
-          No vital signs available in the current snapshot.
+          {t("panels.noVitalSigns")}
         </p>
       )}
     </section>

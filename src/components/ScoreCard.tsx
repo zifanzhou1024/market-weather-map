@@ -1,6 +1,7 @@
 import { formatNumber } from "../lib/formatters";
 import type { ScoreBlock } from "../lib/types";
 import RegimeBadge from "./RegimeBadge";
+import { useT } from "../lib/i18n";
 
 interface ScoreCardProps {
   title: string;
@@ -20,7 +21,7 @@ function formatConfidence(value: unknown) {
   return `${Math.round(confidence * 100)}%`;
 }
 
-function ScoreList({ items, title }: { items: string[]; title: string }) {
+function ScoreList({ items, title, emptyText }: { items: string[]; title: string; emptyText: string }) {
   return (
     <section>
       <h4>{title}</h4>
@@ -31,13 +32,14 @@ function ScoreList({ items, title }: { items: string[]; title: string }) {
           ))}
         </ul>
       ) : (
-        <p className="score-note">N/A</p>
+        <p className="score-note">{emptyText}</p>
       )}
     </section>
   );
 }
 
 export default function ScoreCard({ title, score }: ScoreCardProps) {
+  const { t } = useT();
   const numericScore = finiteNumber(score.score);
   const label = typeof score.label === "string" ? score.label : "Unknown";
   const topSupports = safeList(score.top_supports);
@@ -56,16 +58,18 @@ export default function ScoreCard({ title, score }: ScoreCardProps) {
         <RegimeBadge label={label} score={numericScore} />
       </div>
 
-      <p className="score-confidence">Confidence {formatConfidence(score.confidence)}</p>
+      <p className="score-confidence">
+        {t("narrative.confidenceWithValue", { vars: { value: formatConfidence(score.confidence) } })}
+      </p>
 
       <div className="score-card__lists">
-        <ScoreList items={topSupports} title="Supports" />
-        <ScoreList items={topRisks} title="Risks" />
+        <ScoreList items={topSupports} title={t("narrative.supports")} emptyText={t("chrome.notAvailable")} />
+        <ScoreList items={topRisks} title={t("narrative.risks")} emptyText={t("chrome.notAvailable")} />
       </div>
 
       {recentChanges.length ? (
         <section className="score-notes">
-          <h4>Recent changes</h4>
+          <h4>{t("narrative.recentChanges")}</h4>
           <ul className="score-list">
             {recentChanges.map((item, index) => (
               <li key={`recent-${index}-${item}`}>{item}</li>
@@ -76,7 +80,7 @@ export default function ScoreCard({ title, score }: ScoreCardProps) {
 
       {confidenceReasons.length ? (
         <section className="score-notes">
-          <h4>Confidence notes</h4>
+          <h4>{t("narrative.confidenceNotes")}</h4>
           <ul className="score-list">
             {confidenceReasons.map((item, index) => (
               <li key={`confidence-${index}-${item}`}>{item}</li>
@@ -87,7 +91,7 @@ export default function ScoreCard({ title, score }: ScoreCardProps) {
 
       {missingOrStaleNotes.length ? (
         <section className="score-notes">
-          <h4>Data notes</h4>
+          <h4>{t("narrative.dataNotes")}</h4>
           <ul className="score-list">
             {missingOrStaleNotes.map((item, index) => (
               <li key={`data-note-${index}-${item}`}>{item}</li>

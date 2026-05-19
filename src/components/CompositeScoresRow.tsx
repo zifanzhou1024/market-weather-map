@@ -3,6 +3,13 @@ import type { Mode } from "../lib/mode";
 import Sparkline from "./Sparkline";
 import PercentileBand from "./PercentileBand";
 import GlossaryTerm from "./GlossaryTerm";
+import { useT } from "../lib/i18n";
+
+const COMPOSITE_SIGNAL_KEYS: Record<CockpitCompositeScore["id"], string> = {
+  market_weather: "marketWeather",
+  macro_climate: "macroClimate",
+  fragility: "fragility",
+};
 
 /**
  * The headline row of the cockpit on Overview.
@@ -52,6 +59,7 @@ function formatValue(v: number | null): string {
 }
 
 export default function CompositeScoresRow({ scores, mode }: Props) {
+  const { t, tCategorical, locale } = useT();
   // Re-sort by fixed order — the headline contract is invariant.
   const byId = new Map(scores.map((s) => [s.id, s]));
   const ordered = FIXED_ORDER.map((id) => byId.get(id)).filter(
@@ -65,6 +73,9 @@ export default function CompositeScoresRow({ scores, mode }: Props) {
     >
       {ordered.map((s) => {
         const delta7d = formatDelta(s.delta_7d);
+        const sigKey = COMPOSITE_SIGNAL_KEYS[s.id];
+        const displayLabel = sigKey ? t(`signals.${sigKey}`) : s.label;
+        const regimeLabel = tCategorical("compositeReading", s.regime_label);
         return (
           <article
             key={s.id}
@@ -74,14 +85,17 @@ export default function CompositeScoresRow({ scores, mode }: Props) {
           >
             <header className="composite-score-cell__header">
               {/* Composite labels ("Market Weather", "Macro Climate",
-                * "Fragility") are product names, not jargon — intentionally
-                * left out of the glossary. The regime label is wrapped so
-                * future regime additions ("Stress", etc.) can inherit
-                * tooltips without touching this file again; today's regimes
-                * fall through unchanged. */}
-              <span className="composite-score-cell__label">{s.label}</span>
+                * "Fragility") are product names. We translate them through
+                * the SIGNAL_NAMES lookup so zh shows "市场天气" / etc. The
+                * regime label flows through tCategorical so "Mixed" /
+                * "Supportive" / "Pressure" localize. The GlossaryTerm
+                * tooltip lookup keeps the original English term so existing
+                * glossary keys keep working. */}
+              <span className="composite-score-cell__label" lang={locale === "zh" ? "zh-CN" : "en"}>
+                {displayLabel}
+              </span>
               <span className="composite-score-cell__regime">
-                <GlossaryTerm term={s.regime_label} />
+                <GlossaryTerm term={s.regime_label}>{regimeLabel}</GlossaryTerm>
               </span>
             </header>
             <div className="composite-score-cell__primary">

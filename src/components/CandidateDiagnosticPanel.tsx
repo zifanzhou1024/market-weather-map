@@ -1,5 +1,6 @@
 import { formatDate, formatNumber, statusLabel } from "../lib/formatters";
 import type { DataStatusFile, DerivedSeriesFile, SeriesCatalogEntry, SeriesStatus, TimeSeriesFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 type DiagnosticSeriesFile = TimeSeriesFile | DerivedSeriesFile;
 
@@ -14,8 +15,6 @@ interface CandidateDiagnosticPanelProps {
   emptyText?: string;
 }
 
-const governanceNote = "Does not affect active scores, labels, checklist states, or confidence.";
-
 function catalogById(catalog: SeriesCatalogEntry[]) {
   return new Map(catalog.map((entry) => [entry.id, entry]));
 }
@@ -24,18 +23,9 @@ function seriesById(series: DiagnosticSeriesFile[] | undefined) {
   return new Map((series ?? []).map((item) => [item.series_id, item]));
 }
 
-function observationLabel(row: SeriesStatus | undefined) {
-  if (!row) return "Observation N/A";
-  return `Observation ${row.observation_period ?? formatDate(row.last_observation)}`;
-}
-
-function diagnosticNote(entry: SeriesCatalogEntry | undefined, row: SeriesStatus | undefined) {
+function diagnosticNote(entry: SeriesCatalogEntry | undefined, row: SeriesStatus | undefined, fallback: string) {
   const notes = [entry?.notes, row?.message].filter((note): note is string => Boolean(note));
-  return notes.length > 0 ? notes.join(" ") : "Diagnostic metadata is not available in the current static status file.";
-}
-
-function rowStatusLabel(row: SeriesStatus | undefined) {
-  return row ? statusLabel(row.status) : "Unavailable";
+  return notes.length > 0 ? notes.join(" ") : fallback;
 }
 
 function rowStatusClass(row: SeriesStatus | undefined) {
@@ -48,10 +38,15 @@ export default function CandidateDiagnosticPanel({
   status,
   title,
   series,
-  eyebrow = "Generated diagnostics",
-  summary = "Official/public static diagnostics are visible for context, but they remain candidate-only until governance promotes them.",
-  emptyText = "No generated candidate diagnostics are configured for this view."
+  eyebrow,
+  summary,
+  emptyText
 }: CandidateDiagnosticPanelProps) {
+  const { t, tCategorical } = useT();
+  const resolvedEyebrow = eyebrow ?? t("panels.candidateDiagGenerated");
+  const resolvedSummary = summary ?? t("panels.candidateDiagSummary");
+  const resolvedEmpty = emptyText ?? t("panels.candidateSourceEmpty");
+  const fallbackNote = t("panels.candidateDiagGovernance");
   const entries = catalogById(catalog);
   const diagnosticSeries = seriesById(series);
   const rows = diagnosticIds.map((id) => ({
@@ -65,38 +60,46 @@ export default function CandidateDiagnosticPanel({
     <section className="panel candidate-diagnostic-panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">{eyebrow}</p>
+          <p className="eyebrow">{resolvedEyebrow}</p>
           <h3>{title}</h3>
-          <p>{summary}</p>
+          <p>{resolvedSummary}</p>
         </div>
       </div>
-      <p className="score-note">{governanceNote}</p>
+      <p className="score-note">{t("panels.candidateDiagGovernance")}</p>
       {rows.length > 0 ? (
         <div className="candidate-diagnostic-list" role="list">
-          {rows.map(({ entry, id, series: trendSeries, status: row }) => (
-            <article className="candidate-diagnostic-row" key={id} role="listitem">
-              <div>
-                <div className="candidate-diagnostic-row__heading">
-                  <h4>{entry?.name ?? id}</h4>
-                  <span className={`status-pill ${rowStatusClass(row)}`}>{rowStatusLabel(row)}</span>
+          {rows.map(({ entry, id, series: trendSeries, status: row }) => {
+            const observationText = !row
+              ? t("panels.observationNa")
+              : `${t("panels.colObservation")} ${row.observation_period ?? formatDate(row.last_observation)}`;
+            const statusText = row
+              ? tCategorical("status", statusLabel(row.status))
+              : t("chrome.unavailable");
+            return (
+              <article className="candidate-diagnostic-row" key={id} role="listitem">
+                <div>
+                  <div className="candidate-diagnostic-row__heading">
+                    <h4>{entry?.name ?? id}</h4>
+                    <span className={`status-pill ${rowStatusClass(row)}`}>{statusText}</span>
+                  </div>
+                  <p>{diagnosticNote(entry, row, fallbackNote)}</p>
+                  <div className="candidate-diagnostic-meta" aria-label={`${entry?.name ?? id} metadata`}>
+                    <span>{entry?.source ?? row?.source ?? t("panels.unknownSource")}</span>
+                    <span>{observationText}</span>
+                    <span>{entry?.frequency ?? row?.expected_frequency ?? t("panels.unknownFrequency")}</span>
+                  </div>
+                  <CandidateDiagnosticTrend label={entry?.name ?? id} series={trendSeries} />
                 </div>
-                <p>{diagnosticNote(entry, row)}</p>
-                <div className="candidate-diagnostic-meta" aria-label={`${entry?.name ?? id} metadata`}>
-                  <span>{entry?.source ?? row?.source ?? "Unknown source"}</span>
-                  <span>{observationLabel(row)}</span>
-                  <span>{entry?.frequency ?? row?.expected_frequency ?? "unknown frequency"}</span>
+                <div className="candidate-diagnostic-badges" aria-label={`${entry?.name ?? id} governance badges`}>
+                  <span className="status-pill status-candidate">{t("panels.candidateDiagGenerated")}</span>
+                  <span className="status-pill status-not_scored">{t("sections.notScored")}</span>
                 </div>
-                <CandidateDiagnosticTrend label={entry?.name ?? id} series={trendSeries} />
-              </div>
-              <div className="candidate-diagnostic-badges" aria-label={`${entry?.name ?? id} governance badges`}>
-                <span className="status-pill status-candidate">Generated candidate diagnostic</span>
-                <span className="status-pill status-not_scored">Not scored</span>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       ) : (
-        <p className="score-note">{emptyText}</p>
+        <p className="score-note">{resolvedEmpty}</p>
       )}
     </section>
   );
@@ -109,6 +112,7 @@ function CandidateDiagnosticTrend({
   label: string;
   series: DiagnosticSeriesFile | undefined;
 }) {
+  const { t } = useT();
   const points = (series?.observations ?? [])
     .filter((observation) => Number.isFinite(observation.value))
     .slice(-52);
@@ -116,8 +120,8 @@ function CandidateDiagnosticTrend({
   if (points.length === 0 || !series) {
     return (
       <div className="candidate-diagnostic-trend candidate-diagnostic-trend--empty">
-        <strong>Trend unavailable</strong>
-        <p>No generated observations are available for this diagnostic.</p>
+        <strong>{t("panels.candidateDiagTrendUnavailable")}</strong>
+        <p>{t("panels.candidateDiagTrendEmpty")}</p>
       </div>
     );
   }
@@ -130,9 +134,9 @@ function CandidateDiagnosticTrend({
     <div className="candidate-diagnostic-trend">
       <Sparkline label={label} points={points} />
       <div>
-        <p>Trend window {points.length} observations</p>
+        <p>{t("panels.candidateDiagTrendWindowPrefix")} {points.length} {t("panels.candidateDiagTrendObservations")}</p>
         <p>
-          Latest {formatNumber(latest.value)} {series.units} on {latest.date}
+          {t("panels.candidateDiagLatestPrefix")} {formatNumber(latest.value)} {series.units} on {latest.date}
         </p>
       </div>
     </div>

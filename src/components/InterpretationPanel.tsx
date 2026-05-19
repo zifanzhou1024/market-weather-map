@@ -1,4 +1,5 @@
 import SignalList from "./SignalList";
+import { useT } from "../lib/i18n";
 
 interface InterpretationPanelProps {
   caveats?: string[];
@@ -19,20 +20,25 @@ export default function InterpretationPanel({
   risks = [],
   summary,
   supports = [],
-  title = "What this page says"
+  title
 }: InterpretationPanelProps) {
+  const { t, tCategorical } = useT();
   const caveatItems = caveats ?? notes;
+  const resolvedTitle = title ?? t("sections.whatThisPageSays");
+  // Label may be a Python-emitted regime / bucket / read string. Run it
+  // through the categorical lookup so multi-token phrases localize.
+  const displayLabel = tCategorical("regime", label);
 
   return (
     <section className="panel interpretation-panel">
-      <p className="eyebrow">{title}</p>
-      <h3>{label}</h3>
+      <p className="eyebrow">{resolvedTitle}</p>
+      <h3>{displayLabel}</h3>
       <p>{summary}</p>
       <div className="interpretation-grid">
-        <SignalList emptyText="No support signals in this view." items={supports} title="Supports" />
-        <SignalList emptyText="No risk signals in this view." items={risks} title="Risks" />
-        <SignalList emptyText="No conflicting signals in this view." items={conflicts} title="Conflicts" />
-        <SignalList emptyText="No caveats in this view." items={caveatItems} title="Caveats" />
+        <SignalList emptyText={t("narrative.emptySupports")} items={supports} title={t("narrative.supports")} />
+        <SignalList emptyText={t("narrative.emptyRisks")} items={risks} title={t("narrative.risks")} />
+        <SignalList emptyText={t("narrative.emptyConflicts")} items={conflicts} title={t("narrative.conflicts")} />
+        <SignalList emptyText={t("narrative.emptyCaveats")} items={caveatItems} title={t("narrative.caveats")} />
       </div>
     </section>
   );

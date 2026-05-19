@@ -1,5 +1,6 @@
 import type { DataStatusFile } from "../lib/types";
 import ExternalResearchLinks from "./ExternalResearchLinks";
+import { useT } from "../lib/i18n";
 
 interface TailRiskReadinessMatrixProps {
   status: DataStatusFile;
@@ -16,10 +17,10 @@ interface SignalGroup {
   signals: SignalRow[];
 }
 
-const GROUPS: SignalGroup[] = [
+const GROUPS_BASE: Array<Omit<SignalGroup, "heading"> & { headingKey: string }> = [
   {
     key: "volatility",
-    heading: "Volatility & VVIX",
+    headingKey: "sections.volatilityVvix",
     signals: [
       { id: "vix", label: "VIX" },
       { id: "vvix", label: "VVIX" },
@@ -29,7 +30,7 @@ const GROUPS: SignalGroup[] = [
   },
   {
     key: "vol_curve",
-    heading: "Vol curve (derived)",
+    headingKey: "sections.volCurveDerived",
     signals: [
       { id: "vix9d_vix_ratio", label: "VIX9D / VIX ratio" },
       { id: "vix_vix3m_ratio", label: "VIX / VIX3M ratio" }
@@ -37,7 +38,7 @@ const GROUPS: SignalGroup[] = [
   },
   {
     key: "tail_risk",
-    heading: "Tail-risk indices",
+    headingKey: "sections.tailRiskIndices",
     signals: [
       { id: "move_index", label: "ICE MOVE" },
       { id: "skew_index", label: "Cboe SKEW" }
@@ -45,12 +46,12 @@ const GROUPS: SignalGroup[] = [
   },
   {
     key: "bond_vol_proxy",
-    heading: "Bond-vol proxy",
+    headingKey: "sections.bondVolProxy",
     signals: [{ id: "bond_volatility_proxy", label: "Bond-vol proxy (not MOVE)" }]
   },
   {
     key: "options_sentiment",
-    heading: "Options sentiment",
+    headingKey: "sections.optionsSentiment",
     signals: [
       { id: "put_call_total", label: "Cboe put/call (total)" },
       { id: "put_call_spxw", label: "Cboe put/call (SPXW / 0DTE)" }
@@ -58,7 +59,7 @@ const GROUPS: SignalGroup[] = [
   },
   {
     key: "vx_curve",
-    heading: "VX futures curve",
+    headingKey: "sections.vxFuturesCurve",
     signals: [
       { id: "vx1", label: "VX1 front" },
       { id: "vx2", label: "VX2" }
@@ -128,18 +129,16 @@ function statusLabelFor(status: string): string {
 }
 
 export default function TailRiskReadinessMatrix({ status }: TailRiskReadinessMatrixProps) {
+  const { t } = useT();
   return (
     <section className="tail-risk-readiness-matrix" aria-label="Tail-risk readiness matrix">
       <header>
-        <h3>Tail-risk readiness</h3>
-        <p>
-          Active vs gated tail-risk signals. Gated entries are surfaced for visibility but do not
-          affect scoring.
-        </p>
+        <h3>{t("sections.tailRiskReadiness")}</h3>
+        <p>{t("panels.tailRiskReadinessDesc")}</p>
       </header>
-      {GROUPS.map((group) => (
+      {GROUPS_BASE.map((group) => (
         <div key={group.key} className="tail-risk-readiness-group">
-          <h4 className="tail-risk-readiness-group-heading">{group.heading}</h4>
+          <h4 className="tail-risk-readiness-group-heading">{t(group.headingKey)}</h4>
           {group.signals.map((signal) => {
             const displayStatus = displayStatusFor(status, signal.id);
             return (

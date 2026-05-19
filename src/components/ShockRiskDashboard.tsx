@@ -1,5 +1,6 @@
 import { formatDate, formatNumber, formatSigned, statusLabel } from "../lib/formatters";
 import type { ShockRiskSnapshotFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface ShockRiskDashboardProps {
   snapshot: ShockRiskSnapshotFile;
@@ -10,17 +11,21 @@ function safeArray<T>(value: unknown): T[] {
 }
 
 export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps) {
+  const { t, tCategorical } = useT();
   const activeSignals = safeArray<(typeof snapshot.active_signals)[number]>(snapshot.active_signals);
   const sourceGaps = safeArray<(typeof snapshot.source_gaps)[number]>(snapshot.source_gaps);
+  const label = tCategorical("compositeReading", snapshot.label);
 
   return (
     <section className="panel">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Shock risk</p>
-          <h3>{snapshot.label}</h3>
+          <p className="eyebrow">{t("sections.shockRisk")}</p>
+          <h3>{label}</h3>
           <p>
-            Snapshot date {formatDate(snapshot.date)}. Generated {formatDate(snapshot.generated_at_utc)}.
+            {t("panels.shockRiskSnapshotMeta", {
+              vars: { date: formatDate(snapshot.date), generated: formatDate(snapshot.generated_at_utc) },
+            })}
           </p>
         </div>
         <strong className="score-card__value">{formatNumber(snapshot.score)}</strong>
@@ -29,20 +34,20 @@ export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps
       <div className="metric-grid" aria-label="Shock risk summary">
         <article className="candidate-source-row">
           <div>
-            <h4>Active signals</h4>
-            <p>{activeSignals.length} active shock-risk signal rows.</p>
+            <h4>{t("sections.activeSignals")}</h4>
+            <p>{t("panels.shockRiskActiveSignalsCount", { vars: { count: activeSignals.length } })}</p>
           </div>
         </article>
         <article className="candidate-source-row">
           <div>
-            <h4>Source gaps</h4>
-            <p>{sourceGaps.length} gated or unavailable source rows.</p>
+            <h4>{t("sections.sourceGaps")}</h4>
+            <p>{t("panels.shockRiskSourceGapsCount", { vars: { count: sourceGaps.length } })}</p>
           </div>
         </article>
       </div>
 
       <div className="section-heading">
-        <h3>Active signal rows</h3>
+        <h3>{t("sections.activeSignalRows")}</h3>
       </div>
       {activeSignals.length > 0 ? (
         <div className="candidate-source-list" role="list">
@@ -52,19 +57,19 @@ export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps
                 <h4>{signal.label}</h4>
                 <p>{signal.message}</p>
                 <p>
-                  Value {formatNumber(signal.value)}; change {formatSigned(signal.change)}.
+                  {t("panels.valuePrefix")} {formatNumber(signal.value)}; {t("panels.changePrefix")} {formatSigned(signal.change)}.
                 </p>
               </div>
-              <span className="status-pill status-partial">Score {formatSigned(signal.score)}</span>
+              <span className="status-pill status-partial">{t("panels.scorePrefix")} {formatSigned(signal.score)}</span>
             </article>
           ))}
         </div>
       ) : (
-        <p className="score-note">No active shock-risk signals in the current snapshot.</p>
+        <p className="score-note">{t("panels.noVisibleSignals")}</p>
       )}
 
       <div className="section-heading">
-        <h3>Source gap rows</h3>
+        <h3>{t("sections.sourceGapRows")}</h3>
       </div>
       {sourceGaps.length > 0 ? (
         <div className="candidate-source-list" role="list">
@@ -74,12 +79,14 @@ export default function ShockRiskDashboard({ snapshot }: ShockRiskDashboardProps
                 <h4>{gap.label}</h4>
                 <p>{gap.message}</p>
               </div>
-              <span className={`status-pill status-${gap.status}`}>{statusLabel(gap.status)}</span>
+              <span className={`status-pill status-${gap.status}`}>
+                {tCategorical("status", statusLabel(gap.status))}
+              </span>
             </article>
           ))}
         </div>
       ) : (
-        <p className="score-note">No shock-risk source gaps in the current snapshot.</p>
+        <p className="score-note">{t("panels.sourceGapsEmpty")}</p>
       )}
     </section>
   );

@@ -8,6 +8,7 @@ import {
 } from "../charts/chartTheme";
 import { formatSignedScore } from "../charts/chartFormatters";
 import type { TimeSeriesFile } from "../lib/types";
+import { useT } from "../lib/i18n";
 
 interface CreditStressMatrixProps {
   highYieldOas?: TimeSeriesFile;
@@ -46,6 +47,7 @@ export default function CreditStressMatrix({
   investmentGradeOas,
   bbbOas
 }: CreditStressMatrixProps) {
+  const { t } = useT();
   const rows: RowEntry[] = [
     { label: "HY OAS", series: highYieldOas },
     { label: "IG OAS", series: investmentGradeOas },
@@ -55,10 +57,10 @@ export default function CreditStressMatrix({
   if (rows.every((row) => row.series === undefined)) {
     return (
       <EChartPanel
-        title="Credit stress matrix"
-        description="HY / IG / BBB OAS changes across 1-day, 1-week, and 1-month horizons."
+        title={t("sections.creditStressMatrix")}
+        description={t("panels.creditStressMatrixDesc")}
         state="empty"
-        emptyMessage="No credit OAS series are currently active."
+        emptyMessage={t("panels.creditStressMatrixEmpty")}
       />
     );
   }
@@ -131,8 +133,8 @@ export default function CreditStressMatrix({
 
   return (
     <EChartPanel
-      title="Credit stress matrix"
-      description="HY / IG / BBB OAS changes across 1-day, 1-week, and 1-month horizons. Red is widening, green is tightening."
+      title={t("sections.creditStressMatrix")}
+      description={t("panels.creditStressMatrixDesc")}
       state="ready"
       option={option}
       ariaLabel="Heatmap of credit OAS changes across HY, IG, and BBB segments by 1D, 1W, and 1M horizons"

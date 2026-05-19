@@ -26,12 +26,12 @@ export default function Channels() {
   return (
     <main className="page-shell channels">
       <section className="page-heading">
-        <p className="eyebrow" lang="en">Detail Channels</p>
+        <p className="eyebrow">{t("routes.channelsEyebrow")}</p>
         <h2>{t("routes.channelsHeading")}</h2>
-        <p lang="en">Per-asset-class detail views of the underlying data feeding the cockpit.</p>
+        <p>{t("routes.channelsIntro")}</p>
       </section>
       <ChannelTabs />
-      <Suspense fallback={<div className="channels__loading">Loading channel…</div>}>
+      <Suspense fallback={<div className="channels__loading">{t("routes.channelsLoading")}</div>}>
         <Body />
       </Suspense>
     </main>
