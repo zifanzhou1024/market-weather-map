@@ -1,6 +1,6 @@
 {
   "date": "2026-05-15",
-  "generated_at_utc": "2026-05-19T01:29:12Z",
+  "generated_at_utc": "2026-05-20T01:30:13Z",
   "method_version": "phase8-pr1-regime-dashboard-v1",
   "thresholds": {
     "dollar_neutral_pct": 0.5,
@@ -8,15 +8,6 @@
   },
   "windows": {
     "120D": [
-      {
-        "credit_change_bps": -39.0,
-        "date": "2023-11-13",
-        "dollar_change_pct": 2.2136,
-        "fragility_score": 0.0,
-        "real_yield_change_bps": 86.0,
-        "regime": "global_tightening_risk_off",
-        "vix_percentile": 22.62
-      },
       {
         "credit_change_bps": -41.0,
         "date": "2023-11-14",
@@ -5626,15 +5617,6 @@
       }
     ],
     "20D": [
-      {
-        "credit_change_bps": -30.0,
-        "date": "2023-06-20",
-        "dollar_change_pct": -0.6989,
-        "fragility_score": 0.0,
-        "real_yield_change_bps": 6.0,
-        "regime": "rotation_reflation",
-        "vix_percentile": 1.98
-      },
       {
         "credit_change_bps": -13.0,
         "date": "2023-06-21",
@@ -12144,15 +12126,6 @@
       }
     ],
     "60D": [
-      {
-        "credit_change_bps": -61.0,
-        "date": "2023-08-16",
-        "dollar_change_pct": 0.4842,
-        "fragility_score": 0.0,
-        "real_yield_change_bps": 50.0,
-        "regime": "mixed",
-        "vix_percentile": 23.41
-      },
       {
         "credit_change_bps": -41.0,
         "date": "2023-08-17",

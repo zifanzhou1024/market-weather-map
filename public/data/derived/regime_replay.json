@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-19T01:29:07Z",
+  "generated_at_utc": "2026-05-20T01:30:08Z",
   "method_version": "phase5-regime-replay-v1",
   "scenarios": [
     {
@@ -3366,16 +3366,8 @@
       "id": "reallocation_rotation",
       "label": "Reallocation / rotation",
       "last_occurrence_date": "2026-05-11",
-      "occurrence_count": 118,
+      "occurrence_count": 117,
       "occurrences": [
-        {
-          "credit_20obs_change": -0.4,
-          "date": "2023-06-20",
-          "dollar_20obs_change": -0.8371,
-          "nominal_10y_20obs_change": 0.04,
-          "real_yield_20obs_change": 0.06,
-          "vix_curve_20obs_change": -0.0365
-        },
         {
           "credit_20obs_change": -0.22,
           "date": "2023-06-21",

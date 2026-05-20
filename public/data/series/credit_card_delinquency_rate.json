@@ -1,6 +1,6 @@
 {
   "frequency": "quarterly",
-  "generated_at_utc": "2026-05-19T01:28:13Z",
+  "generated_at_utc": "2026-05-20T01:29:22Z",
   "observations": [
     {
       "date": "1991-01-01",
@@ -701,6 +701,11 @@
       "date": "2025-10-01",
       "percentile_252d": 33.57,
       "value": 2.94
+    },
+    {
+      "date": "2026-01-01",
+      "percentile_252d": 32.62,
+      "value": 2.92
     }
   ],
   "series_id": "credit_card_delinquency_rate",
@@ -708,13 +713,13 @@
   "source_url": "https://fred.stlouisfed.org/series/DRCCLACBS",
   "summary": {
     "change_12m": null,
-    "change_1d": -0.04,
-    "change_1m": 0.95,
-    "change_1w": -0.26,
-    "change_3m": -2.84,
-    "latest_date": "2025-10-01",
-    "latest_value": 2.94,
-    "percentile_252d": 33.57
+    "change_1d": -0.02,
+    "change_1m": 0.82,
+    "change_1w": -0.16,
+    "change_3m": -2.18,
+    "latest_date": "2026-01-01",
+    "latest_value": 2.92,
+    "percentile_252d": 32.62
   },
   "units": "percent"
 }
