@@ -1,8 +1,8 @@
 {
   "composite_scores": [
     {
-      "current_date": "2026-05-19",
-      "current_value": -8.38,
+      "current_date": "2026-05-20",
+      "current_value": -9.9,
       "direction": "neutral",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -12,10 +12,10 @@
       "primary_unit": "",
       "windows": {
         "1d": {
-          "date": "2026-05-18",
-          "delta": -3.920000000000001,
-          "delta_pct": 87.89237668161437,
-          "value": -4.46
+          "date": "2026-05-19",
+          "delta": -1.5199999999999996,
+          "delta_pct": 18.13842482100238,
+          "value": -8.38
         },
         "30d": {
           "date": null,
@@ -24,16 +24,16 @@
           "value": null
         },
         "7d": {
-          "date": "2026-05-12",
-          "delta": -8.63,
-          "delta_pct": -3452.0000000000005,
-          "value": 0.25
+          "date": "2026-05-13",
+          "delta": -9.07,
+          "delta_pct": 1092.7710843373495,
+          "value": -0.83
         }
       }
     },
     {
-      "current_date": "2026-05-19",
-      "current_value": 8.87,
+      "current_date": "2026-05-20",
+      "current_value": 8.31,
       "direction": "neutral",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -43,10 +43,10 @@
       "primary_unit": "",
       "windows": {
         "1d": {
-          "date": "2026-05-18",
-          "delta": -0.7300000000000004,
-          "delta_pct": -7.604166666666671,
-          "value": 9.6
+          "date": "2026-05-19",
+          "delta": -0.5599999999999987,
+          "delta_pct": -6.313416009019152,
+          "value": 8.87
         },
         "30d": {
           "date": null,
@@ -55,16 +55,16 @@
           "value": null
         },
         "7d": {
-          "date": "2026-05-12",
-          "delta": -5.350000000000001,
-          "delta_pct": -37.623066104078774,
-          "value": 14.22
+          "date": "2026-05-13",
+          "delta": -4.33,
+          "delta_pct": -34.25632911392405,
+          "value": 12.64
         }
       }
     },
     {
-      "current_date": "2026-05-19",
-      "current_value": 12.46,
+      "current_date": "2026-05-20",
+      "current_value": 16.19,
       "direction": "neutral",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -74,10 +74,10 @@
       "primary_unit": "",
       "windows": {
         "1d": {
-          "date": "2026-05-18",
-          "delta": -7.93,
-          "delta_pct": -38.89161353604708,
-          "value": 20.39
+          "date": "2026-05-19",
+          "delta": 3.7300000000000004,
+          "delta_pct": 29.935794542536115,
+          "value": 12.46
         },
         "30d": {
           "date": null,
@@ -86,21 +86,21 @@
           "value": null
         },
         "7d": {
-          "date": "2026-05-12",
-          "delta": -18.81,
-          "delta_pct": -60.15350175887432,
-          "value": 31.27
+          "date": "2026-05-13",
+          "delta": -12.419999999999998,
+          "delta_pct": -43.41139461726669,
+          "value": 28.61
         }
       }
     }
   ],
-  "date": "2026-05-19",
-  "generated_at_utc": "2026-05-20T01:30:40Z",
+  "date": "2026-05-20",
+  "generated_at_utc": "2026-05-21T01:32:12Z",
   "method_version": "phase-f-diff-v1",
   "vital_signs": [
     {
-      "current_date": "2026-05-19",
-      "current_value": 18.06,
+      "current_date": "2026-05-20",
+      "current_value": 17.44,
       "direction": "risk",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -110,28 +110,28 @@
       "primary_unit": "",
       "windows": {
         "1d": {
-          "date": "2026-05-18",
-          "delta": 0.23999999999999844,
-          "delta_pct": 1.346801346801338,
-          "value": 17.82
+          "date": "2026-05-19",
+          "delta": -0.6199999999999974,
+          "delta_pct": -3.4330011074196984,
+          "value": 18.06
         },
         "30d": {
-          "date": "2026-04-17",
-          "delta": 0.5799999999999983,
-          "delta_pct": 3.3180778032036513,
-          "value": 17.48
+          "date": "2026-04-20",
+          "delta": -1.4299999999999997,
+          "delta_pct": -7.578166401695811,
+          "value": 18.87
         },
         "7d": {
-          "date": "2026-05-12",
-          "delta": 0.07000000000000028,
-          "delta_pct": 0.38910505836576037,
-          "value": 17.99
+          "date": "2026-05-13",
+          "delta": -0.4299999999999997,
+          "delta_pct": -2.4062674874090635,
+          "value": 17.87
         }
       }
     },
     {
-      "current_date": "2026-05-18",
-      "current_value": 4.61,
+      "current_date": "2026-05-19",
+      "current_value": 4.67,
       "direction": "risk",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -141,28 +141,28 @@
       "primary_unit": "%",
       "windows": {
         "1d": {
-          "date": "2026-05-15",
-          "delta": 0.020000000000000462,
-          "delta_pct": 0.4357298474945635,
-          "value": 4.59
+          "date": "2026-05-18",
+          "delta": 0.05999999999999961,
+          "delta_pct": 1.3015184381778657,
+          "value": 4.61
         },
         "30d": {
           "date": "2026-04-17",
-          "delta": 0.35000000000000053,
-          "delta_pct": 8.215962441314566,
+          "delta": 0.41000000000000014,
+          "delta_pct": 9.62441314553991,
           "value": 4.26
         },
         "7d": {
-          "date": "2026-05-11",
-          "delta": 0.1900000000000004,
-          "delta_pct": 4.29864253393666,
-          "value": 4.42
+          "date": "2026-05-12",
+          "delta": 0.20999999999999996,
+          "delta_pct": 4.708520179372196,
+          "value": 4.46
         }
       }
     },
     {
-      "current_date": "2026-05-18",
-      "current_value": 2.13,
+      "current_date": "2026-05-19",
+      "current_value": 2.18,
       "direction": "risk",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -172,28 +172,28 @@
       "primary_unit": "%",
       "windows": {
         "1d": {
-          "date": "2026-05-15",
-          "delta": 0.029999999999999805,
-          "delta_pct": 1.428571428571419,
-          "value": 2.1
+          "date": "2026-05-18",
+          "delta": 0.050000000000000266,
+          "delta_pct": 2.3474178403755994,
+          "value": 2.13
         },
         "30d": {
           "date": "2026-04-17",
-          "delta": 0.22999999999999998,
-          "delta_pct": 12.105263157894736,
+          "delta": 0.28000000000000025,
+          "delta_pct": 14.73684210526317,
           "value": 1.9
         },
         "7d": {
-          "date": "2026-05-11",
-          "delta": 0.17999999999999994,
-          "delta_pct": 9.230769230769226,
-          "value": 1.95
+          "date": "2026-05-12",
+          "delta": 0.19000000000000017,
+          "delta_pct": 9.547738693467345,
+          "value": 1.99
         }
       }
     },
     {
-      "current_date": "2026-05-18",
-      "current_value": 283.0,
+      "current_date": "2026-05-19",
+      "current_value": 286.0,
       "direction": "risk",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -203,28 +203,28 @@
       "primary_unit": " bp",
       "windows": {
         "1d": {
-          "date": "2026-05-15",
+          "date": "2026-05-18",
           "delta": 3.0,
-          "delta_pct": 1.0714285714285714,
-          "value": 280.0
+          "delta_pct": 1.0600706713780919,
+          "value": 283.0
         },
         "30d": {
           "date": "2026-04-17",
-          "delta": 0.0,
-          "delta_pct": 0.0,
+          "delta": 3.0,
+          "delta_pct": 1.0600706713780919,
           "value": 283.0
         },
         "7d": {
-          "date": "2026-05-11",
+          "date": "2026-05-12",
           "delta": 4.0,
-          "delta_pct": 1.4336917562724014,
-          "value": 279.0
+          "delta_pct": 1.4184397163120568,
+          "value": 282.0
         }
       }
     },
     {
-      "current_date": "2026-05-18",
-      "current_value": 75.0,
+      "current_date": "2026-05-19",
+      "current_value": 76.0,
       "direction": "risk",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -234,22 +234,22 @@
       "primary_unit": " bp",
       "windows": {
         "1d": {
-          "date": "2026-05-15",
-          "delta": 0.0,
-          "delta_pct": 0.0,
+          "date": "2026-05-18",
+          "delta": 1.0,
+          "delta_pct": 1.3333333333333335,
           "value": 75.0
         },
         "30d": {
           "date": "2026-04-17",
-          "delta": -5.0,
-          "delta_pct": -6.25,
+          "delta": -4.0,
+          "delta_pct": -5.0,
           "value": 80.0
         },
         "7d": {
-          "date": "2026-05-11",
-          "delta": -3.0,
-          "delta_pct": -3.8461538461538463,
-          "value": 78.0
+          "date": "2026-05-12",
+          "delta": -1.0,
+          "delta_pct": -1.2987012987012987,
+          "value": 77.0
         }
       }
     },
@@ -285,8 +285,8 @@
       }
     },
     {
-      "current_date": "2026-05-11",
-      "current_value": 101.56,
+      "current_date": "2026-05-18",
+      "current_value": 112.25,
       "direction": "risk",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -296,22 +296,22 @@
       "primary_unit": "$",
       "windows": {
         "1d": {
-          "date": "2026-05-08",
-          "delta": 2.6899999999999977,
-          "delta_pct": 2.720744411853947,
-          "value": 98.87
+          "date": "2026-05-15",
+          "delta": 3.260000000000005,
+          "delta_pct": 2.9911001009266953,
+          "value": 108.99
         },
         "30d": {
-          "date": "2026-04-10",
-          "delta": 3.219999999999999,
-          "delta_pct": 3.2743542810656887,
-          "value": 98.34
+          "date": "2026-04-17",
+          "delta": 26.340000000000003,
+          "delta_pct": 30.659993015946924,
+          "value": 85.91
         },
         "7d": {
-          "date": "2026-05-04",
-          "delta": -8.200000000000003,
-          "delta_pct": -7.470845481049565,
-          "value": 109.76
+          "date": "2026-05-11",
+          "delta": 10.689999999999998,
+          "delta_pct": 10.525797558093736,
+          "value": 101.56
         }
       }
     },
@@ -440,8 +440,8 @@
       }
     },
     {
-      "current_date": "2026-05-15",
-      "current_value": 0.8284215177266372,
+      "current_date": "2026-05-19",
+      "current_value": 0.8858890155948784,
       "direction": "risk",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -451,28 +451,28 @@
       "primary_unit": "%",
       "windows": {
         "1d": {
-          "date": "2026-05-14",
-          "delta": 0.1127636536876877,
-          "delta_pct": 15.75664285323225,
-          "value": 0.7156578640389495
+          "date": "2026-05-18",
+          "delta": 0.04904409683160571,
+          "delta_pct": 5.860595641075923,
+          "value": 0.8368449187632727
         },
         "30d": {
-          "date": "2026-04-15",
-          "delta": 0.16727668363644277,
-          "delta_pct": 25.301064912143385,
-          "value": 0.6611448340901944
+          "date": "2026-04-17",
+          "delta": 0.20984229068287874,
+          "delta_pct": 31.039613528220805,
+          "value": 0.6760467249119997
         },
         "7d": {
-          "date": "2026-05-08",
-          "delta": 0.1576741088346516,
-          "delta_pct": 23.50722593101255,
-          "value": 0.6707474088919856
+          "date": "2026-05-12",
+          "delta": 0.1575894112367,
+          "delta_pct": 21.637992152361157,
+          "value": 0.7282996043581784
         }
       }
     },
     {
-      "current_date": "2026-05-19",
-      "current_value": 2.49,
+      "current_date": "2026-05-20",
+      "current_value": 2.44,
       "direction": "risk",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -482,27 +482,27 @@
       "primary_unit": "%",
       "windows": {
         "1d": {
-          "date": "2026-05-18",
-          "delta": 0.010000000000000231,
-          "delta_pct": 0.40322580645162226,
-          "value": 2.48
+          "date": "2026-05-19",
+          "delta": -0.050000000000000266,
+          "delta_pct": -2.0080321285140665,
+          "value": 2.49
         },
         "30d": {
-          "date": "2026-04-17",
-          "delta": 0.13000000000000034,
-          "delta_pct": 5.508474576271201,
-          "value": 2.36
+          "date": "2026-04-20",
+          "delta": 0.08999999999999986,
+          "delta_pct": 3.8297872340425467,
+          "value": 2.35
         },
         "7d": {
-          "date": "2026-05-12",
-          "delta": 0.020000000000000018,
-          "delta_pct": 0.8097165991902842,
+          "date": "2026-05-13",
+          "delta": -0.03000000000000025,
+          "delta_pct": -1.214574898785435,
           "value": 2.47
         }
       }
     },
     {
-      "current_date": "2026-05-18",
+      "current_date": "2026-05-19",
       "current_value": 54.0,
       "direction": "risk",
       "frequency": "daily",
@@ -513,10 +513,10 @@
       "primary_unit": " bp",
       "windows": {
         "1d": {
-          "date": "2026-05-15",
-          "delta": 4.0,
-          "delta_pct": 8.0,
-          "value": 50.0
+          "date": "2026-05-18",
+          "delta": 0.0,
+          "delta_pct": 0.0,
+          "value": 54.0
         },
         "30d": {
           "date": "2026-04-17",
@@ -525,10 +525,10 @@
           "value": 55.00000000000001
         },
         "7d": {
-          "date": "2026-05-11",
-          "delta": 7.0,
-          "delta_pct": 14.893617021276595,
-          "value": 47.0
+          "date": "2026-05-12",
+          "delta": 8.0,
+          "delta_pct": 17.391304347826086,
+          "value": 46.0
         }
       }
     },

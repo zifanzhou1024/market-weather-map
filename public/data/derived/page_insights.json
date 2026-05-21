@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-19",
-  "generated_at_utc": "2026-05-20T01:30:12Z",
+  "date": "2026-05-20",
+  "generated_at_utc": "2026-05-21T01:31:54Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -13,13 +13,13 @@
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is elevated.",
-        "severity": 38.4,
+        "severity": 47.55,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
       "sections": [
         {
-          "answer": "Commodity prices are subtracting from inflation pressure (impulse -38.4, 100th percentile of the past year).",
+          "answer": "Commodity prices are subtracting from inflation pressure (impulse -47.5, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -44,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 54.16,
+        "severity": 39.69,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.05 pp over 30 days at 2.08 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (+0.04 pp over 30 days at 2.10 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -110,22 +110,11 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is contango-proxy and calm.",
-        "severity": 11.9,
+        "severity": 44.44,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
-      "primary_warning": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "vix_complex",
-        "label": "VIX / VVIX complex",
-        "message": "Volatility tail risk is elevated.",
-        "severity": 10.18,
-        "source_status": "free_public",
-        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
-      },
-      "state": "mixed",
+      "state": "support",
       "title": "Fragility / shock risk",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
@@ -257,21 +246,21 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 92.06,
+        "severity": 97.62,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) reflects both real yields (+17 bps) and breakevens (+12 bps).",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+23 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
+          "risk": "Rising real yields compress equity valuations across all sectors.",
           "support": null,
-          "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
+          "why": "Real-yield-driven moves tighten financial conditions more directly than inflation-driven moves."
         }
       ],
       "state": "risk",
@@ -338,15 +327,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "6 warnings are active on the short-term board, with 2 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
+          "answer": "5 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
           "id": "tactical_stress_board",
           "question": "Which warnings are clustering on the short-term board today?",
-          "risk": "2 signal(s) above the elevated-severity threshold warrant monitoring.",
-          "support": "6 support signal(s) partially offset the warning cluster.",
-          "why": "Some warnings carry elevated severity; the tactical board is cautionary but not in broad stress."
+          "risk": "3 signals above the elevated-severity threshold are clustering simultaneously.",
+          "support": null,
+          "why": "Multiple high-severity warnings across channels describe a tactically stressed environment."
         }
       ],
       "state": "unknown",
@@ -367,20 +356,9 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is contango-proxy and calm.",
-        "severity": 11.9,
+        "severity": 44.44,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
-      },
-      "primary_warning": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "vix_complex",
-        "label": "VIX / VVIX complex",
-        "message": "Volatility tail risk is elevated.",
-        "severity": 10.18,
-        "source_status": "free_public",
-        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
       "sections": [
         {
@@ -395,7 +373,7 @@
           "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX."
         }
       ],
-      "state": "mixed",
+      "state": "support",
       "title": "Volatility",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     }
