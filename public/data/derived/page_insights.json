@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-20",
-  "generated_at_utc": "2026-05-21T01:31:54Z",
+  "date": "2026-05-21",
+  "generated_at_utc": "2026-05-22T01:29:05Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -13,13 +13,13 @@
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is elevated.",
-        "severity": 47.55,
+        "severity": 47.3,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
       "sections": [
         {
-          "answer": "Commodity prices are subtracting from inflation pressure (impulse -47.5, 100th percentile of the past year).",
+          "answer": "Commodity prices are subtracting from inflation pressure (impulse -47.3, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -44,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 39.69,
+        "severity": 60.92,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.04 pp over 30 days at 2.10 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (+0.00 pp over 30 days at 2.05 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -110,7 +110,7 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is contango-proxy and calm.",
-        "severity": 44.44,
+        "severity": 52.38,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
@@ -121,8 +121,7 @@
     "growth": {
       "confidence": 0.98,
       "freshness_notes": [
-        "Growth breadth is stale.",
-        "Consumer balance sheet is stale."
+        "Growth breadth is stale."
       ],
       "primary_support": {
         "access_status": "free_public_active",
@@ -131,7 +130,7 @@
         "id": "labor",
         "label": "Labor cycle",
         "message": "Labor cycle is firm.",
-        "severity": 60.47,
+        "severity": 63.03,
         "source_status": "free_public",
         "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
       },
@@ -157,7 +156,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Housing activity is resilient despite elevated rates: starts and permits are rising over three months with the 30Y mortgage at 6.36%.",
+          "answer": "Housing activity is resilient despite elevated rates: starts and permits are rising over three months with the 30Y mortgage at 6.51%.",
           "caveat": "Housing starts and permits are monthly; mortgage rate updates weekly. Series can move in opposite directions over short horizons.",
           "eyebrow": "Housing pulse",
           "freshness_status": "ok",
@@ -208,31 +207,31 @@
     "liquidity": {
       "confidence": 1.0,
       "freshness_notes": [],
-      "primary_warning": {
+      "primary_support": {
         "access_status": "free_public_active",
         "confidence": 1.0,
         "freshness_status": "ok",
         "id": "net_liquidity",
         "label": "Net liquidity",
-        "message": "Net liquidity is draining.",
-        "severity": 16.09,
+        "message": "Net liquidity is supportive.",
+        "severity": 50.61,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
       "sections": [
         {
-          "answer": "Net liquidity is contracting ($-68B over four weeks to $5,886B); TGA and reverse repo drain outpaces Fed balance sheet.",
+          "answer": "Net liquidity is expanding (+$207B over four weeks to $5,907B); Fed balance sheet outpaces TGA and reverse repo drain.",
           "caveat": "Net liquidity is a derived weekly proxy from Fed assets, TGA, and reverse repo \u2014 not a measure of funding-market stress.",
           "eyebrow": "Liquidity & funding",
           "freshness_status": "ok",
           "id": "liquidity_funding",
           "question": "Is net liquidity expanding or contracting, and which Fed components are driving it?",
-          "risk": "Net liquidity drains historically precede risk-off episodes.",
-          "support": null,
-          "why": "Falling net liquidity tightens funding conditions and historically pressures risk assets."
+          "risk": null,
+          "support": "Expanding net liquidity supports risk-asset funding.",
+          "why": "Rising net liquidity loosens funding conditions across risk assets and credit."
         }
       ],
-      "state": "risk",
+      "state": "support",
       "title": "Liquidity",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
@@ -246,13 +245,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 97.62,
+        "severity": 91.26,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by real yields (+23 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+27 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -327,7 +326,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "5 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
+          "answer": "4 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
@@ -356,7 +355,7 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is contango-proxy and calm.",
-        "severity": 44.44,
+        "severity": 52.38,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
