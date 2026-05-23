@@ -4,14 +4,9 @@
     "investment_grade_oas"
   ],
   "frequency": "daily",
-  "generated_at_utc": "2026-05-22T01:29:01Z",
+  "generated_at_utc": "2026-05-23T01:23:11Z",
   "method": "High yield option-adjusted spread minus investment grade option-adjusted spread by matched observation date.",
   "observations": [
-    {
-      "date": "2023-05-22",
-      "percentile_252d": 100.0,
-      "value": 3.1
-    },
     {
       "date": "2023-05-23",
       "percentile_252d": 100.0,
@@ -24,22 +19,22 @@
     },
     {
       "date": "2023-05-25",
-      "percentile_252d": 75.0,
+      "percentile_252d": 66.67,
       "value": 3.16
     },
     {
       "date": "2023-05-26",
-      "percentile_252d": 40.0,
+      "percentile_252d": 25.0,
       "value": 3.12
     },
     {
       "date": "2023-05-29",
-      "percentile_252d": 50.0,
+      "percentile_252d": 40.0,
       "value": 3.13
     },
     {
       "date": "2023-05-30",
-      "percentile_252d": 85.71,
+      "percentile_252d": 83.33,
       "value": 3.18
     },
     {
@@ -49,707 +44,707 @@
     },
     {
       "date": "2023-06-01",
-      "percentile_252d": 77.78,
+      "percentile_252d": 75.0,
       "value": 3.23
     },
     {
       "date": "2023-06-02",
-      "percentile_252d": 10.0,
+      "percentile_252d": 11.11,
       "value": 2.98
     },
     {
       "date": "2023-06-05",
-      "percentile_252d": 18.18,
+      "percentile_252d": 20.0,
       "value": 3.0
     },
     {
       "date": "2023-06-06",
-      "percentile_252d": 25.0,
+      "percentile_252d": 27.27,
       "value": 3.0
     },
     {
       "date": "2023-06-07",
-      "percentile_252d": 7.69,
+      "percentile_252d": 8.33,
       "value": 2.94
     },
     {
       "date": "2023-06-08",
-      "percentile_252d": 21.43,
+      "percentile_252d": 23.08,
       "value": 2.99
     },
     {
       "date": "2023-06-09",
-      "percentile_252d": 6.67,
+      "percentile_252d": 7.14,
       "value": 2.89
     },
     {
       "date": "2023-06-12",
-      "percentile_252d": 12.5,
+      "percentile_252d": 13.33,
       "value": 2.93
     },
     {
       "date": "2023-06-13",
-      "percentile_252d": 5.88,
+      "percentile_252d": 6.25,
       "value": 2.79
     },
     {
       "date": "2023-06-14",
-      "percentile_252d": 11.11,
+      "percentile_252d": 11.76,
       "value": 2.8
     },
     {
       "date": "2023-06-15",
-      "percentile_252d": 15.79,
+      "percentile_252d": 16.67,
       "value": 2.84
     },
     {
       "date": "2023-06-16",
-      "percentile_252d": 15.0,
+      "percentile_252d": 15.79,
       "value": 2.8
     },
     {
       "date": "2023-06-19",
-      "percentile_252d": 19.05,
+      "percentile_252d": 20.0,
       "value": 2.8
     },
     {
       "date": "2023-06-20",
-      "percentile_252d": 27.27,
+      "percentile_252d": 28.57,
       "value": 2.87
     },
     {
       "date": "2023-06-21",
-      "percentile_252d": 43.48,
+      "percentile_252d": 45.45,
       "value": 2.97
     },
     {
       "date": "2023-06-22",
-      "percentile_252d": 41.67,
+      "percentile_252d": 43.48,
       "value": 2.96
     },
     {
       "date": "2023-06-23",
-      "percentile_252d": 64.0,
+      "percentile_252d": 66.67,
       "value": 3.05
     },
     {
       "date": "2023-06-26",
-      "percentile_252d": 65.38,
+      "percentile_252d": 68.0,
       "value": 3.09
     },
     {
       "date": "2023-06-27",
-      "percentile_252d": 40.74,
+      "percentile_252d": 42.31,
       "value": 2.96
     },
     {
       "date": "2023-06-28",
-      "percentile_252d": 32.14,
+      "percentile_252d": 33.33,
       "value": 2.93
     },
     {
       "date": "2023-06-29",
-      "percentile_252d": 17.24,
+      "percentile_252d": 17.86,
       "value": 2.83
     },
     {
       "date": "2023-06-30",
-      "percentile_252d": 3.33,
+      "percentile_252d": 3.45,
       "value": 2.75
     },
     {
       "date": "2023-07-03",
-      "percentile_252d": 3.23,
+      "percentile_252d": 3.33,
       "value": 2.7
     },
     {
       "date": "2023-07-04",
-      "percentile_252d": 6.25,
+      "percentile_252d": 6.45,
       "value": 2.7
     },
     {
       "date": "2023-07-05",
-      "percentile_252d": 9.09,
+      "percentile_252d": 9.38,
       "value": 2.73
     },
     {
       "date": "2023-07-06",
-      "percentile_252d": 26.47,
+      "percentile_252d": 27.27,
       "value": 2.81
     },
     {
       "date": "2023-07-07",
-      "percentile_252d": 25.71,
+      "percentile_252d": 26.47,
       "value": 2.8
     },
     {
       "date": "2023-07-10",
-      "percentile_252d": 36.11,
+      "percentile_252d": 37.14,
       "value": 2.84
     },
     {
       "date": "2023-07-11",
-      "percentile_252d": 13.51,
+      "percentile_252d": 13.89,
       "value": 2.77
     },
     {
       "date": "2023-07-12",
-      "percentile_252d": 2.63,
+      "percentile_252d": 2.7,
       "value": 2.68
     },
     {
       "date": "2023-07-13",
-      "percentile_252d": 10.26,
+      "percentile_252d": 10.53,
       "value": 2.7
     },
     {
       "date": "2023-07-14",
-      "percentile_252d": 2.5,
+      "percentile_252d": 2.56,
       "value": 2.62
     },
     {
       "date": "2023-07-17",
-      "percentile_252d": 7.32,
+      "percentile_252d": 7.5,
       "value": 2.68
     },
     {
       "date": "2023-07-18",
-      "percentile_252d": 4.76,
+      "percentile_252d": 4.88,
       "value": 2.62
     },
     {
       "date": "2023-07-19",
-      "percentile_252d": 2.33,
+      "percentile_252d": 2.38,
       "value": 2.61
     },
     {
       "date": "2023-07-20",
-      "percentile_252d": 9.09,
+      "percentile_252d": 9.3,
       "value": 2.63
     },
     {
       "date": "2023-07-21",
-      "percentile_252d": 11.11,
+      "percentile_252d": 11.36,
       "value": 2.63
     },
     {
       "date": "2023-07-24",
-      "percentile_252d": 2.17,
+      "percentile_252d": 2.22,
       "value": 2.57
     },
     {
       "date": "2023-07-25",
-      "percentile_252d": 4.26,
+      "percentile_252d": 4.35,
       "value": 2.6
     },
     {
       "date": "2023-07-26",
-      "percentile_252d": 20.83,
+      "percentile_252d": 21.28,
       "value": 2.68
     },
     {
       "date": "2023-07-27",
-      "percentile_252d": 4.08,
+      "percentile_252d": 4.17,
       "value": 2.58
     },
     {
       "date": "2023-07-28",
-      "percentile_252d": 18.0,
+      "percentile_252d": 18.37,
       "value": 2.63
     },
     {
       "date": "2023-07-31",
-      "percentile_252d": 7.84,
+      "percentile_252d": 8.0,
       "value": 2.6
     },
     {
       "date": "2023-08-01",
-      "percentile_252d": 21.15,
+      "percentile_252d": 21.57,
       "value": 2.63
     },
     {
       "date": "2023-08-02",
-      "percentile_252d": 37.74,
+      "percentile_252d": 38.46,
       "value": 2.75
     },
     {
       "date": "2023-08-03",
-      "percentile_252d": 38.89,
+      "percentile_252d": 39.62,
       "value": 2.76
     },
     {
       "date": "2023-08-04",
-      "percentile_252d": 43.64,
+      "percentile_252d": 44.44,
       "value": 2.79
     },
     {
       "date": "2023-08-07",
-      "percentile_252d": 37.5,
+      "percentile_252d": 38.18,
       "value": 2.75
     },
     {
       "date": "2023-08-08",
-      "percentile_252d": 42.11,
+      "percentile_252d": 42.86,
       "value": 2.77
     },
     {
       "date": "2023-08-09",
-      "percentile_252d": 31.03,
+      "percentile_252d": 31.58,
       "value": 2.71
     },
     {
       "date": "2023-08-10",
-      "percentile_252d": 10.17,
+      "percentile_252d": 10.34,
       "value": 2.61
     },
     {
       "date": "2023-08-11",
-      "percentile_252d": 11.67,
+      "percentile_252d": 11.86,
       "value": 2.61
     },
     {
       "date": "2023-08-14",
-      "percentile_252d": 3.28,
+      "percentile_252d": 3.33,
       "value": 2.57
     },
     {
       "date": "2023-08-15",
-      "percentile_252d": 17.74,
+      "percentile_252d": 18.03,
       "value": 2.62
     },
     {
       "date": "2023-08-16",
-      "percentile_252d": 1.59,
+      "percentile_252d": 1.61,
       "value": 2.56
     },
     {
       "date": "2023-08-17",
-      "percentile_252d": 31.25,
+      "percentile_252d": 31.75,
       "value": 2.69
     },
     {
       "date": "2023-08-18",
-      "percentile_252d": 44.62,
+      "percentile_252d": 45.31,
       "value": 2.75
     },
     {
       "date": "2023-08-21",
-      "percentile_252d": 37.88,
+      "percentile_252d": 38.46,
       "value": 2.71
     },
     {
       "date": "2023-08-22",
-      "percentile_252d": 29.85,
+      "percentile_252d": 30.3,
       "value": 2.68
     },
     {
       "date": "2023-08-23",
-      "percentile_252d": 25.0,
+      "percentile_252d": 25.37,
       "value": 2.67
     },
     {
       "date": "2023-08-24",
-      "percentile_252d": 31.88,
+      "percentile_252d": 32.35,
       "value": 2.68
     },
     {
       "date": "2023-08-25",
-      "percentile_252d": 25.71,
+      "percentile_252d": 26.09,
       "value": 2.67
     },
     {
       "date": "2023-08-28",
-      "percentile_252d": 23.94,
+      "percentile_252d": 24.29,
       "value": 2.64
     },
     {
       "date": "2023-08-29",
-      "percentile_252d": 25.0,
+      "percentile_252d": 25.35,
       "value": 2.65
     },
     {
       "date": "2023-08-30",
-      "percentile_252d": 6.85,
+      "percentile_252d": 6.94,
       "value": 2.58
     },
     {
       "date": "2023-08-31",
-      "percentile_252d": 24.32,
+      "percentile_252d": 24.66,
       "value": 2.63
     },
     {
       "date": "2023-09-01",
-      "percentile_252d": 8.0,
+      "percentile_252d": 8.11,
       "value": 2.59
     },
     {
       "date": "2023-09-04",
-      "percentile_252d": 9.21,
+      "percentile_252d": 9.33,
       "value": 2.59
     },
     {
       "date": "2023-09-05",
-      "percentile_252d": 16.88,
+      "percentile_252d": 17.11,
       "value": 2.61
     },
     {
       "date": "2023-09-06",
-      "percentile_252d": 28.21,
+      "percentile_252d": 28.57,
       "value": 2.63
     },
     {
       "date": "2023-09-07",
-      "percentile_252d": 34.18,
+      "percentile_252d": 34.62,
       "value": 2.67
     },
     {
       "date": "2023-09-08",
-      "percentile_252d": 21.25,
+      "percentile_252d": 21.52,
       "value": 2.62
     },
     {
       "date": "2023-09-11",
-      "percentile_252d": 9.88,
+      "percentile_252d": 10.0,
       "value": 2.59
     },
     {
       "date": "2023-09-12",
-      "percentile_252d": 18.29,
+      "percentile_252d": 18.52,
       "value": 2.61
     },
     {
       "date": "2023-09-13",
-      "percentile_252d": 19.28,
+      "percentile_252d": 19.51,
       "value": 2.61
     },
     {
       "date": "2023-09-14",
-      "percentile_252d": 1.19,
+      "percentile_252d": 1.2,
       "value": 2.55
     },
     {
       "date": "2023-09-15",
-      "percentile_252d": 5.88,
+      "percentile_252d": 5.95,
       "value": 2.57
     },
     {
       "date": "2023-09-18",
-      "percentile_252d": 15.12,
+      "percentile_252d": 15.29,
       "value": 2.6
     },
     {
       "date": "2023-09-19",
-      "percentile_252d": 22.99,
+      "percentile_252d": 23.26,
       "value": 2.61
     },
     {
       "date": "2023-09-20",
-      "percentile_252d": 6.82,
+      "percentile_252d": 6.9,
       "value": 2.57
     },
     {
       "date": "2023-09-21",
-      "percentile_252d": 48.31,
+      "percentile_252d": 48.86,
       "value": 2.69
     },
     {
       "date": "2023-09-22",
-      "percentile_252d": 55.56,
+      "percentile_252d": 56.18,
       "value": 2.73
     },
     {
       "date": "2023-09-25",
-      "percentile_252d": 63.74,
+      "percentile_252d": 64.44,
       "value": 2.78
     },
     {
       "date": "2023-09-26",
-      "percentile_252d": 75.0,
+      "percentile_252d": 75.82,
       "value": 2.84
     },
     {
       "date": "2023-09-27",
-      "percentile_252d": 70.97,
+      "percentile_252d": 71.74,
       "value": 2.82
     },
     {
       "date": "2023-09-28",
-      "percentile_252d": 75.53,
+      "percentile_252d": 76.34,
       "value": 2.86
     },
     {
       "date": "2023-09-29",
-      "percentile_252d": 64.21,
+      "percentile_252d": 64.89,
       "value": 2.79
     },
     {
       "date": "2023-09-30",
-      "percentile_252d": 61.46,
+      "percentile_252d": 62.11,
       "value": 2.78
     },
     {
       "date": "2023-10-02",
-      "percentile_252d": 75.26,
+      "percentile_252d": 76.04,
       "value": 2.85
     },
     {
       "date": "2023-10-03",
-      "percentile_252d": 85.71,
+      "percentile_252d": 86.6,
       "value": 2.98
     },
     {
       "date": "2023-10-04",
-      "percentile_252d": 89.9,
+      "percentile_252d": 90.82,
       "value": 3.08
     },
     {
       "date": "2023-10-05",
-      "percentile_252d": 91.0,
+      "percentile_252d": 91.92,
       "value": 3.09
     },
     {
       "date": "2023-10-06",
-      "percentile_252d": 87.13,
+      "percentile_252d": 88.0,
       "value": 3.04
     },
     {
       "date": "2023-10-09",
-      "percentile_252d": 88.24,
+      "percentile_252d": 89.11,
       "value": 3.05
     },
     {
       "date": "2023-10-10",
-      "percentile_252d": 80.58,
+      "percentile_252d": 81.37,
       "value": 2.97
     },
     {
       "date": "2023-10-11",
-      "percentile_252d": 82.69,
+      "percentile_252d": 83.5,
       "value": 2.98
     },
     {
       "date": "2023-10-12",
-      "percentile_252d": 83.81,
+      "percentile_252d": 84.62,
       "value": 2.99
     },
     {
       "date": "2023-10-13",
-      "percentile_252d": 85.85,
+      "percentile_252d": 86.67,
       "value": 3.03
     },
     {
       "date": "2023-10-16",
-      "percentile_252d": 85.05,
+      "percentile_252d": 85.85,
       "value": 3.0
     },
     {
       "date": "2023-10-17",
-      "percentile_252d": 80.56,
+      "percentile_252d": 81.31,
       "value": 2.98
     },
     {
       "date": "2023-10-18",
-      "percentile_252d": 86.24,
+      "percentile_252d": 87.04,
       "value": 3.03
     },
     {
       "date": "2023-10-19",
-      "percentile_252d": 89.09,
+      "percentile_252d": 89.91,
       "value": 3.06
     },
     {
       "date": "2023-10-20",
-      "percentile_252d": 97.3,
+      "percentile_252d": 97.27,
       "value": 3.19
     },
     {
       "date": "2023-10-23",
-      "percentile_252d": 96.43,
+      "percentile_252d": 96.4,
       "value": 3.18
     },
     {
       "date": "2023-10-24",
-      "percentile_252d": 91.15,
+      "percentile_252d": 91.07,
       "value": 3.1
     },
     {
       "date": "2023-10-25",
-      "percentile_252d": 86.84,
+      "percentile_252d": 87.61,
       "value": 3.07
     },
     {
       "date": "2023-10-26",
-      "percentile_252d": 97.39,
+      "percentile_252d": 97.37,
       "value": 3.2
     },
     {
       "date": "2023-10-27",
-      "percentile_252d": 97.41,
+      "percentile_252d": 97.39,
       "value": 3.22
     },
     {
       "date": "2023-10-30",
-      "percentile_252d": 94.87,
+      "percentile_252d": 94.83,
       "value": 3.18
     },
     {
       "date": "2023-10-31",
-      "percentile_252d": 88.98,
+      "percentile_252d": 88.89,
       "value": 3.1
     },
     {
       "date": "2023-11-01",
-      "percentile_252d": 90.76,
+      "percentile_252d": 90.68,
       "value": 3.14
     },
     {
       "date": "2023-11-02",
-      "percentile_252d": 62.5,
+      "percentile_252d": 63.03,
       "value": 2.86
     },
     {
       "date": "2023-11-03",
-      "percentile_252d": 45.45,
+      "percentile_252d": 45.83,
       "value": 2.75
     },
     {
       "date": "2023-11-06",
-      "percentile_252d": 40.16,
+      "percentile_252d": 40.5,
       "value": 2.72
     },
     {
       "date": "2023-11-07",
-      "percentile_252d": 52.85,
+      "percentile_252d": 53.28,
       "value": 2.79
     },
     {
       "date": "2023-11-08",
-      "percentile_252d": 56.45,
+      "percentile_252d": 56.91,
       "value": 2.8
     },
     {
       "date": "2023-11-09",
-      "percentile_252d": 48.0,
+      "percentile_252d": 48.39,
       "value": 2.77
     },
     {
       "date": "2023-11-10",
-      "percentile_252d": 48.41,
+      "percentile_252d": 48.8,
       "value": 2.77
     },
     {
       "date": "2023-11-13",
-      "percentile_252d": 50.39,
+      "percentile_252d": 50.79,
       "value": 2.78
     },
     {
       "date": "2023-11-14",
-      "percentile_252d": 34.38,
+      "percentile_252d": 34.65,
       "value": 2.69
     },
     {
       "date": "2023-11-15",
-      "percentile_252d": 28.68,
+      "percentile_252d": 28.91,
       "value": 2.67
     },
     {
       "date": "2023-11-16",
-      "percentile_252d": 59.23,
+      "percentile_252d": 59.69,
       "value": 2.81
     },
     {
       "date": "2023-11-17",
-      "percentile_252d": 54.2,
+      "percentile_252d": 54.62,
       "value": 2.79
     },
     {
       "date": "2023-11-20",
-      "percentile_252d": 40.91,
+      "percentile_252d": 41.22,
       "value": 2.74
     },
     {
       "date": "2023-11-21",
-      "percentile_252d": 51.13,
+      "percentile_252d": 51.52,
       "value": 2.78
     },
     {
       "date": "2023-11-22",
-      "percentile_252d": 44.78,
+      "percentile_252d": 45.11,
       "value": 2.75
     },
     {
       "date": "2023-11-23",
-      "percentile_252d": 45.19,
+      "percentile_252d": 45.52,
       "value": 2.75
     },
     {
       "date": "2023-11-24",
-      "percentile_252d": 37.5,
+      "percentile_252d": 37.78,
       "value": 2.71
     },
     {
       "date": "2023-11-27",
-      "percentile_252d": 45.99,
+      "percentile_252d": 46.32,
       "value": 2.75
     },
     {
       "date": "2023-11-28",
-      "percentile_252d": 47.1,
+      "percentile_252d": 47.45,
       "value": 2.76
     },
     {
       "date": "2023-11-29",
-      "percentile_252d": 33.09,
+      "percentile_252d": 33.33,
       "value": 2.69
     },
     {
       "date": "2023-11-30",
-      "percentile_252d": 40.0,
+      "percentile_252d": 40.29,
       "value": 2.73
     },
     {
       "date": "2023-12-01",
-      "percentile_252d": 48.23,
+      "percentile_252d": 48.57,
       "value": 2.76
     },
     {
       "date": "2023-12-04",
-      "percentile_252d": 35.21,
+      "percentile_252d": 35.46,
       "value": 2.7
     },
     {
       "date": "2023-12-05",
-      "percentile_252d": 32.87,
+      "percentile_252d": 33.1,
       "value": 2.69
     },
     {
       "date": "2023-12-06",
-      "percentile_252d": 26.39,
+      "percentile_252d": 26.57,
       "value": 2.67
     },
     {
       "date": "2023-12-07",
-      "percentile_252d": 23.45,
+      "percentile_252d": 23.61,
       "value": 2.66
     },
     {
       "date": "2023-12-08",
-      "percentile_252d": 23.29,
+      "percentile_252d": 23.45,
       "value": 2.65
     },
     {
       "date": "2023-12-11",
-      "percentile_252d": 34.69,
+      "percentile_252d": 34.93,
       "value": 2.69
     },
     {
       "date": "2023-12-12",
-      "percentile_252d": 27.7,
+      "percentile_252d": 27.89,
       "value": 2.67
     },
     {
       "date": "2023-12-13",
-      "percentile_252d": 40.27,
+      "percentile_252d": 40.54,
       "value": 2.71
     },
     {
@@ -759,7 +754,7 @@
     },
     {
       "date": "2023-12-15",
-      "percentile_252d": 1.32,
+      "percentile_252d": 1.33,
       "value": 2.47
     },
     {
@@ -769,7 +764,7 @@
     },
     {
       "date": "2023-12-19",
-      "percentile_252d": 0.65,
+      "percentile_252d": 0.66,
       "value": 2.41
     },
     {
@@ -784,7 +779,7 @@
     },
     {
       "date": "2023-12-22",
-      "percentile_252d": 0.64,
+      "percentile_252d": 0.65,
       "value": 2.32
     },
     {
@@ -794,7 +789,7 @@
     },
     {
       "date": "2023-12-27",
-      "percentile_252d": 0.63,
+      "percentile_252d": 0.64,
       "value": 2.29
     },
     {
@@ -804,207 +799,207 @@
     },
     {
       "date": "2023-12-29",
-      "percentile_252d": 1.88,
+      "percentile_252d": 1.89,
       "value": 2.3
     },
     {
       "date": "2023-12-31",
-      "percentile_252d": 4.35,
+      "percentile_252d": 4.38,
       "value": 2.35
     },
     {
       "date": "2024-01-02",
-      "percentile_252d": 8.02,
+      "percentile_252d": 8.07,
       "value": 2.48
     },
     {
       "date": "2024-01-03",
-      "percentile_252d": 23.93,
+      "percentile_252d": 24.07,
       "value": 2.62
     },
     {
       "date": "2024-01-04",
-      "percentile_252d": 17.07,
+      "percentile_252d": 17.18,
       "value": 2.6
     },
     {
       "date": "2024-01-05",
-      "percentile_252d": 15.15,
+      "percentile_252d": 15.24,
       "value": 2.59
     },
     {
       "date": "2024-01-08",
-      "percentile_252d": 9.04,
+      "percentile_252d": 9.09,
       "value": 2.55
     },
     {
       "date": "2024-01-09",
-      "percentile_252d": 8.38,
+      "percentile_252d": 8.43,
       "value": 2.53
     },
     {
       "date": "2024-01-10",
-      "percentile_252d": 7.14,
+      "percentile_252d": 7.19,
       "value": 2.46
     },
     {
       "date": "2024-01-11",
-      "percentile_252d": 8.88,
+      "percentile_252d": 8.93,
       "value": 2.52
     },
     {
       "date": "2024-01-12",
-      "percentile_252d": 10.0,
+      "percentile_252d": 10.06,
       "value": 2.54
     },
     {
       "date": "2024-01-15",
-      "percentile_252d": 9.36,
+      "percentile_252d": 9.41,
       "value": 2.52
     },
     {
       "date": "2024-01-16",
-      "percentile_252d": 12.79,
+      "percentile_252d": 12.87,
       "value": 2.56
     },
     {
       "date": "2024-01-17",
-      "percentile_252d": 21.39,
+      "percentile_252d": 21.51,
       "value": 2.6
     },
     {
       "date": "2024-01-18",
-      "percentile_252d": 15.52,
+      "percentile_252d": 15.61,
       "value": 2.57
     },
     {
       "date": "2024-01-19",
-      "percentile_252d": 10.29,
+      "percentile_252d": 10.34,
       "value": 2.53
     },
     {
       "date": "2024-01-22",
-      "percentile_252d": 8.52,
+      "percentile_252d": 8.57,
       "value": 2.48
     },
     {
       "date": "2024-01-23",
-      "percentile_252d": 9.04,
+      "percentile_252d": 9.09,
       "value": 2.5
     },
     {
       "date": "2024-01-24",
-      "percentile_252d": 6.18,
+      "percentile_252d": 6.21,
       "value": 2.45
     },
     {
       "date": "2024-01-25",
-      "percentile_252d": 8.38,
+      "percentile_252d": 8.43,
       "value": 2.47
     },
     {
       "date": "2024-01-26",
-      "percentile_252d": 5.56,
+      "percentile_252d": 5.59,
       "value": 2.42
     },
     {
       "date": "2024-01-29",
-      "percentile_252d": 6.63,
+      "percentile_252d": 6.67,
       "value": 2.43
     },
     {
       "date": "2024-01-30",
-      "percentile_252d": 6.04,
+      "percentile_252d": 6.08,
       "value": 2.42
     },
     {
       "date": "2024-01-31",
-      "percentile_252d": 19.67,
+      "percentile_252d": 19.78,
       "value": 2.57
     },
     {
       "date": "2024-02-01",
-      "percentile_252d": 13.04,
+      "percentile_252d": 13.11,
       "value": 2.52
     },
     {
       "date": "2024-02-02",
-      "percentile_252d": 8.11,
+      "percentile_252d": 8.15,
       "value": 2.45
     },
     {
       "date": "2024-02-05",
-      "percentile_252d": 12.37,
+      "percentile_252d": 12.43,
       "value": 2.5
     },
     {
       "date": "2024-02-06",
-      "percentile_252d": 14.44,
+      "percentile_252d": 14.52,
       "value": 2.52
     },
     {
       "date": "2024-02-07",
-      "percentile_252d": 7.45,
+      "percentile_252d": 7.49,
       "value": 2.43
     },
     {
       "date": "2024-02-08",
-      "percentile_252d": 4.76,
+      "percentile_252d": 4.79,
       "value": 2.39
     },
     {
       "date": "2024-02-09",
-      "percentile_252d": 3.16,
+      "percentile_252d": 3.17,
       "value": 2.33
     },
     {
       "date": "2024-02-12",
-      "percentile_252d": 4.71,
+      "percentile_252d": 4.74,
       "value": 2.35
     },
     {
       "date": "2024-02-13",
-      "percentile_252d": 5.73,
+      "percentile_252d": 5.76,
       "value": 2.37
     },
     {
       "date": "2024-02-14",
-      "percentile_252d": 6.74,
+      "percentile_252d": 6.77,
       "value": 2.4
     },
     {
       "date": "2024-02-15",
-      "percentile_252d": 6.19,
+      "percentile_252d": 6.22,
       "value": 2.38
     },
     {
       "date": "2024-02-16",
-      "percentile_252d": 6.67,
+      "percentile_252d": 6.7,
       "value": 2.38
     },
     {
       "date": "2024-02-19",
-      "percentile_252d": 7.14,
+      "percentile_252d": 7.18,
       "value": 2.38
     },
     {
       "date": "2024-02-20",
-      "percentile_252d": 9.14,
+      "percentile_252d": 9.18,
       "value": 2.41
     },
     {
       "date": "2024-02-21",
-      "percentile_252d": 8.59,
+      "percentile_252d": 8.63,
       "value": 2.4
     },
     {
       "date": "2024-02-22",
-      "percentile_252d": 1.51,
+      "percentile_252d": 1.52,
       "value": 2.29
     },
     {
       "date": "2024-02-23",
-      "percentile_252d": 1.0,
+      "percentile_252d": 1.01,
       "value": 2.28
     },
     {
@@ -1014,22 +1009,22 @@
     },
     {
       "date": "2024-02-27",
-      "percentile_252d": 3.47,
+      "percentile_252d": 3.48,
       "value": 2.3
     },
     {
       "date": "2024-02-28",
-      "percentile_252d": 5.42,
+      "percentile_252d": 5.45,
       "value": 2.33
     },
     {
       "date": "2024-02-29",
-      "percentile_252d": 2.94,
+      "percentile_252d": 2.96,
       "value": 2.29
     },
     {
       "date": "2024-03-01",
-      "percentile_252d": 4.88,
+      "percentile_252d": 4.9,
       "value": 2.31
     },
     {
@@ -1039,27 +1034,27 @@
     },
     {
       "date": "2024-03-05",
-      "percentile_252d": 4.83,
+      "percentile_252d": 4.85,
       "value": 2.3
     },
     {
       "date": "2024-03-06",
-      "percentile_252d": 0.96,
+      "percentile_252d": 0.97,
       "value": 2.26
     },
     {
       "date": "2024-03-07",
-      "percentile_252d": 1.91,
+      "percentile_252d": 1.92,
       "value": 2.27
     },
     {
       "date": "2024-03-08",
-      "percentile_252d": 2.38,
+      "percentile_252d": 2.39,
       "value": 2.27
     },
     {
       "date": "2024-03-11",
-      "percentile_252d": 3.79,
+      "percentile_252d": 3.81,
       "value": 2.28
     },
     {
@@ -1074,17 +1069,17 @@
     },
     {
       "date": "2024-03-14",
-      "percentile_252d": 0.93,
+      "percentile_252d": 0.94,
       "value": 2.21
     },
     {
       "date": "2024-03-15",
-      "percentile_252d": 1.86,
+      "percentile_252d": 1.87,
       "value": 2.23
     },
     {
       "date": "2024-03-18",
-      "percentile_252d": 1.39,
+      "percentile_252d": 1.4,
       "value": 2.21
     },
     {
@@ -1094,7 +1089,7 @@
     },
     {
       "date": "2024-03-20",
-      "percentile_252d": 2.29,
+      "percentile_252d": 2.3,
       "value": 2.22
     },
     {
@@ -1109,152 +1104,152 @@
     },
     {
       "date": "2024-03-25",
-      "percentile_252d": 1.81,
+      "percentile_252d": 1.82,
       "value": 2.19
     },
     {
       "date": "2024-03-26",
-      "percentile_252d": 4.05,
+      "percentile_252d": 4.07,
       "value": 2.22
     },
     {
       "date": "2024-03-27",
-      "percentile_252d": 3.59,
+      "percentile_252d": 3.6,
       "value": 2.21
     },
     {
       "date": "2024-03-28",
-      "percentile_252d": 2.23,
+      "percentile_252d": 2.24,
       "value": 2.19
     },
     {
       "date": "2024-03-31",
-      "percentile_252d": 4.44,
+      "percentile_252d": 4.46,
       "value": 2.21
     },
     {
       "date": "2024-04-01",
-      "percentile_252d": 2.65,
+      "percentile_252d": 2.67,
       "value": 2.19
     },
     {
       "date": "2024-04-02",
-      "percentile_252d": 13.22,
+      "percentile_252d": 13.27,
       "value": 2.3
     },
     {
       "date": "2024-04-03",
-      "percentile_252d": 14.47,
+      "percentile_252d": 14.54,
       "value": 2.31
     },
     {
       "date": "2024-04-04",
-      "percentile_252d": 15.28,
+      "percentile_252d": 15.35,
       "value": 2.32
     },
     {
       "date": "2024-04-05",
-      "percentile_252d": 7.83,
+      "percentile_252d": 7.86,
       "value": 2.26
     },
     {
       "date": "2024-04-08",
-      "percentile_252d": 6.93,
+      "percentile_252d": 6.96,
       "value": 2.24
     },
     {
       "date": "2024-04-09",
-      "percentile_252d": 6.9,
+      "percentile_252d": 6.93,
       "value": 2.23
     },
     {
       "date": "2024-04-10",
-      "percentile_252d": 5.15,
+      "percentile_252d": 5.17,
       "value": 2.21
     },
     {
       "date": "2024-04-11",
-      "percentile_252d": 10.68,
+      "percentile_252d": 10.73,
       "value": 2.27
     },
     {
       "date": "2024-04-12",
-      "percentile_252d": 18.3,
+      "percentile_252d": 18.38,
       "value": 2.33
     },
     {
       "date": "2024-04-15",
-      "percentile_252d": 19.92,
+      "percentile_252d": 20.0,
       "value": 2.36
     },
     {
       "date": "2024-04-16",
-      "percentile_252d": 24.47,
+      "percentile_252d": 24.58,
       "value": 2.41
     },
     {
       "date": "2024-04-17",
-      "percentile_252d": 29.41,
+      "percentile_252d": 29.54,
       "value": 2.47
     },
     {
       "date": "2024-04-18",
-      "percentile_252d": 27.62,
+      "percentile_252d": 27.73,
       "value": 2.45
     },
     {
       "date": "2024-04-19",
-      "percentile_252d": 26.67,
+      "percentile_252d": 26.78,
       "value": 2.43
     },
     {
       "date": "2024-04-22",
-      "percentile_252d": 19.92,
+      "percentile_252d": 20.0,
       "value": 2.36
     },
     {
       "date": "2024-04-23",
-      "percentile_252d": 11.98,
+      "percentile_252d": 12.03,
       "value": 2.28
     },
     {
       "date": "2024-04-24",
-      "percentile_252d": 10.7,
+      "percentile_252d": 10.74,
       "value": 2.27
     },
     {
       "date": "2024-04-25",
-      "percentile_252d": 17.62,
+      "percentile_252d": 17.7,
       "value": 2.32
     },
     {
       "date": "2024-04-26",
-      "percentile_252d": 8.98,
+      "percentile_252d": 9.02,
       "value": 2.26
     },
     {
       "date": "2024-04-29",
-      "percentile_252d": 6.1,
+      "percentile_252d": 6.12,
       "value": 2.22
     },
     {
       "date": "2024-04-30",
-      "percentile_252d": 11.74,
+      "percentile_252d": 11.79,
       "value": 2.27
     },
     {
       "date": "2024-05-01",
-      "percentile_252d": 16.53,
+      "percentile_252d": 16.6,
       "value": 2.3
     },
     {
       "date": "2024-05-02",
-      "percentile_252d": 9.64,
+      "percentile_252d": 9.68,
       "value": 2.26
     },
     {
       "date": "2024-05-03",
-      "percentile_252d": 2.8,
+      "percentile_252d": 2.81,
       "value": 2.19
     },
     {
@@ -1264,7 +1259,7 @@
     },
     {
       "date": "2024-05-07",
-      "percentile_252d": 1.98,
+      "percentile_252d": 1.99,
       "value": 2.18
     },
     {
@@ -3931,20 +3926,25 @@
       "date": "2026-05-20",
       "percentile_252d": 32.54,
       "value": 2.05
+    },
+    {
+      "date": "2026-05-21",
+      "percentile_252d": 23.02,
+      "value": 2.03
     }
   ],
   "series_id": "hy_minus_ig_oas",
   "source": "Derived",
   "source_url": "/data/series/high_yield_oas.json",
   "summary": {
-    "change_12m": -0.29,
-    "change_1d": -0.05,
-    "change_1m": 0.0,
-    "change_1w": -0.01,
-    "change_3m": -0.1,
-    "latest_date": "2026-05-20",
-    "latest_value": 2.05,
-    "percentile_252d": 32.54
+    "change_12m": -0.26,
+    "change_1d": -0.02,
+    "change_1m": -0.02,
+    "change_1w": 0.03,
+    "change_3m": -0.13,
+    "latest_date": "2026-05-21",
+    "latest_value": 2.03,
+    "percentile_252d": 23.02
   },
   "units": "percentage_points"
 }
