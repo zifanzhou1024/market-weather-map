@@ -1,5 +1,6 @@
 {
-  "generated_at_utc": "2026-05-23T01:23:11Z",
+  "generated_at_utc": "2026-05-26T01:26:40Z",
+  "last_attempt_utc": "2026-05-26T01:26:40Z",
   "last_successful_update_utc": "2026-05-23T01:23:11Z",
   "overall_status": "partial",
   "series": {
@@ -1530,5 +1531,7 @@
       "source": "FRED",
       "status": "ok"
     }
-  }
+  },
+  "update_message": "SystemExit: regime_dashboard.json is stale: snapshot 2026-05-15 is 11 days old > 10 day tolerance",
+  "update_status": "failed"
 }
