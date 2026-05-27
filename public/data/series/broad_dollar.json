@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-05-23T01:22:00Z",
+  "generated_at_utc": "2026-05-27T01:31:56Z",
   "observations": [
     {
       "date": "2006-01-02",
@@ -25536,20 +25536,45 @@
       "date": "2026-05-15",
       "percentile_252d": 23.81,
       "value": 119.2825
+    },
+    {
+      "date": "2026-05-18",
+      "percentile_252d": 21.03,
+      "value": 119.0574
+    },
+    {
+      "date": "2026-05-19",
+      "percentile_252d": 27.78,
+      "value": 119.451
+    },
+    {
+      "date": "2026-05-20",
+      "percentile_252d": 23.41,
+      "value": 119.1624
+    },
+    {
+      "date": "2026-05-21",
+      "percentile_252d": 26.59,
+      "value": 119.369
+    },
+    {
+      "date": "2026-05-22",
+      "percentile_252d": 25.0,
+      "value": 119.2868
     }
   ],
   "series_id": "broad_dollar",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DTWEXBGS",
   "summary": {
-    "change_12m": -3.6758,
-    "change_1d": 0.6129,
-    "change_1m": 0.9209,
-    "change_1w": 1.2433,
-    "change_3m": 1.545,
-    "latest_date": "2026-05-15",
-    "latest_value": 119.2825,
-    "percentile_252d": 23.81
+    "change_12m": -3.0331,
+    "change_1d": -0.0822,
+    "change_1m": 0.5713,
+    "change_1w": 0.0043,
+    "change_3m": 1.3405,
+    "latest_date": "2026-05-22",
+    "latest_value": 119.2868,
+    "percentile_252d": 25.0
   },
   "units": "index"
 }

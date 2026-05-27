@@ -1,32 +1,32 @@
 {
-  "generated_at_utc": "2026-05-23T01:23:11Z",
+  "generated_at_utc": "2026-05-27T01:32:48Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
-        "Volatility term structure is calm.",
-        "Credit spread pressure is contained."
+        "Credit spread pressure is contained.",
+        "The dollar backdrop is easing."
       ],
       "top_risks": [],
       "top_supports": [
-        "Volatility term structure is calm.",
         "Credit spread pressure is contained.",
-        "The dollar backdrop is easing."
+        "The dollar backdrop is easing.",
+        "Liquidity drains are limited."
       ]
     },
     "macro_climate": {
       "recent_changes": [
         "Inflation pressure remains elevated.",
         "Real yields are elevated.",
-        "Consumer and production inputs are firm.",
-        "Growth inputs are supportive."
+        "Growth inputs are supportive.",
+        "Consumer and production inputs are firm."
       ],
       "top_risks": [
         "Inflation pressure remains elevated.",
         "Real yields are elevated."
       ],
       "top_supports": [
-        "Consumer and production inputs are firm.",
         "Growth inputs are supportive.",
+        "Consumer and production inputs are firm.",
         "Consumer balance-sheet stress is contained."
       ]
     },
@@ -35,7 +35,7 @@
         "Real yields are elevated.",
         "Commodity inflation impulse is elevated.",
         "Credit spread pressure is contained.",
-        "The broad dollar backdrop is easing."
+        "Liquidity funding conditions are improving."
       ],
       "top_risks": [
         "Real yields are elevated.",
@@ -43,8 +43,8 @@
       ],
       "top_supports": [
         "Credit spread pressure is contained.",
-        "The broad dollar backdrop is easing.",
-        "Liquidity funding conditions are improving."
+        "Liquidity funding conditions are improving.",
+        "The broad dollar backdrop is easing."
       ]
     }
   },
@@ -121,6 +121,12 @@
       "fragility": 39.43,
       "macro_climate": 9.89,
       "market_weather": 17.22
+    },
+    {
+      "date": "2026-05-26",
+      "fragility": 32.02,
+      "macro_climate": 19.28,
+      "market_weather": 17.95
     }
   ]
 }
