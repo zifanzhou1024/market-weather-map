@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-05-27T01:31:51Z",
+  "generated_at_utc": "2026-05-28T01:21:08Z",
   "observations": [
     {
       "date": "2003-01-02",
@@ -29266,20 +29266,25 @@
       "date": "2026-05-26",
       "percentile_252d": 67.46,
       "value": 2.27
+    },
+    {
+      "date": "2026-05-27",
+      "percentile_252d": 54.76,
+      "value": 2.25
     }
   ],
   "series_id": "forward_inflation_5y5y",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/T5YIFR",
   "summary": {
-    "change_12m": 0.0,
-    "change_1d": 0.01,
-    "change_1m": 0.04,
-    "change_1w": 0.0,
-    "change_3m": 0.13,
-    "latest_date": "2026-05-26",
-    "latest_value": 2.27,
-    "percentile_252d": 67.46
+    "change_12m": -0.01,
+    "change_1d": -0.02,
+    "change_1m": -0.01,
+    "change_1w": -0.07,
+    "change_3m": 0.12,
+    "latest_date": "2026-05-27",
+    "latest_value": 2.25,
+    "percentile_252d": 54.76
   },
   "units": "percent"
 }
