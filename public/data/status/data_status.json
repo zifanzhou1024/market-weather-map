@@ -1,5 +1,6 @@
 {
-  "generated_at_utc": "2026-05-28T01:22:04Z",
+  "generated_at_utc": "2026-05-29T01:30:45Z",
+  "last_attempt_utc": "2026-05-29T01:30:45Z",
   "last_successful_update_utc": "2026-05-28T01:22:04Z",
   "overall_status": "partial",
   "series": {
@@ -1530,5 +1531,7 @@
       "source": "FRED",
       "status": "ok"
     }
-  }
+  },
+  "update_message": "HTTPError: HTTP Error 404: Not Found",
+  "update_status": "failed"
 }
