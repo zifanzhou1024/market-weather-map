@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-27",
-  "generated_at_utc": "2026-05-28T01:22:09Z",
+  "date": "2026-05-29",
+  "generated_at_utc": "2026-05-30T01:26:12Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,12 +74,12 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 44.24
+      "score": 46.07
     },
     "long_term": {
       "confidence": 0.99,
       "label": "Supportive",
-      "score": 20.32
+      "score": 23.04
     },
     "regime": {
       "label": "Tightening / risk-off"
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Supportive",
-      "score": 24.8
+      "score": 27.33
     }
   },
   "top_supports": [
@@ -121,29 +121,11 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 437.5,
-      "severity": 87.5,
+      "priority": 439.5,
+      "severity": 87.9,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "macro",
-      "confidence": 0.99,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Labor",
-      "horizon": "long_term",
-      "id": "labor",
-      "importance": 5,
-      "label": "Labor cycle",
-      "message": "Labor cycle is firm.",
-      "priority": 312.0,
-      "severity": 63.03,
-      "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
     },
     {
       "access_status": "free_public_active",
@@ -157,8 +139,8 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is contained.",
-      "priority": 296.3,
-      "severity": 59.26,
+      "priority": 380.95,
+      "severity": 76.19,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
@@ -175,25 +157,43 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is contango-proxy and calm.",
-      "priority": 206.34,
-      "severity": 53.18,
+      "priority": 292.55,
+      "severity": 75.4,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     {
       "access_status": "free_public_active",
+      "category": "macro",
+      "confidence": 0.99,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Labor",
+      "horizon": "long_term",
+      "id": "labor",
+      "importance": 5,
+      "label": "Labor cycle",
+      "message": "Labor cycle is firm.",
+      "priority": 280.27,
+      "severity": 56.62,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
+    },
+    {
+      "access_status": "free_public_active",
       "category": "dollar",
       "confidence": 1.0,
       "direction": "support",
-      "freshness_status": "ok",
+      "freshness_status": "stale",
       "group": "Dollar / Global",
       "horizon": "short_term",
       "id": "broad_dollar",
       "importance": 4,
       "label": "Broad dollar",
       "message": "The broad dollar backdrop is easing.",
-      "priority": 200.0,
+      "priority": 160.0,
       "severity": 50.0,
       "source_status": "active",
       "urgency": "near_term",
@@ -211,14 +211,32 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is supportive.",
-      "priority": 187.2,
-      "severity": 46.8,
+      "priority": 140.84,
+      "severity": 35.21,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     }
   ],
   "top_warnings": [
+    {
+      "access_status": "free_public_active",
+      "category": "macro",
+      "confidence": 0.99,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Inflation",
+      "horizon": "long_term",
+      "id": "inflation",
+      "importance": 5,
+      "label": "Inflation pressure",
+      "message": "Inflation pressure remains elevated.",
+      "priority": 495.0,
+      "severity": 100.0,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
+    },
     {
       "access_status": "free_public_active",
       "category": "rates",
@@ -231,29 +249,11 @@
       "importance": 5,
       "label": "10Y real yields",
       "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 416.7,
-      "severity": 83.34,
+      "priority": 388.9,
+      "severity": 77.78,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "macro",
-      "confidence": 0.99,
-      "direction": "risk",
-      "freshness_status": "stale",
-      "group": "Inflation",
-      "horizon": "long_term",
-      "id": "inflation",
-      "importance": 5,
-      "label": "Inflation pressure",
-      "message": "Inflation pressure remains elevated.",
-      "priority": 396.0,
-      "severity": 100.0,
-      "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
     {
       "access_status": "free_public_active",
@@ -267,8 +267,8 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 141.33,
-      "severity": 47.11,
+      "priority": 97.44,
+      "severity": 32.48,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."

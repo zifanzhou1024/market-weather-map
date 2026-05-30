@@ -34,7 +34,7 @@
       "id": "credit",
       "label": "Credit spreads",
       "message": "Credit spread pressure is based on HY minus IG OAS when available.",
-      "state": "down"
+      "state": "flat"
     },
     {
       "id": "liquidity",
@@ -53,8 +53,8 @@
     {
       "id": "credit",
       "label": "Credit",
-      "message": "Credit spreads are diverging for the active regime.",
-      "status": "diverging"
+      "message": "Credit spreads are mixed for the active regime.",
+      "status": "mixed"
     },
     {
       "id": "vix_curve",
@@ -75,8 +75,8 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-05-27",
-  "generated_at_utc": "2026-05-28T01:22:04Z",
+  "date": "2026-05-29",
+  "generated_at_utc": "2026-05-30T01:26:08Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -248,18 +248,6 @@
     "yield_driver": "real_yield_driven"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.29,
-      "date": "2025-05-12",
-      "nominal_10y": 4.45,
-      "real_yield_10y": 2.16
-    },
-    {
-      "breakeven_10y": 2.32,
-      "date": "2025-05-13",
-      "nominal_10y": 4.49,
-      "real_yield_10y": 2.17
-    },
     {
       "breakeven_10y": 2.37,
       "date": "2025-05-14",
@@ -1807,6 +1795,18 @@
       "date": "2026-05-26",
       "nominal_10y": 4.5,
       "real_yield_10y": 2.1
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2026-05-27",
+      "nominal_10y": 4.48,
+      "real_yield_10y": 2.09
+    },
+    {
+      "breakeven_10y": 2.39,
+      "date": "2026-05-28",
+      "nominal_10y": 4.45,
+      "real_yield_10y": 2.06
     }
   ]
 }

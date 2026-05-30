@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-05-28T01:21:11Z",
+  "generated_at_utc": "2026-05-30T01:25:09Z",
   "observations": [
     {
       "date": "1959-01-01",
@@ -4025,30 +4025,35 @@
     {
       "date": "2026-01-01",
       "percentile_252d": 100.0,
-      "value": 128.429
+      "value": 128.432
     },
     {
       "date": "2026-02-01",
       "percentile_252d": 100.0,
-      "value": 128.901
+      "value": 128.94
     },
     {
       "date": "2026-03-01",
       "percentile_252d": 100.0,
-      "value": 129.279
+      "value": 129.321
+    },
+    {
+      "date": "2026-04-01",
+      "percentile_252d": 100.0,
+      "value": 129.63
     }
   ],
   "series_id": "core_pce",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/PCEPILFE",
   "summary": {
-    "change_12m": 4.012,
-    "change_1d": 0.378,
-    "change_1m": 0.378,
-    "change_1w": 0.378,
-    "change_3m": 1.393,
-    "latest_date": "2026-03-01",
-    "latest_value": 129.279,
+    "change_12m": 4.128,
+    "change_1d": 0.309,
+    "change_1m": 0.309,
+    "change_1w": 0.309,
+    "change_3m": 1.198,
+    "latest_date": "2026-04-01",
+    "latest_value": 129.63,
     "percentile_252d": 100.0
   },
   "units": "index"

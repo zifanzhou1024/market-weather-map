@@ -41,10 +41,10 @@
     },
     {
       "category": "inflation",
-      "date": "2026-05-28",
+      "date": "2026-06-25",
       "id": "personal_income_outlays_pce",
       "importance": "high",
-      "notes": "Official BEA schedule row: Personal Income and Outlays, April 2026. Descriptive event context only; not scored.",
+      "notes": "Official BEA schedule row: Personal Income and Outlays, May 2026. Descriptive event context only; not scored.",
       "source": "BEA",
       "source_url": "https://www.bea.gov/news/schedule",
       "status": "scheduled",
@@ -54,10 +54,10 @@
     },
     {
       "category": "growth",
-      "date": "2026-05-28",
+      "date": "2026-06-25",
       "id": "gross_domestic_product",
       "importance": "high",
-      "notes": "Official BEA schedule row: GDP (Second Estimate) and Corporate Profits, 1st Quarter 2026. Descriptive event context only; not scored.",
+      "notes": "Official BEA schedule row: GDP (Third Estimate), Industries, Corporate Profits, State GDP, and State Personal Income, 1st Quarter 2026. Descriptive event context only; not scored.",
       "source": "BEA",
       "source_url": "https://www.bea.gov/news/schedule",
       "status": "scheduled",
@@ -67,14 +67,14 @@
     },
     {
       "category": "growth",
-      "date": "2026-05-29",
+      "date": "2026-06-08",
       "id": "retail_sales",
       "importance": "high",
-      "notes": "Official Census economic indicators calendar row: Advance Economic Indicators Report (International Trade, Retail, & Wholesale). Descriptive event context only; not scored.",
+      "notes": "Official Census economic indicators calendar row: Quarterly Financial Report--Retail Trade. Descriptive event context only; not scored.",
       "source": "Census",
       "source_url": "https://www.census.gov/economic-indicators/calendar-listview.html",
       "status": "scheduled",
-      "time": "08:30",
+      "time": "10:00",
       "timezone": "America/New_York",
       "title": "Advance Monthly Retail Trade"
     },
@@ -93,10 +93,10 @@
     },
     {
       "category": "rates",
-      "date": "2026-05-28",
+      "date": "2026-06-01",
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 4-Week Bill offering amount 85000000000. Descriptive event context only; not scored.",
+      "notes": "Official FiscalData auction query row for 13-Week Bill offering amount 89000000000. Descriptive event context only; not scored.",
       "source": "FiscalData",
       "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
       "status": "scheduled",
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-05-28T01:22:35Z",
+  "generated_at_utc": "2026-05-30T01:26:34Z",
   "method_version": "official-event-calendar-v2"
 }
