@@ -93,10 +93,10 @@
     },
     {
       "category": "rates",
-      "date": "2026-06-01",
+      "date": "2026-06-02",
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 13-Week Bill offering amount 89000000000. Descriptive event context only; not scored.",
+      "notes": "Official FiscalData auction query row for 6-Week Bill offering amount 75000000000. Descriptive event context only; not scored.",
       "source": "FiscalData",
       "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
       "status": "scheduled",
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-05-30T01:26:34Z",
+  "generated_at_utc": "2026-06-02T01:44:06Z",
   "method_version": "official-event-calendar-v2"
 }
