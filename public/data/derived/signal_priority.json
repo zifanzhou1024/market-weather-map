@@ -1,6 +1,6 @@
 {
   "date": "2026-06-05",
-  "generated_at_utc": "2026-06-07T23:57:08Z",
+  "generated_at_utc": "2026-06-08T00:05:34Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -72,7 +72,7 @@
   ],
   "overall_read": {
     "fragility": {
-      "confidence": 0.97,
+      "confidence": 0.96,
       "label": "Moderate",
       "score": 13.93
     },
@@ -276,7 +276,7 @@
     {
       "access_status": "free_public_active",
       "category": "volatility",
-      "confidence": 0.97,
+      "confidence": 0.96,
       "direction": "risk",
       "freshness_status": "ok",
       "group": "Volatility curve",
@@ -285,7 +285,7 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 329.49,
+      "priority": 326.09,
       "severity": 84.92,
       "source_status": "active",
       "urgency": "immediate",

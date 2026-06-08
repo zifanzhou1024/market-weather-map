@@ -1,6 +1,6 @@
 {
   "date": "2026-06-05",
-  "generated_at_utc": "2026-06-07T23:57:08Z",
+  "generated_at_utc": "2026-06-08T00:05:34Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -99,7 +99,7 @@
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
     },
     "fragility": {
-      "confidence": 0.98,
+      "confidence": 0.975,
       "freshness_notes": [
         "MOVE official unavailable; TradingView candidate gated.",
         "Cboe SKEW source gated; no implemented candidate.",
@@ -251,7 +251,7 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by real yields (+11 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+15 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -342,7 +342,7 @@
       "why_it_matters": "Short-term tactical signals track the immediate risk posture across asset classes."
     },
     "volatility": {
-      "confidence": 0.98,
+      "confidence": 0.975,
       "freshness_notes": [
         "MOVE official unavailable; TradingView candidate gated.",
         "Cboe SKEW source gated; no implemented candidate.",
