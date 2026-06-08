@@ -4,7 +4,7 @@
     "wti_crude"
   ],
   "frequency": "daily",
-  "generated_at_utc": "2026-06-02T01:43:46Z",
+  "generated_at_utc": "2026-06-07T23:57:06Z",
   "method": "Brent crude spot price minus WTI crude spot price by matched observation date.",
   "observations": [
     {
@@ -48621,20 +48621,40 @@
       "date": "2026-05-26",
       "percentile_252d": 65.08,
       "value": 5.12
+    },
+    {
+      "date": "2026-05-27",
+      "percentile_252d": 59.13,
+      "value": 4.76
+    },
+    {
+      "date": "2026-05-28",
+      "percentile_252d": 20.24,
+      "value": 2.82
+    },
+    {
+      "date": "2026-05-29",
+      "percentile_252d": 1.19,
+      "value": 1.72
+    },
+    {
+      "date": "2026-06-01",
+      "percentile_252d": 7.54,
+      "value": 2.33
     }
   ],
   "series_id": "brent_wti_spread",
   "source": "Derived",
   "source_url": "/data/series/brent_crude.json",
   "summary": {
-    "change_12m": 3.69,
-    "change_1d": -1.43,
-    "change_1m": -8.86,
-    "change_1w": 0.64,
-    "change_3m": -0.94,
-    "latest_date": "2026-05-26",
-    "latest_value": 5.12,
-    "percentile_252d": 65.08
+    "change_12m": -0.63,
+    "change_1d": 0.61,
+    "change_1m": -11.36,
+    "change_1w": -4.22,
+    "change_3m": -4.23,
+    "latest_date": "2026-06-01",
+    "latest_value": 2.33,
+    "percentile_252d": 7.54
   },
   "units": "usd_per_barrel"
 }

@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-06-02T01:42:53Z",
+  "generated_at_utc": "2026-06-07T23:56:18Z",
   "observations": [
     {
       "date": "1973-01-03",
@@ -13855,7 +13855,7 @@
     {
       "date": "2026-02-04",
       "percentile_252d": 100.0,
-      "value": 18729.5967
+      "value": 18729.5014
     },
     {
       "date": "2026-02-11",
@@ -13880,70 +13880,75 @@
     {
       "date": "2026-03-11",
       "percentile_252d": 100.0,
-      "value": 18888.809
+      "value": 18888.8319
     },
     {
       "date": "2026-03-18",
       "percentile_252d": 100.0,
-      "value": 18899.3023
+      "value": 18899.3482
     },
     {
       "date": "2026-03-25",
       "percentile_252d": 100.0,
-      "value": 18993.3166
+      "value": 18993.3855
     },
     {
       "date": "2026-04-01",
       "percentile_252d": 100.0,
-      "value": 19083.0176
+      "value": 19083.1087
     },
     {
       "date": "2026-04-08",
       "percentile_252d": 98.08,
-      "value": 19052.3471
+      "value": 19052.4155
     },
     {
       "date": "2026-04-15",
       "percentile_252d": 100.0,
-      "value": 19094.0877
+      "value": 19094.1325
     },
     {
       "date": "2026-04-22",
       "percentile_252d": 96.15,
-      "value": 19072.4675
+      "value": 19072.4885
     },
     {
       "date": "2026-04-29",
       "percentile_252d": 100.0,
-      "value": 19103.6348
+      "value": 19103.6325
     },
     {
       "date": "2026-05-06",
       "percentile_252d": 100.0,
-      "value": 19215.9277
+      "value": 19215.9031
     },
     {
       "date": "2026-05-13",
       "percentile_252d": 100.0,
-      "value": 19278.6431
+      "value": 19278.6347
     },
     {
       "date": "2026-05-20",
       "percentile_252d": 100.0,
-      "value": 19285.2728
+      "value": 19285.2604
+    },
+    {
+      "date": "2026-05-27",
+      "percentile_252d": 100.0,
+      "value": 19333.0124
     }
   ],
   "series_id": "bank_deposits",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DPSACBW027SBOG",
   "summary": {
-    "change_12m": 1121.8224,
-    "change_1d": 6.6297,
-    "change_1m": 212.8053,
-    "change_1w": 6.6297,
-    "change_3m": 490.712,
-    "latest_date": "2026-05-20",
-    "latest_value": 19285.2728,
+    "change_12m": 1153.5259,
+    "change_1d": 47.752,
+    "change_1m": 229.3799,
+    "change_1w": 47.752,
+    "change_3m": 512.9886,
+    "latest_date": "2026-05-27",
+    "latest_value": 19333.0124,
     "percentile_252d": 100.0
   },
   "units": "billions_usd"

@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-06-02T01:42:34Z",
+  "generated_at_utc": "2026-06-07T23:55:44Z",
   "observations": [
     {
       "date": "1992-01-01",
@@ -2056,19 +2056,29 @@
       "date": "2026-03-01",
       "percentile_252d": 100.0,
       "value": 426.5981083814549
+    },
+    {
+      "date": "2026-04-01",
+      "percentile_252d": 91.67,
+      "value": 425.2924899966025
+    },
+    {
+      "date": "2026-05-01",
+      "percentile_252d": 100.0,
+      "value": 439.149647497951
     }
   ],
   "series_id": "soybean_price",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/PSOYBUSDM",
   "summary": {
-    "change_12m": 57.2539,
-    "change_1d": 17.1189,
-    "change_1m": 17.1189,
-    "change_1w": 17.1189,
-    "change_3m": 35.0482,
-    "latest_date": "2026-03-01",
-    "latest_value": 426.5981083814549,
+    "change_12m": 51.4997,
+    "change_1d": 13.8572,
+    "change_1m": 13.8572,
+    "change_1w": 13.8572,
+    "change_3m": 29.6704,
+    "latest_date": "2026-05-01",
+    "latest_value": 439.149647497951,
     "percentile_252d": 100.0
   },
   "units": "usd_per_metric_ton"

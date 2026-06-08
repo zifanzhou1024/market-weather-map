@@ -1,6 +1,6 @@
 {
-  "date": "2026-06-01",
-  "generated_at_utc": "2026-06-02T01:43:51Z",
+  "date": "2026-06-05",
+  "generated_at_utc": "2026-06-07T23:57:08Z",
   "hidden_stress": [
     {
       "date": "2006-03-06",
@@ -45280,23 +45280,59 @@
       "vix_value": 16.05,
       "vvix_percentile": 35.63,
       "vvix_value": 91.6
+    },
+    {
+      "date": "2026-06-02",
+      "hidden_stress_score": 5.24,
+      "state": "calm",
+      "vix_percentile": 27.14,
+      "vix_value": 15.77,
+      "vvix_percentile": 32.38,
+      "vvix_value": 90.53
+    },
+    {
+      "date": "2026-06-03",
+      "hidden_stress_score": 0.71,
+      "state": "calm",
+      "vix_percentile": 30.24,
+      "vix_value": 16.06,
+      "vvix_percentile": 30.95,
+      "vvix_value": 89.8
+    },
+    {
+      "date": "2026-06-04",
+      "hidden_stress_score": -4.37,
+      "state": "calm",
+      "vix_percentile": 24.13,
+      "vix_value": 15.4,
+      "vvix_percentile": 19.76,
+      "vvix_value": 85.75
+    },
+    {
+      "date": "2026-06-05",
+      "hidden_stress_score": -11.83,
+      "state": "calm",
+      "vix_percentile": 73.81,
+      "vix_value": 21.51,
+      "vvix_percentile": 61.98,
+      "vvix_value": 102.04
     }
   ],
   "latest_curve": [
     {
-      "percentile_5y": 27.22,
+      "percentile_5y": 82.46,
       "tenor": "9D",
-      "value": 13.76
+      "value": 23.92
     },
     {
-      "percentile_5y": 30.4,
+      "percentile_5y": 73.41,
       "tenor": "30D",
-      "value": 16.05
+      "value": 21.51
     },
     {
-      "percentile_5y": 36.59,
+      "percentile_5y": 64.05,
       "tenor": "3M",
-      "value": 19.43
+      "value": 21.82
     }
   ],
   "method_version": "phase8-pr1-volatility-dashboard-v1",
@@ -64670,6 +64706,26 @@
       "date": "2026-06-01",
       "vix9d_vix": 0.8573,
       "vix_vix3m": 0.826
+    },
+    {
+      "date": "2026-06-02",
+      "vix9d_vix": 0.8364,
+      "vix_vix3m": 0.8091
+    },
+    {
+      "date": "2026-06-03",
+      "vix9d_vix": 0.835,
+      "vix_vix3m": 0.8128
+    },
+    {
+      "date": "2026-06-04",
+      "vix9d_vix": 0.8214,
+      "vix_vix3m": 0.8008
+    },
+    {
+      "date": "2026-06-05",
+      "vix9d_vix": 1.112,
+      "vix_vix3m": 0.9858
     }
   ],
   "thresholds": {

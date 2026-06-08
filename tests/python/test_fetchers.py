@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from scripts.ingest import fetch_cboe
@@ -97,6 +99,131 @@ def test_generated_fred_series_includes_explicit_free_public_candidates(monkeypa
     generated_ids = {str(series["id"]) for series in fetch_fred_csv.generated_fred_series()}
 
     assert generated_ids == {"active_default", "generated_candidate"}
+
+
+def test_fred_fetch_timeout_preserves_existing_series_file(monkeypatch, tmp_path, capsys):
+    target = tmp_path / "us2y.json"
+    existing_payload = {
+        "series_id": "us2y",
+        "generated_at_utc": "2026-06-02T01:43:46Z",
+        "source": "FRED",
+        "source_url": "https://fred.stlouisfed.org/series/DGS2",
+        "frequency": "daily",
+        "units": "percent",
+        "observations": [{"date": "2026-06-02", "value": 3.62}],
+    }
+    target.write_text(json.dumps(existing_payload), encoding="utf-8")
+
+    monkeypatch.setattr(fetch_fred_csv, "FRED_SERIES", [{"id": "us2y", "fred_id": "DGS2"}])
+    monkeypatch.setattr(fetch_fred_csv, "series_path", lambda series_id: tmp_path / f"{series_id}.json")
+    monkeypatch.setattr(
+        fetch_fred_csv,
+        "download_text",
+        lambda url: (_ for _ in ()).throw(TimeoutError("read timed out")),
+    )
+
+    fetch_fred_csv.main()
+
+    assert json.loads(target.read_text(encoding="utf-8")) == existing_payload
+    assert "preserving existing file" in capsys.readouterr().out
+
+
+def test_fred_fetch_timeout_fails_without_existing_series_file(monkeypatch, tmp_path):
+    monkeypatch.setattr(fetch_fred_csv, "FRED_SERIES", [{"id": "us2y", "fred_id": "DGS2"}])
+    monkeypatch.setattr(fetch_fred_csv, "series_path", lambda series_id: tmp_path / f"{series_id}.json")
+    monkeypatch.setattr(
+        fetch_fred_csv,
+        "download_text",
+        lambda url: (_ for _ in ()).throw(TimeoutError("read timed out")),
+    )
+
+    with pytest.raises(TimeoutError):
+        fetch_fred_csv.main()
+
+
+def test_fred_fetch_timeout_skips_remaining_fred_downloads(monkeypatch, tmp_path):
+    for series_id in ("us2y", "us10y"):
+        (tmp_path / f"{series_id}.json").write_text(
+            json.dumps(
+                {
+                    "series_id": series_id,
+                    "generated_at_utc": "2026-06-02T01:43:46Z",
+                    "source": "FRED",
+                    "source_url": f"https://fred.stlouisfed.org/series/{series_id.upper()}",
+                    "frequency": "daily",
+                    "units": "percent",
+                    "observations": [{"date": "2026-06-02", "value": 3.62}],
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    calls = []
+    monkeypatch.setattr(
+        fetch_fred_csv,
+        "FRED_SERIES",
+        [
+            {"id": "us2y", "fred_id": "DGS2"},
+            {"id": "us10y", "fred_id": "DGS10"},
+        ],
+    )
+    monkeypatch.setattr(fetch_fred_csv, "series_path", lambda series_id: tmp_path / f"{series_id}.json")
+    monkeypatch.setattr(
+        fetch_fred_csv,
+        "download_text",
+        lambda url: calls.append(url) or (_ for _ in ()).throw(TimeoutError("read timed out")),
+    )
+
+    fetch_fred_csv.main()
+
+    assert calls == ["https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2&cosd=2026-02-02"]
+
+
+def test_fred_fetch_uses_incremental_endpoint_and_merges_history(monkeypatch, tmp_path):
+    target = tmp_path / "us2y.json"
+    target.write_text(
+        json.dumps(
+            {
+                "series_id": "us2y",
+                "generated_at_utc": "2026-05-02T00:00:00Z",
+                "source": "FRED",
+                "source_url": "https://fred.stlouisfed.org/series/DGS2",
+                "frequency": "daily",
+                "units": "percent",
+                "observations": [
+                    {"date": "2026-05-01", "value": 3.88},
+                    {"date": "2026-05-02", "value": 3.89},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    requested_urls = []
+
+    monkeypatch.setattr(
+        fetch_fred_csv,
+        "FRED_SERIES",
+        [{"id": "us2y", "fred_id": "DGS2", "frequency": "daily", "units": "percent"}],
+    )
+    monkeypatch.setattr(fetch_fred_csv, "series_path", lambda series_id: tmp_path / f"{series_id}.json")
+    monkeypatch.setattr(fetch_fred_csv, "utc_now_iso", lambda: "2026-06-07T00:00:00Z")
+
+    def fake_download_text(url: str) -> str:
+        requested_urls.append(url)
+        return "observation_date,DGS2\n2026-05-02,3.91\n2026-05-05,3.95\n"
+
+    monkeypatch.setattr(fetch_fred_csv, "download_text", fake_download_text)
+
+    fetch_fred_csv.main()
+
+    assert requested_urls == ["https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2&cosd=2026-01-02"]
+    payload = json.loads(target.read_text(encoding="utf-8"))
+    assert payload["generated_at_utc"] == "2026-06-07T00:00:00Z"
+    assert payload["observations"] == [
+        {"date": "2026-05-01", "value": 3.88},
+        {"date": "2026-05-02", "value": 3.91},
+        {"date": "2026-05-05", "value": 3.95},
+    ]
 
 
 def test_normalize_vix_rows_requires_date_and_close_columns():
