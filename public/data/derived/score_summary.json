@@ -13,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-06-08",
-  "generated_at_utc": "2026-06-09T01:28:26Z",
+  "date": "2026-06-09",
+  "generated_at_utc": "2026-06-10T01:37:09Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 52.38,
+        "credit_spread_widening": 61.12,
         "dollar_spike": 0.8,
         "liquidity_drain": 23.08,
         "positioning_crowding": 19.54,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -53.96
+        "volatility_term_structure": -65.08
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -55,7 +55,7 @@
         "Credit spread pressure is contained.",
         "Liquidity drains are limited."
       ],
-      "score": 8.82,
+      "score": 8.78,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -164,7 +164,7 @@
         "housing": 12.19,
         "inflation": -100.0,
         "labor": 50.42,
-        "real_yields": -99.2
+        "real_yields": -100.0
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -192,7 +192,7 @@
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
-      "score": 20.25,
+      "score": 20.17,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -351,13 +351,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -27.33,
-        "credit_spreads": 71.62,
+        "commodities_inflation_impulse": -26.91,
+        "credit_spreads": 70.24,
         "dollar_global": 0.8,
-        "liquidity_funding": -3.89,
-        "rates_real_yields": -99.2,
+        "liquidity_funding": 25.99,
+        "rates_real_yields": -100.0,
         "sentiment_positioning": 19.54,
-        "volatility_tail_risk": -39.95
+        "volatility_tail_risk": -53.97
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -383,9 +383,9 @@
         "Real yields are elevated.",
         "Volatility tail risk is elevated.",
         "Credit spread pressure is contained.",
-        "Equity positioning is not crowded."
+        "Liquidity funding conditions are improving."
       ],
-      "score": -6.52,
+      "score": -3.62,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -523,6 +523,7 @@
       ],
       "top_supports": [
         "Credit spread pressure is contained.",
+        "Liquidity funding conditions are improving.",
         "Equity positioning is not crowded."
       ]
     }

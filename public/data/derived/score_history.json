@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-09T01:28:26Z",
+  "generated_at_utc": "2026-06-10T01:37:09Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
@@ -37,7 +37,7 @@
         "Real yields are elevated.",
         "Volatility tail risk is elevated.",
         "Credit spread pressure is contained.",
-        "Equity positioning is not crowded."
+        "Liquidity funding conditions are improving."
       ],
       "top_risks": [
         "Real yields are elevated.",
@@ -46,6 +46,7 @@
       ],
       "top_supports": [
         "Credit spread pressure is contained.",
+        "Liquidity funding conditions are improving.",
         "Equity positioning is not crowded."
       ]
     }
@@ -159,6 +160,12 @@
       "fragility": 8.82,
       "macro_climate": 20.25,
       "market_weather": -6.52
+    },
+    {
+      "date": "2026-06-09",
+      "fragility": 8.78,
+      "macro_climate": 20.17,
+      "market_weather": -3.62
     }
   ]
 }
