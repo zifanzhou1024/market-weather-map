@@ -1,6 +1,6 @@
 {
-  "date": "2026-06-09",
-  "generated_at_utc": "2026-06-10T01:37:14Z",
+  "date": "2026-06-10",
+  "generated_at_utc": "2026-06-11T01:47:09Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -13,13 +13,13 @@
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is elevated.",
-        "severity": 26.91,
+        "severity": 13.14,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
       "sections": [
         {
-          "answer": "Commodity prices are subtracting from inflation pressure (impulse -26.9, 100th percentile of the past year).",
+          "answer": "Commodity prices are subtracting from inflation pressure (impulse -13.1, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -44,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 70.24,
+        "severity": 62.11,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (-0.01 pp over 30 days at 2.00 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (-0.02 pp over 30 days at 2.03 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -99,7 +99,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 53.97,
+        "severity": 80.03,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -176,15 +176,15 @@
       },
       "sections": [
         {
-          "answer": "Core and headline inflation are aligned and rising (headline 3.9% YoY, core CPI 3.0% YoY, both firming).",
+          "answer": "Headline and core inflation are roughly stable (headline 4.3% YoY, core CPI 3.0% YoY).",
           "caveat": "YoY changes are computed from monthly index levels; release timing differs across CPI, PCE, and PPI.",
           "eyebrow": "Inflation dispersion",
           "freshness_status": "ok",
           "id": "inflation_dispersion",
           "question": "Are core and headline inflation moving in the same direction or diverging?",
-          "risk": "Headline and core re-accelerating together complicates Fed easing expectations.",
-          "support": null,
-          "why": "Aligned reacceleration in headline and core describes a broad rebuild of inflation pressure."
+          "risk": null,
+          "support": "Stable inflation backdrop is not currently amplifying policy uncertainty.",
+          "why": "Stable headline and core describe a holding pattern for inflation."
         }
       ],
       "state": "risk",
@@ -201,7 +201,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is supportive.",
-        "severity": 25.99,
+        "severity": 29.08,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -232,7 +232,7 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 100.0,
+        "severity": 99.2,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
@@ -313,7 +313,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "5 warnings are active on the short-term board, with 4 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
+          "answer": "5 warnings are active on the short-term board, with 4 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
@@ -342,7 +342,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 53.97,
+        "severity": 80.03,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },

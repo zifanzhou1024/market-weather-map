@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-06-10T01:35:47Z",
+  "generated_at_utc": "2026-06-11T01:45:46Z",
   "observations": [
     {
       "date": "1947-01-01",
@@ -4756,19 +4756,24 @@
       "date": "2026-04-01",
       "percentile_252d": 100.0,
       "value": 332.407
+    },
+    {
+      "date": "2026-05-01",
+      "percentile_252d": 100.0,
+      "value": 333.979
     }
   ],
   "series_id": "headline_cpi",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/CPIAUCSL",
   "summary": {
-    "change_12m": 12.622,
-    "change_1d": 2.114,
-    "change_1m": 2.114,
-    "change_1w": 2.114,
-    "change_3m": 5.819,
-    "latest_date": "2026-04-01",
-    "latest_value": 332.407,
+    "change_12m": 13.677,
+    "change_1d": 1.572,
+    "change_1m": 1.572,
+    "change_1w": 1.572,
+    "change_3m": 6.519,
+    "latest_date": "2026-05-01",
+    "latest_value": 333.979,
     "percentile_252d": 100.0
   },
   "units": "index"
