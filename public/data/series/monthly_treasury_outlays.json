@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-06-11T01:45:59Z",
+  "generated_at_utc": "2026-06-12T01:42:53Z",
   "observations": [
     {
       "date": "2014-10-31",
@@ -664,8 +664,8 @@
     },
     {
       "date": "2025-10-31",
-      "percentile_252d": 100.0,
-      "value": 688704.093
+      "percentile_252d": 75.0,
+      "value": 584220.273
     },
     {
       "date": "2025-11-30",
@@ -674,17 +674,17 @@
     },
     {
       "date": "2025-12-31",
-      "percentile_252d": 75.0,
+      "percentile_252d": 83.33,
       "value": 629136.1263
     },
     {
       "date": "2026-01-31",
-      "percentile_252d": 75.0,
+      "percentile_252d": 83.33,
       "value": 654667.063
     },
     {
       "date": "2026-02-28",
-      "percentile_252d": 58.33,
+      "percentile_252d": 66.67,
       "value": 620623.1187
     },
     {
@@ -694,12 +694,12 @@
     },
     {
       "date": "2026-04-30",
-      "percentile_252d": 58.33,
+      "percentile_252d": 66.67,
       "value": 622318.5558
     },
     {
       "date": "2026-05-31",
-      "percentile_252d": 66.67,
+      "percentile_252d": 75.0,
       "value": 628160.6453
     }
   ],
@@ -714,7 +714,7 @@
     "change_3m": 7537.5266,
     "latest_date": "2026-05-31",
     "latest_value": 628160.6453,
-    "percentile_252d": 66.67
+    "percentile_252d": 75.0
   },
   "units": "millions_usd"
 }
