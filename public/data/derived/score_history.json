@@ -1,18 +1,15 @@
 {
-  "generated_at_utc": "2026-06-12T01:44:03Z",
+  "generated_at_utc": "2026-06-13T01:38:13Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
-        "Volatility term structure is inverted.",
-        "Liquidity drains are limited.",
-        "Credit spread pressure is contained."
+        "Credit spread pressure is contained.",
+        "Liquidity drains are limited."
       ],
-      "top_risks": [
-        "Volatility term structure is inverted."
-      ],
+      "top_risks": [],
       "top_supports": [
-        "Liquidity drains are limited.",
-        "Credit spread pressure is contained."
+        "Credit spread pressure is contained.",
+        "Liquidity drains are limited."
       ]
     },
     "macro_climate": {
@@ -178,6 +175,12 @@
       "fragility": 4.38,
       "macro_climate": 18.78,
       "market_weather": -6.11
+    },
+    {
+      "date": "2026-06-12",
+      "fragility": 16.4,
+      "macro_climate": 19.34,
+      "market_weather": 0.75
     }
   ]
 }

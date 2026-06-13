@@ -2,10 +2,11 @@
   "conflicting_signals": [],
   "data_quality": {
     "coverage_confidence": 1.0,
-    "freshness_confidence": 0.99,
+    "freshness_confidence": 0.98,
     "model_confidence": 0.97,
     "overall_confidence": 0.86,
     "reasons": [
+      "High-importance stale series: broad_dollar.",
       "Bucket missing active inputs: treasury_bond_volatility.",
       "Catalog source tier mix: 41 sources gated, 20 candidate-only of 122 total.",
       "Treasury/bond volatility source is not active."
@@ -13,18 +14,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-06-11",
-  "generated_at_utc": "2026-06-12T01:44:03Z",
+  "date": "2026-06-12",
+  "generated_at_utc": "2026-06-13T01:38:13Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 22.22,
+        "credit_spread_widening": 42.06,
         "dollar_spike": 0.8,
         "liquidity_drain": 38.46,
-        "positioning_crowding": 19.54,
+        "positioning_crowding": 6.31,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -50.0
+        "volatility_term_structure": -4.76
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -37,13 +38,14 @@
       "confidence": 0.97,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 1.0,
+        "freshness_confidence": 0.98,
         "model_confidence": 0.9,
         "overall_confidence": 0.97,
         "source_confidence": 1.0
       },
       "confidence_reasons": [
         "Bucket missing active inputs: treasury_bond_volatility.",
+        "High-importance stale series: broad_dollar.",
         "Treasury/bond volatility source is not active."
       ],
       "label": "Moderate",
@@ -51,11 +53,10 @@
         "Treasury/bond volatility source is not active."
       ],
       "recent_changes": [
-        "Volatility term structure is inverted.",
-        "Liquidity drains are limited.",
-        "Credit spread pressure is contained."
+        "Credit spread pressure is contained.",
+        "Liquidity drains are limited."
       ],
-      "score": 4.38,
+      "score": 16.4,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -148,12 +149,10 @@
         },
         "missing": []
       },
-      "top_risks": [
-        "Volatility term structure is inverted."
-      ],
+      "top_risks": [],
       "top_supports": [
-        "Liquidity drains are limited.",
-        "Credit spread pressure is contained."
+        "Credit spread pressure is contained.",
+        "Liquidity drains are limited."
       ]
     },
     "macro_climate": {
@@ -164,7 +163,7 @@
         "housing": 6.41,
         "inflation": -100.0,
         "labor": 46.58,
-        "real_yields": -100.0
+        "real_yields": -94.44
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -192,7 +191,7 @@
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
-      "score": 18.78,
+      "score": 19.34,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -351,13 +350,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -12.88,
-        "credit_spreads": 50.59,
+        "commodities_inflation_impulse": -13.05,
+        "credit_spreads": 58.34,
         "dollar_global": 0.8,
-        "liquidity_funding": 31.23,
-        "rates_real_yields": -100.0,
-        "sentiment_positioning": 19.54,
-        "volatility_tail_risk": -57.4
+        "liquidity_funding": 30.52,
+        "rates_real_yields": -94.44,
+        "sentiment_positioning": 6.31,
+        "volatility_tail_risk": -18.78
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -371,12 +370,14 @@
       "confidence": 1.0,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 1.0,
+        "freshness_confidence": 0.99,
         "model_confidence": 1.0,
         "overall_confidence": 1.0,
         "source_confidence": 1.0
       },
-      "confidence_reasons": [],
+      "confidence_reasons": [
+        "High-importance stale series: broad_dollar."
+      ],
       "label": "Mixed",
       "missing_or_stale_notes": [],
       "recent_changes": [
@@ -385,7 +386,7 @@
         "Credit spread pressure is contained.",
         "Liquidity funding conditions are improving."
       ],
-      "score": -6.11,
+      "score": 0.75,
       "source_coverage": {
         "available": [
           "high_yield_oas",

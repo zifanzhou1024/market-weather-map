@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-06-12T01:42:51Z",
+  "generated_at_utc": "2026-06-13T01:37:18Z",
   "observations": [
     {
       "date": "1973-01-03",
@@ -13880,76 +13880,81 @@
     {
       "date": "2026-03-11",
       "percentile_252d": 100.0,
-      "value": 18888.8319
+      "value": 18888.8269
     },
     {
       "date": "2026-03-18",
       "percentile_252d": 100.0,
-      "value": 18899.3482
+      "value": 18899.339
     },
     {
       "date": "2026-03-25",
       "percentile_252d": 100.0,
-      "value": 18993.3855
+      "value": 18993.3703
     },
     {
       "date": "2026-04-01",
       "percentile_252d": 100.0,
-      "value": 19083.1087
+      "value": 19083.089
     },
     {
       "date": "2026-04-08",
       "percentile_252d": 98.08,
-      "value": 19052.4155
+      "value": 19052.4039
     },
     {
       "date": "2026-04-15",
       "percentile_252d": 100.0,
-      "value": 19094.1325
+      "value": 19094.1302
     },
     {
       "date": "2026-04-22",
       "percentile_252d": 96.15,
-      "value": 19072.4885
+      "value": 19072.496
     },
     {
       "date": "2026-04-29",
       "percentile_252d": 100.0,
-      "value": 19103.6325
+      "value": 19103.6488
     },
     {
       "date": "2026-05-06",
       "percentile_252d": 100.0,
-      "value": 19215.9031
+      "value": 19215.9253
     },
     {
       "date": "2026-05-13",
       "percentile_252d": 100.0,
-      "value": 19278.6347
+      "value": 19280.3928
     },
     {
       "date": "2026-05-20",
       "percentile_252d": 100.0,
-      "value": 19285.2604
+      "value": 19288.7629
     },
     {
       "date": "2026-05-27",
       "percentile_252d": 100.0,
-      "value": 19333.0124
+      "value": 19338.0875
+    },
+    {
+      "date": "2026-06-03",
+      "percentile_252d": 98.08,
+      "value": 19295.7451
     }
   ],
   "series_id": "bank_deposits",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DPSACBW027SBOG",
   "summary": {
-    "change_12m": 1153.5259,
-    "change_1d": 47.752,
-    "change_1m": 229.3799,
-    "change_1w": 47.752,
-    "change_3m": 512.9886,
-    "latest_date": "2026-05-27",
-    "latest_value": 19333.0124,
-    "percentile_252d": 100.0
+    "change_12m": 1113.2497,
+    "change_1d": -42.3424,
+    "change_1m": 79.8198,
+    "change_1w": -42.3424,
+    "change_3m": 469.4189,
+    "latest_date": "2026-06-03",
+    "latest_value": 19295.7451,
+    "percentile_252d": 98.08
   },
   "units": "billions_usd"
 }

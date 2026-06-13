@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-06-12T01:41:56Z",
+  "generated_at_utc": "2026-06-13T01:36:30Z",
   "observations": [
     {
       "date": "1962-01-02",
@@ -80476,20 +80476,25 @@
       "date": "2026-06-10",
       "percentile_252d": 97.22,
       "value": 4.55
+    },
+    {
+      "date": "2026-06-11",
+      "percentile_252d": 90.48,
+      "value": 4.45
     }
   ],
   "series_id": "us10y",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DGS10",
   "summary": {
-    "change_12m": 0.04,
-    "change_1d": 0.02,
-    "change_1m": 0.13,
-    "change_1w": 0.06,
-    "change_3m": 0.28,
-    "latest_date": "2026-06-10",
-    "latest_value": 4.55,
-    "percentile_252d": 97.22
+    "change_12m": -0.04,
+    "change_1d": -0.1,
+    "change_1m": -0.01,
+    "change_1w": -0.02,
+    "change_3m": 0.17,
+    "latest_date": "2026-06-11",
+    "latest_value": 4.45,
+    "percentile_252d": 90.48
   },
   "units": "percent"
 }

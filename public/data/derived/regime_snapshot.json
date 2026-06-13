@@ -15,14 +15,14 @@
     {
       "id": "nominal_10y",
       "label": "10Y nominal yield",
-      "message": "10Y nominal yield is up over one month.",
-      "state": "up"
+      "message": "10Y nominal yield is flat over one month.",
+      "state": "flat"
     },
     {
       "id": "yield_driver",
       "label": "Yield driver",
-      "message": "The nominal yield move is classified as real yield driven.",
-      "state": "real_yield_driven"
+      "message": "The nominal yield move is classified as mixed.",
+      "state": "mixed"
     },
     {
       "id": "vix_curve",
@@ -75,8 +75,8 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-06-11",
-  "generated_at_utc": "2026-06-12T01:44:03Z",
+  "date": "2026-06-12",
+  "generated_at_utc": "2026-06-13T01:38:13Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -243,17 +243,11 @@
   "regime": {
     "dollar_direction": "up",
     "label": "Tightening / risk-off",
-    "nominal_yield_direction": "up",
+    "nominal_yield_direction": "flat",
     "tips_direction": "up",
-    "yield_driver": "real_yield_driven"
+    "yield_driver": "mixed"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.32,
-      "date": "2025-05-28",
-      "nominal_10y": 4.47,
-      "real_yield_10y": 2.15
-    },
     {
       "breakeven_10y": 2.32,
       "date": "2025-05-29",
@@ -1807,6 +1801,12 @@
       "date": "2026-06-10",
       "nominal_10y": 4.55,
       "real_yield_10y": 2.21
+    },
+    {
+      "breakeven_10y": 2.29,
+      "date": "2026-06-11",
+      "nominal_10y": 4.45,
+      "real_yield_10y": 2.16
     }
   ]
 }
