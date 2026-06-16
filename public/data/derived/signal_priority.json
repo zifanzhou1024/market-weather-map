@@ -1,6 +1,6 @@
 {
-  "date": "2026-06-15",
-  "generated_at_utc": "2026-06-16T02:06:24Z",
+  "date": "2026-06-16",
+  "generated_at_utc": "2026-06-16T21:52:38Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,12 +74,12 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 42.47
+      "score": 45.64
     },
     "long_term": {
-      "confidence": 0.97,
+      "confidence": 0.98,
       "label": "Mixed",
-      "score": 19.26
+      "score": 13.08
     },
     "regime": {
       "label": "Tightening / risk-off"
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 14.55
+      "score": 11.61
     }
   },
   "top_supports": [
@@ -103,8 +103,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 419.6,
-      "severity": 83.92,
+      "priority": 480.15,
+      "severity": 96.03,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -112,7 +112,7 @@
     {
       "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.97,
+      "confidence": 0.98,
       "direction": "support",
       "freshness_status": "stale",
       "group": "Growth",
@@ -121,7 +121,7 @@
       "importance": 5,
       "label": "Growth breadth",
       "message": "Growth inputs are supportive.",
-      "priority": 355.68,
+      "priority": 359.35,
       "severity": 91.67,
       "source_status": "active",
       "urgency": "slow",
@@ -130,7 +130,7 @@
     {
       "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.97,
+      "confidence": 0.98,
       "direction": "support",
       "freshness_status": "ok",
       "group": "Labor",
@@ -139,7 +139,7 @@
       "importance": 5,
       "label": "Labor cycle",
       "message": "Labor cycle is firm.",
-      "priority": 225.91,
+      "priority": 228.24,
       "severity": 46.58,
       "source_status": "active",
       "urgency": "slow",
@@ -184,7 +184,7 @@
     {
       "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.97,
+      "confidence": 0.98,
       "direction": "support",
       "freshness_status": "stale",
       "group": "Consumer balance sheet",
@@ -193,7 +193,7 @@
       "importance": 4,
       "label": "Consumer balance sheet",
       "message": "Consumer balance-sheet stress is contained.",
-      "priority": 124.66,
+      "priority": 125.94,
       "severity": 40.16,
       "source_status": "active",
       "urgency": "background",
@@ -231,8 +231,8 @@
       "importance": 5,
       "label": "10Y real yields",
       "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 476.2,
-      "severity": 95.24,
+      "priority": 460.3,
+      "severity": 92.06,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
@@ -240,7 +240,7 @@
     {
       "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.97,
+      "confidence": 0.98,
       "direction": "risk",
       "freshness_status": "stale",
       "group": "Inflation",
@@ -249,11 +249,29 @@
       "importance": 5,
       "label": "Inflation pressure",
       "message": "Inflation pressure remains elevated.",
-      "priority": 388.0,
+      "priority": 392.0,
       "severity": 100.0,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "liquidity",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Liquidity / Funding",
+      "horizon": "both",
+      "id": "net_liquidity",
+      "importance": 4,
+      "label": "Net liquidity",
+      "message": "Net liquidity is draining.",
+      "priority": 44.12,
+      "severity": 11.03,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
     {
       "access_status": "free_public_active",
@@ -267,8 +285,8 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 39.18,
-      "severity": 13.06,
+      "priority": 37.68,
+      "severity": 12.56,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."

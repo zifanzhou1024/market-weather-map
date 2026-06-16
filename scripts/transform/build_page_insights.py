@@ -884,7 +884,7 @@ def _derive_housing_pulse(loaded: dict) -> dict:
             f"over three months with the 30Y mortgage at {mortgage_latest:.2f}%."
         )
         why = "Rate transmission is working through the most rate-sensitive sector of the economy."
-        risk = "Falling housing activity at elevated mortgage rates suggests rate transmission is working through the most rate-sensitive sector."
+        risk = "Falling housing activity at elevated mortgage rates shows transmission through the rate-sensitive sector."
         support = None
     elif activity_up > 0:
         answer = (

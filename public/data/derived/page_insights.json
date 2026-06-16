@@ -1,6 +1,6 @@
 {
-  "date": "2026-06-15",
-  "generated_at_utc": "2026-06-16T02:06:24Z",
+  "date": "2026-06-16",
+  "generated_at_utc": "2026-06-16T21:52:38Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -13,13 +13,13 @@
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is elevated.",
-        "severity": 13.06,
+        "severity": 12.56,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
       "sections": [
         {
-          "answer": "Commodity prices are subtracting from inflation pressure (impulse -13.1, 100th percentile of the past year).",
+          "answer": "Commodity prices are subtracting from inflation pressure (impulse -12.6, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -44,21 +44,21 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 83.92,
+        "severity": 96.03,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (-0.08 pp over 30 days at 1.97 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is tightening (-0.15 pp over 30 days to 1.93 pp), describing a risk-on credit backdrop.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
           "id": "credit_dispersion",
           "question": "Is the HY-IG spread widening (early credit stress) or tightening (risk-on)?",
           "risk": null,
-          "support": "Steady credit dispersion is not amplifying cross-asset stress.",
-          "why": "Stable HY-IG dispersion describes a credit market without a directional impulse."
+          "support": "Tight HY-IG dispersion suggests stress is not spreading from equity vol into credit.",
+          "why": "Tighter HY-IG dispersion describes broad credit risk appetite and limited cross-asset stress propagation."
         }
       ],
       "state": "support",
@@ -119,14 +119,14 @@
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     "growth": {
-      "confidence": 0.97,
+      "confidence": 0.98,
       "freshness_notes": [
         "Growth breadth is stale.",
         "Consumer balance sheet is stale."
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.97,
+        "confidence": 0.98,
         "freshness_status": "stale",
         "id": "growth",
         "label": "Growth breadth",
@@ -157,15 +157,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Housing activity is resilient despite elevated rates: starts and permits are rising over three months with the 30Y mortgage at 6.52%.",
+          "answer": "Housing activity is contracting at elevated rates: starts and permits are falling over three months with the 30Y mortgage at 6.52%.",
           "caveat": "Housing starts and permits are monthly; mortgage rate updates weekly. Series can move in opposite directions over short horizons.",
           "eyebrow": "Housing pulse",
           "freshness_status": "ok",
           "id": "housing_pulse",
           "question": "Is housing activity expanding or contracting given current mortgage rates?",
-          "risk": null,
-          "support": "Resilient housing activity despite elevated rates suggests demand backstop.",
-          "why": "Housing turnover is holding up despite the most rate-sensitive sector facing high financing costs."
+          "risk": "Falling housing activity at elevated mortgage rates shows transmission through the rate-sensitive sector.",
+          "support": null,
+          "why": "Rate transmission is working through the most rate-sensitive sector of the economy."
         }
       ],
       "state": "unknown",
@@ -173,13 +173,13 @@
       "why_it_matters": "Housing turnover signals consumer balance-sheet pressure."
     },
     "inflation": {
-      "confidence": 0.97,
+      "confidence": 0.98,
       "freshness_notes": [
         "Inflation pressure is stale."
       ],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 0.97,
+        "confidence": 0.98,
         "freshness_status": "stale",
         "id": "inflation",
         "label": "Inflation pressure",
@@ -206,8 +206,19 @@
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
     "liquidity": {
-      "confidence": 0.0,
+      "confidence": 1.0,
       "freshness_notes": [],
+      "primary_warning": {
+        "access_status": "free_public_active",
+        "confidence": 1.0,
+        "freshness_status": "ok",
+        "id": "net_liquidity",
+        "label": "Net liquidity",
+        "message": "Net liquidity is draining.",
+        "severity": 11.03,
+        "source_status": "free_public",
+        "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+      },
       "sections": [
         {
           "answer": "Net liquidity is expanding (+$11B over four weeks to $5,897B); Fed balance sheet outpaces TGA and reverse repo drain.",
@@ -221,9 +232,9 @@
           "why": "Rising net liquidity loosens funding conditions across risk assets and credit."
         }
       ],
-      "state": "unknown",
+      "state": "risk",
       "title": "Liquidity",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets."
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
     "rates": {
       "confidence": 1.0,
@@ -235,20 +246,20 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 95.24,
+        "severity": 92.06,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (lower) reflects both real yields (+17 bps) and breakevens (-16 bps).",
+          "answer": "The recent 10Y move (higher) reflects both real yields (+18 bps) and breakevens (-15 bps).",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": null,
-          "support": "Broad declines in both components ease cross-asset discount-rate pressure.",
+          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
+          "support": null,
           "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
         }
       ],
@@ -305,7 +316,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "3 warnings are active on the short-term board, with 2 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
+          "answer": "4 warnings are active on the short-term board, with 2 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",

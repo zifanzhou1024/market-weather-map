@@ -367,3 +367,34 @@ def test_required_fields_present_in_each_route_insight():
     expected_top_fields = {"title", "state", "why_it_matters", "confidence", "freshness_notes"}
     for route_insight in result["routes"].values():
         assert expected_top_fields.issubset(route_insight.keys())
+
+
+def test_housing_pulse_risk_copy_stays_within_schema_limit():
+    loaded = {
+        "housing_starts": {
+            "observations": [
+                {"date": "2026-01-01", "value": 1500},
+                {"date": "2026-02-01", "value": 1490},
+                {"date": "2026-03-01", "value": 1480},
+                {"date": "2026-04-01", "value": 1400},
+            ]
+        },
+        "building_permits": {
+            "observations": [
+                {"date": "2026-01-01", "value": 1450},
+                {"date": "2026-02-01", "value": 1440},
+                {"date": "2026-03-01", "value": 1430},
+                {"date": "2026-04-01", "value": 1350},
+            ]
+        },
+        "mortgage_rate_30y": {
+            "observations": [
+                {"date": "2026-04-01", "value": 6.4},
+            ]
+        },
+    }
+
+    result = build_page_insights._derive_housing_pulse(loaded)
+
+    assert result["risk"] is not None
+    assert len(result["risk"]) <= 120
