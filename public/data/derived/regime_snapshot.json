@@ -34,7 +34,7 @@
       "id": "credit",
       "label": "Credit spreads",
       "message": "Credit spread pressure is based on HY minus IG OAS when available.",
-      "state": "flat"
+      "state": "down"
     },
     {
       "id": "liquidity",
@@ -53,14 +53,14 @@
     {
       "id": "credit",
       "label": "Credit",
-      "message": "Credit spreads are mixed for the active regime.",
-      "status": "mixed"
+      "message": "Credit spreads are diverging for the active regime.",
+      "status": "diverging"
     },
     {
       "id": "vix_curve",
       "label": "VIX curve",
-      "message": "Volatility is confirming and the curve is contango proxy.",
-      "status": "confirming"
+      "message": "Volatility is diverging and the curve is contango proxy.",
+      "status": "diverging"
     },
     {
       "id": "liquidity",
@@ -75,50 +75,10 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-06-12",
-  "generated_at_utc": "2026-06-13T01:38:13Z",
+  "date": "2026-06-15",
+  "generated_at_utc": "2026-06-16T02:06:20Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
-    {
-      "credit_change": -0.1,
-      "date": "2026-05-08",
-      "dollar_change": -0.816,
-      "nominal_yield_change": 0.07,
-      "real_yield_change": -0.02,
-      "vix_percentile": 48.81
-    },
-    {
-      "credit_change": -0.12,
-      "date": "2026-05-11",
-      "dollar_change": -0.9354,
-      "nominal_yield_change": 0.12,
-      "real_yield_change": 0.03,
-      "vix_percentile": 65.48
-    },
-    {
-      "credit_change": 0.02,
-      "date": "2026-05-12",
-      "dollar_change": 0.1657,
-      "nominal_yield_change": 0.2,
-      "real_yield_change": 0.1,
-      "vix_percentile": 61.51
-    },
-    {
-      "credit_change": 0.01,
-      "date": "2026-05-13",
-      "dollar_change": 0.1114,
-      "nominal_yield_change": 0.17,
-      "real_yield_change": 0.09,
-      "vix_percentile": 60.71
-    },
-    {
-      "credit_change": -0.05,
-      "date": "2026-05-14",
-      "dollar_change": 0.308,
-      "nominal_yield_change": 0.15,
-      "real_yield_change": 0.07,
-      "vix_percentile": 51.19
-    },
     {
       "credit_change": 0.02,
       "date": "2026-05-15",
@@ -238,6 +198,46 @@
       "nominal_yield_change": 0.14,
       "real_yield_change": 0.23,
       "vix_percentile": 86.51
+    },
+    {
+      "credit_change": -0.02,
+      "date": "2026-06-08",
+      "dollar_change": 1.9948,
+      "nominal_yield_change": 0.18,
+      "real_yield_change": 0.28,
+      "vix_percentile": 73.02
+    },
+    {
+      "credit_change": 0.02,
+      "date": "2026-06-09",
+      "dollar_change": 1.9055,
+      "nominal_yield_change": 0.11,
+      "real_yield_change": 0.25,
+      "vix_percentile": 79.37
+    },
+    {
+      "credit_change": 0.0,
+      "date": "2026-06-10",
+      "dollar_change": 1.3896,
+      "nominal_yield_change": 0.09,
+      "real_yield_change": 0.22,
+      "vix_percentile": 88.1
+    },
+    {
+      "credit_change": -0.03,
+      "date": "2026-06-11",
+      "dollar_change": 1.6437,
+      "nominal_yield_change": -0.01,
+      "real_yield_change": 0.17,
+      "vix_percentile": 76.19
+    },
+    {
+      "credit_change": -0.03,
+      "date": "2026-06-12",
+      "dollar_change": 0.8377,
+      "nominal_yield_change": 0.01,
+      "real_yield_change": 0.17,
+      "vix_percentile": 61.11
     }
   ],
   "regime": {
@@ -248,12 +248,6 @@
     "yield_driver": "mixed"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.32,
-      "date": "2025-05-29",
-      "nominal_10y": 4.43,
-      "real_yield_10y": 2.11
-    },
     {
       "breakeven_10y": 2.34,
       "date": "2025-05-30",
@@ -1807,6 +1801,12 @@
       "date": "2026-06-11",
       "nominal_10y": 4.45,
       "real_yield_10y": 2.16
+    },
+    {
+      "breakeven_10y": 2.31,
+      "date": "2026-06-12",
+      "nominal_10y": 4.48,
+      "real_yield_10y": 2.17
     }
   ]
 }
