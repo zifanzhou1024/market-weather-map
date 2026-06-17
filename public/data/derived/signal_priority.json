@@ -1,6 +1,6 @@
 {
   "date": "2026-06-16",
-  "generated_at_utc": "2026-06-16T21:52:38Z",
+  "generated_at_utc": "2026-06-17T01:47:01Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,7 +74,7 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 45.64
+      "score": 42.95
     },
     "long_term": {
       "confidence": 0.98,
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 11.61
+      "score": 10.38
     }
   },
   "top_supports": [
@@ -157,8 +157,8 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is contango-proxy and calm.",
-      "priority": 190.9,
-      "severity": 49.2,
+      "priority": 138.59,
+      "severity": 35.72,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
@@ -211,8 +211,8 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is contained.",
-      "priority": 121.7,
-      "severity": 24.34,
+      "priority": 80.7,
+      "severity": 16.14,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."

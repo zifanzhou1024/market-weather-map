@@ -2,7 +2,7 @@
   "composite_scores": [
     {
       "current_date": "2026-06-16",
-      "current_value": 11.61,
+      "current_value": 10.38,
       "direction": "neutral",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -13,20 +13,20 @@
       "windows": {
         "1d": {
           "date": "2026-06-15",
-          "delta": -2.9400000000000013,
-          "delta_pct": -20.20618556701032,
+          "delta": -4.17,
+          "delta_pct": -28.659793814432987,
           "value": 14.55
         },
         "30d": {
           "date": "2026-05-15",
-          "delta": 7.289999999999999,
-          "delta_pct": 168.74999999999997,
+          "delta": 6.0600000000000005,
+          "delta_pct": 140.2777777777778,
           "value": 4.32
         },
         "7d": {
           "date": "2026-06-09",
-          "delta": 15.23,
-          "delta_pct": -420.7182320441989,
+          "delta": 14.0,
+          "delta_pct": -386.7403314917127,
           "value": -3.62
         }
       }
@@ -64,7 +64,7 @@
     },
     {
       "current_date": "2026-06-16",
-      "current_value": 45.64,
+      "current_value": 42.95,
       "direction": "neutral",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -75,32 +75,32 @@
       "windows": {
         "1d": {
           "date": "2026-06-15",
-          "delta": 3.1700000000000017,
-          "delta_pct": 7.46409230044738,
+          "delta": 0.480000000000004,
+          "delta_pct": 1.130209559689202,
           "value": 42.47
         },
         "30d": {
           "date": "2026-05-15",
-          "delta": 16.88,
-          "delta_pct": 58.69262865090402,
+          "delta": 14.190000000000001,
+          "delta_pct": 49.3393602225313,
           "value": 28.76
         },
         "7d": {
           "date": "2026-06-09",
-          "delta": 36.86,
-          "delta_pct": 419.81776765375855,
+          "delta": 34.17,
+          "delta_pct": 389.1799544419135,
           "value": 8.78
         }
       }
     }
   ],
   "date": "2026-06-16",
-  "generated_at_utc": "2026-06-16T21:54:53Z",
+  "generated_at_utc": "2026-06-17T01:47:27Z",
   "method_version": "phase-f-diff-v1",
   "vital_signs": [
     {
-      "current_date": "2026-06-15",
-      "current_value": 16.2,
+      "current_date": "2026-06-16",
+      "current_value": 16.41,
       "direction": "risk",
       "frequency": "daily",
       "freshness_status": "ok",
@@ -110,22 +110,22 @@
       "primary_unit": "",
       "windows": {
         "1d": {
-          "date": "2026-06-12",
-          "delta": -1.4800000000000004,
-          "delta_pct": -8.371040723981903,
-          "value": 17.68
+          "date": "2026-06-15",
+          "delta": 0.21000000000000085,
+          "delta_pct": 1.2962962962963016,
+          "value": 16.2
         },
         "30d": {
           "date": "2026-05-15",
-          "delta": -2.2300000000000004,
-          "delta_pct": -12.099837221920783,
+          "delta": -2.0199999999999996,
+          "delta_pct": -10.960390667390122,
           "value": 18.43
         },
         "7d": {
-          "date": "2026-06-08",
-          "delta": -2.7200000000000024,
-          "delta_pct": -14.37632135306555,
-          "value": 18.92
+          "date": "2026-06-09",
+          "delta": -3.460000000000001,
+          "delta_pct": -17.41318570709613,
+          "value": 19.87
         }
       }
     },

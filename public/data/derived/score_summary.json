@@ -14,7 +14,7 @@
     "tier": "high"
   },
   "date": "2026-06-16",
-  "generated_at_utc": "2026-06-16T21:52:36Z",
+  "generated_at_utc": "2026-06-17T01:46:56Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
@@ -24,7 +24,7 @@
         "liquidity_drain": 38.46,
         "positioning_crowding": 6.31,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": 49.2
+        "volatility_term_structure": 35.72
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -52,9 +52,9 @@
       ],
       "recent_changes": [
         "Credit spread pressure is contained.",
-        "Volatility term structure is calm."
+        "Liquidity drains are limited."
       ],
-      "score": 45.64,
+      "score": 42.95,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -150,8 +150,8 @@
       "top_risks": [],
       "top_supports": [
         "Credit spread pressure is contained.",
-        "Volatility term structure is calm.",
-        "Liquidity drains are limited."
+        "Liquidity drains are limited.",
+        "Volatility term structure is calm."
       ]
     },
     "macro_climate": {
@@ -356,7 +356,7 @@
         "liquidity_funding": -11.03,
         "rates_real_yields": -92.06,
         "sentiment_positioning": 6.31,
-        "volatility_tail_risk": 24.34
+        "volatility_tail_risk": 16.14
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -384,7 +384,7 @@
         "Credit spread pressure is contained.",
         "The broad dollar backdrop is easing."
       ],
-      "score": 11.61,
+      "score": 10.38,
       "source_coverage": {
         "available": [
           "high_yield_oas",

@@ -1,6 +1,6 @@
 {
   "date": "2026-06-16",
-  "generated_at_utc": "2026-06-16T21:52:38Z",
+  "generated_at_utc": "2026-06-17T01:47:01Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -110,7 +110,7 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is contango-proxy and calm.",
-        "severity": 49.2,
+        "severity": 35.72,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
@@ -252,13 +252,13 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) reflects both real yields (+18 bps) and breakevens (-15 bps).",
+          "answer": "The recent 10Y move (higher) reflects both real yields (+15 bps) and breakevens (-20 bps).",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
+          "risk": null,
           "support": null,
           "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
         }
@@ -345,7 +345,7 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is contango-proxy and calm.",
-        "severity": 49.2,
+        "severity": 35.72,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
