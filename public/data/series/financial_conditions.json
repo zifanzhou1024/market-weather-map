@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-06-17T01:45:48Z",
+  "generated_at_utc": "2026-06-18T01:59:19Z",
   "observations": [
     {
       "date": "1971-01-08",
@@ -14405,12 +14405,12 @@
     {
       "date": "2026-03-20",
       "percentile_252d": 82.69,
-      "value": -0.458
+      "value": -0.459
     },
     {
       "date": "2026-03-27",
       "percentile_252d": 86.54,
-      "value": -0.453
+      "value": -0.454
     },
     {
       "date": "2026-04-03",
@@ -14425,56 +14425,61 @@
     {
       "date": "2026-04-17",
       "percentile_252d": 76.92,
-      "value": -0.478
+      "value": -0.477
     },
     {
       "date": "2026-04-24",
       "percentile_252d": 73.08,
-      "value": -0.488
+      "value": -0.487
     },
     {
       "date": "2026-05-01",
       "percentile_252d": 71.15,
-      "value": -0.496
+      "value": -0.495
     },
     {
       "date": "2026-05-08",
       "percentile_252d": 69.23,
-      "value": -0.502
+      "value": -0.5
     },
     {
       "date": "2026-05-15",
+      "percentile_252d": 69.23,
+      "value": -0.503
+    },
+    {
+      "date": "2026-05-22",
+      "percentile_252d": 67.31,
+      "value": -0.504
+    },
+    {
+      "date": "2026-05-29",
+      "percentile_252d": 69.23,
+      "value": -0.504
+    },
+    {
+      "date": "2026-06-05",
       "percentile_252d": 65.38,
       "value": -0.505
     },
     {
-      "date": "2026-05-22",
-      "percentile_252d": 65.38,
-      "value": -0.506
-    },
-    {
-      "date": "2026-05-29",
+      "date": "2026-06-12",
       "percentile_252d": 67.31,
-      "value": -0.506
-    },
-    {
-      "date": "2026-06-05",
-      "percentile_252d": 69.23,
-      "value": -0.506
+      "value": -0.505
     }
   ],
   "series_id": "financial_conditions",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/NFCI",
   "summary": {
-    "change_12m": -0.03,
+    "change_12m": -0.021,
     "change_1d": 0.0,
-    "change_1m": -0.004,
+    "change_1m": -0.002,
     "change_1w": 0.0,
-    "change_3m": -0.021,
-    "latest_date": "2026-06-05",
-    "latest_value": -0.506,
-    "percentile_252d": 69.23
+    "change_3m": -0.037,
+    "latest_date": "2026-06-12",
+    "latest_value": -0.505,
+    "percentile_252d": 67.31
   },
   "units": "index"
 }

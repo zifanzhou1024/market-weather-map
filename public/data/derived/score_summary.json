@@ -2,7 +2,7 @@
   "conflicting_signals": [],
   "data_quality": {
     "coverage_confidence": 1.0,
-    "freshness_confidence": 0.97,
+    "freshness_confidence": 0.98,
     "model_confidence": 0.97,
     "overall_confidence": 0.86,
     "reasons": [
@@ -13,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-06-16",
-  "generated_at_utc": "2026-06-17T01:46:56Z",
+  "date": "2026-06-17",
+  "generated_at_utc": "2026-06-18T02:00:25Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 96.82,
+        "credit_spread_widening": 86.5,
         "dollar_spike": 32.54,
         "liquidity_drain": 38.46,
         "positioning_crowding": 6.31,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": 35.72
+        "volatility_term_structure": -42.86
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -51,10 +51,11 @@
         "Treasury/bond volatility source is not active."
       ],
       "recent_changes": [
+        "Volatility term structure is inverted.",
         "Credit spread pressure is contained.",
         "Liquidity drains are limited."
       ],
-      "score": 42.95,
+      "score": 24.65,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -147,22 +148,24 @@
         },
         "missing": []
       },
-      "top_risks": [],
+      "top_risks": [
+        "Volatility term structure is inverted."
+      ],
       "top_supports": [
         "Credit spread pressure is contained.",
         "Liquidity drains are limited.",
-        "Volatility term structure is calm."
+        "The dollar backdrop is easing."
       ]
     },
     "macro_climate": {
       "bucket_scores": {
         "consumer_balance_sheet": 40.16,
-        "consumer_production": 94.45,
+        "consumer_production": 100.0,
         "growth": 91.67,
         "housing": -47.76,
         "inflation": -100.0,
         "labor": 46.58,
-        "real_yields": -92.06
+        "real_yields": -91.26
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -176,7 +179,7 @@
       "confidence": 0.98,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 0.92,
+        "freshness_confidence": 0.93,
         "model_confidence": 1.0,
         "overall_confidence": 0.98,
         "source_confidence": 1.0
@@ -190,7 +193,7 @@
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
-      "score": 13.08,
+      "score": 14.04,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -350,13 +353,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -12.56,
-        "credit_spreads": 96.03,
+        "commodities_inflation_impulse": -12.55,
+        "credit_spreads": 78.17,
         "dollar_global": 32.54,
-        "liquidity_funding": -11.03,
-        "rates_real_yields": -92.06,
+        "liquidity_funding": 19.79,
+        "rates_real_yields": -91.26,
         "sentiment_positioning": 6.31,
-        "volatility_tail_risk": 16.14
+        "volatility_tail_risk": -35.58
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -380,11 +383,11 @@
       "missing_or_stale_notes": [],
       "recent_changes": [
         "Real yields are elevated.",
-        "Commodity inflation impulse is elevated.",
+        "Volatility tail risk is elevated.",
         "Credit spread pressure is contained.",
         "The broad dollar backdrop is easing."
       ],
-      "score": 10.38,
+      "score": 4.36,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -517,13 +520,13 @@
       },
       "top_risks": [
         "Real yields are elevated.",
-        "Commodity inflation impulse is elevated.",
-        "Liquidity funding conditions are tightening."
+        "Volatility tail risk is elevated.",
+        "Commodity inflation impulse is elevated."
       ],
       "top_supports": [
         "Credit spread pressure is contained.",
         "The broad dollar backdrop is easing.",
-        "Volatility tail risk is contained."
+        "Liquidity funding conditions are improving."
       ]
     }
   }

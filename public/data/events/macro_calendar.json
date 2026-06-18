@@ -67,10 +67,10 @@
     },
     {
       "category": "growth",
-      "date": "2026-06-17",
+      "date": "2026-06-26",
       "id": "retail_sales",
       "importance": "high",
-      "notes": "Official Census economic indicators calendar row: Advance Monthly Sales for Retail and Food Services. Descriptive event context only; not scored.",
+      "notes": "Official Census economic indicators calendar row: Advance Economic Indicators Report (International Trade, Retail, & Wholesale). Descriptive event context only; not scored.",
       "source": "Census",
       "source_url": "https://www.census.gov/economic-indicators/calendar-listview.html",
       "status": "scheduled",
@@ -80,7 +80,7 @@
     },
     {
       "category": "rates",
-      "date": "2026-06-17",
+      "date": "2026-07-29",
       "id": "fomc_meeting",
       "importance": "high",
       "notes": "Official Federal Reserve FOMC calendar date. Descriptive event context only; not scored.",
@@ -93,10 +93,10 @@
     },
     {
       "category": "rates",
-      "date": "2026-06-17",
+      "date": "2026-06-18",
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 17-Week Bill offering amount 69000000000. Descriptive event context only; not scored.",
+      "notes": "Official FiscalData auction query row for 4-Year 10-Month Note offering amount 24000000000. Descriptive event context only; not scored.",
       "source": "FiscalData",
       "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
       "status": "scheduled",
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-06-17T01:47:24Z",
+  "generated_at_utc": "2026-06-18T02:00:52Z",
   "method_version": "official-event-calendar-v2"
 }

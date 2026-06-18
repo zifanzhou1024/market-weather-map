@@ -3,7 +3,7 @@
     "us10y"
   ],
   "frequency": "daily",
-  "generated_at_utc": "2026-06-17T01:46:56Z",
+  "generated_at_utc": "2026-06-18T02:00:25Z",
   "method": "Rolling 21-observation population standard deviation of daily 10-year Treasury yield changes, annualized by sqrt(252) and converted to basis points; not ICE MOVE and not an implied bond-volatility benchmark.",
   "observations": [
     {
@@ -80390,20 +80390,25 @@
       "date": "2026-06-15",
       "percentile_252d": 89.29,
       "value": 80.4984
+    },
+    {
+      "date": "2026-06-16",
+      "percentile_252d": 67.06,
+      "value": 69.2655
     }
   ],
   "series_id": "bond_volatility_proxy",
   "source": "Derived",
   "source_url": "/data/series/us10y.json",
   "summary": {
-    "change_12m": -5.5647,
-    "change_1d": 0.0142,
-    "change_1m": 22.0616,
-    "change_1w": 7.1538,
-    "change_3m": 21.9346,
-    "latest_date": "2026-06-15",
-    "latest_value": 80.4984,
-    "percentile_252d": 89.29
+    "change_12m": -16.917,
+    "change_1d": -11.2329,
+    "change_1m": -0.0413,
+    "change_1w": -4.0791,
+    "change_3m": 8.0773,
+    "latest_date": "2026-06-16",
+    "latest_value": 69.2655,
+    "percentile_252d": 67.06
   },
   "units": "basis_points_annualized"
 }

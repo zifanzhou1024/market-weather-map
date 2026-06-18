@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-06-17T01:45:52Z",
+  "generated_at_utc": "2026-06-18T01:59:23Z",
   "observations": [
     {
       "date": "2003-01-02",
@@ -29336,19 +29336,24 @@
       "date": "2026-06-15",
       "percentile_252d": 98.02,
       "value": 1.78
+    },
+    {
+      "date": "2026-06-16",
+      "percentile_252d": 98.02,
+      "value": 1.8
     }
   ],
   "series_id": "real_yield_5y",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DFII5",
   "summary": {
-    "change_12m": 0.06,
-    "change_1d": -0.04,
-    "change_1m": 0.32,
-    "change_1w": -0.04,
-    "change_3m": 0.61,
-    "latest_date": "2026-06-15",
-    "latest_value": 1.78,
+    "change_12m": 0.11,
+    "change_1d": 0.02,
+    "change_1m": 0.24,
+    "change_1w": -0.02,
+    "change_3m": 0.59,
+    "latest_date": "2026-06-16",
+    "latest_value": 1.8,
     "percentile_252d": 98.02
   },
   "units": "percent"
