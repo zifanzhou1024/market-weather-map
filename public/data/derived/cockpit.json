@@ -21,20 +21,20 @@
       "reason": "below top 9 today"
     },
     {
-      "id": "wti_crude",
-      "priority": 37.65,
+      "id": "sp500_positioning",
+      "priority": 25.24,
       "reason": "below top 9 today"
     },
     {
-      "id": "sp500_positioning",
-      "priority": 25.24,
+      "id": "wti_crude",
+      "priority": 0.0,
       "reason": "below top 9 today"
     }
   ],
   "composite_scores": [
     {
-      "delta_1m": 8.82,
-      "delta_7d": 11.629999999999999,
+      "delta_1m": 10.059999999999999,
+      "delta_7d": 12.87,
       "direction": "neutral",
       "id": "market_weather",
       "label": "Market Weather",
@@ -66,9 +66,9 @@
         0.75,
         14.55,
         10.38,
-        4.36
+        5.6
       ],
-      "value": 4.36
+      "value": 5.6
     },
     {
       "delta_1m": 4.4399999999999995,
@@ -148,7 +148,7 @@
     }
   ],
   "date": "2026-06-17",
-  "generated_at_utc": "2026-06-18T02:00:53Z",
+  "generated_at_utc": "2026-06-18T08:12:56Z",
   "method_version": "phase-e-cockpit-v1",
   "regime": {
     "label": "Mixed",

@@ -1,6 +1,6 @@
 {
   "date": "2026-06-17",
-  "generated_at_utc": "2026-06-18T02:00:29Z",
+  "generated_at_utc": "2026-06-18T08:12:00Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 4.36
+      "score": 5.6
     }
   },
   "top_supports": [
@@ -290,24 +290,6 @@
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "macro",
-      "confidence": 1.0,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Commodities / Inflation",
-      "horizon": "short_term",
-      "id": "commodities_inflation_impulse",
-      "importance": 3,
-      "label": "Commodities inflation impulse",
-      "message": "Commodity inflation impulse is elevated.",
-      "priority": 37.65,
-      "severity": 12.55,
-      "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
     }
   ]
 }

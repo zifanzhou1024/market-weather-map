@@ -14,7 +14,7 @@
     "tier": "high"
   },
   "date": "2026-06-17",
-  "generated_at_utc": "2026-06-18T02:00:25Z",
+  "generated_at_utc": "2026-06-18T08:11:58Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
@@ -353,7 +353,7 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -12.55,
+        "commodities_inflation_impulse": -0.21,
         "credit_spreads": 78.17,
         "dollar_global": 32.54,
         "liquidity_funding": 19.79,
@@ -387,7 +387,7 @@
         "Credit spread pressure is contained.",
         "The broad dollar backdrop is easing."
       ],
-      "score": 4.36,
+      "score": 5.6,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -520,8 +520,7 @@
       },
       "top_risks": [
         "Real yields are elevated.",
-        "Volatility tail risk is elevated.",
-        "Commodity inflation impulse is elevated."
+        "Volatility tail risk is elevated."
       ],
       "top_supports": [
         "Credit spread pressure is contained.",

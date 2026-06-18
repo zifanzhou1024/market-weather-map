@@ -1,38 +1,27 @@
 {
   "date": "2026-06-17",
-  "generated_at_utc": "2026-06-18T02:00:29Z",
+  "generated_at_utc": "2026-06-18T08:12:00Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
-      "confidence": 1.0,
+      "confidence": 0.0,
       "freshness_notes": [],
-      "primary_warning": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "commodities_inflation_impulse",
-        "label": "Commodities inflation impulse",
-        "message": "Commodity inflation impulse is elevated.",
-        "severity": 12.55,
-        "source_status": "free_public",
-        "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
-      },
       "sections": [
         {
-          "answer": "Commodity prices are subtracting from inflation pressure (impulse -12.6, 100th percentile of the past year).",
+          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse -0.2, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
           "id": "commodity_impulse",
           "question": "Are commodity prices adding to or subtracting from inflation pressure?",
           "risk": null,
-          "support": "Easing commodity prices reduce inflation pressure and rate-cut risk.",
-          "why": "A negative commodity impulse eases headline inflation pressure and supports disinflation."
+          "support": "Neutral commodity pressure is not amplifying headline inflation in either direction.",
+          "why": "A flat commodity impulse describes a balanced backdrop for headline inflation."
         }
       ],
-      "state": "risk",
+      "state": "unknown",
       "title": "Commodities",
-      "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
+      "why_it_matters": "Commodity prices feed inflation expectations and rates."
     },
     "credit": {
       "confidence": 1.0,
@@ -252,15 +241,15 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) reflects both real yields (+15 bps) and breakevens (-20 bps).",
+          "answer": "The recent 10Y move (lower) is driven by inflation breakevens (-22 bps), not real yields.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
           "risk": null,
-          "support": null,
-          "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
+          "support": "Falling breakevens suggest inflation pressure is easing.",
+          "why": "Breakeven-driven moves signal changing inflation expectations rather than Fed policy tightening."
         }
       ],
       "state": "risk",
@@ -327,7 +316,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "5 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
+          "answer": "4 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",

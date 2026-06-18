@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-06-18T02:00:25Z",
-  "last_successful_update_utc": "2026-06-18T02:00:25Z",
+  "generated_at_utc": "2026-06-18T08:11:58Z",
+  "last_successful_update_utc": "2026-06-18T08:11:58Z",
   "overall_status": "partial",
   "series": {
     "aaii_sentiment_candidate": {
@@ -89,22 +89,22 @@
     "brent_crude": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 10,
-      "last_observation": "2026-06-08",
+      "freshness_days": 3,
+      "last_observation": "2026-06-15",
       "max_stale_days": 10,
-      "message": "Latest daily observation is 10 days old.",
-      "observation_period": "2026-06-08",
+      "message": "Latest daily observation is 3 days old.",
+      "observation_period": "2026-06-15",
       "source": "FRED",
       "status": "ok"
     },
     "brent_wti_spread": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 10,
-      "last_observation": "2026-06-08",
+      "freshness_days": 3,
+      "last_observation": "2026-06-15",
       "max_stale_days": 10,
-      "message": "Latest daily observation is 10 days old.",
-      "observation_period": "2026-06-08",
+      "message": "Latest daily observation is 3 days old.",
+      "observation_period": "2026-06-15",
       "source": "Derived",
       "status": "ok"
     },
@@ -442,14 +442,14 @@
     "financial_stress": {
       "expected_frequency": "weekly",
       "expected_next_release_window": {
-        "end": "2026-06-26",
-        "start": "2026-06-12"
+        "end": "2026-07-03",
+        "start": "2026-06-19"
       },
-      "freshness_days": 13,
-      "last_observation": "2026-06-05",
+      "freshness_days": 6,
+      "last_observation": "2026-06-12",
       "max_stale_days": 14,
-      "message": "Latest weekly observation is within the expected release window ending 2026-06-26.",
-      "observation_period": "week of 2026-06-05",
+      "message": "Latest weekly observation is within the expected release window ending 2026-07-03.",
+      "observation_period": "week of 2026-06-12",
       "source": "FRED",
       "status": "ok"
     },
@@ -1522,11 +1522,11 @@
     "wti_crude": {
       "expected_frequency": "daily",
       "expected_next_release_window": null,
-      "freshness_days": 10,
-      "last_observation": "2026-06-08",
+      "freshness_days": 3,
+      "last_observation": "2026-06-15",
       "max_stale_days": 10,
-      "message": "Latest daily observation is 10 days old.",
-      "observation_period": "2026-06-08",
+      "message": "Latest daily observation is 3 days old.",
+      "observation_period": "2026-06-15",
       "source": "FRED",
       "status": "ok"
     }
