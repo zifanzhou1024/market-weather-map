@@ -1,6 +1,6 @@
 {
-  "date": "2026-06-17",
-  "generated_at_utc": "2026-06-18T08:12:00Z",
+  "date": "2026-06-18",
+  "generated_at_utc": "2026-06-19T02:11:57Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -8,7 +8,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse -0.2, 100th percentile of the past year).",
+          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse -0.1, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -33,21 +33,21 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 78.17,
+        "severity": 93.06,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (-0.14 pp over 30 days at 1.96 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is tightening (-0.16 pp over 30 days to 1.89 pp), describing a risk-on credit backdrop.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
           "id": "credit_dispersion",
           "question": "Is the HY-IG spread widening (early credit stress) or tightening (risk-on)?",
           "risk": null,
-          "support": "Steady credit dispersion is not amplifying cross-asset stress.",
-          "why": "Stable HY-IG dispersion describes a credit market without a directional impulse."
+          "support": "Tight HY-IG dispersion suggests stress is not spreading from equity vol into credit.",
+          "why": "Tighter HY-IG dispersion describes broad credit risk appetite and limited cross-asset stress propagation."
         }
       ],
       "state": "support",
@@ -92,18 +92,18 @@
         "Cboe SKEW source gated; no implemented candidate.",
         "VX futures curve source-gated; Cboe settlement candidate is non-scoring until redistribution review approves publication."
       ],
-      "primary_warning": {
+      "primary_support": {
         "access_status": "free_public_active",
         "confidence": 1.0,
         "freshness_status": "ok",
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
-        "message": "Volatility tail risk is elevated.",
-        "severity": 35.58,
+        "message": "Volatility tail risk is contained.",
+        "severity": 42.46,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
-      "state": "risk",
+      "state": "support",
       "title": "Fragility / shock risk",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
@@ -146,7 +146,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Housing activity is contracting at elevated rates: starts and permits are falling over three months with the 30Y mortgage at 6.52%.",
+          "answer": "Housing activity is contracting at elevated rates: starts and permits are falling over three months with the 30Y mortgage at 6.47%.",
           "caveat": "Housing starts and permits are monthly; mortgage rate updates weekly. Series can move in opposite directions over short horizons.",
           "eyebrow": "Housing pulse",
           "freshness_status": "ok",
@@ -195,35 +195,24 @@
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
     "liquidity": {
-      "confidence": 1.0,
+      "confidence": 0.0,
       "freshness_notes": [],
-      "primary_support": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "net_liquidity",
-        "label": "Net liquidity",
-        "message": "Net liquidity is supportive.",
-        "severity": 19.79,
-        "source_status": "free_public",
-        "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
-      },
       "sections": [
         {
-          "answer": "Net liquidity is expanding (+$11B over four weeks to $5,897B); Fed balance sheet outpaces TGA and reverse repo drain.",
+          "answer": "Net liquidity is contracting ($-59B over four weeks to $5,849B); TGA and reverse repo drain outpaces Fed balance sheet.",
           "caveat": "Net liquidity is a derived weekly proxy from Fed assets, TGA, and reverse repo \u2014 not a measure of funding-market stress.",
           "eyebrow": "Liquidity & funding",
           "freshness_status": "ok",
           "id": "liquidity_funding",
           "question": "Is net liquidity expanding or contracting, and which Fed components are driving it?",
-          "risk": null,
-          "support": "Expanding net liquidity supports risk-asset funding.",
-          "why": "Rising net liquidity loosens funding conditions across risk assets and credit."
+          "risk": "Net liquidity drains historically precede risk-off episodes.",
+          "support": null,
+          "why": "Falling net liquidity tightens funding conditions and historically pressures risk assets."
         }
       ],
-      "state": "calm",
+      "state": "unknown",
       "title": "Liquidity",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets."
     },
     "rates": {
       "confidence": 1.0,
@@ -235,7 +224,7 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 91.26,
+        "severity": 100.0,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
@@ -277,23 +266,12 @@
       "why_it_matters": "The regime quadrant blends rates, dollar and risk inputs."
     },
     "sentiment": {
-      "confidence": 1.0,
+      "confidence": 0.0,
       "freshness_notes": [
         "S&P 500 benchmark (SPX) is unavailable.",
         "Put/call ratio (total) is unavailable.",
         "Put/call ratio (SPXW / 0DTE) is unavailable."
       ],
-      "primary_support": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "sentiment_positioning",
-        "label": "S&P 500 positioning",
-        "message": "S&P 500 positioning is balanced.",
-        "severity": 6.31,
-        "source_status": "free_public",
-        "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
-      },
       "sections": [
         {
           "answer": "Asset-manager S&P 500 net positioning is within a neutral range at the 27th percentile of the past year (+44.7% OI).",
@@ -307,24 +285,24 @@
           "why": "Neutral positioning does not add amplification pressure in either direction."
         }
       ],
-      "state": "calm",
+      "state": "unknown",
       "title": "Sentiment",
-      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
+      "why_it_matters": "Positioning extremes amplify drawdowns when sentiment turns."
     },
     "tactical": {
       "confidence": 0.0,
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "4 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
+          "answer": "2 warnings are active on the short-term board, with 2 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
           "id": "tactical_stress_board",
           "question": "Which warnings are clustering on the short-term board today?",
-          "risk": "3 signals above the elevated-severity threshold are clustering simultaneously.",
-          "support": null,
-          "why": "Multiple high-severity warnings across channels describe a tactically stressed environment."
+          "risk": "2 signal(s) above the elevated-severity threshold warrant monitoring.",
+          "support": "7 support signal(s) partially offset the warning cluster.",
+          "why": "Some warnings carry elevated severity; the tactical board is cautionary but not in broad stress."
         }
       ],
       "state": "unknown",
@@ -338,14 +316,14 @@
         "Cboe SKEW source gated; no implemented candidate.",
         "VX futures curve source-gated; Cboe settlement candidate is non-scoring until redistribution review approves publication."
       ],
-      "primary_warning": {
+      "primary_support": {
         "access_status": "free_public_active",
         "confidence": 1.0,
         "freshness_status": "ok",
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
-        "message": "Volatility tail risk is elevated.",
-        "severity": 35.58,
+        "message": "Volatility tail risk is contained.",
+        "severity": 42.46,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -362,7 +340,7 @@
           "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX."
         }
       ],
-      "state": "risk",
+      "state": "support",
       "title": "Volatility",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     }

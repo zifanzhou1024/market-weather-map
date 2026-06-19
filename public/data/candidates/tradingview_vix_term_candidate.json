@@ -2,7 +2,7 @@
   "access_status": "authenticated_candidate",
   "active_scoring_allowed": false,
   "frequency": "daily",
-  "generated_at_utc": "2026-06-18T02:00:13.280344+00:00",
+  "generated_at_utc": "2026-06-19T02:11:41.143229+00:00",
   "notes": "Constant-maturity VIX index term structure (vix9d, vix, vix3m, vix6m, vix1y, vvix) fetched from TradingView. Cross-validation candidate; does not replace the official active VIX series in public/data/series/. NOT VX futures contracts. Not active in scoring.",
   "observations": [
     {
@@ -18697,6 +18697,15 @@
       "vix6m": 22.62,
       "vix9d": 18.63,
       "vvix": 94.53
+    },
+    {
+      "date": "2026-06-18",
+      "vix": 16.4,
+      "vix1y": 23.85,
+      "vix3m": 19.57,
+      "vix6m": 21.99,
+      "vix9d": 13.93,
+      "vvix": 88.43
     }
   ],
   "public_redistribution_allowed": false,

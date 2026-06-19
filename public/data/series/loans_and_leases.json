@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-06-18T08:11:19Z",
+  "generated_at_utc": "2026-06-19T02:11:10Z",
   "observations": [
     {
       "date": "1973-01-03",
@@ -13855,7 +13855,7 @@
     {
       "date": "2026-02-04",
       "percentile_252d": 100.0,
-      "value": 13488.8253
+      "value": 13488.7494
     },
     {
       "date": "2026-02-11",
@@ -13875,86 +13875,91 @@
     {
       "date": "2026-03-04",
       "percentile_252d": 100.0,
-      "value": 13579.9297
+      "value": 13579.7652
     },
     {
       "date": "2026-03-11",
       "percentile_252d": 100.0,
-      "value": 13604.75
+      "value": 13604.5584
     },
     {
       "date": "2026-03-18",
       "percentile_252d": 100.0,
-      "value": 13609.4973
+      "value": 13609.3117
     },
     {
       "date": "2026-03-25",
       "percentile_252d": 100.0,
-      "value": 13646.2362
+      "value": 13646.0507
     },
     {
       "date": "2026-04-01",
       "percentile_252d": 100.0,
-      "value": 13706.7766
+      "value": 13706.5927
     },
     {
       "date": "2026-04-08",
       "percentile_252d": 100.0,
-      "value": 13728.1202
+      "value": 13728.1089
     },
     {
       "date": "2026-04-15",
       "percentile_252d": 100.0,
-      "value": 13734.9099
+      "value": 13734.8003
     },
     {
       "date": "2026-04-22",
       "percentile_252d": 100.0,
-      "value": 13745.2044
+      "value": 13745.1443
     },
     {
       "date": "2026-04-29",
       "percentile_252d": 100.0,
-      "value": 13752.1307
+      "value": 13752.1676
     },
     {
       "date": "2026-05-06",
       "percentile_252d": 100.0,
-      "value": 13766.1438
+      "value": 13766.1888
     },
     {
       "date": "2026-05-13",
       "percentile_252d": 100.0,
-      "value": 13789.4681
+      "value": 13789.4814
     },
     {
       "date": "2026-05-20",
       "percentile_252d": 100.0,
-      "value": 13824.8994
+      "value": 13824.8811
     },
     {
       "date": "2026-05-27",
       "percentile_252d": 100.0,
-      "value": 13826.9419
+      "value": 13826.8915
     },
     {
       "date": "2026-06-03",
       "percentile_252d": 96.15,
-      "value": 13816.3715
+      "value": 13815.3658
+    },
+    {
+      "date": "2026-06-10",
+      "percentile_252d": 100.0,
+      "value": 13856.282
     }
   ],
   "series_id": "loans_and_leases",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/TOTLL",
   "summary": {
-    "change_12m": 945.3107,
-    "change_1d": -10.5704,
-    "change_1m": 50.2277,
-    "change_1w": -10.5704,
-    "change_3m": 236.4418,
-    "latest_date": "2026-06-03",
-    "latest_value": 13816.3715,
-    "percentile_252d": 96.15
+    "change_12m": 967.1721,
+    "change_1d": 40.9162,
+    "change_1m": 66.8006,
+    "change_1w": 40.9162,
+    "change_3m": 251.7236,
+    "latest_date": "2026-06-10",
+    "latest_value": 13856.282,
+    "percentile_252d": 100.0
   },
   "units": "billions_usd"
 }
