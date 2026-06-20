@@ -1,6 +1,6 @@
 {
   "date": "2026-06-18",
-  "generated_at_utc": "2026-06-19T02:11:57Z",
+  "generated_at_utc": "2026-06-20T01:36:17Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -183,24 +183,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "dollar",
-      "confidence": 1.0,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Dollar / Global",
-      "horizon": "short_term",
-      "id": "broad_dollar",
-      "importance": 4,
-      "label": "Broad dollar",
-      "message": "The broad dollar backdrop is easing.",
-      "priority": 130.16,
-      "severity": 32.54,
-      "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "macro",
       "confidence": 0.98,
       "direction": "support",
@@ -216,6 +198,24 @@
       "source_status": "active",
       "urgency": "background",
       "why_it_matters": "Consumer fragility shapes the strategic late-cycle and recession-risk read."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "dollar",
+      "confidence": 1.0,
+      "direction": "support",
+      "freshness_status": "stale",
+      "group": "Dollar / Global",
+      "horizon": "short_term",
+      "id": "broad_dollar",
+      "importance": 4,
+      "label": "Broad dollar",
+      "message": "The broad dollar backdrop is easing.",
+      "priority": 104.13,
+      "severity": 32.54,
+      "source_status": "active",
+      "urgency": "near_term",
+      "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
     }
   ],
   "top_warnings": [

@@ -1,6 +1,6 @@
 {
   "date": "2026-06-18",
-  "generated_at_utc": "2026-06-19T02:11:57Z",
+  "generated_at_utc": "2026-06-20T01:36:17Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -56,11 +56,13 @@
     },
     "dollar_global": {
       "confidence": 1.0,
-      "freshness_notes": [],
+      "freshness_notes": [
+        "Broad dollar is stale."
+      ],
       "primary_support": {
         "access_status": "free_public_active",
         "confidence": 1.0,
-        "freshness_status": "ok",
+        "freshness_status": "stale",
         "id": "broad_dollar",
         "label": "Broad dollar",
         "message": "The broad dollar backdrop is easing.",
@@ -230,7 +232,7 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (lower) is driven by inflation breakevens (-22 bps), not real yields.",
+          "answer": "The recent 10Y move (lower) is driven by inflation breakevens (-24 bps), not real yields.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
