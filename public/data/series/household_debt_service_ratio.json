@@ -1,6 +1,6 @@
 {
   "frequency": "quarterly",
-  "generated_at_utc": "2026-06-20T01:35:13Z",
+  "generated_at_utc": "2026-06-23T01:27:48Z",
   "observations": [
     {
       "date": "2005-01-01",
@@ -410,17 +410,22 @@
     {
       "date": "2025-04-01",
       "percentile_252d": 24.39,
-      "value": 11.124175
+      "value": 11.124241
     },
     {
       "date": "2025-07-01",
       "percentile_252d": 26.51,
-      "value": 11.257951
+      "value": 11.229451
     },
     {
       "date": "2025-10-01",
       "percentile_252d": 27.38,
-      "value": 11.323096
+      "value": 11.322759
+    },
+    {
+      "date": "2026-01-01",
+      "percentile_252d": 25.88,
+      "value": 11.164138
     }
   ],
   "series_id": "household_debt_service_ratio",
@@ -428,13 +433,13 @@
   "source_url": "https://fred.stlouisfed.org/series/TDSP",
   "summary": {
     "change_12m": null,
-    "change_1d": 0.0651,
-    "change_1m": 1.2646,
-    "change_1w": 0.1844,
-    "change_3m": -3.1918,
-    "latest_date": "2025-10-01",
-    "latest_value": 11.323096,
-    "percentile_252d": 27.38
+    "change_1d": -0.1586,
+    "change_1m": 0.7748,
+    "change_1w": 0.0417,
+    "change_3m": -2.9056,
+    "latest_date": "2026-01-01",
+    "latest_value": 11.164138,
+    "percentile_252d": 25.88
   },
   "units": "percent"
 }
