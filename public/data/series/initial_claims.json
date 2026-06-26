@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-06-25T01:31:03Z",
+  "generated_at_utc": "2026-06-26T01:35:02Z",
   "observations": [
     {
       "date": "1967-01-07",
@@ -15510,21 +15510,26 @@
     {
       "date": "2026-06-13",
       "percentile_252d": 69.23,
-      "value": 226000.0
+      "value": 227000.0
+    },
+    {
+      "date": "2026-06-20",
+      "percentile_252d": 40.38,
+      "value": 215000.0
     }
   ],
   "series_id": "initial_claims",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/ICSA",
   "summary": {
-    "change_12m": -17000.0,
-    "change_1d": -4000.0,
-    "change_1m": 16000.0,
-    "change_1w": -4000.0,
-    "change_3m": 21000.0,
-    "latest_date": "2026-06-13",
-    "latest_value": 226000.0,
-    "percentile_252d": 69.23
+    "change_12m": -21000.0,
+    "change_1d": -12000.0,
+    "change_1m": 3000.0,
+    "change_1w": -12000.0,
+    "change_3m": 4000.0,
+    "latest_date": "2026-06-20",
+    "latest_value": 215000.0,
+    "percentile_252d": 40.38
   },
   "units": "number"
 }
