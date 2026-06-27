@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-06-26T01:35:05Z",
+  "generated_at_utc": "2026-06-27T01:27:08Z",
   "observations": [
     {
       "date": "1973-01-03",
@@ -13890,12 +13890,12 @@
     {
       "date": "2026-03-25",
       "percentile_252d": 100.0,
-      "value": 19395.5279
+      "value": 19395.5289
     },
     {
       "date": "2026-04-01",
       "percentile_252d": 100.0,
-      "value": 19435.9099
+      "value": 19435.9109
     },
     {
       "date": "2026-04-08",
@@ -13910,7 +13910,7 @@
     {
       "date": "2026-04-22",
       "percentile_252d": 96.15,
-      "value": 19465.7952
+      "value": 19465.7942
     },
     {
       "date": "2026-04-29",
@@ -13925,40 +13925,45 @@
     {
       "date": "2026-05-13",
       "percentile_252d": 100.0,
-      "value": 19535.68
+      "value": 19535.7221
     },
     {
       "date": "2026-05-20",
       "percentile_252d": 100.0,
-      "value": 19571.2017
+      "value": 19571.0537
     },
     {
       "date": "2026-05-27",
       "percentile_252d": 100.0,
-      "value": 19582.4902
+      "value": 19582.5822
     },
     {
       "date": "2026-06-03",
       "percentile_252d": 96.15,
-      "value": 19565.142
+      "value": 19565.2626
     },
     {
       "date": "2026-06-10",
       "percentile_252d": 100.0,
-      "value": 19621.3124
+      "value": 19621.0
+    },
+    {
+      "date": "2026-06-17",
+      "percentile_252d": 100.0,
+      "value": 19628.0992
     }
   ],
   "series_id": "bank_credit",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/TOTBKCR",
   "summary": {
-    "change_12m": 1176.6899,
-    "change_1d": 56.1704,
-    "change_1m": 85.6324,
-    "change_1w": 56.1704,
-    "change_3m": 261.9614,
-    "latest_date": "2026-06-10",
-    "latest_value": 19621.3124,
+    "change_12m": 1162.7414,
+    "change_1d": 7.0992,
+    "change_1m": 57.0455,
+    "change_1w": 7.0992,
+    "change_3m": 263.5105,
+    "latest_date": "2026-06-17",
+    "latest_value": 19628.0992,
     "percentile_252d": 100.0
   },
   "units": "billions_usd"
