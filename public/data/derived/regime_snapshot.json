@@ -15,14 +15,14 @@
     {
       "id": "nominal_10y",
       "label": "10Y nominal yield",
-      "message": "10Y nominal yield is down over one month.",
-      "state": "down"
+      "message": "10Y nominal yield is flat over one month.",
+      "state": "flat"
     },
     {
       "id": "yield_driver",
       "label": "Yield driver",
-      "message": "The nominal yield move is classified as safe haven or growth scare.",
-      "state": "safe_haven_or_growth_scare"
+      "message": "The nominal yield move is classified as mixed.",
+      "state": "mixed"
     },
     {
       "id": "vix_curve",
@@ -75,8 +75,8 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-06-30",
-  "generated_at_utc": "2026-07-01T01:38:15Z",
+  "date": "2026-07-01",
+  "generated_at_utc": "2026-07-02T01:30:28Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -243,17 +243,11 @@
   "regime": {
     "dollar_direction": "up",
     "label": "Tightening / risk-off",
-    "nominal_yield_direction": "down",
+    "nominal_yield_direction": "flat",
     "tips_direction": "up",
-    "yield_driver": "safe_haven_or_growth_scare"
+    "yield_driver": "mixed"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.28,
-      "date": "2025-06-13",
-      "nominal_10y": 4.41,
-      "real_yield_10y": 2.13
-    },
     {
       "breakeven_10y": 2.3,
       "date": "2025-06-16",
@@ -1807,6 +1801,12 @@
       "date": "2026-06-29",
       "nominal_10y": 4.38,
       "real_yield_10y": 2.16
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2026-06-30",
+      "nominal_10y": 4.44,
+      "real_yield_10y": 2.2
     }
   ]
 }
