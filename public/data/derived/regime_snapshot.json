@@ -40,7 +40,7 @@
       "id": "liquidity",
       "label": "Net liquidity",
       "message": "Net liquidity confirmation uses the one-month change.",
-      "state": "down"
+      "state": "up"
     },
     {
       "id": "overall_regime",
@@ -65,8 +65,8 @@
     {
       "id": "liquidity",
       "label": "Liquidity",
-      "message": "Net liquidity is confirming for the active regime.",
-      "status": "confirming"
+      "message": "Net liquidity is diverging for the active regime.",
+      "status": "diverging"
     },
     {
       "id": "rates",
@@ -75,8 +75,8 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-07-01",
-  "generated_at_utc": "2026-07-02T01:30:28Z",
+  "date": "2026-07-02",
+  "generated_at_utc": "2026-07-03T01:09:10Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -248,12 +248,6 @@
     "yield_driver": "mixed"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.3,
-      "date": "2025-06-16",
-      "nominal_10y": 4.46,
-      "real_yield_10y": 2.16
-    },
     {
       "breakeven_10y": 2.31,
       "date": "2025-06-17",
@@ -1807,6 +1801,12 @@
       "date": "2026-06-30",
       "nominal_10y": 4.44,
       "real_yield_10y": 2.2
+    },
+    {
+      "breakeven_10y": 2.23,
+      "date": "2026-07-01",
+      "nominal_10y": 4.48,
+      "real_yield_10y": 2.25
     }
   ]
 }

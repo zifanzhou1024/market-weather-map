@@ -1,28 +1,28 @@
 {
   "active_signals": [
     {
-      "change": 0.82,
+      "change": 0.09,
       "id": "vix",
       "label": "VIX",
       "message": "VIX percentile is included in active shock-risk pressure.",
-      "score": 20.64,
-      "value": 16.59
+      "score": 44.44,
+      "value": 16.15
     },
     {
-      "change": 0.0399,
+      "change": 0.0391,
       "id": "vix_vix3m_ratio",
       "label": "VIX/VIX3M ratio",
       "message": "VIX curve pressure is included in active shock-risk pressure.",
-      "score": -11.9,
-      "value": 0.8659
+      "score": 19.84,
+      "value": 0.8482
     },
     {
-      "change": 0.0,
+      "change": 0.01,
       "id": "hy_minus_ig_oas",
       "label": "Credit spreads",
       "message": "Credit spread percentile is included in active shock-risk pressure.",
-      "score": 67.46,
-      "value": 1.99
+      "score": 72.22,
+      "value": 1.98
     },
     {
       "change": 1.7037,
@@ -33,28 +33,34 @@
       "value": 120.8866
     },
     {
-      "change": 0.13,
+      "change": 0.18,
       "id": "real_yield_10y",
       "label": "10Y real yield",
       "message": "Real yield one-month change is included in active shock-risk pressure.",
-      "score": -15.6,
-      "value": 2.2
+      "score": -21.6,
+      "value": 2.25
     },
     {
-      "change": -59819.0,
+      "change": 9606.0,
       "id": "net_liquidity",
       "label": "Net liquidity",
       "message": "Net liquidity one-month change is included in active shock-risk pressure.",
-      "score": -100.0,
-      "value": 5812415.0
+      "score": 100.0,
+      "value": 5843326.0
     }
   ],
-  "date": "2026-07-01",
-  "generated_at_utc": "2026-07-02T01:30:28Z",
-  "label": "Mixed shock risk",
+  "date": "2026-07-02",
+  "generated_at_utc": "2026-07-03T01:09:10Z",
+  "label": "Contained shock risk",
   "method_version": "phase5-shock-risk-v1",
-  "mismatch_warnings": [],
-  "score": 3.72,
+  "mismatch_warnings": [
+    {
+      "id": "tightening_confirmation",
+      "label": "Tightening confirmation",
+      "message": "Real yields, the broad dollar, and credit spreads all rose over one month, confirming tighter active financial conditions."
+    }
+  ],
+  "score": 35.12,
   "source_gaps": [
     {
       "id": "move_index",
