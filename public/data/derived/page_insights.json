@@ -1,6 +1,6 @@
 {
   "date": "2026-07-02",
-  "generated_at_utc": "2026-07-03T01:09:15Z",
+  "generated_at_utc": "2026-07-04T01:06:16Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -33,13 +33,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 61.11,
+        "severity": 58.33,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.01 pp over 30 days at 1.98 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (-0.01 pp over 30 days at 2.00 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -56,11 +56,13 @@
     },
     "dollar_global": {
       "confidence": 1.0,
-      "freshness_notes": [],
+      "freshness_notes": [
+        "Broad dollar is stale."
+      ],
       "primary_warning": {
         "access_status": "free_public_active",
         "confidence": 1.0,
-        "freshness_status": "ok",
+        "freshness_status": "stale",
         "id": "broad_dollar",
         "label": "Broad dollar",
         "message": "The broad dollar is firming and tightening global liquidity.",
@@ -236,14 +238,14 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (lower) reflects both real yields (+13 bps) and breakevens (-17 bps).",
+          "answer": "The recent 10Y move (higher) reflects both real yields (+18 bps) and breakevens (-16 bps).",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": null,
-          "support": "Broad declines in both components ease cross-asset discount-rate pressure.",
+          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
+          "support": null,
           "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
         }
       ],

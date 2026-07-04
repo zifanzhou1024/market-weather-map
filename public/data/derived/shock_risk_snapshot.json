@@ -17,12 +17,12 @@
       "value": 0.8482
     },
     {
-      "change": 0.01,
+      "change": -0.01,
       "id": "hy_minus_ig_oas",
       "label": "Credit spreads",
       "message": "Credit spread percentile is included in active shock-risk pressure.",
-      "score": 72.22,
-      "value": 1.98
+      "score": 53.96,
+      "value": 2.0
     },
     {
       "change": 1.7037,
@@ -50,17 +50,11 @@
     }
   ],
   "date": "2026-07-02",
-  "generated_at_utc": "2026-07-03T01:09:10Z",
+  "generated_at_utc": "2026-07-04T01:06:11Z",
   "label": "Contained shock risk",
   "method_version": "phase5-shock-risk-v1",
-  "mismatch_warnings": [
-    {
-      "id": "tightening_confirmation",
-      "label": "Tightening confirmation",
-      "message": "Real yields, the broad dollar, and credit spreads all rose over one month, confirming tighter active financial conditions."
-    }
-  ],
-  "score": 35.12,
+  "mismatch_warnings": [],
+  "score": 30.55,
   "source_gaps": [
     {
       "id": "move_index",

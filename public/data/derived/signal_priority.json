@@ -1,6 +1,6 @@
 {
   "date": "2026-07-02",
-  "generated_at_utc": "2026-07-03T01:09:15Z",
+  "generated_at_utc": "2026-07-04T01:06:16Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,7 +74,7 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Moderate",
-      "score": 13.89
+      "score": 9.32
     },
     "long_term": {
       "confidence": 1.0,
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 3.76
+      "score": 3.15
     }
   },
   "top_supports": [
@@ -139,8 +139,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 305.55,
-      "severity": 61.11,
+      "priority": 291.65,
+      "severity": 58.33,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -260,14 +260,14 @@
       "category": "dollar",
       "confidence": 1.0,
       "direction": "risk",
-      "freshness_status": "ok",
+      "freshness_status": "stale",
       "group": "Dollar / Global",
       "horizon": "short_term",
       "id": "broad_dollar",
       "importance": 4,
       "label": "Broad dollar",
       "message": "The broad dollar is firming and tightening global liquidity.",
-      "priority": 273.04,
+      "priority": 218.43,
       "severity": 68.26,
       "source_status": "active",
       "urgency": "near_term",
