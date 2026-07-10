@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-07-09T01:07:40Z",
+  "generated_at_utc": "2026-07-10T01:05:22Z",
   "observations": [
     {
       "date": "1971-04-02",
@@ -14421,20 +14421,25 @@
       "date": "2026-07-02",
       "percentile_252d": 69.23,
       "value": 6.43
+    },
+    {
+      "date": "2026-07-09",
+      "percentile_252d": 78.85,
+      "value": 6.49
     }
   ],
   "series_id": "mortgage_rate_30y",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/MORTGAGE30US",
   "summary": {
-    "change_12m": -0.24,
-    "change_1d": -0.06,
-    "change_1m": -0.05,
-    "change_1w": -0.06,
-    "change_3m": -0.03,
-    "latest_date": "2026-07-02",
-    "latest_value": 6.43,
-    "percentile_252d": 69.23
+    "change_12m": -0.23,
+    "change_1d": 0.06,
+    "change_1m": -0.03,
+    "change_1w": 0.06,
+    "change_3m": 0.12,
+    "latest_date": "2026-07-09",
+    "latest_value": 6.49,
+    "percentile_252d": 78.85
   },
   "units": "percent"
 }

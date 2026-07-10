@@ -93,13 +93,13 @@
     },
     {
       "category": "rates",
-      "date": "2026-07-09",
+      "date": null,
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 29-Year 10-Month Bond offering amount 22000000000. Descriptive event context only; not scored.",
-      "source": "FiscalData",
-      "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
-      "status": "scheduled",
+      "notes": "TreasuryDirect auction schedule source.",
+      "source": "TreasuryDirect",
+      "source_url": "https://www.treasuryauctions.gov/auctions/when-auctions-happen/",
+      "status": "source_link",
       "time": null,
       "timezone": "America/New_York",
       "title": "Treasury Auctions"
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-07-09T01:09:12Z",
+  "generated_at_utc": "2026-07-10T01:06:34Z",
   "method_version": "official-event-calendar-v2"
 }

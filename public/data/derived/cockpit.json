@@ -2,22 +2,22 @@
   "candidates_not_shown": [
     {
       "id": "ig_spreads",
-      "priority": 354.15,
-      "reason": "below top 9 today"
-    },
-    {
-      "id": "broad_dollar",
-      "priority": 222.24,
+      "priority": 342.25,
       "reason": "below top 9 today"
     },
     {
       "id": "vix_complex",
-      "priority": 114.4,
+      "priority": 337.95,
       "reason": "below top 9 today"
     },
     {
-      "id": "wti_crude",
-      "priority": 45.75,
+      "id": "broad_dollar",
+      "priority": 177.79,
+      "reason": "below top 9 today"
+    },
+    {
+      "id": "net_liquidity",
+      "priority": 53.92,
       "reason": "below top 9 today"
     },
     {
@@ -26,15 +26,15 @@
       "reason": "below top 9 today"
     },
     {
-      "id": "net_liquidity",
-      "priority": 7.44,
+      "id": "wti_crude",
+      "priority": 0.0,
       "reason": "below top 9 today"
     }
   ],
   "composite_scores": [
     {
-      "delta_1m": 5.92,
-      "delta_7d": 1.7599999999999998,
+      "delta_1m": 11.95,
+      "delta_7d": 5.18,
       "direction": "neutral",
       "id": "market_weather",
       "label": "Market Weather",
@@ -77,13 +77,14 @@
         -2.36,
         3.15,
         2.56,
-        -0.6
+        -0.6,
+        8.33
       ],
-      "value": -0.6
+      "value": 8.33
     },
     {
-      "delta_1m": -12.45,
-      "delta_7d": 3.63,
+      "delta_1m": -13.520000000000001,
+      "delta_7d": -1.3099999999999996,
       "direction": "neutral",
       "id": "macro_climate",
       "label": "Macro Climate",
@@ -126,19 +127,20 @@
         4.17,
         7.96,
         8.12,
-        7.8
+        7.8,
+        6.65
       ],
-      "value": 7.8
+      "value": 6.65
     },
     {
-      "delta_1m": 7.989999999999998,
-      "delta_7d": 13.349999999999998,
+      "delta_1m": 26.39,
+      "delta_7d": 25.85,
       "direction": "neutral",
       "id": "fragility",
       "label": "Fragility",
       "percentile_5y": null,
       "percentile_window_days": null,
-      "regime_label": "Moderate",
+      "regime_label": "Low Fragility",
       "sparkline_90d": [
         39.47,
         37.78,
@@ -175,13 +177,14 @@
         3.46,
         9.32,
         19.59,
-        16.81
+        16.81,
+        35.17
       ],
-      "value": 16.81
+      "value": 35.17
     }
   ],
-  "date": "2026-07-08",
-  "generated_at_utc": "2026-07-09T01:09:13Z",
+  "date": "2026-07-09",
+  "generated_at_utc": "2026-07-10T01:06:36Z",
   "method_version": "phase-e-cockpit-v1",
   "regime": {
     "label": "Tightening / risk-off",
@@ -189,19 +192,19 @@
   },
   "vital_signs": [
     {
-      "as_of": "2026-07-08",
+      "as_of": "2026-07-09",
       "delta_1m": -0.10000000000000009,
-      "delta_7d": 0.020000000000000018,
+      "delta_7d": 0.0,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "breakeven_10y",
       "importance": 5,
       "label": "10Y Breakeven",
-      "percentile_5y": 18,
+      "percentile_5y": 13,
       "percentile_window_days": 1260,
       "primary_decimals": 2,
       "primary_unit": "%",
-      "primary_value": 2.25,
+      "primary_value": 2.23,
       "priority": 500.0,
       "rank": 1,
       "score_status": "active",
@@ -210,7 +213,6 @@
         "breakeven_10y"
       ],
       "sparkline_90d": [
-        2.29,
         2.29,
         2.29,
         2.31,
@@ -299,7 +301,8 @@
         2.23,
         2.24,
         2.25,
-        2.25
+        2.25,
+        2.23
       ],
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
@@ -426,9 +429,9 @@
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
     {
-      "as_of": "2026-07-07",
-      "delta_1m": 0.10999999999999988,
-      "delta_7d": 0.09999999999999964,
+      "as_of": "2026-07-08",
+      "delta_1m": 0.10000000000000009,
+      "delta_7d": 0.06000000000000005,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "real_yields",
@@ -438,7 +441,7 @@
       "percentile_window_days": 1260,
       "primary_decimals": 2,
       "primary_unit": "%",
-      "primary_value": 2.3,
+      "primary_value": 2.31,
       "priority": 500.0,
       "rank": 3,
       "score_status": "active",
@@ -447,7 +450,6 @@
         "real_yield_10y"
       ],
       "sparkline_90d": [
-        1.72,
         1.76,
         1.77,
         1.8,
@@ -536,24 +538,25 @@
         2.25,
         2.26,
         2.24,
-        2.3
+        2.3,
+        2.31
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-07-06",
-      "delta_1m": -0.07566668563777856,
-      "delta_7d": 0.13150120428968837,
+      "as_of": "2026-07-07",
+      "delta_1m": -0.03923768819757889,
+      "delta_7d": 0.11745772900279228,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "term_premium",
       "importance": 5,
       "label": "10Y Term Premium",
-      "percentile_5y": 79,
+      "percentile_5y": 82,
       "percentile_window_days": 1260,
       "primary_decimals": 2,
       "primary_unit": "%",
-      "primary_value": 0.5940317338850707,
+      "primary_value": 0.6304607313252704,
       "priority": 500.0,
       "rank": 4,
       "score_status": "active",
@@ -562,7 +565,6 @@
         "term_premium_acm_10y"
       ],
       "sparkline_90d": [
-        0.603506776630331,
         0.5996967340891435,
         0.6198244924443985,
         0.6162454367021373,
@@ -649,26 +651,27 @@
         0.477781107626047,
         0.4625305295953823,
         0.5130030023224781,
-        0.5489242596874804,
-        0.5905186503757589,
-        0.5940317338850707
+        0.5489242596874795,
+        0.5905186503757585,
+        0.5940317338850698,
+        0.6304607313252704
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-07-07",
+      "as_of": "2026-07-08",
       "delta_1m": 0.0,
-      "delta_7d": 0.10999999999999943,
+      "delta_7d": 0.07999999999999918,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "us10y",
       "importance": 5,
       "label": "US 10Y",
-      "percentile_5y": 93,
+      "percentile_5y": 94,
       "percentile_window_days": 1260,
       "primary_decimals": 2,
       "primary_unit": "%",
-      "primary_value": 4.55,
+      "primary_value": 4.56,
       "priority": 500.0,
       "rank": 5,
       "score_status": "active",
@@ -677,7 +680,6 @@
         "us10y"
       ],
       "sparkline_90d": [
-        3.97,
         4.05,
         4.06,
         4.09,
@@ -766,24 +768,25 @@
         4.48,
         4.49,
         4.48,
-        4.55
+        4.55,
+        4.56
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-07-07",
-      "delta_1m": -2.0,
-      "delta_7d": 6.0,
+      "as_of": "2026-07-08",
+      "delta_1m": -6.0,
+      "delta_7d": 4.0,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "yield_curve",
       "importance": 5,
       "label": "10Y\u22122Y",
-      "percentile_5y": 61,
+      "percentile_5y": 60,
       "percentile_window_days": 1260,
       "primary_decimals": 0,
       "primary_unit": " bp",
-      "primary_value": 36.0,
+      "primary_value": 35.0,
       "priority": 500.0,
       "rank": 6,
       "score_status": "active",
@@ -792,7 +795,6 @@
         "us10y_minus_us2y"
       ],
       "sparkline_90d": [
-        59.0,
         57.99999999999999,
         55.00000000000001,
         55.00000000000001,
@@ -881,14 +883,15 @@
         31.0,
         35.0,
         35.0,
-        36.0
+        36.0,
+        35.0
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-06-27",
-      "delta_1m": 3.0,
-      "delta_7d": -1.0,
+      "as_of": "2026-07-04",
+      "delta_1m": -10.0,
+      "delta_7d": -2.0,
       "direction": "support",
       "freshness_status": "ok",
       "id": "labor_claims",
@@ -907,7 +910,6 @@
         "initial_claims"
       ],
       "sparkline_90d": [
-        241.0,
         227.0,
         219.0,
         221.0,
@@ -996,6 +998,7 @@
         230.0,
         227.0,
         216.0,
+        217.0,
         215.0
       ],
       "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
@@ -1123,20 +1126,20 @@
       "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
     },
     {
-      "as_of": "2026-07-07",
-      "delta_1m": -9.0,
-      "delta_7d": -8.0,
+      "as_of": "2026-07-08",
+      "delta_1m": -5.0,
+      "delta_7d": -4.0,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "credit_spreads",
       "importance": 5,
       "label": "HY OAS",
-      "percentile_5y": 5,
-      "percentile_window_days": 812,
+      "percentile_5y": 7,
+      "percentile_window_days": 813,
       "primary_decimals": 0,
       "primary_unit": " bp",
-      "primary_value": 267.0,
-      "priority": 354.15,
+      "primary_value": 270.0,
+      "priority": 342.25,
       "rank": 9,
       "score_status": "active",
       "secondary_values": [],
@@ -1144,7 +1147,6 @@
         "high_yield_oas"
       ],
       "sparkline_90d": [
-        300.0,
         313.0,
         319.0,
         306.0,
@@ -1233,7 +1235,8 @@
         275.0,
         274.0,
         272.0,
-        267.0
+        267.0,
+        270.0
       ],
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
     }
