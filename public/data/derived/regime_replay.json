@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-07-11T00:17:14Z",
+  "generated_at_utc": "2026-07-14T00:14:07Z",
   "method_version": "phase5-regime-replay-v1",
   "scenarios": [
     {
@@ -7,8 +7,8 @@
       "description": "Real yields rising, dollar rising, and credit or volatility pressure rising.",
       "id": "tightening_risk_off",
       "label": "Tightening / risk-off",
-      "last_occurrence_date": "2026-07-02",
-      "occurrence_count": 201,
+      "last_occurrence_date": "2026-07-06",
+      "occurrence_count": 202,
       "occurrences": [
         {
           "credit_20obs_change": -0.01,
@@ -1617,6 +1617,14 @@
           "nominal_10y_20obs_change": 0.0,
           "real_yield_20obs_change": 0.15,
           "vix_curve_20obs_change": 0.0354
+        },
+        {
+          "credit_20obs_change": -0.02,
+          "date": "2026-07-06",
+          "dollar_20obs_change": 1.4735,
+          "nominal_10y_20obs_change": 0.01,
+          "real_yield_20obs_change": 0.13,
+          "vix_curve_20obs_change": 0.0283
         }
       ]
     },

@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-07-11T00:15:52Z",
+  "generated_at_utc": "2026-07-14T00:12:57Z",
   "observations": [
     {
       "date": "1992-01-01",
@@ -2066,20 +2066,25 @@
       "date": "2026-05-01",
       "percentile_252d": 100.0,
       "value": 220.8845521666666
+    },
+    {
+      "date": "2026-06-01",
+      "percentile_252d": 83.33,
+      "value": 199.6482875619048
     }
   ],
   "series_id": "wheat_price",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/PWHEAMTUSDM",
   "summary": {
-    "change_12m": 24.0435,
-    "change_1d": 18.2431,
-    "change_1m": 18.2431,
-    "change_1w": 18.2431,
-    "change_3m": 46.1321,
-    "latest_date": "2026-05-01",
-    "latest_value": 220.8845521666666,
-    "percentile_252d": 100.0
+    "change_12m": 26.4535,
+    "change_1d": -21.2363,
+    "change_1m": -21.2363,
+    "change_1w": -21.2363,
+    "change_3m": 5.7712,
+    "latest_date": "2026-06-01",
+    "latest_value": 199.6482875619048,
+    "percentile_252d": 83.33
   },
   "units": "usd_per_metric_ton"
 }

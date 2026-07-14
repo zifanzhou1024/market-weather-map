@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-07-11T00:15:52Z",
+  "generated_at_utc": "2026-07-14T00:12:57Z",
   "observations": [
     {
       "date": "1992-01-01",
@@ -2066,20 +2066,25 @@
       "date": "2026-05-01",
       "percentile_252d": 100.0,
       "value": 215.62064698129248
+    },
+    {
+      "date": "2026-06-01",
+      "percentile_252d": 25.0,
+      "value": 195.7818789965986
     }
   ],
   "series_id": "corn_price",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/PMAIZMTUSDM",
   "summary": {
-    "change_12m": 10.8122,
-    "change_1d": 1.0967,
-    "change_1m": 1.0967,
-    "change_1w": 1.0967,
-    "change_3m": 4.9852,
-    "latest_date": "2026-05-01",
-    "latest_value": 215.62064698129248,
-    "percentile_252d": 100.0
+    "change_12m": 0.0628,
+    "change_1d": -19.8388,
+    "change_1m": -19.8388,
+    "change_1w": -19.8388,
+    "change_3m": -17.5223,
+    "latest_date": "2026-06-01",
+    "latest_value": 195.7818789965986,
+    "percentile_252d": 25.0
   },
   "units": "usd_per_metric_ton"
 }

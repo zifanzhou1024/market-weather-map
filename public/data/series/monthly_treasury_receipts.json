@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-07-11T00:16:10Z",
+  "generated_at_utc": "2026-07-14T00:13:16Z",
   "observations": [
     {
       "date": "2014-10-31",
@@ -664,57 +664,62 @@
     },
     {
       "date": "2025-10-31",
-      "percentile_252d": 41.67,
-      "value": 326770.2361
+      "percentile_252d": 58.33,
+      "value": 404371.349
     },
     {
       "date": "2025-11-30",
-      "percentile_252d": 58.33,
+      "percentile_252d": 50.0,
       "value": 336001.7202
     },
     {
       "date": "2025-12-31",
-      "percentile_252d": 66.67,
-      "value": 454414.7085
+      "percentile_252d": 83.33,
+      "value": 484384.0155
     },
     {
       "date": "2026-01-31",
-      "percentile_252d": 83.33,
-      "value": 513294.3427
+      "percentile_252d": 91.67,
+      "value": 560051.9006
     },
     {
       "date": "2026-02-28",
-      "percentile_252d": 8.33,
-      "value": 296423.6838
+      "percentile_252d": 16.67,
+      "value": 313121.6852
     },
     {
       "date": "2026-03-31",
-      "percentile_252d": 58.33,
-      "value": 367645.4309
+      "percentile_252d": 50.0,
+      "value": 384862.602
     },
     {
       "date": "2026-04-30",
       "percentile_252d": 100.0,
-      "value": 850169.3178
+      "value": 837342.691
     },
     {
       "date": "2026-05-31",
-      "percentile_252d": 58.33,
-      "value": 371228.8571
+      "percentile_252d": 33.33,
+      "value": 335512.1832
+    },
+    {
+      "date": "2026-06-30",
+      "percentile_252d": 75.0,
+      "value": 495761.4816
     }
   ],
   "series_id": "monthly_treasury_receipts",
   "source": "FiscalData",
   "source_url": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
   "summary": {
-    "change_12m": 47581.8701,
-    "change_1d": -478940.4607,
-    "change_1m": -478940.4607,
-    "change_1w": -478940.4607,
-    "change_3m": 74805.1733,
-    "latest_date": "2026-05-31",
-    "latest_value": 371228.8571,
-    "percentile_252d": 58.33
+    "change_12m": 29506.5632,
+    "change_1d": 160249.2984,
+    "change_1m": 160249.2984,
+    "change_1w": 160249.2984,
+    "change_3m": 110898.8796,
+    "latest_date": "2026-06-30",
+    "latest_value": 495761.4816,
+    "percentile_252d": 75.0
   },
   "units": "millions_usd"
 }
