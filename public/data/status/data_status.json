@@ -1,5 +1,6 @@
 {
-  "generated_at_utc": "2026-07-14T00:14:07Z",
+  "generated_at_utc": "2026-07-15T00:11:22Z",
+  "last_attempt_utc": "2026-07-15T00:11:22Z",
   "last_successful_update_utc": "2026-07-14T00:14:07Z",
   "overall_status": "partial",
   "series": {
@@ -1530,5 +1531,7 @@
       "source": "FRED",
       "status": "ok"
     }
-  }
+  },
+  "update_message": "RemoteDisconnected: Remote end closed connection without response",
+  "update_status": "failed"
 }
