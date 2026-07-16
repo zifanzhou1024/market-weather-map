@@ -15,14 +15,14 @@
     {
       "id": "nominal_10y",
       "label": "10Y nominal yield",
-      "message": "10Y nominal yield is flat over one month.",
-      "state": "flat"
+      "message": "10Y nominal yield is up over one month.",
+      "state": "up"
     },
     {
       "id": "yield_driver",
       "label": "Yield driver",
-      "message": "The nominal yield move is classified as mixed.",
-      "state": "mixed"
+      "message": "The nominal yield move is classified as real yield driven.",
+      "state": "real_yield_driven"
     },
     {
       "id": "vix_curve",
@@ -59,8 +59,8 @@
     {
       "id": "vix_curve",
       "label": "VIX curve",
-      "message": "Volatility is diverging and the curve is contango proxy.",
-      "status": "diverging"
+      "message": "Volatility is confirming and the curve is contango proxy.",
+      "status": "confirming"
     },
     {
       "id": "liquidity",
@@ -75,8 +75,8 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-07-13",
-  "generated_at_utc": "2026-07-14T00:14:07Z",
+  "date": "2026-07-15",
+  "generated_at_utc": "2026-07-16T00:17:27Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -243,9 +243,9 @@
   "regime": {
     "dollar_direction": "up",
     "label": "Tightening / risk-off",
-    "nominal_yield_direction": "flat",
+    "nominal_yield_direction": "up",
     "tips_direction": "up",
-    "yield_driver": "mixed"
+    "yield_driver": "real_yield_driven"
   },
   "yield_decomposition": [
     {

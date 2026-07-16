@@ -1,11 +1,22 @@
 {
-  "date": "2026-07-13",
-  "generated_at_utc": "2026-07-14T00:14:12Z",
+  "date": "2026-07-15",
+  "generated_at_utc": "2026-07-16T00:17:31Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
-      "confidence": 0.0,
+      "confidence": 1.0,
       "freshness_notes": [],
+      "primary_support": {
+        "access_status": "free_public_active",
+        "confidence": 1.0,
+        "freshness_status": "ok",
+        "id": "commodities_inflation_impulse",
+        "label": "Commodities inflation impulse",
+        "message": "Commodity inflation impulse is calming.",
+        "severity": 18.02,
+        "source_status": "free_public",
+        "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
+      },
       "sections": [
         {
           "answer": "Commodity prices are adding to inflation pressure (impulse +18.0, 100th percentile of the past year).",
@@ -19,9 +30,9 @@
           "why": "A positive commodity impulse feeds headline inflation and can pressure rate-cut expectations."
         }
       ],
-      "state": "unknown",
+      "state": "calm",
       "title": "Commodities",
-      "why_it_matters": "Commodity prices feed inflation expectations and rates."
+      "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
     },
     "credit": {
       "confidence": 1.0,
@@ -86,7 +97,7 @@
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
     },
     "fragility": {
-      "confidence": 0.985,
+      "confidence": 1.0,
       "freshness_notes": [
         "MOVE official unavailable; TradingView candidate gated.",
         "Cboe SKEW source gated; no implemented candidate.",
@@ -94,18 +105,18 @@
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.97,
+        "confidence": 1.0,
         "freshness_status": "ok",
-        "id": "vix_curve",
-        "label": "VIX curve state",
-        "message": "VIX curve is contango-proxy and calm.",
-        "severity": 87.3,
+        "id": "vix_complex",
+        "label": "VIX / VVIX complex",
+        "message": "Volatility tail risk is contained.",
+        "severity": 51.19,
         "source_status": "free_public",
-        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
       "state": "support",
       "title": "Fragility / shock risk",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
     "growth": {
       "confidence": 1.0,
@@ -199,7 +210,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is supportive.",
-        "severity": 13.6,
+        "severity": 37.53,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -216,7 +227,7 @@
           "why": "Rising net liquidity loosens funding conditions across risk assets and credit."
         }
       ],
-      "state": "calm",
+      "state": "support",
       "title": "Liquidity",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
@@ -236,14 +247,14 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (lower) reflects both real yields (+10 bps) and breakevens (-9 bps).",
+          "answer": "The recent 10Y move (higher) reflects both real yields (+12 bps) and breakevens (-8 bps).",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": null,
-          "support": "Broad declines in both components ease cross-asset discount-rate pressure.",
+          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
+          "support": null,
           "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
         }
       ],
@@ -256,15 +267,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Both real yields and the dollar are rising over the short window, creating a joint tightening of global financial conditions.",
+          "answer": "Real yield and dollar moves are within neutral thresholds over the short window; no dominant directional driver is evident.",
           "caveat": "20D window uses closing prices; intraday volatility and FX moves not captured.",
           "eyebrow": "Regime drivers",
           "freshness_status": "ok",
           "id": "regime_drivers",
           "question": "Are real yields and the dollar tightening or easing financial conditions together?",
-          "risk": "Dual tightening historically pressures EM assets and credit spreads simultaneously.",
-          "support": null,
-          "why": "When real yields and the dollar rise together, cross-asset liquidity tightens via both the discount rate and dollar funding."
+          "risk": null,
+          "support": "Absence of a dominant tightening impulse leaves conditions in a holding pattern.",
+          "why": "Neutral short-window readings suggest the regime is consolidating rather than trending."
         }
       ],
       "state": "unknown",
@@ -327,7 +338,7 @@
       "why_it_matters": "Short-term tactical signals track the immediate risk posture across asset classes."
     },
     "volatility": {
-      "confidence": 0.985,
+      "confidence": 1.0,
       "freshness_notes": [
         "MOVE official unavailable; TradingView candidate gated.",
         "Cboe SKEW source gated; no implemented candidate.",
@@ -335,14 +346,14 @@
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.97,
+        "confidence": 1.0,
         "freshness_status": "ok",
-        "id": "vix_curve",
-        "label": "VIX curve state",
-        "message": "VIX curve is contango-proxy and calm.",
-        "severity": 87.3,
+        "id": "vix_complex",
+        "label": "VIX / VVIX complex",
+        "message": "Volatility tail risk is contained.",
+        "severity": 51.19,
         "source_status": "free_public",
-        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
       "sections": [
         {
@@ -359,7 +370,7 @@
       ],
       "state": "support",
       "title": "Volatility",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     }
   }
 }

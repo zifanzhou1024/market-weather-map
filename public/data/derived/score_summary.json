@@ -13,8 +13,8 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-07-13",
-  "generated_at_utc": "2026-07-14T00:14:07Z",
+  "date": "2026-07-15",
+  "generated_at_utc": "2026-07-16T00:17:27Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
@@ -24,7 +24,7 @@
         "liquidity_drain": 69.24,
         "positioning_crowding": -1.85,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": 87.3
+        "volatility_term_structure": 8.74
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -53,9 +53,9 @@
       "recent_changes": [
         "The broad dollar is spiking.",
         "Credit spread pressure is contained.",
-        "Volatility term structure is calm."
+        "Liquidity drains are limited."
       ],
-      "score": 45.67,
+      "score": 29.95,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -153,8 +153,8 @@
       ],
       "top_supports": [
         "Credit spread pressure is contained.",
-        "Volatility term structure is calm.",
-        "Liquidity drains are limited."
+        "Liquidity drains are limited.",
+        "Volatility term structure is calm."
       ]
     },
     "macro_climate": {
@@ -356,10 +356,10 @@
         "commodities_inflation_impulse": 18.02,
         "credit_spreads": 59.12,
         "dollar_global": -34.12,
-        "liquidity_funding": 13.6,
+        "liquidity_funding": 37.53,
         "rates_real_yields": -100.0,
         "sentiment_positioning": -1.85,
-        "volatility_tail_risk": 50.0
+        "volatility_tail_risk": 51.19
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -387,7 +387,7 @@
         "Credit spread pressure is contained.",
         "Volatility tail risk is contained."
       ],
-      "score": 6.16,
+      "score": 10.65,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -525,7 +525,7 @@
       "top_supports": [
         "Credit spread pressure is contained.",
         "Volatility tail risk is contained.",
-        "Commodity inflation impulse is easing."
+        "Liquidity funding conditions are improving."
       ]
     }
   }

@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-07-14T00:13:16Z",
+  "generated_at_utc": "2026-07-16T00:16:45Z",
   "observations": [
     {
       "date": "2014-10-31",
@@ -690,36 +690,36 @@
     {
       "date": "2026-03-31",
       "percentile_252d": 50.0,
-      "value": 164100.3138
+      "value": 160528.3215
     },
     {
       "date": "2026-04-30",
       "percentile_252d": 8.33,
-      "value": -215024.1352
+      "value": -258399.9491
     },
     {
       "date": "2026-05-31",
-      "percentile_252d": 83.33,
-      "value": 292648.2573
+      "percentile_252d": 91.67,
+      "value": 315651.7414
     },
     {
       "date": "2026-06-30",
-      "percentile_252d": 33.33,
-      "value": 120305.2756
+      "percentile_252d": 25.0,
+      "value": -27009.65
     }
   ],
   "series_id": "monthly_treasury_deficit_surplus",
   "source": "FiscalData",
   "source_url": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
   "summary": {
-    "change_12m": 49339.9831,
-    "change_1d": -172342.9817,
-    "change_1m": -172342.9817,
-    "change_1w": -172342.9817,
-    "change_3m": -43795.0382,
+    "change_12m": -97974.9425,
+    "change_1d": -342661.3914,
+    "change_1m": -342661.3914,
+    "change_1w": -342661.3914,
+    "change_3m": -187537.9715,
     "latest_date": "2026-06-30",
-    "latest_value": 120305.2756,
-    "percentile_252d": 33.33
+    "latest_value": -27009.65,
+    "percentile_252d": 25.0
   },
   "units": "millions_usd"
 }

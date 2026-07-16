@@ -1,6 +1,6 @@
 {
-  "date": "2026-07-13",
-  "generated_at_utc": "2026-07-14T00:14:12Z",
+  "date": "2026-07-15",
+  "generated_at_utc": "2026-07-16T00:17:31Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,7 +74,7 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 45.67
+      "score": 29.95
     },
     "long_term": {
       "confidence": 1.0,
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 6.16
+      "score": 10.65
     }
   },
   "top_supports": [
@@ -108,24 +108,6 @@
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.97,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Volatility curve",
-      "horizon": "short_term",
-      "id": "vix_curve",
-      "importance": 4,
-      "label": "VIX curve state",
-      "message": "VIX curve is contango-proxy and calm.",
-      "priority": 338.72,
-      "severity": 87.3,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     {
       "access_status": "free_public_active",
@@ -157,8 +139,8 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is contained.",
-      "priority": 250.0,
-      "severity": 50.0,
+      "priority": 255.95,
+      "severity": 51.19,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
@@ -183,6 +165,24 @@
     },
     {
       "access_status": "free_public_active",
+      "category": "liquidity",
+      "confidence": 1.0,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Liquidity / Funding",
+      "horizon": "both",
+      "id": "net_liquidity",
+      "importance": 4,
+      "label": "Net liquidity",
+      "message": "Net liquidity is supportive.",
+      "priority": 150.12,
+      "severity": 37.53,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+    },
+    {
+      "access_status": "free_public_active",
       "category": "macro",
       "confidence": 1.0,
       "direction": "support",
@@ -201,21 +201,21 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "liquidity",
+      "category": "macro",
       "confidence": 1.0,
       "direction": "support",
       "freshness_status": "ok",
-      "group": "Liquidity / Funding",
-      "horizon": "both",
-      "id": "net_liquidity",
-      "importance": 4,
-      "label": "Net liquidity",
-      "message": "Net liquidity is supportive.",
-      "priority": 54.4,
-      "severity": 13.6,
+      "group": "Commodities / Inflation",
+      "horizon": "short_term",
+      "id": "commodities_inflation_impulse",
+      "importance": 3,
+      "label": "Commodities inflation impulse",
+      "message": "Commodity inflation impulse is calming.",
+      "priority": 54.06,
+      "severity": 18.02,
       "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+      "urgency": "near_term",
+      "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
     }
   ],
   "top_warnings": [
