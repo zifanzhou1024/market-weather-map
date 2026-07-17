@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-07-14T00:12:56Z",
+  "generated_at_utc": "2026-07-17T00:57:24Z",
   "observations": [
     {
       "date": "1986-01-02",
@@ -50976,20 +50976,45 @@
       "date": "2026-07-06",
       "percentile_252d": 63.89,
       "value": 69.6
+    },
+    {
+      "date": "2026-07-07",
+      "percentile_252d": 68.25,
+      "value": 71.53
+    },
+    {
+      "date": "2026-07-08",
+      "percentile_252d": 69.44,
+      "value": 74.56
+    },
+    {
+      "date": "2026-07-09",
+      "percentile_252d": 68.65,
+      "value": 73.15
+    },
+    {
+      "date": "2026-07-10",
+      "percentile_252d": 67.86,
+      "value": 72.45
+    },
+    {
+      "date": "2026-07-13",
+      "percentile_252d": 70.63,
+      "value": 79.2
     }
   ],
   "series_id": "wti_crude",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DCOILWTICO",
   "summary": {
-    "change_12m": 3.3,
-    "change_1d": -0.13,
-    "change_1m": -30.16,
-    "change_1w": -0.7,
-    "change_3m": -43.63,
-    "latest_date": "2026-07-06",
-    "latest_value": 69.6,
-    "percentile_252d": 63.89
+    "change_12m": 9.65,
+    "change_1d": 6.75,
+    "change_1m": -14.48,
+    "change_1w": 9.6,
+    "change_3m": -19.14,
+    "latest_date": "2026-07-13",
+    "latest_value": 79.2,
+    "percentile_252d": 70.63
   },
   "units": "usd_per_barrel"
 }

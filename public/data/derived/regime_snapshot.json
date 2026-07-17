@@ -34,7 +34,7 @@
       "id": "credit",
       "label": "Credit spreads",
       "message": "Credit spread pressure is based on HY minus IG OAS when available.",
-      "state": "down"
+      "state": "flat"
     },
     {
       "id": "liquidity",
@@ -53,14 +53,14 @@
     {
       "id": "credit",
       "label": "Credit",
-      "message": "Credit spreads are diverging for the active regime.",
-      "status": "diverging"
+      "message": "Credit spreads are mixed for the active regime.",
+      "status": "mixed"
     },
     {
       "id": "vix_curve",
       "label": "VIX curve",
-      "message": "Volatility is confirming and the curve is contango proxy.",
-      "status": "confirming"
+      "message": "Volatility is diverging and the curve is contango proxy.",
+      "status": "diverging"
     },
     {
       "id": "liquidity",
@@ -75,8 +75,8 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-07-15",
-  "generated_at_utc": "2026-07-16T00:17:27Z",
+  "date": "2026-07-16",
+  "generated_at_utc": "2026-07-17T00:58:33Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -248,24 +248,6 @@
     "yield_driver": "real_yield_driven"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.28,
-      "date": "2025-06-26",
-      "nominal_10y": 4.26,
-      "real_yield_10y": 1.98
-    },
-    {
-      "breakeven_10y": 2.29,
-      "date": "2025-06-27",
-      "nominal_10y": 4.29,
-      "real_yield_10y": 2.0
-    },
-    {
-      "breakeven_10y": 2.29,
-      "date": "2025-06-30",
-      "nominal_10y": 4.24,
-      "real_yield_10y": 1.95
-    },
     {
       "breakeven_10y": 2.29,
       "date": "2025-07-01",
@@ -1806,6 +1788,24 @@
       "breakeven_10y": 2.24,
       "date": "2026-07-10",
       "nominal_10y": 4.56,
+      "real_yield_10y": 2.32
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2026-07-13",
+      "nominal_10y": 4.62,
+      "real_yield_10y": 2.36
+    },
+    {
+      "breakeven_10y": 2.25,
+      "date": "2026-07-14",
+      "nominal_10y": 4.58,
+      "real_yield_10y": 2.33
+    },
+    {
+      "breakeven_10y": 2.23,
+      "date": "2026-07-15",
+      "nominal_10y": 4.55,
       "real_yield_10y": 2.32
     }
   ]
