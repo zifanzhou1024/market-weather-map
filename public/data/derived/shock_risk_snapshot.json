@@ -17,12 +17,12 @@
       "value": 0.8579
     },
     {
-      "change": -0.04,
+      "change": 0.04,
       "id": "hy_minus_ig_oas",
       "label": "Credit spreads",
       "message": "Credit spread percentile is included in active shock-risk pressure.",
-      "score": 91.26,
-      "value": 1.92
+      "score": 88.88,
+      "value": 1.93
     },
     {
       "change": 0.5429,
@@ -33,12 +33,12 @@
       "value": 120.5046
     },
     {
-      "change": 0.15,
+      "change": 0.2,
       "id": "real_yield_10y",
       "label": "10Y real yield",
       "message": "Real yield one-month change is included in active shock-risk pressure.",
-      "score": -18.0,
-      "value": 2.32
+      "score": -24.0,
+      "value": 2.35
     },
     {
       "change": 137776.0,
@@ -49,12 +49,18 @@
       "value": 5986659.0
     }
   ],
-  "date": "2026-07-16",
-  "generated_at_utc": "2026-07-17T00:58:33Z",
+  "date": "2026-07-17",
+  "generated_at_utc": "2026-07-18T00:15:25Z",
   "label": "Contained shock risk",
   "method_version": "phase5-shock-risk-v1",
-  "mismatch_warnings": [],
-  "score": 32.16,
+  "mismatch_warnings": [
+    {
+      "id": "tightening_confirmation",
+      "label": "Tightening confirmation",
+      "message": "Real yields, the broad dollar, and credit spreads all rose over one month, confirming tighter active financial conditions."
+    }
+  ],
+  "score": 30.67,
   "source_gaps": [
     {
       "id": "move_index",

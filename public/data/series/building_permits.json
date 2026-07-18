@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-07-17T00:57:31Z",
+  "generated_at_utc": "2026-07-18T00:14:18Z",
   "observations": [
     {
       "date": "1960-01-01",
@@ -3986,20 +3986,25 @@
       "date": "2026-05-01",
       "percentile_252d": 50.0,
       "value": 1410.0
+    },
+    {
+      "date": "2026-06-01",
+      "percentile_252d": 25.0,
+      "value": 1367.0
     }
   ],
   "series_id": "building_permits",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/PERMIT",
   "summary": {
-    "change_12m": -6.0,
-    "change_1d": -13.0,
-    "change_1m": -13.0,
-    "change_1w": -13.0,
-    "change_3m": -130.0,
-    "latest_date": "2026-05-01",
-    "latest_value": 1410.0,
-    "percentile_252d": 50.0
+    "change_12m": -32.0,
+    "change_1d": -43.0,
+    "change_1m": -43.0,
+    "change_1w": -43.0,
+    "change_3m": 4.0,
+    "latest_date": "2026-06-01",
+    "latest_value": 1367.0,
+    "percentile_252d": 25.0
   },
   "units": "thousands_saar"
 }

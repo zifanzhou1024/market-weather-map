@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-07-17T00:58:33Z",
+  "generated_at_utc": "2026-07-18T00:15:25Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
@@ -42,12 +42,13 @@
       ],
       "top_risks": [
         "Real yields are elevated.",
-        "The broad dollar is pressuring global liquidity."
+        "The broad dollar is pressuring global liquidity.",
+        "Volatility tail risk is elevated."
       ],
       "top_supports": [
         "Liquidity funding conditions are improving.",
         "Credit spread pressure is contained.",
-        "Volatility tail risk is contained."
+        "Commodity inflation impulse is easing."
       ]
     }
   },
@@ -298,6 +299,12 @@
       "fragility": 29.69,
       "macro_climate": 8.92,
       "market_weather": 5.33
+    },
+    {
+      "date": "2026-07-17",
+      "fragility": 29.61,
+      "macro_climate": 11.84,
+      "market_weather": 3.33
     }
   ]
 }
