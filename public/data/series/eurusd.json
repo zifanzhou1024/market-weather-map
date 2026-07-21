@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-07-18T00:14:24Z",
+  "generated_at_utc": "2026-07-21T00:57:02Z",
   "observations": [
     {
       "date": "1999-01-04",
@@ -34506,20 +34506,45 @@
       "date": "2026-07-10",
       "percentile_252d": 5.16,
       "value": 1.1438
+    },
+    {
+      "date": "2026-07-13",
+      "percentile_252d": 2.38,
+      "value": 1.1402
+    },
+    {
+      "date": "2026-07-14",
+      "percentile_252d": 4.76,
+      "value": 1.1428
+    },
+    {
+      "date": "2026-07-15",
+      "percentile_252d": 5.95,
+      "value": 1.1436
+    },
+    {
+      "date": "2026-07-16",
+      "percentile_252d": 7.54,
+      "value": 1.1447
+    },
+    {
+      "date": "2026-07-17",
+      "percentile_252d": 7.14,
+      "value": 1.144
     }
   ],
   "series_id": "eurusd",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DEXUSEU",
   "summary": {
-    "change_12m": -0.0269,
-    "change_1d": -0.0001,
-    "change_1m": -0.0118,
-    "change_1w": -0.001,
-    "change_3m": -0.0268,
-    "latest_date": "2026-07-10",
-    "latest_value": 1.1438,
-    "percentile_252d": 5.16
+    "change_12m": -0.0179,
+    "change_1d": -0.0007,
+    "change_1m": -0.0175,
+    "change_1w": 0.0002,
+    "change_3m": -0.0343,
+    "latest_date": "2026-07-17",
+    "latest_value": 1.144,
+    "percentile_252d": 7.14
   },
   "units": "usd_per_eur"
 }
