@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-07-21T00:57:44Z",
+  "generated_at_utc": "2026-07-22T00:13:58Z",
   "observations": [
     {
       "date": "1871-02-01",
@@ -9290,60 +9290,60 @@
     {
       "date": "2025-11-01",
       "percentile_252d": 91.67,
-      "value": 39.28
+      "value": 39.16
     },
     {
       "date": "2025-12-01",
       "percentile_252d": 100.0,
-      "value": 39.84
+      "value": 39.59
     },
     {
       "date": "2026-01-01",
       "percentile_252d": 100.0,
-      "value": 40.03
+      "value": 39.65
     },
     {
       "date": "2026-02-01",
-      "percentile_252d": 83.33,
-      "value": 39.53
+      "percentile_252d": 66.67,
+      "value": 39.02
     },
     {
       "date": "2026-03-01",
-      "percentile_252d": 41.67,
-      "value": 37.66
+      "percentile_252d": 33.33,
+      "value": 37.04
     },
     {
       "date": "2026-04-01",
-      "percentile_252d": 58.33,
-      "value": 38.93
+      "percentile_252d": 50.0,
+      "value": 38.15
     },
     {
       "date": "2026-05-01",
       "percentile_252d": 100.0,
-      "value": 41.1
+      "value": 40.28
     },
     {
       "date": "2026-06-01",
       "percentile_252d": 100.0,
-      "value": 41.32
+      "value": 40.5
     },
     {
       "date": "2026-07-01",
       "percentile_252d": 100.0,
-      "value": 41.45
+      "value": 40.98
     }
   ],
   "series_id": "cape_ratio",
   "source": "Robert Shiller / multpl.com",
   "source_url": "https://www.multpl.com/shiller-pe/table/by-month",
   "summary": {
-    "change_12m": 3.97,
-    "change_1d": 0.13,
-    "change_1m": 0.13,
-    "change_1w": 0.13,
-    "change_3m": 2.52,
+    "change_12m": 3.5,
+    "change_1d": 0.48,
+    "change_1m": 0.48,
+    "change_1w": 0.48,
+    "change_3m": 2.83,
     "latest_date": "2026-07-01",
-    "latest_value": 41.45,
+    "latest_value": 40.98,
     "percentile_252d": 100.0
   },
   "units": "ratio"
