@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-07-22T00:13:13Z",
+  "generated_at_utc": "2026-07-23T00:58:03Z",
   "observations": [
     {
       "date": "1987-05-20",
@@ -49661,20 +49661,45 @@
       "date": "2026-07-13",
       "percentile_252d": 72.22,
       "value": 81.62
+    },
+    {
+      "date": "2026-07-14",
+      "percentile_252d": 72.62,
+      "value": 83.69
+    },
+    {
+      "date": "2026-07-15",
+      "percentile_252d": 71.83,
+      "value": 83.08
+    },
+    {
+      "date": "2026-07-16",
+      "percentile_252d": 70.63,
+      "value": 81.23
+    },
+    {
+      "date": "2026-07-17",
+      "percentile_252d": 73.02,
+      "value": 85.01
+    },
+    {
+      "date": "2026-07-20",
+      "percentile_252d": 73.02,
+      "value": 86.99
     }
   ],
   "series_id": "brent_crude",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DCOILBRENTEU",
   "summary": {
-    "change_12m": 10.66,
-    "change_1d": 7.28,
-    "change_1m": -7.02,
-    "change_1w": 12.06,
-    "change_3m": -41.66,
-    "latest_date": "2026-07-13",
-    "latest_value": 81.62,
-    "percentile_252d": 72.22
+    "change_12m": 15.07,
+    "change_1d": 1.98,
+    "change_1m": 6.53,
+    "change_1w": 5.37,
+    "change_3m": -16.41,
+    "latest_date": "2026-07-20",
+    "latest_value": 86.99,
+    "percentile_252d": 73.02
   },
   "units": "usd_per_barrel"
 }

@@ -1,20 +1,19 @@
 {
-  "generated_at_utc": "2026-07-22T00:14:18Z",
+  "generated_at_utc": "2026-07-23T00:59:15Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
-        "Volatility term structure is inverted.",
         "The broad dollar is spiking.",
         "Credit spread pressure is contained.",
         "Liquidity drains are limited."
       ],
       "top_risks": [
-        "Volatility term structure is inverted.",
         "The broad dollar is spiking."
       ],
       "top_supports": [
         "Credit spread pressure is contained.",
-        "Liquidity drains are limited."
+        "Liquidity drains are limited.",
+        "Volatility term structure is calm."
       ]
     },
     "macro_climate": {
@@ -39,18 +38,17 @@
       "recent_changes": [
         "Real yields are elevated.",
         "The broad dollar is pressuring global liquidity.",
-        "Credit spread pressure is contained.",
-        "Liquidity funding conditions are improving."
+        "Liquidity funding conditions are improving.",
+        "Credit spread pressure is contained."
       ],
       "top_risks": [
         "Real yields are elevated.",
-        "The broad dollar is pressuring global liquidity.",
-        "Volatility tail risk is elevated."
+        "The broad dollar is pressuring global liquidity."
       ],
       "top_supports": [
-        "Credit spread pressure is contained.",
         "Liquidity funding conditions are improving.",
-        "Commodity inflation impulse is easing."
+        "Credit spread pressure is contained.",
+        "Volatility tail risk is contained."
       ]
     }
   },
@@ -319,6 +317,12 @@
       "fragility": 19.53,
       "macro_climate": 11.84,
       "market_weather": -3.31
+    },
+    {
+      "date": "2026-07-22",
+      "fragility": 33.14,
+      "macro_climate": 11.76,
+      "market_weather": 5.78
     }
   ]
 }
