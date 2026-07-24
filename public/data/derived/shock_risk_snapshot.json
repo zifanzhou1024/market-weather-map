@@ -17,12 +17,12 @@
       "value": 0.8516
     },
     {
-      "change": 0.0,
+      "change": -0.07,
       "id": "hy_minus_ig_oas",
       "label": "Credit spreads",
       "message": "Credit spread percentile is included in active shock-risk pressure.",
-      "score": 92.86,
-      "value": 1.91
+      "score": 96.82,
+      "value": 1.9
     },
     {
       "change": 1.2755,
@@ -33,28 +33,28 @@
       "value": 120.5315
     },
     {
-      "change": 0.16,
+      "change": 0.11,
       "id": "real_yield_10y",
       "label": "10Y real yield",
       "message": "Real yield one-month change is included in active shock-risk pressure.",
-      "score": -19.2,
-      "value": 2.37
+      "score": -13.2,
+      "value": 2.39
     },
     {
-      "change": 137776.0,
+      "change": 104964.0,
       "id": "net_liquidity",
       "label": "Net liquidity",
       "message": "Net liquidity one-month change is included in active shock-risk pressure.",
       "score": 100.0,
-      "value": 5986659.0
+      "value": 5917379.0
     }
   ],
-  "date": "2026-07-22",
-  "generated_at_utc": "2026-07-23T00:59:15Z",
+  "date": "2026-07-23",
+  "generated_at_utc": "2026-07-24T00:16:52Z",
   "label": "Contained shock risk",
   "method_version": "phase5-shock-risk-v1",
   "mismatch_warnings": [],
-  "score": 35.57,
+  "score": 37.46,
   "source_gaps": [
     {
       "id": "move_index",
