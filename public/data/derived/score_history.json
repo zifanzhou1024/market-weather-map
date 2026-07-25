@@ -1,19 +1,20 @@
 {
-  "generated_at_utc": "2026-07-24T00:16:52Z",
+  "generated_at_utc": "2026-07-25T00:59:31Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
+        "Volatility term structure is inverted.",
         "The broad dollar is spiking.",
-        "Credit spread pressure is contained.",
-        "Liquidity drains are limited."
+        "Liquidity drains are limited.",
+        "Credit spread pressure is contained."
       ],
       "top_risks": [
+        "Volatility term structure is inverted.",
         "The broad dollar is spiking."
       ],
       "top_supports": [
-        "Credit spread pressure is contained.",
         "Liquidity drains are limited.",
-        "Volatility term structure is calm."
+        "Credit spread pressure is contained."
       ]
     },
     "macro_climate": {
@@ -37,18 +38,18 @@
     "market_weather": {
       "recent_changes": [
         "Real yields are elevated.",
-        "The broad dollar is pressuring global liquidity.",
-        "Credit spread pressure is contained.",
-        "Liquidity funding conditions are improving."
+        "Leveraged-money S&P 500 positioning is crowded.",
+        "Liquidity funding conditions are improving.",
+        "Credit spread pressure is contained."
       ],
       "top_risks": [
         "Real yields are elevated.",
-        "The broad dollar is pressuring global liquidity.",
-        "Volatility tail risk is elevated."
+        "Leveraged-money S&P 500 positioning is crowded.",
+        "The broad dollar is pressuring global liquidity."
       ],
       "top_supports": [
-        "Credit spread pressure is contained.",
-        "Liquidity funding conditions are improving."
+        "Liquidity funding conditions are improving.",
+        "Credit spread pressure is contained."
       ]
     }
   },
@@ -329,6 +330,12 @@
       "fragility": 31.25,
       "macro_climate": 16.38,
       "market_weather": 0.83
+    },
+    {
+      "date": "2026-07-24",
+      "fragility": 3.83,
+      "macro_climate": 16.38,
+      "market_weather": -14.76
     }
   ]
 }

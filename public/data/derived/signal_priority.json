@@ -1,6 +1,6 @@
 {
-  "date": "2026-07-23",
-  "generated_at_utc": "2026-07-24T00:16:55Z",
+  "date": "2026-07-24",
+  "generated_at_utc": "2026-07-25T00:59:34Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -73,8 +73,8 @@
   "overall_read": {
     "fragility": {
       "confidence": 0.97,
-      "label": "Low Fragility",
-      "score": 31.25
+      "label": "Moderate",
+      "score": 3.83
     },
     "long_term": {
       "confidence": 0.99,
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 0.83
+      "score": -14.76
     }
   },
   "top_supports": [
@@ -111,24 +111,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "credit",
-      "confidence": 1.0,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Credit",
-      "horizon": "both",
-      "id": "credit_spreads",
-      "importance": 5,
-      "label": "Credit spreads",
-      "message": "Credit spread pressure is contained.",
-      "priority": 279.75,
-      "severity": 55.95,
-      "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "macro",
       "confidence": 0.99,
       "direction": "support",
@@ -144,24 +126,6 @@
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Broad growth conditions set the strategic backdrop for risk assets and recession risk."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "liquidity",
-      "confidence": 1.0,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Liquidity / Funding",
-      "horizon": "both",
-      "id": "net_liquidity",
-      "importance": 4,
-      "label": "Net liquidity",
-      "message": "Net liquidity is supportive.",
-      "priority": 200.2,
-      "severity": 50.05,
-      "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
     {
       "access_status": "free_public_active",
@@ -183,39 +147,39 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.97,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Volatility curve",
-      "horizon": "short_term",
-      "id": "vix_curve",
-      "importance": 4,
-      "label": "VIX curve state",
-      "message": "VIX curve is contango-proxy and calm.",
-      "priority": 61.61,
-      "severity": 15.88,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "positioning",
+      "category": "liquidity",
       "confidence": 1.0,
       "direction": "support",
       "freshness_status": "ok",
-      "group": "Positioning",
-      "horizon": "short_term",
-      "id": "sentiment_positioning",
+      "group": "Liquidity / Funding",
+      "horizon": "both",
+      "id": "net_liquidity",
       "importance": 4,
-      "label": "S&P 500 positioning",
-      "message": "S&P 500 positioning is balanced.",
-      "priority": 6.16,
-      "severity": 1.54,
+      "label": "Net liquidity",
+      "message": "Net liquidity is supportive.",
+      "priority": 182.08,
+      "severity": 45.52,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "credit",
+      "confidence": 1.0,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Credit",
+      "horizon": "both",
+      "id": "credit_spreads",
+      "importance": 5,
+      "label": "Credit spreads",
+      "message": "Credit spread pressure is contained.",
+      "priority": 115.1,
+      "severity": 23.02,
       "source_status": "active",
       "urgency": "near_term",
-      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
+      "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
     }
   ],
   "top_warnings": [
@@ -257,24 +221,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "dollar",
-      "confidence": 1.0,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Dollar / Global",
-      "horizon": "short_term",
-      "id": "broad_dollar",
-      "importance": 4,
-      "label": "Broad dollar",
-      "message": "The broad dollar is firming and tightening global liquidity.",
-      "priority": 149.2,
-      "severity": 37.3,
-      "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "volatility",
       "confidence": 1.0,
       "direction": "risk",
@@ -285,11 +231,65 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is elevated.",
-      "priority": 64.8,
-      "severity": 12.96,
+      "priority": 185.2,
+      "severity": 37.04,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 0.97,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility curve",
+      "horizon": "short_term",
+      "id": "vix_curve",
+      "importance": 4,
+      "label": "VIX curve state",
+      "message": "VIX curve is in backwardation-proxy stress.",
+      "priority": 181.66,
+      "severity": 46.82,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "positioning",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Positioning",
+      "horizon": "short_term",
+      "id": "sentiment_positioning",
+      "importance": 4,
+      "label": "S&P 500 positioning",
+      "message": "Leveraged-money S&P 500 positioning is crowded.",
+      "priority": 152.64,
+      "severity": 38.16,
+      "source_status": "active",
+      "urgency": "near_term",
+      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "dollar",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "stale",
+      "group": "Dollar / Global",
+      "horizon": "short_term",
+      "id": "broad_dollar",
+      "importance": 4,
+      "label": "Broad dollar",
+      "message": "The broad dollar is firming and tightening global liquidity.",
+      "priority": 119.36,
+      "severity": 37.3,
+      "source_status": "active",
+      "urgency": "near_term",
+      "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
     }
   ]
 }
