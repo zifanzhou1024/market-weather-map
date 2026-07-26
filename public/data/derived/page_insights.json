@@ -1,6 +1,6 @@
 {
   "date": "2026-07-24",
-  "generated_at_utc": "2026-07-25T00:59:35Z",
+  "generated_at_utc": "2026-07-26T08:11:16Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -24,11 +24,11 @@
       "why_it_matters": "Commodity prices feed inflation expectations and rates."
     },
     "credit": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "freshness_notes": [],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "credit_spreads",
         "label": "Credit spreads",
@@ -55,13 +55,13 @@
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
     },
     "dollar_global": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "freshness_notes": [
         "Broad dollar is stale."
       ],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "stale",
         "id": "broad_dollar",
         "label": "Broad dollar",
@@ -88,7 +88,7 @@
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
     },
     "fragility": {
-      "confidence": 0.985,
+      "confidence": 0.98,
       "freshness_notes": [
         "MOVE official unavailable; TradingView candidate gated.",
         "Cboe SKEW source gated; no implemented candidate.",
@@ -96,7 +96,7 @@
       ],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
@@ -194,11 +194,11 @@
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
     "liquidity": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "freshness_notes": [],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "net_liquidity",
         "label": "Net liquidity",
@@ -225,11 +225,11 @@
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
     "rates": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "freshness_notes": [],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "real_yields",
         "label": "10Y real yields",
@@ -240,7 +240,7 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by real yields (+11 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+14 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -276,7 +276,7 @@
       "why_it_matters": "The regime quadrant blends rates, dollar and risk inputs."
     },
     "sentiment": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "freshness_notes": [
         "S&P 500 benchmark (SPX) is unavailable.",
         "Put/call ratio (total) is unavailable.",
@@ -284,7 +284,7 @@
       ],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "sentiment_positioning",
         "label": "S&P 500 positioning",
@@ -331,7 +331,7 @@
       "why_it_matters": "Short-term tactical signals track the immediate risk posture across asset classes."
     },
     "volatility": {
-      "confidence": 0.985,
+      "confidence": 0.98,
       "freshness_notes": [
         "MOVE official unavailable; TradingView candidate gated.",
         "Cboe SKEW source gated; no implemented candidate.",
@@ -339,7 +339,7 @@
       ],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.99,
         "freshness_status": "ok",
         "id": "vix_complex",
         "label": "VIX / VVIX complex",

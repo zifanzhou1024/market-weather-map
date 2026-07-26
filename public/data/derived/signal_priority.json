@@ -1,6 +1,6 @@
 {
   "date": "2026-07-24",
-  "generated_at_utc": "2026-07-25T00:59:34Z",
+  "generated_at_utc": "2026-07-26T08:11:16Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -85,7 +85,7 @@
       "label": "Tightening / risk-off"
     },
     "short_term": {
-      "confidence": 1.0,
+      "confidence": 0.99,
       "label": "Mixed",
       "score": -14.76
     }
@@ -148,7 +148,7 @@
     {
       "access_status": "free_public_active",
       "category": "liquidity",
-      "confidence": 1.0,
+      "confidence": 0.99,
       "direction": "support",
       "freshness_status": "ok",
       "group": "Liquidity / Funding",
@@ -157,7 +157,7 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is supportive.",
-      "priority": 182.08,
+      "priority": 180.26,
       "severity": 45.52,
       "source_status": "active",
       "urgency": "slow",
@@ -166,7 +166,7 @@
     {
       "access_status": "free_public_active",
       "category": "credit",
-      "confidence": 1.0,
+      "confidence": 0.99,
       "direction": "support",
       "freshness_status": "ok",
       "group": "Credit",
@@ -175,7 +175,7 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 115.1,
+      "priority": 113.95,
       "severity": 23.02,
       "source_status": "active",
       "urgency": "near_term",
@@ -186,7 +186,7 @@
     {
       "access_status": "free_public_active",
       "category": "rates",
-      "confidence": 1.0,
+      "confidence": 0.99,
       "direction": "risk",
       "freshness_status": "ok",
       "group": "Rates / Real-Yield Pressure",
@@ -195,7 +195,7 @@
       "importance": 5,
       "label": "10Y real yields",
       "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 500.0,
+      "priority": 495.0,
       "severity": 100.0,
       "source_status": "active",
       "urgency": "near_term",
@@ -222,7 +222,7 @@
     {
       "access_status": "free_public_active",
       "category": "volatility",
-      "confidence": 1.0,
+      "confidence": 0.99,
       "direction": "risk",
       "freshness_status": "ok",
       "group": "Volatility & tail risk",
@@ -231,7 +231,7 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is elevated.",
-      "priority": 185.2,
+      "priority": 183.35,
       "severity": 37.04,
       "source_status": "active",
       "urgency": "immediate",
@@ -258,7 +258,7 @@
     {
       "access_status": "free_public_active",
       "category": "positioning",
-      "confidence": 1.0,
+      "confidence": 0.99,
       "direction": "risk",
       "freshness_status": "ok",
       "group": "Positioning",
@@ -267,7 +267,7 @@
       "importance": 4,
       "label": "S&P 500 positioning",
       "message": "Leveraged-money S&P 500 positioning is crowded.",
-      "priority": 152.64,
+      "priority": 151.11,
       "severity": 38.16,
       "source_status": "active",
       "urgency": "near_term",
@@ -276,7 +276,7 @@
     {
       "access_status": "free_public_active",
       "category": "dollar",
-      "confidence": 1.0,
+      "confidence": 0.99,
       "direction": "risk",
       "freshness_status": "stale",
       "group": "Dollar / Global",
@@ -285,7 +285,7 @@
       "importance": 4,
       "label": "Broad dollar",
       "message": "The broad dollar is firming and tightening global liquidity.",
-      "priority": 119.36,
+      "priority": 118.17,
       "severity": 37.3,
       "source_status": "active",
       "urgency": "near_term",
