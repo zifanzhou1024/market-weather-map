@@ -1,16 +1,16 @@
 {
-  "generated_at_utc": "2026-07-26T08:11:14Z",
+  "generated_at_utc": "2026-07-28T00:16:48Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
-        "Volatility term structure is inverted.",
         "The broad dollar is spiking.",
+        "Volatility term structure is inverted.",
         "Liquidity drains are limited.",
         "Credit spread pressure is contained."
       ],
       "top_risks": [
-        "Volatility term structure is inverted.",
-        "The broad dollar is spiking."
+        "The broad dollar is spiking.",
+        "Volatility term structure is inverted."
       ],
       "top_supports": [
         "Liquidity drains are limited.",
@@ -336,6 +336,12 @@
       "fragility": 3.83,
       "macro_climate": 16.38,
       "market_weather": -14.76
+    },
+    {
+      "date": "2026-07-27",
+      "fragility": -0.1,
+      "macro_climate": 16.38,
+      "market_weather": -18.68
     }
   ]
 }
