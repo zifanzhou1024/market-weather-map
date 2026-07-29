@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-07-28T00:14:58Z",
+  "generated_at_utc": "2026-07-29T00:14:05Z",
   "observations": [
     {
       "date": "2006-03-06",
@@ -25346,20 +25346,25 @@
       "date": "2026-07-27",
       "percentile_252d": 63.49,
       "value": 100.91
+    },
+    {
+      "date": "2026-07-28",
+      "percentile_252d": 51.98,
+      "value": 98.51
     }
   ],
   "series_id": "vvix",
   "source": "Cboe",
   "source_url": "https://www.cboe.com/us/indices/dashboard/",
   "summary": {
-    "change_12m": 11.16,
-    "change_1d": 0.18,
-    "change_1m": 9.72,
-    "change_1w": -1.91,
-    "change_3m": 3.73,
-    "latest_date": "2026-07-27",
-    "latest_value": 100.91,
-    "percentile_252d": 63.49
+    "change_12m": 7.92,
+    "change_1d": -2.4,
+    "change_1m": 9.49,
+    "change_1w": 2.17,
+    "change_3m": 4.65,
+    "latest_date": "2026-07-28",
+    "latest_value": 98.51,
+    "percentile_252d": 51.98
   },
   "units": "index"
 }

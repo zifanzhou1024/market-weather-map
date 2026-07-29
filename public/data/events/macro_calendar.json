@@ -67,10 +67,10 @@
     },
     {
       "category": "growth",
-      "date": "2026-07-28",
+      "date": "2026-08-14",
       "id": "retail_sales",
       "importance": "high",
-      "notes": "Official Census economic indicators calendar row: Advance Economic Indicators Report (International Trade, Retail, & Wholesale). Descriptive event context only; not scored.",
+      "notes": "Official Census economic indicators calendar row: Advance Monthly Sales for Retail and Food Services. Descriptive event context only; not scored.",
       "source": "Census",
       "source_url": "https://www.census.gov/economic-indicators/calendar-listview.html",
       "status": "scheduled",
@@ -93,10 +93,10 @@
     },
     {
       "category": "rates",
-      "date": "2026-07-28",
+      "date": "2026-07-29",
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 7-Year Note offering amount 44000000000. Descriptive event context only; not scored.",
+      "notes": "Official FiscalData auction query row for 2-Year Note offering amount 30000000000. Descriptive event context only; not scored.",
       "source": "FiscalData",
       "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
       "status": "scheduled",
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-07-28T00:17:15Z",
+  "generated_at_utc": "2026-07-29T00:16:14Z",
   "method_version": "official-event-calendar-v2"
 }
