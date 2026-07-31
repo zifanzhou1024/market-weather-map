@@ -2,9 +2,9 @@
   "conflicting_signals": [],
   "data_quality": {
     "coverage_confidence": 1.0,
-    "freshness_confidence": 1.0,
+    "freshness_confidence": 0.99,
     "model_confidence": 0.97,
-    "overall_confidence": 0.87,
+    "overall_confidence": 0.86,
     "reasons": [
       "Bucket missing active inputs: treasury_bond_volatility.",
       "Catalog source tier mix: 41 sources gated, 20 candidate-only of 122 total.",
@@ -13,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-07-29",
-  "generated_at_utc": "2026-07-30T00:53:26Z",
+  "date": "2026-07-30",
+  "generated_at_utc": "2026-07-31T01:01:25Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 19.84,
+        "credit_spread_widening": -6.34,
         "dollar_spike": -51.58,
-        "liquidity_drain": 61.54,
+        "liquidity_drain": 19.24,
         "positioning_crowding": -38.16,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -76.98
+        "volatility_term_structure": -22.22
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -51,12 +51,11 @@
         "Treasury/bond volatility source is not active."
       ],
       "recent_changes": [
-        "Volatility term structure is inverted.",
         "The broad dollar is spiking.",
-        "Liquidity drains are limited.",
-        "Credit spread pressure is contained."
+        "Volatility term structure is inverted.",
+        "Liquidity drains are limited."
       ],
-      "score": -14.67,
+      "score": -16.6,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -150,12 +149,12 @@
         "missing": []
       },
       "top_risks": [
+        "The broad dollar is spiking.",
         "Volatility term structure is inverted.",
-        "The broad dollar is spiking."
+        "Credit spread pressure is widening."
       ],
       "top_supports": [
-        "Liquidity drains are limited.",
-        "Credit spread pressure is contained."
+        "Liquidity drains are limited."
       ]
     },
     "macro_climate": {
@@ -163,9 +162,9 @@
         "consumer_balance_sheet": 49.23,
         "consumer_production": 94.45,
         "growth": 50.0,
-        "housing": -41.98,
+        "housing": -45.84,
         "inflation": -87.5,
-        "labor": 91.03,
+        "labor": 89.75,
         "real_yields": -97.62
       },
       "bucket_weights": {
@@ -177,12 +176,12 @@
         "labor": 0.18,
         "real_yields": 0.1
       },
-      "confidence": 1.0,
+      "confidence": 0.99,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 0.99,
+        "freshness_confidence": 0.97,
         "model_confidence": 1.0,
-        "overall_confidence": 1.0,
+        "overall_confidence": 0.99,
         "source_confidence": 1.0
       },
       "confidence_reasons": [],
@@ -194,7 +193,7 @@
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
-      "score": 16.62,
+      "score": 15.93,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -354,13 +353,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": 3.34,
-        "credit_spreads": -14.29,
+        "commodities_inflation_impulse": 3.41,
+        "credit_spreads": -24.8,
         "dollar_global": -51.58,
-        "liquidity_funding": 42.55,
+        "liquidity_funding": 12.71,
         "rates_real_yields": -97.62,
         "sentiment_positioning": -38.16,
-        "volatility_tail_risk": -67.46
+        "volatility_tail_risk": 14.95
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -385,9 +384,10 @@
       "recent_changes": [
         "Real yields are elevated.",
         "Leveraged-money S&P 500 positioning is crowded.",
+        "Volatility tail risk is contained.",
         "Liquidity funding conditions are improving."
       ],
-      "score": -28.89,
+      "score": -24.2,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -521,9 +521,10 @@
       "top_risks": [
         "Real yields are elevated.",
         "Leveraged-money S&P 500 positioning is crowded.",
-        "Volatility tail risk is elevated."
+        "The broad dollar is pressuring global liquidity."
       ],
       "top_supports": [
+        "Volatility tail risk is contained.",
         "Liquidity funding conditions are improving."
       ]
     }

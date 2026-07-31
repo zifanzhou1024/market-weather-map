@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-07-30T00:52:29Z",
+  "generated_at_utc": "2026-07-31T01:00:48Z",
   "observations": [
     {
       "date": "2002-12-18",
@@ -6161,20 +6161,25 @@
       "date": "2026-07-22",
       "percentile_252d": 69.23,
       "value": 3062149.0
+    },
+    {
+      "date": "2026-07-29",
+      "percentile_252d": 44.23,
+      "value": 2984570.0
     }
   ],
   "series_id": "reserve_balances",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/WRESBAL",
   "summary": {
-    "change_12m": -300128.0,
-    "change_1d": -80572.0,
-    "change_1m": 110733.0,
-    "change_1w": -80572.0,
-    "change_3m": 160324.0,
-    "latest_date": "2026-07-22",
-    "latest_value": 3062149.0,
-    "percentile_252d": 69.23
+    "change_12m": -362844.0,
+    "change_1d": -77579.0,
+    "change_1m": 17673.0,
+    "change_1w": -77579.0,
+    "change_3m": 65971.0,
+    "latest_date": "2026-07-29",
+    "latest_value": 2984570.0,
+    "percentile_252d": 44.23
   },
   "units": "millions_usd"
 }

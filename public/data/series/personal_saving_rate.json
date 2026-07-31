@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-07-30T00:53:00Z",
+  "generated_at_utc": "2026-07-31T01:01:04Z",
   "observations": [
     {
       "date": "1959-01-01",
@@ -4044,8 +4044,13 @@
     },
     {
       "date": "2026-05-01",
-      "percentile_252d": 16.67,
-      "value": 3.0
+      "percentile_252d": 8.33,
+      "value": 2.8
+    },
+    {
+      "date": "2026-06-01",
+      "percentile_252d": 8.33,
+      "value": 2.7
     }
   ],
   "series_id": "personal_saving_rate",
@@ -4053,13 +4058,13 @@
   "source_url": "https://fred.stlouisfed.org/series/PSAVERT",
   "summary": {
     "change_12m": -1.9,
-    "change_1d": 0.0,
-    "change_1m": 0.0,
-    "change_1w": 0.0,
+    "change_1d": -0.1,
+    "change_1m": -0.1,
+    "change_1w": -0.1,
     "change_3m": -0.8,
-    "latest_date": "2026-05-01",
-    "latest_value": 3.0,
-    "percentile_252d": 16.67
+    "latest_date": "2026-06-01",
+    "latest_value": 2.7,
+    "percentile_252d": 8.33
   },
   "units": "percent"
 }
