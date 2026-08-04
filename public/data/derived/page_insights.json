@@ -1,6 +1,6 @@
 {
-  "date": "2026-07-31",
-  "generated_at_utc": "2026-08-01T00:17:11Z",
+  "date": "2026-08-03",
+  "generated_at_utc": "2026-08-04T00:58:59Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -13,13 +13,13 @@
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is calming.",
-        "severity": 3.33,
+        "severity": 3.56,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
       "sections": [
         {
-          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse +3.3, 100th percentile of the past year).",
+          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse +3.6, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -67,23 +67,21 @@
     },
     "dollar_global": {
       "confidence": 1.0,
-      "freshness_notes": [
-        "Broad dollar is stale."
-      ],
-      "primary_warning": {
+      "freshness_notes": [],
+      "primary_support": {
         "access_status": "free_public_active",
         "confidence": 1.0,
-        "freshness_status": "stale",
+        "freshness_status": "ok",
         "id": "broad_dollar",
         "label": "Broad dollar",
-        "message": "The broad dollar is firming and tightening global liquidity.",
-        "severity": 51.58,
+        "message": "The broad dollar backdrop is easing.",
+        "severity": 25.4,
         "source_status": "free_public",
         "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
       },
       "sections": [
         {
-          "answer": "The broad dollar is weakening (-0.58% over one month to 120.71); global financial conditions are easing from the FX side.",
+          "answer": "The broad dollar is weakening (-1.19% over one month to 119.70); global financial conditions are easing from the FX side.",
           "caveat": "Broad dollar uses Fed's nominal trade-weighted index; FX series can be stale around holidays.",
           "eyebrow": "Dollar pressure",
           "freshness_status": "ok",
@@ -94,7 +92,7 @@
           "why": "A falling broad dollar loosens global liquidity and tends to support EM and risk assets."
         }
       ],
-      "state": "risk",
+      "state": "support",
       "title": "Dollar / Global",
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
     },
@@ -112,22 +110,11 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 33.6,
+        "severity": 57.54,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
-      "primary_warning": {
-        "access_status": "free_public_active",
-        "confidence": 0.97,
-        "freshness_status": "ok",
-        "id": "vix_curve",
-        "label": "VIX curve state",
-        "message": "VIX curve is in backwardation-proxy stress.",
-        "severity": 22.22,
-        "source_status": "free_public",
-        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
-      },
-      "state": "mixed",
+      "state": "support",
       "title": "Fragility / shock risk",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
@@ -225,7 +212,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 17.41,
+        "severity": 1.48,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -256,13 +243,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 97.62,
+        "severity": 100.0,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by real yields (+25 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+21 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -337,13 +324,13 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "7 warnings are active on the short-term board, with 4 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
+          "answer": "5 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
           "id": "tactical_stress_board",
           "question": "Which warnings are clustering on the short-term board today?",
-          "risk": "4 signals above the elevated-severity threshold are clustering simultaneously.",
+          "risk": "3 signals above the elevated-severity threshold are clustering simultaneously.",
           "support": null,
           "why": "Multiple high-severity warnings across channels describe a tactically stressed environment."
         }
@@ -366,20 +353,9 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 33.6,
+        "severity": 57.54,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
-      },
-      "primary_warning": {
-        "access_status": "free_public_active",
-        "confidence": 0.97,
-        "freshness_status": "ok",
-        "id": "vix_curve",
-        "label": "VIX curve state",
-        "message": "VIX curve is in backwardation-proxy stress.",
-        "severity": 22.22,
-        "source_status": "free_public",
-        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
       "sections": [
         {
@@ -394,7 +370,7 @@
           "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX."
         }
       ],
-      "state": "mixed",
+      "state": "support",
       "title": "Volatility",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     }
