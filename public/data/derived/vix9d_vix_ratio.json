@@ -4,7 +4,7 @@
     "vix"
   ],
   "frequency": "daily",
-  "generated_at_utc": "2026-08-04T00:58:55Z",
+  "generated_at_utc": "2026-08-05T00:52:54Z",
   "method": "VIX9D divided by VIX by matched observation date.",
   "observations": [
     {
@@ -19591,20 +19591,25 @@
       "date": "2026-08-03",
       "percentile_252d": 22.22,
       "value": 0.8373
+    },
+    {
+      "date": "2026-08-04",
+      "percentile_252d": 56.35,
+      "value": 0.9115
     }
   ],
   "series_id": "vix9d_vix_ratio",
   "source": "Derived",
   "source_url": "/data/series/vix9d.json",
   "summary": {
-    "change_12m": -0.0688,
-    "change_1d": 0.0212,
-    "change_1m": 0.0714,
-    "change_1w": -0.1338,
-    "change_3m": 0.0045,
-    "latest_date": "2026-08-03",
-    "latest_value": 0.8373,
-    "percentile_252d": 22.22
+    "change_12m": -0.0468,
+    "change_1d": 0.0742,
+    "change_1m": 0.1202,
+    "change_1w": -0.0358,
+    "change_3m": 0.0039,
+    "latest_date": "2026-08-04",
+    "latest_value": 0.9115,
+    "percentile_252d": 56.35
   },
   "units": "ratio"
 }
