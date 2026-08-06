@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-05T00:52:54Z",
+  "generated_at_utc": "2026-08-06T00:16:02Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
@@ -36,7 +36,7 @@
         "Real yields are elevated.",
         "Leveraged-money S&P 500 positioning is crowded.",
         "Credit spread pressure is contained.",
-        "The broad dollar backdrop is easing."
+        "Volatility tail risk is contained."
       ],
       "top_risks": [
         "Real yields are elevated.",
@@ -44,8 +44,8 @@
       ],
       "top_supports": [
         "Credit spread pressure is contained.",
-        "The broad dollar backdrop is easing.",
-        "Volatility tail risk is contained."
+        "Volatility tail risk is contained.",
+        "The broad dollar backdrop is easing."
       ]
     }
   },
@@ -374,6 +374,12 @@
       "fragility": 13.26,
       "macro_climate": 15.85,
       "market_weather": -4.91
+    },
+    {
+      "date": "2026-08-05",
+      "fragility": 22.99,
+      "macro_climate": 16.32,
+      "market_weather": 1.34
     }
   ]
 }

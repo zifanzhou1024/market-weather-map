@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-08-05T00:52:04Z",
+  "generated_at_utc": "2026-08-06T00:15:08Z",
   "observations": [
     {
       "date": "1971-01-08",
@@ -14409,68 +14409,68 @@
     },
     {
       "date": "2026-03-27",
-      "percentile_252d": 86.54,
-      "value": -0.454
+      "percentile_252d": 84.62,
+      "value": -0.456
     },
     {
       "date": "2026-04-03",
       "percentile_252d": 82.69,
-      "value": -0.459
+      "value": -0.46
     },
     {
       "date": "2026-04-10",
       "percentile_252d": 78.85,
-      "value": -0.469
+      "value": -0.47
     },
     {
       "date": "2026-04-17",
       "percentile_252d": 76.92,
-      "value": -0.48
+      "value": -0.481
     },
     {
       "date": "2026-04-24",
-      "percentile_252d": 73.08,
-      "value": -0.489
+      "percentile_252d": 71.15,
+      "value": -0.491
     },
     {
       "date": "2026-05-01",
-      "percentile_252d": 71.15,
-      "value": -0.496
+      "percentile_252d": 69.23,
+      "value": -0.499
     },
     {
       "date": "2026-05-08",
       "percentile_252d": 69.23,
-      "value": -0.5
+      "value": -0.503
     },
     {
       "date": "2026-05-15",
       "percentile_252d": 71.15,
-      "value": -0.499
+      "value": -0.503
     },
     {
       "date": "2026-05-22",
       "percentile_252d": 73.08,
-      "value": -0.498
+      "value": -0.502
     },
     {
       "date": "2026-05-29",
-      "percentile_252d": 78.85,
-      "value": -0.495
+      "percentile_252d": 75.0,
+      "value": -0.501
     },
     {
       "date": "2026-06-05",
-      "percentile_252d": 80.77,
-      "value": -0.495
+      "percentile_252d": 76.92,
+      "value": -0.501
     },
     {
       "date": "2026-06-12",
-      "percentile_252d": 76.92,
-      "value": -0.497
+      "percentile_252d": 75.0,
+      "value": -0.502
     },
     {
       "date": "2026-06-19",
-      "percentile_252d": 69.23,
-      "value": -0.502
+      "percentile_252d": 67.31,
+      "value": -0.505
     },
     {
       "date": "2026-06-26",
@@ -14479,37 +14479,42 @@
     },
     {
       "date": "2026-07-03",
-      "percentile_252d": 42.31,
-      "value": -0.522
+      "percentile_252d": 48.08,
+      "value": -0.517
     },
     {
       "date": "2026-07-10",
-      "percentile_252d": 17.31,
-      "value": -0.534
+      "percentile_252d": 40.38,
+      "value": -0.523
     },
     {
       "date": "2026-07-17",
-      "percentile_252d": 13.46,
-      "value": -0.544
+      "percentile_252d": 26.92,
+      "value": -0.527
     },
     {
       "date": "2026-07-24",
-      "percentile_252d": 9.62,
-      "value": -0.554
+      "percentile_252d": 17.31,
+      "value": -0.53
+    },
+    {
+      "date": "2026-07-31",
+      "percentile_252d": 19.23,
+      "value": -0.529
     }
   ],
   "series_id": "financial_conditions",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/NFCI",
   "summary": {
-    "change_12m": -0.035,
-    "change_1d": -0.01,
-    "change_1m": -0.044,
-    "change_1w": -0.01,
-    "change_3m": -0.065,
-    "latest_date": "2026-07-24",
-    "latest_value": -0.554,
-    "percentile_252d": 9.62
+    "change_12m": -0.007,
+    "change_1d": 0.001,
+    "change_1m": -0.012,
+    "change_1w": 0.001,
+    "change_3m": -0.03,
+    "latest_date": "2026-07-31",
+    "latest_value": -0.529,
+    "percentile_252d": 19.23
   },
   "units": "index"
 }

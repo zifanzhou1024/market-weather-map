@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-04",
-  "generated_at_utc": "2026-08-05T00:52:58Z",
+  "date": "2026-08-05",
+  "generated_at_utc": "2026-08-06T00:16:07Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -8,15 +8,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse +4.0, 100th percentile of the past year).",
+          "answer": "Commodity prices are adding to inflation pressure (impulse +7.0, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
           "id": "commodity_impulse",
           "question": "Are commodity prices adding to or subtracting from inflation pressure?",
-          "risk": null,
-          "support": "Neutral commodity pressure is not amplifying headline inflation in either direction.",
-          "why": "A flat commodity impulse describes a balanced backdrop for headline inflation."
+          "risk": "Rising commodity prices add to headline inflation pressure and may pressure the Fed.",
+          "support": null,
+          "why": "A positive commodity impulse feeds headline inflation and can pressure rate-cut expectations."
         }
       ],
       "state": "unknown",
@@ -33,13 +33,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 26.19,
+        "severity": 43.25,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.01 pp over 30 days at 2.00 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (-0.02 pp over 30 days at 1.95 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -99,11 +99,11 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 21.03,
+        "severity": 33.86,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
-      "state": "calm",
+      "state": "support",
       "title": "Fragility / shock risk",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
@@ -221,13 +221,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 98.42,
+        "severity": 93.66,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by real yields (+22 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+17 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -331,7 +331,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 21.03,
+        "severity": 33.86,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -348,7 +348,7 @@
           "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX."
         }
       ],
-      "state": "calm",
+      "state": "support",
       "title": "Volatility",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     }
