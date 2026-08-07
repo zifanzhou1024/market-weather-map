@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-08-07T01:45:58Z",
+  "generated_at_utc": "2026-08-07T23:54:15Z",
   "observations": [
     {
       "date": "1973-01-03",
@@ -13935,7 +13935,7 @@
     {
       "date": "2026-05-27",
       "percentile_252d": 100.0,
-      "value": 13816.909
+      "value": 13816.918
     },
     {
       "date": "2026-06-03",
@@ -13945,51 +13945,56 @@
     {
       "date": "2026-06-10",
       "percentile_252d": 100.0,
-      "value": 13854.0528
+      "value": 13854.0738
     },
     {
       "date": "2026-06-17",
       "percentile_252d": 100.0,
-      "value": 13859.0353
+      "value": 13859.0734
     },
     {
       "date": "2026-06-24",
       "percentile_252d": 100.0,
-      "value": 13870.2007
+      "value": 13870.4277
     },
     {
       "date": "2026-07-01",
-      "percentile_252d": 94.23,
-      "value": 13853.2658
+      "percentile_252d": 96.15,
+      "value": 13854.2144
     },
     {
       "date": "2026-07-08",
       "percentile_252d": 96.15,
-      "value": 13857.1533
+      "value": 13857.9977
     },
     {
       "date": "2026-07-15",
       "percentile_252d": 100.0,
-      "value": 13900.1603
+      "value": 13900.8373
     },
     {
       "date": "2026-07-22",
       "percentile_252d": 98.08,
-      "value": 13894.7174
+      "value": 13895.4236
+    },
+    {
+      "date": "2026-07-29",
+      "percentile_252d": 100.0,
+      "value": 13918.3453
     }
   ],
   "series_id": "loans_and_leases",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/TOTLL",
   "summary": {
-    "change_12m": 907.6759,
-    "change_1d": -5.4429,
-    "change_1m": 24.5167,
-    "change_1w": -5.4429,
-    "change_3m": 165.5447,
-    "latest_date": "2026-07-22",
-    "latest_value": 13894.7174,
-    "percentile_252d": 98.08
+    "change_12m": 917.4234,
+    "change_1d": 22.9217,
+    "change_1m": 64.1309,
+    "change_1w": 22.9217,
+    "change_3m": 176.9739,
+    "latest_date": "2026-07-29",
+    "latest_value": 13918.3453,
+    "percentile_252d": 100.0
   },
   "units": "billions_usd"
 }

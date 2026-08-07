@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-08-07T01:45:58Z",
+  "generated_at_utc": "2026-08-07T23:54:14Z",
   "observations": [
     {
       "date": "1973-01-03",
@@ -13935,7 +13935,7 @@
     {
       "date": "2026-05-27",
       "percentile_252d": 100.0,
-      "value": 19579.0855
+      "value": 19579.0945
     },
     {
       "date": "2026-06-03",
@@ -13945,51 +13945,56 @@
     {
       "date": "2026-06-10",
       "percentile_252d": 100.0,
-      "value": 19622.6751
+      "value": 19622.6922
     },
     {
       "date": "2026-06-17",
       "percentile_252d": 100.0,
-      "value": 19626.6289
+      "value": 19626.6571
     },
     {
       "date": "2026-06-24",
       "percentile_252d": 100.0,
-      "value": 19652.0492
+      "value": 19652.2622
     },
     {
       "date": "2026-07-01",
       "percentile_252d": 94.23,
-      "value": 19615.3975
+      "value": 19616.5054
     },
     {
       "date": "2026-07-08",
       "percentile_252d": 98.08,
-      "value": 19644.2684
+      "value": 19645.2845
     },
     {
       "date": "2026-07-15",
       "percentile_252d": 100.0,
-      "value": 19741.1348
+      "value": 19742.1796
     },
     {
       "date": "2026-07-22",
       "percentile_252d": 98.08,
-      "value": 19719.3629
+      "value": 19720.245
+    },
+    {
+      "date": "2026-07-29",
+      "percentile_252d": 100.0,
+      "value": 19753.3662
     }
   ],
   "series_id": "bank_credit",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/TOTBKCR",
   "summary": {
-    "change_12m": 1137.0716,
-    "change_1d": -21.7719,
-    "change_1m": 67.3137,
-    "change_1w": -21.7719,
-    "change_3m": 263.0425,
-    "latest_date": "2026-07-22",
-    "latest_value": 19719.3629,
-    "percentile_252d": 98.08
+    "change_12m": 1153.0841,
+    "change_1d": 33.1212,
+    "change_1m": 136.8608,
+    "change_1w": 33.1212,
+    "change_3m": 290.687,
+    "latest_date": "2026-07-29",
+    "latest_value": 19753.3662,
+    "percentile_252d": 100.0
   },
   "units": "billions_usd"
 }

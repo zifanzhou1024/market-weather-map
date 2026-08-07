@@ -34,7 +34,7 @@
       "id": "credit",
       "label": "Credit spreads",
       "message": "Credit spread pressure is based on HY minus IG OAS when available.",
-      "state": "up"
+      "state": "flat"
     },
     {
       "id": "liquidity",
@@ -75,8 +75,8 @@
       "status": "mixed"
     }
   ],
-  "date": "2026-08-06",
-  "generated_at_utc": "2026-08-07T01:46:36Z",
+  "date": "2026-08-07",
+  "generated_at_utc": "2026-08-07T23:54:49Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -248,12 +248,6 @@
     "yield_driver": "real_yield_driven"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.37,
-      "date": "2025-07-23",
-      "nominal_10y": 4.4,
-      "real_yield_10y": 2.03
-    },
     {
       "breakeven_10y": 2.45,
       "date": "2025-07-24",
@@ -1807,6 +1801,12 @@
       "date": "2026-08-05",
       "nominal_10y": 4.63,
       "real_yield_10y": 2.41
+    },
+    {
+      "breakeven_10y": 2.26,
+      "date": "2026-08-06",
+      "nominal_10y": 4.69,
+      "real_yield_10y": 2.43
     }
   ]
 }

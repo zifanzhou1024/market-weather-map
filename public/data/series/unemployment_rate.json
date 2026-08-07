@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-08-07T01:45:53Z",
+  "generated_at_utc": "2026-08-07T23:54:09Z",
   "observations": [
     {
       "date": "1948-01-01",
@@ -4706,20 +4706,25 @@
       "date": "2026-06-01",
       "percentile_252d": 16.67,
       "value": 4.2
+    },
+    {
+      "date": "2026-07-01",
+      "percentile_252d": 8.33,
+      "value": 4.1
     }
   ],
   "series_id": "unemployment_rate",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/UNRATE",
   "summary": {
-    "change_12m": -0.1,
+    "change_12m": 0.0,
     "change_1d": -0.1,
     "change_1m": -0.1,
     "change_1w": -0.1,
-    "change_3m": -0.1,
-    "latest_date": "2026-06-01",
-    "latest_value": 4.2,
-    "percentile_252d": 16.67
+    "change_3m": -0.2,
+    "latest_date": "2026-07-01",
+    "latest_value": 4.1,
+    "percentile_252d": 8.33
   },
   "units": "percent"
 }
