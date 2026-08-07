@@ -8,13 +8,13 @@
     "breakeven_10y"
   ],
   "frequency": "daily",
-  "generated_at_utc": "2026-08-06T00:16:02Z",
+  "generated_at_utc": "2026-08-07T01:46:36Z",
   "method": "Momentum impulse from oil 3-month change (40%), oil 12-month change (20%), crop basket 3-month momentum (20%), and 10-year breakeven confirmation (20%). Absolute summary changes are converted to percent change versus the prior value where applicable; positive inflation impulse is mapped to negative support-risk score.",
   "observations": [
     {
-      "date": "2026-08-05",
+      "date": "2026-08-06",
       "percentile_252d": 100.0,
-      "value": 7.04
+      "value": 6.33
     }
   ],
   "series_id": "commodity_inflation_impulse",
@@ -26,10 +26,10 @@
     "change_1m": null,
     "change_1w": null,
     "change_3m": null,
-    "latest_date": "2026-08-05",
-    "latest_value": 7.04,
+    "latest_date": "2026-08-06",
+    "latest_value": 6.33,
     "percentile_252d": 100.0
   },
   "units": "score",
-  "value": 7.04
+  "value": 6.33
 }
