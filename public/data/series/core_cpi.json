@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-08-12T00:04:45Z",
+  "generated_at_utc": "2026-08-13T00:04:19Z",
   "observations": [
     {
       "date": "1957-01-01",
@@ -4166,20 +4166,25 @@
       "date": "2026-06-01",
       "percentile_252d": 91.67,
       "value": 336.065
+    },
+    {
+      "date": "2026-07-01",
+      "percentile_252d": 100.0,
+      "value": 336.789
     }
   ],
   "series_id": "core_cpi",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/CPILFESL",
   "summary": {
-    "change_12m": 9.172,
-    "change_1d": -0.056,
-    "change_1m": -0.056,
-    "change_1w": -0.056,
-    "change_3m": 1.9,
-    "latest_date": "2026-06-01",
-    "latest_value": 336.065,
-    "percentile_252d": 91.67
+    "change_12m": 9.131,
+    "change_1d": 0.724,
+    "change_1m": 0.724,
+    "change_1w": 0.724,
+    "change_3m": 1.366,
+    "latest_date": "2026-07-01",
+    "latest_value": 336.789,
+    "percentile_252d": 100.0
   },
   "units": "index"
 }

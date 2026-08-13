@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-11",
-  "generated_at_utc": "2026-08-12T00:05:26Z",
+  "date": "2026-08-12",
+  "generated_at_utc": "2026-08-13T00:05:03Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -8,15 +8,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Commodity prices are adding to inflation pressure (impulse +6.6, 100th percentile of the past year).",
+          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse +1.7, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
           "id": "commodity_impulse",
           "question": "Are commodity prices adding to or subtracting from inflation pressure?",
-          "risk": "Rising commodity prices add to headline inflation pressure and may pressure the Fed.",
-          "support": null,
-          "why": "A positive commodity impulse feeds headline inflation and can pressure rate-cut expectations."
+          "risk": null,
+          "support": "Neutral commodity pressure is not amplifying headline inflation in either direction.",
+          "why": "A flat commodity impulse describes a balanced backdrop for headline inflation."
         }
       ],
       "state": "unknown",
@@ -33,13 +33,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 49.0,
+        "severity": 35.52,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.00 pp over 30 days at 1.92 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (+0.02 pp over 30 days at 1.93 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -99,7 +99,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 69.97,
+        "severity": 81.22,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -170,21 +170,21 @@
         "id": "inflation",
         "label": "Inflation pressure",
         "message": "Inflation pressure remains elevated.",
-        "severity": 87.5,
+        "severity": 91.67,
         "source_status": "free_public",
         "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
       },
       "sections": [
         {
-          "answer": "Core and headline inflation are aligned and disinflating (headline 3.7% YoY, core CPI 2.8% YoY, both easing).",
+          "answer": "Headline and core inflation are roughly stable (headline 3.5% YoY, core CPI 2.8% YoY).",
           "caveat": "YoY changes are computed from monthly index levels; release timing differs across CPI, PCE, and PPI.",
           "eyebrow": "Inflation dispersion",
           "freshness_status": "ok",
           "id": "inflation_dispersion",
           "question": "Are core and headline inflation moving in the same direction or diverging?",
           "risk": null,
-          "support": "Aligned disinflation supports rate-cut conditions.",
-          "why": "Aligned disinflation describes broad-based easing of price pressure."
+          "support": "Stable inflation backdrop is not currently amplifying policy uncertainty.",
+          "why": "Stable headline and core describe a holding pattern for inflation."
         }
       ],
       "state": "risk",
@@ -201,7 +201,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 35.72,
+        "severity": 38.34,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -238,7 +238,7 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by real yields (+9 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+11 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -342,20 +342,20 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 69.97,
+        "severity": 81.22,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
       "sections": [
         {
-          "answer": "Volatility term structure remains contained and short-end stress is muted.",
+          "answer": "Term structure remains contained but VVIX-vs-VIX divergence suggests hidden options stress is building.",
           "caveat": "Volatility indices are delayed Cboe public data; intraday moves not reflected.",
           "eyebrow": "Volatility complex",
           "freshness_status": "ok",
           "id": "volatility_complex",
           "question": "Is the term structure pricing calm, stress, or hidden options stress?",
-          "risk": null,
-          "support": "Front-end percentile remains in normal range",
+          "risk": "VVIX percentile is above VIX percentile",
+          "support": null,
           "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX."
         }
       ],
