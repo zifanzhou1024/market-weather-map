@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-08-14T00:04:23Z",
+  "generated_at_utc": "2026-08-14T23:44:12Z",
   "observations": [
     {
       "date": "2022-01-04",
@@ -1201,20 +1201,25 @@
       "date": "2026-08-04",
       "percentile_252d": 19.23,
       "value": 44.2816
+    },
+    {
+      "date": "2026-08-11",
+      "percentile_252d": 23.08,
+      "value": 44.7501
     }
   ],
   "series_id": "cftc_sp500_asset_mgr_net",
   "source": "CFTC",
   "source_url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/HistoricalCompressed/index.htm",
   "summary": {
-    "change_12m": -0.1831,
-    "change_1d": -3.3281,
-    "change_1m": -4.9961,
-    "change_1w": -3.3281,
-    "change_3m": -6.5256,
-    "latest_date": "2026-08-04",
-    "latest_value": 44.2816,
-    "percentile_252d": 19.23
+    "change_12m": -0.2917,
+    "change_1d": 0.4685,
+    "change_1m": -3.6904,
+    "change_1w": 0.4685,
+    "change_3m": -6.5512,
+    "latest_date": "2026-08-11",
+    "latest_value": 44.7501,
+    "percentile_252d": 23.08
   },
   "units": "percent_open_interest"
 }
