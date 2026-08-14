@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-12",
-  "generated_at_utc": "2026-08-13T00:05:03Z",
+  "date": "2026-08-13",
+  "generated_at_utc": "2026-08-14T00:04:49Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,12 +74,12 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 45.79
+      "score": 42.56
     },
     "long_term": {
       "confidence": 0.99,
       "label": "Mixed",
-      "score": 12.45
+      "score": 12.79
     },
     "regime": {
       "label": "Reallocation / rotation"
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": -0.35
+      "score": -0.46
     }
   },
   "top_supports": [
@@ -103,29 +103,11 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is contained.",
-      "priority": 406.1,
-      "severity": 81.22,
+      "priority": 433.2,
+      "severity": 86.64,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "macro",
-      "confidence": 0.99,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Labor",
-      "horizon": "long_term",
-      "id": "labor",
-      "importance": 5,
-      "label": "Labor cycle",
-      "message": "Labor cycle is firm.",
-      "priority": 369.12,
-      "severity": 74.57,
-      "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
     },
     {
       "access_status": "free_public_active",
@@ -139,11 +121,29 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is contango-proxy and calm.",
-      "priority": 338.72,
-      "severity": 87.3,
+      "priority": 372.64,
+      "severity": 96.04,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "macro",
+      "confidence": 0.99,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Labor",
+      "horizon": "long_term",
+      "id": "labor",
+      "importance": 5,
+      "label": "Labor cycle",
+      "message": "Labor cycle is firm.",
+      "priority": 340.61,
+      "severity": 68.81,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
     },
     {
       "access_status": "free_public_active",
@@ -193,8 +193,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 177.6,
-      "severity": 35.52,
+      "priority": 188.5,
+      "severity": 37.7,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -231,8 +231,8 @@
       "importance": 5,
       "label": "10Y real yields",
       "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 492.1,
-      "severity": 98.42,
+      "priority": 468.3,
+      "severity": 93.66,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
@@ -249,11 +249,29 @@
       "importance": 5,
       "label": "Inflation pressure",
       "message": "Inflation pressure remains elevated.",
-      "priority": 453.77,
-      "severity": 91.67,
+      "priority": 433.12,
+      "severity": 87.5,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "liquidity",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Liquidity / Funding",
+      "horizon": "both",
+      "id": "net_liquidity",
+      "importance": 4,
+      "label": "Net liquidity",
+      "message": "Net liquidity is draining.",
+      "priority": 200.92,
+      "severity": 50.23,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
     {
       "access_status": "free_public_active",
@@ -272,24 +290,6 @@
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "liquidity",
-      "confidence": 1.0,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Liquidity / Funding",
-      "horizon": "both",
-      "id": "net_liquidity",
-      "importance": 4,
-      "label": "Net liquidity",
-      "message": "Net liquidity is draining.",
-      "priority": 153.36,
-      "severity": 38.34,
-      "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     }
   ]
 }

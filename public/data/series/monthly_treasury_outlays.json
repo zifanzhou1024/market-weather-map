@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-08-13T00:04:25Z",
+  "generated_at_utc": "2026-08-14T00:04:11Z",
   "observations": [
     {
       "date": "2014-10-31",
@@ -704,27 +704,27 @@
     },
     {
       "date": "2026-06-30",
-      "percentile_252d": 16.67,
-      "value": 499435.7017
+      "percentile_252d": 41.67,
+      "value": 616066.7572
     },
     {
       "date": "2026-07-31",
-      "percentile_252d": 75.0,
-      "value": 629634.5087
+      "percentile_252d": 100.0,
+      "value": 766317.7502
     }
   ],
   "series_id": "monthly_treasury_outlays",
   "source": "FiscalData",
   "source_url": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
   "summary": {
-    "change_12m": 55515.9931,
-    "change_1d": 130198.807,
-    "change_1m": 130198.807,
-    "change_1w": 130198.807,
-    "change_3m": 7315.9529,
+    "change_12m": 192199.2346,
+    "change_1d": 150250.993,
+    "change_1m": 150250.993,
+    "change_1w": 150250.993,
+    "change_3m": 143999.1944,
     "latest_date": "2026-07-31",
-    "latest_value": 629634.5087,
-    "percentile_252d": 75.0
+    "latest_value": 766317.7502,
+    "percentile_252d": 100.0
   },
   "units": "millions_usd"
 }

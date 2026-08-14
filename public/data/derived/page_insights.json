@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-12",
-  "generated_at_utc": "2026-08-13T00:05:03Z",
+  "date": "2026-08-13",
+  "generated_at_utc": "2026-08-14T00:04:50Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -8,7 +8,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse +1.7, 100th percentile of the past year).",
+          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse +1.9, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -33,13 +33,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 35.52,
+        "severity": 37.7,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.02 pp over 30 days at 1.93 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (-0.01 pp over 30 days at 1.92 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -99,7 +99,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 81.22,
+        "severity": 86.64,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -119,7 +119,7 @@
         "id": "labor",
         "label": "Labor cycle",
         "message": "Labor cycle is firm.",
-        "severity": 74.57,
+        "severity": 68.81,
         "source_status": "free_public",
         "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
       },
@@ -145,7 +145,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Housing activity is contracting at elevated rates: starts and permits are falling over three months with the 30Y mortgage at 6.69%.",
+          "answer": "Housing activity is contracting at elevated rates: starts and permits are falling over three months with the 30Y mortgage at 6.67%.",
           "caveat": "Housing starts and permits are monthly; mortgage rate updates weekly. Series can move in opposite directions over short horizons.",
           "eyebrow": "Housing pulse",
           "freshness_status": "ok",
@@ -170,7 +170,7 @@
         "id": "inflation",
         "label": "Inflation pressure",
         "message": "Inflation pressure remains elevated.",
-        "severity": 91.67,
+        "severity": 87.5,
         "source_status": "free_public",
         "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
       },
@@ -201,13 +201,13 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 38.34,
+        "severity": 50.23,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
       "sections": [
         {
-          "answer": "Net liquidity is contracting ($-119B over four weeks to $5,840B); TGA and reverse repo drain outpaces Fed balance sheet.",
+          "answer": "Net liquidity is contracting ($-191B over four weeks to $5,795B); TGA and reverse repo drain outpaces Fed balance sheet.",
           "caveat": "Net liquidity is a derived weekly proxy from Fed assets, TGA, and reverse repo \u2014 not a measure of funding-market stress.",
           "eyebrow": "Liquidity & funding",
           "freshness_status": "ok",
@@ -232,13 +232,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 98.42,
+        "severity": 93.66,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by real yields (+11 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+7 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -313,13 +313,13 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "4 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
+          "answer": "4 warnings are active on the short-term board, with 4 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
           "id": "tactical_stress_board",
           "question": "Which warnings are clustering on the short-term board today?",
-          "risk": "3 signals above the elevated-severity threshold are clustering simultaneously.",
+          "risk": "4 signals above the elevated-severity threshold are clustering simultaneously.",
           "support": null,
           "why": "Multiple high-severity warnings across channels describe a tactically stressed environment."
         }
@@ -342,20 +342,20 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 81.22,
+        "severity": 86.64,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
       "sections": [
         {
-          "answer": "Term structure remains contained but VVIX-vs-VIX divergence suggests hidden options stress is building.",
+          "answer": "Volatility term structure remains contained and short-end stress is muted.",
           "caveat": "Volatility indices are delayed Cboe public data; intraday moves not reflected.",
           "eyebrow": "Volatility complex",
           "freshness_status": "ok",
           "id": "volatility_complex",
           "question": "Is the term structure pricing calm, stress, or hidden options stress?",
-          "risk": "VVIX percentile is above VIX percentile",
-          "support": null,
+          "risk": null,
+          "support": "Front-end percentile remains in normal range",
           "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX."
         }
       ],

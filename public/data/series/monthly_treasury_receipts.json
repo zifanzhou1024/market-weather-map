@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-08-13T00:04:25Z",
+  "generated_at_utc": "2026-08-14T00:04:11Z",
   "observations": [
     {
       "date": "2014-10-31",
@@ -705,26 +705,26 @@
     {
       "date": "2026-06-30",
       "percentile_252d": 75.0,
-      "value": 526445.3518
+      "value": 495761.4816
     },
     {
       "date": "2026-07-31",
-      "percentile_252d": 41.67,
-      "value": 338491.8484
+      "percentile_252d": 25.0,
+      "value": 334009.8756
     }
   ],
   "series_id": "monthly_treasury_receipts",
   "source": "FiscalData",
   "source_url": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
   "summary": {
-    "change_12m": 8114.4201,
-    "change_1d": -187953.5034,
-    "change_1m": -187953.5034,
-    "change_1w": -187953.5034,
-    "change_3m": -498850.8426,
+    "change_12m": 3632.4473,
+    "change_1d": -161751.606,
+    "change_1m": -161751.606,
+    "change_1w": -161751.606,
+    "change_3m": -503332.8154,
     "latest_date": "2026-07-31",
-    "latest_value": 338491.8484,
-    "percentile_252d": 41.67
+    "latest_value": 334009.8756,
+    "percentile_252d": 25.0
   },
   "units": "millions_usd"
 }
