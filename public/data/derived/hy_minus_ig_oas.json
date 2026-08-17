@@ -4,7 +4,7 @@
     "investment_grade_oas"
   ],
   "frequency": "daily",
-  "generated_at_utc": "2026-08-14T23:44:36Z",
+  "generated_at_utc": "2026-08-17T23:43:54Z",
   "method": "High yield option-adjusted spread minus investment grade option-adjusted spread by matched observation date.",
   "observations": [
     {
@@ -4196,20 +4196,25 @@
       "date": "2026-08-13",
       "percentile_252d": 7.14,
       "value": 1.92
+    },
+    {
+      "date": "2026-08-14",
+      "percentile_252d": 0.4,
+      "value": 1.87
     }
   ],
   "series_id": "hy_minus_ig_oas",
   "source": "Derived",
   "source_url": "/data/series/high_yield_oas.json",
   "summary": {
-    "change_12m": -0.1,
-    "change_1d": 0.0,
-    "change_1m": 0.0,
-    "change_1w": -0.01,
+    "change_12m": -0.16,
+    "change_1d": -0.05,
+    "change_1m": -0.06,
+    "change_1w": -0.05,
     "change_3m": -0.18,
-    "latest_date": "2026-08-13",
-    "latest_value": 1.92,
-    "percentile_252d": 7.14
+    "latest_date": "2026-08-14",
+    "latest_value": 1.87,
+    "percentile_252d": 0.4
   },
   "units": "percentage_points"
 }
