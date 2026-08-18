@@ -75,8 +75,8 @@
       "status": "mixed"
     }
   ],
-  "date": "2026-08-17",
-  "generated_at_utc": "2026-08-17T23:43:54Z",
+  "date": "2026-08-18",
+  "generated_at_utc": "2026-08-18T23:43:18Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -248,12 +248,6 @@
     "yield_driver": "real_yield_driven"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.33,
-      "date": "2025-08-01",
-      "nominal_10y": 4.23,
-      "real_yield_10y": 1.9
-    },
     {
       "breakeven_10y": 2.37,
       "date": "2025-08-04",
@@ -1807,6 +1801,12 @@
       "date": "2026-08-14",
       "nominal_10y": 4.68,
       "real_yield_10y": 2.41
+    },
+    {
+      "breakeven_10y": 2.28,
+      "date": "2026-08-17",
+      "nominal_10y": 4.72,
+      "real_yield_10y": 2.44
     }
   ]
 }
