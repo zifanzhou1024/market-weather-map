@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-18",
-  "generated_at_utc": "2026-08-18T23:43:23Z",
+  "date": "2026-08-19",
+  "generated_at_utc": "2026-08-19T23:44:16Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,12 +74,12 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 43.69
+      "score": 34.68
     },
     "long_term": {
       "confidence": 0.98,
       "label": "Mixed",
-      "score": 10.34
+      "score": 11.06
     },
     "regime": {
       "label": "Reallocation / rotation"
@@ -87,28 +87,10 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": -9.5
+      "score": -12.03
     }
   },
   "top_supports": [
-    {
-      "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.97,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Volatility curve",
-      "horizon": "short_term",
-      "id": "vix_curve",
-      "importance": 4,
-      "label": "VIX curve state",
-      "message": "VIX curve is contango-proxy and calm.",
-      "priority": 354.09,
-      "severity": 91.26,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
-    },
     {
       "access_status": "free_public_active",
       "category": "macro",
@@ -139,11 +121,29 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is contained.",
-      "priority": 307.5,
-      "severity": 61.5,
+      "priority": 324.05,
+      "severity": 64.81,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 0.97,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Volatility curve",
+      "horizon": "short_term",
+      "id": "vix_curve",
+      "importance": 4,
+      "label": "VIX curve state",
+      "message": "VIX curve is contango-proxy and calm.",
+      "priority": 267.88,
+      "severity": 69.04,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     {
       "access_status": "free_public_active",
@@ -211,8 +211,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 148.8,
-      "severity": 29.76,
+      "priority": 45.6,
+      "severity": 9.12,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -231,8 +231,8 @@
       "importance": 5,
       "label": "10Y real yields",
       "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 496.0,
-      "severity": 99.2,
+      "priority": 460.3,
+      "severity": 92.06,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
@@ -267,8 +267,8 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is draining.",
-      "priority": 245.72,
-      "severity": 61.43,
+      "priority": 235.68,
+      "severity": 58.92,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."

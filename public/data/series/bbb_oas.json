@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-08-18T23:42:28Z",
+  "generated_at_utc": "2026-08-19T23:43:16Z",
   "observations": [
     {
       "date": "2023-06-02",
@@ -4206,6 +4206,11 @@
       "date": "2026-08-17",
       "percentile_252d": 51.59,
       "value": 0.99
+    },
+    {
+      "date": "2026-08-18",
+      "percentile_252d": 60.32,
+      "value": 1.0
     }
   ],
   "series_id": "bbb_oas",
@@ -4214,12 +4219,12 @@
   "summary": {
     "change_12m": -0.03,
     "change_1d": 0.01,
-    "change_1m": 0.02,
+    "change_1m": 0.03,
     "change_1w": 0.02,
-    "change_3m": 0.05,
-    "latest_date": "2026-08-17",
-    "latest_value": 0.99,
-    "percentile_252d": 51.59
+    "change_3m": 0.07,
+    "latest_date": "2026-08-18",
+    "latest_value": 1.0,
+    "percentile_252d": 60.32
   },
   "units": "percent"
 }

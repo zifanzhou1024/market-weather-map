@@ -93,10 +93,10 @@
     },
     {
       "category": "rates",
-      "date": "2026-08-18",
+      "date": "2026-08-19",
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 6-Week Bill offering amount 95000000000. Descriptive event context only; not scored.",
+      "notes": "Official FiscalData auction query row for 20-Year Bond offering amount 16000000000. Descriptive event context only; not scored.",
       "source": "FiscalData",
       "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
       "status": "scheduled",
@@ -106,7 +106,7 @@
     },
     {
       "category": "housing",
-      "date": "2026-08-18",
+      "date": "2026-09-17",
       "id": "new_residential_construction",
       "importance": "medium",
       "notes": "Official Census economic indicators calendar row: New Residential Construction (Building Permits, Housing Starts, and Housing Completions). Descriptive event context only; not scored.",
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-08-18T23:43:36Z",
+  "generated_at_utc": "2026-08-19T23:44:33Z",
   "method_version": "official-event-calendar-v2"
 }
