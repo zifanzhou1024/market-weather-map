@@ -13,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-08-19",
-  "generated_at_utc": "2026-08-19T23:44:11Z",
+  "date": "2026-08-20",
+  "generated_at_utc": "2026-08-20T23:47:06Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 79.36,
+        "credit_spread_widening": 83.34,
         "dollar_spike": 57.94,
         "liquidity_drain": 0.0,
         "positioning_crowding": -51.07,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": 69.04
+        "volatility_term_structure": 88.1
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -51,10 +51,10 @@
         "Treasury/bond volatility source is not active."
       ],
       "recent_changes": [
-        "Credit spread pressure is contained.",
-        "Volatility term structure is calm."
+        "Volatility term structure is calm.",
+        "Credit spread pressure is contained."
       ],
-      "score": 34.68,
+      "score": 39.49,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -149,8 +149,8 @@
       },
       "top_risks": [],
       "top_supports": [
-        "Credit spread pressure is contained.",
         "Volatility term structure is calm.",
+        "Credit spread pressure is contained.",
         "The dollar backdrop is easing."
       ]
     },
@@ -159,10 +159,10 @@
         "consumer_balance_sheet": 49.23,
         "consumer_production": 88.89,
         "growth": 50.0,
-        "housing": -52.24,
+        "housing": -48.39,
         "inflation": -87.5,
-        "labor": 68.81,
-        "real_yields": -92.06
+        "labor": 71.36,
+        "real_yields": -82.54
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -185,12 +185,12 @@
       "label": "Mixed",
       "missing_or_stale_notes": [],
       "recent_changes": [
-        "Real yields are elevated.",
         "Inflation pressure remains elevated.",
+        "Real yields are elevated.",
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
-      "score": 11.06,
+      "score": 12.93,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -338,8 +338,8 @@
         "missing": []
       },
       "top_risks": [
-        "Real yields are elevated.",
         "Inflation pressure remains elevated.",
+        "Real yields are elevated.",
         "Housing activity or mortgage-rate pressure is restrictive."
       ],
       "top_supports": [
@@ -350,13 +350,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -0.35,
-        "credit_spreads": 9.12,
+        "commodities_inflation_impulse": -1.05,
+        "credit_spreads": 16.27,
         "dollar_global": 57.94,
-        "liquidity_funding": -58.92,
-        "rates_real_yields": -92.06,
+        "liquidity_funding": -5.55,
+        "rates_real_yields": -82.54,
         "sentiment_positioning": -51.07,
-        "volatility_tail_risk": 64.81
+        "volatility_tail_risk": 59.39
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -379,12 +379,12 @@
       "label": "Mixed",
       "missing_or_stale_notes": [],
       "recent_changes": [
-        "Real yields are elevated.",
         "Leveraged-money S&P 500 positioning is crowded.",
+        "Real yields are elevated.",
         "Volatility tail risk is contained.",
         "The broad dollar backdrop is easing."
       ],
-      "score": -12.03,
+      "score": -0.31,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -516,8 +516,8 @@
         "missing": []
       },
       "top_risks": [
-        "Real yields are elevated.",
         "Leveraged-money S&P 500 positioning is crowded.",
+        "Real yields are elevated.",
         "Liquidity funding conditions are tightening."
       ],
       "top_supports": [

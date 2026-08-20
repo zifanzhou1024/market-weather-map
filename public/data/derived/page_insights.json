@@ -1,14 +1,25 @@
 {
-  "date": "2026-08-19",
-  "generated_at_utc": "2026-08-19T23:44:16Z",
+  "date": "2026-08-20",
+  "generated_at_utc": "2026-08-20T23:47:11Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
-      "confidence": 0.0,
+      "confidence": 1.0,
       "freshness_notes": [],
+      "primary_warning": {
+        "access_status": "free_public_active",
+        "confidence": 1.0,
+        "freshness_status": "ok",
+        "id": "commodities_inflation_impulse",
+        "label": "Commodities inflation impulse",
+        "message": "Commodity inflation impulse is elevated.",
+        "severity": 1.05,
+        "source_status": "free_public",
+        "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
+      },
       "sections": [
         {
-          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse -0.3, 100th percentile of the past year).",
+          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse -1.1, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -19,9 +30,9 @@
           "why": "A flat commodity impulse describes a balanced backdrop for headline inflation."
         }
       ],
-      "state": "unknown",
+      "state": "risk",
       "title": "Commodities",
-      "why_it_matters": "Commodity prices feed inflation expectations and rates."
+      "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
     },
     "credit": {
       "confidence": 1.0,
@@ -33,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 9.12,
+        "severity": 16.27,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.02 pp over 30 days at 1.93 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (+0.01 pp over 30 days at 1.92 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -94,18 +105,18 @@
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.97,
         "freshness_status": "ok",
-        "id": "vix_complex",
-        "label": "VIX / VVIX complex",
-        "message": "Volatility tail risk is contained.",
-        "severity": 64.81,
+        "id": "vix_curve",
+        "label": "VIX curve state",
+        "message": "VIX curve is contango-proxy and calm.",
+        "severity": 88.1,
         "source_status": "free_public",
-        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
       "state": "support",
       "title": "Fragility / shock risk",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     "growth": {
       "confidence": 0.98,
@@ -120,7 +131,7 @@
         "id": "labor",
         "label": "Labor cycle",
         "message": "Labor cycle is firm.",
-        "severity": 68.81,
+        "severity": 71.36,
         "source_status": "free_public",
         "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
       },
@@ -146,7 +157,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Housing activity is contracting at elevated rates: starts and permits are falling over three months with the 30Y mortgage at 6.67%.",
+          "answer": "Housing activity is contracting at elevated rates: starts and permits are falling over three months with the 30Y mortgage at 6.65%.",
           "caveat": "Housing starts and permits are monthly; mortgage rate updates weekly. Series can move in opposite directions over short horizons.",
           "eyebrow": "Housing pulse",
           "freshness_status": "ok",
@@ -204,13 +215,13 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 58.92,
+        "severity": 5.55,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
       "sections": [
         {
-          "answer": "Net liquidity is contracting ($-191B over four weeks to $5,795B); TGA and reverse repo drain outpaces Fed balance sheet.",
+          "answer": "Net liquidity is contracting ($-126B over four weeks to $5,792B); TGA and reverse repo drain outpaces Fed balance sheet.",
           "caveat": "Net liquidity is a derived weekly proxy from Fed assets, TGA, and reverse repo \u2014 not a measure of funding-market stress.",
           "eyebrow": "Liquidity & funding",
           "freshness_status": "ok",
@@ -235,21 +246,21 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 92.06,
+        "severity": 82.54,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by real yields (+13 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (higher) reflects both real yields (+6 bps) and breakevens (+4 bps).",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": "Rising real yields compress equity valuations across all sectors.",
+          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
           "support": null,
-          "why": "Real-yield-driven moves tighten financial conditions more directly than inflation-driven moves."
+          "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
         }
       ],
       "state": "risk",
@@ -316,13 +327,13 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "4 warnings are active on the short-term board, with 4 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
+          "answer": "5 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
           "id": "tactical_stress_board",
           "question": "Which warnings are clustering on the short-term board today?",
-          "risk": "4 signals above the elevated-severity threshold are clustering simultaneously.",
+          "risk": "3 signals above the elevated-severity threshold are clustering simultaneously.",
           "support": null,
           "why": "Multiple high-severity warnings across channels describe a tactically stressed environment."
         }
@@ -340,31 +351,31 @@
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 1.0,
+        "confidence": 0.97,
         "freshness_status": "ok",
-        "id": "vix_complex",
-        "label": "VIX / VVIX complex",
-        "message": "Volatility tail risk is contained.",
-        "severity": 64.81,
+        "id": "vix_curve",
+        "label": "VIX curve state",
+        "message": "VIX curve is contango-proxy and calm.",
+        "severity": 88.1,
         "source_status": "free_public",
-        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
       "sections": [
         {
-          "answer": "Term structure remains contained but VVIX-vs-VIX divergence suggests hidden options stress is building.",
+          "answer": "Volatility term structure remains contained and short-end stress is muted.",
           "caveat": "Volatility indices are delayed Cboe public data; intraday moves not reflected.",
           "eyebrow": "Volatility complex",
           "freshness_status": "ok",
           "id": "volatility_complex",
           "question": "Is the term structure pricing calm, stress, or hidden options stress?",
-          "risk": "VVIX percentile is above VIX percentile",
-          "support": null,
+          "risk": null,
+          "support": "Front-end percentile remains in normal range",
           "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX."
         }
       ],
       "state": "support",
       "title": "Volatility",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     }
   }
 }

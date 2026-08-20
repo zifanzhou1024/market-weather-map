@@ -1,28 +1,28 @@
 {
-  "generated_at_utc": "2026-08-19T23:44:11Z",
+  "generated_at_utc": "2026-08-20T23:47:06Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
-        "Credit spread pressure is contained.",
-        "Volatility term structure is calm."
+        "Volatility term structure is calm.",
+        "Credit spread pressure is contained."
       ],
       "top_risks": [],
       "top_supports": [
-        "Credit spread pressure is contained.",
         "Volatility term structure is calm.",
+        "Credit spread pressure is contained.",
         "The dollar backdrop is easing."
       ]
     },
     "macro_climate": {
       "recent_changes": [
-        "Real yields are elevated.",
         "Inflation pressure remains elevated.",
+        "Real yields are elevated.",
         "Consumer and production inputs are firm.",
         "Growth inputs are supportive."
       ],
       "top_risks": [
-        "Real yields are elevated.",
         "Inflation pressure remains elevated.",
+        "Real yields are elevated.",
         "Housing activity or mortgage-rate pressure is restrictive."
       ],
       "top_supports": [
@@ -33,14 +33,14 @@
     },
     "market_weather": {
       "recent_changes": [
-        "Real yields are elevated.",
         "Leveraged-money S&P 500 positioning is crowded.",
+        "Real yields are elevated.",
         "Volatility tail risk is contained.",
         "The broad dollar backdrop is easing."
       ],
       "top_risks": [
-        "Real yields are elevated.",
         "Leveraged-money S&P 500 positioning is crowded.",
+        "Real yields are elevated.",
         "Liquidity funding conditions are tightening."
       ],
       "top_supports": [
@@ -441,6 +441,12 @@
       "fragility": 34.68,
       "macro_climate": 11.06,
       "market_weather": -12.03
+    },
+    {
+      "date": "2026-08-20",
+      "fragility": 39.49,
+      "macro_climate": 12.93,
+      "market_weather": -0.31
     }
   ]
 }

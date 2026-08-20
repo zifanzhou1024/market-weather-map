@@ -3,8 +3,8 @@
     {
       "id": "real_yield_10y",
       "label": "10Y real yield",
-      "message": "10Y real yield is up over one month.",
-      "state": "up"
+      "message": "10Y real yield is flat over one month.",
+      "state": "flat"
     },
     {
       "id": "dollar",
@@ -15,14 +15,14 @@
     {
       "id": "nominal_10y",
       "label": "10Y nominal yield",
-      "message": "10Y nominal yield is up over one month.",
-      "state": "up"
+      "message": "10Y nominal yield is flat over one month.",
+      "state": "flat"
     },
     {
       "id": "yield_driver",
       "label": "Yield driver",
-      "message": "The nominal yield move is classified as real yield driven.",
-      "state": "real_yield_driven"
+      "message": "The nominal yield move is classified as mixed.",
+      "state": "mixed"
     },
     {
       "id": "vix_curve",
@@ -45,8 +45,8 @@
     {
       "id": "overall_regime",
       "label": "Overall regime",
-      "message": "Active data classifies the backdrop as Reallocation / rotation.",
-      "state": "Reallocation / rotation"
+      "message": "Active data classifies the backdrop as Mixed.",
+      "state": "Mixed"
     }
   ],
   "confirmations": [
@@ -75,8 +75,8 @@
       "status": "mixed"
     }
   ],
-  "date": "2026-08-19",
-  "generated_at_utc": "2026-08-19T23:44:11Z",
+  "date": "2026-08-20",
+  "generated_at_utc": "2026-08-20T23:47:06Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -242,18 +242,12 @@
   ],
   "regime": {
     "dollar_direction": "down",
-    "label": "Reallocation / rotation",
-    "nominal_yield_direction": "up",
-    "tips_direction": "up",
-    "yield_driver": "real_yield_driven"
+    "label": "Mixed",
+    "nominal_yield_direction": "flat",
+    "tips_direction": "flat",
+    "yield_driver": "mixed"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.36,
-      "date": "2025-08-05",
-      "nominal_10y": 4.22,
-      "real_yield_10y": 1.86
-    },
     {
       "breakeven_10y": 2.34,
       "date": "2025-08-06",
@@ -1807,6 +1801,12 @@
       "date": "2026-08-18",
       "nominal_10y": 4.71,
       "real_yield_10y": 2.41
+    },
+    {
+      "breakeven_10y": 2.3,
+      "date": "2026-08-19",
+      "nominal_10y": 4.65,
+      "real_yield_10y": 2.35
     }
   ]
 }
