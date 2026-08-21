@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-08-20T23:45:37Z",
+  "generated_at_utc": "2026-08-21T23:43:44Z",
   "observations": [
     {
       "date": "2011-01-04",
@@ -19651,20 +19651,25 @@
       "date": "2026-08-20",
       "percentile_252d": 37.3,
       "value": 14.39
+    },
+    {
+      "date": "2026-08-21",
+      "percentile_252d": 13.49,
+      "value": 12.58
     }
   ],
   "series_id": "vix9d",
   "source": "Cboe",
   "source_url": "https://www.cboe.com/us/indices/dashboard/",
   "summary": {
-    "change_12m": -0.31,
-    "change_1d": 1.73,
-    "change_1m": -0.49,
-    "change_1w": 3.02,
-    "change_3m": -0.75,
-    "latest_date": "2026-08-20",
-    "latest_value": 14.39,
-    "percentile_252d": 37.3
+    "change_12m": -2.51,
+    "change_1d": -1.81,
+    "change_1m": -5.57,
+    "change_1w": 1.97,
+    "change_3m": -1.5,
+    "latest_date": "2026-08-21",
+    "latest_value": 12.58,
+    "percentile_252d": 13.49
   },
   "units": "index"
 }

@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-20",
-  "generated_at_utc": "2026-08-20T23:47:11Z",
+  "date": "2026-08-21",
+  "generated_at_utc": "2026-08-21T23:45:33Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -13,13 +13,13 @@
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is elevated.",
-        "severity": 1.05,
+        "severity": 1.46,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
       "sections": [
         {
-          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse -1.1, 100th percentile of the past year).",
+          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse -1.5, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -44,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 16.27,
+        "severity": 8.14,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.01 pp over 30 days at 1.92 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (+0.03 pp over 30 days at 1.93 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -105,18 +105,18 @@
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.97,
+        "confidence": 1.0,
         "freshness_status": "ok",
-        "id": "vix_curve",
-        "label": "VIX curve state",
-        "message": "VIX curve is contango-proxy and calm.",
-        "severity": 88.1,
+        "id": "vix_complex",
+        "label": "VIX / VVIX complex",
+        "message": "Volatility tail risk is contained.",
+        "severity": 54.76,
         "source_status": "free_public",
-        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
       "state": "support",
       "title": "Fragility / shock risk",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
     "growth": {
       "confidence": 0.98,
@@ -215,7 +215,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 5.55,
+        "severity": 8.17,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -252,15 +252,15 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) reflects both real yields (+6 bps) and breakevens (+4 bps).",
+          "answer": "The recent 10Y move (higher) is driven by inflation breakevens (+6 bps), not real yields.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
+          "risk": "Rising breakevens may accelerate Fed hawkishness expectations.",
           "support": null,
-          "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
+          "why": "Breakeven-driven moves signal changing inflation expectations rather than Fed policy tightening."
         }
       ],
       "state": "risk",
@@ -301,13 +301,13 @@
         "id": "sentiment_positioning",
         "label": "S&P 500 positioning",
         "message": "Leveraged-money S&P 500 positioning is crowded.",
-        "severity": 51.07,
+        "severity": 44.0,
         "source_status": "free_public",
         "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
       },
       "sections": [
         {
-          "answer": "Asset-manager S&P 500 net positioning is within a neutral range at the 23th percentile of the past year (+44.8% OI).",
+          "answer": "Asset-manager S&P 500 net positioning is within a neutral range at the 38th percentile of the past year (+46.4% OI).",
           "caveat": "CFTC data is weekly and delayed by several days; short-term positioning shifts are not captured. NAAIM is a candidate source and may be absent.",
           "eyebrow": "Positioning vs sentiment",
           "freshness_status": "ok",
@@ -351,14 +351,14 @@
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.97,
+        "confidence": 1.0,
         "freshness_status": "ok",
-        "id": "vix_curve",
-        "label": "VIX curve state",
-        "message": "VIX curve is contango-proxy and calm.",
-        "severity": 88.1,
+        "id": "vix_complex",
+        "label": "VIX / VVIX complex",
+        "message": "Volatility tail risk is contained.",
+        "severity": 54.76,
         "source_status": "free_public",
-        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
       "sections": [
         {
@@ -375,7 +375,7 @@
       ],
       "state": "support",
       "title": "Volatility",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     }
   }
 }
