@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-21",
-  "generated_at_utc": "2026-08-21T23:45:33Z",
+  "date": "2026-08-24",
+  "generated_at_utc": "2026-08-24T23:43:18Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -13,13 +13,13 @@
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is elevated.",
-        "severity": 1.46,
+        "severity": 1.21,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
       "sections": [
         {
-          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse -1.5, 100th percentile of the past year).",
+          "answer": "Commodity prices are roughly neutral for inflation pressure (impulse -1.2, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -44,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 8.14,
+        "severity": 25.0,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.03 pp over 30 days at 1.93 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (-0.09 pp over 30 days at 1.89 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -61,7 +61,7 @@
           "why": "Stable HY-IG dispersion describes a credit market without a directional impulse."
         }
       ],
-      "state": "calm",
+      "state": "support",
       "title": "Credit",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
     },
@@ -75,13 +75,13 @@
         "id": "broad_dollar",
         "label": "Broad dollar",
         "message": "The broad dollar backdrop is easing.",
-        "severity": 57.94,
+        "severity": 81.74,
         "source_status": "free_public",
         "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
       },
       "sections": [
         {
-          "answer": "The broad dollar is weakening (-1.19% over one month to 118.90); global financial conditions are easing from the FX side.",
+          "answer": "The broad dollar is weakening (-2.35% over one month to 118.06); global financial conditions are easing from the FX side.",
           "caveat": "Broad dollar uses Fed's nominal trade-weighted index; FX series can be stale around holidays.",
           "eyebrow": "Dollar pressure",
           "freshness_status": "ok",
@@ -110,7 +110,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 54.76,
+        "severity": 65.87,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -121,7 +121,6 @@
     "growth": {
       "confidence": 0.98,
       "freshness_notes": [
-        "Growth breadth is stale.",
         "Consumer balance sheet is stale."
       ],
       "primary_support": {
@@ -215,7 +214,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 8.17,
+        "severity": 14.24,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -246,21 +245,21 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 82.54,
+        "severity": 87.3,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by inflation breakevens (+6 bps), not real yields.",
+          "answer": "The recent 10Y move (higher) reflects both real yields (-4 bps) and breakevens (+6 bps).",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": "Rising breakevens may accelerate Fed hawkishness expectations.",
+          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
           "support": null,
-          "why": "Breakeven-driven moves signal changing inflation expectations rather than Fed policy tightening."
+          "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
         }
       ],
       "state": "risk",
@@ -356,7 +355,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 54.76,
+        "severity": 65.87,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },

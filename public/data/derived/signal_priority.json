@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-21",
-  "generated_at_utc": "2026-08-21T23:45:33Z",
+  "date": "2026-08-24",
+  "generated_at_utc": "2026-08-24T23:43:18Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,12 +74,12 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 29.0
+      "score": 44.15
     },
     "long_term": {
       "confidence": 0.98,
       "label": "Mixed",
-      "score": 12.93
+      "score": 7.95
     },
     "regime": {
       "label": "Mixed"
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": -2.6
+      "score": 3.38
     }
   },
   "top_supports": [
@@ -121,8 +121,8 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is contained.",
-      "priority": 273.8,
-      "severity": 54.76,
+      "priority": 329.35,
+      "severity": 65.87,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
@@ -139,29 +139,29 @@
       "importance": 4,
       "label": "Broad dollar",
       "message": "The broad dollar backdrop is easing.",
-      "priority": 231.76,
-      "severity": 57.94,
+      "priority": 326.96,
+      "severity": 81.74,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
     },
     {
       "access_status": "free_public_active",
-      "category": "macro",
-      "confidence": 0.98,
+      "category": "volatility",
+      "confidence": 0.97,
       "direction": "support",
-      "freshness_status": "stale",
-      "group": "Growth",
-      "horizon": "long_term",
-      "id": "growth",
-      "importance": 5,
-      "label": "Growth breadth",
-      "message": "Growth inputs are supportive.",
-      "priority": 196.0,
-      "severity": 50.0,
+      "freshness_status": "ok",
+      "group": "Volatility curve",
+      "horizon": "short_term",
+      "id": "vix_curve",
+      "importance": 4,
+      "label": "VIX curve state",
+      "message": "VIX curve is contango-proxy and calm.",
+      "priority": 277.11,
+      "severity": 71.42,
       "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Broad growth conditions set the strategic backdrop for risk assets and recession risk."
+      "urgency": "immediate",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     {
       "access_status": "free_public_active",
@@ -183,24 +183,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.97,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Volatility curve",
-      "horizon": "short_term",
-      "id": "vix_curve",
-      "importance": 4,
-      "label": "VIX curve state",
-      "message": "VIX curve is contango-proxy and calm.",
-      "priority": 144.72,
-      "severity": 37.3,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "credit",
       "confidence": 1.0,
       "direction": "support",
@@ -211,11 +193,29 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 40.7,
-      "severity": 8.14,
+      "priority": 125.0,
+      "severity": 25.0,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "macro",
+      "confidence": 0.98,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Growth",
+      "horizon": "long_term",
+      "id": "growth",
+      "importance": 5,
+      "label": "Growth breadth",
+      "message": "Growth inputs are supportive.",
+      "priority": 122.5,
+      "severity": 25.0,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Broad growth conditions set the strategic backdrop for risk assets and recession risk."
     }
   ],
   "top_warnings": [
@@ -231,8 +231,8 @@
       "importance": 5,
       "label": "10Y real yields",
       "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 412.7,
-      "severity": 82.54,
+      "priority": 436.5,
+      "severity": 87.3,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
@@ -285,8 +285,8 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is draining.",
-      "priority": 32.68,
-      "severity": 8.17,
+      "priority": 56.96,
+      "severity": 14.24,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
@@ -303,8 +303,8 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 4.38,
-      "severity": 1.46,
+      "priority": 3.63,
+      "severity": 1.21,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."

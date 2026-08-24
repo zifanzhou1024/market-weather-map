@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-21T23:45:28Z",
+  "generated_at_utc": "2026-08-24T23:43:15Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
@@ -18,7 +18,7 @@
         "Inflation pressure remains elevated.",
         "Real yields are elevated.",
         "Consumer and production inputs are firm.",
-        "Growth inputs are supportive."
+        "Consumer balance-sheet stress is contained."
       ],
       "top_risks": [
         "Inflation pressure remains elevated.",
@@ -27,8 +27,8 @@
       ],
       "top_supports": [
         "Consumer and production inputs are firm.",
-        "Growth inputs are supportive.",
-        "Consumer balance-sheet stress is contained."
+        "Consumer balance-sheet stress is contained.",
+        "Growth inputs are supportive."
       ]
     },
     "market_weather": {
@@ -453,6 +453,12 @@
       "fragility": 29.0,
       "macro_climate": 12.93,
       "market_weather": -2.6
+    },
+    {
+      "date": "2026-08-24",
+      "fragility": 44.15,
+      "macro_climate": 7.95,
+      "market_weather": 3.38
     }
   ]
 }
