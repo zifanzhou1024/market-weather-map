@@ -3,8 +3,8 @@
     {
       "id": "real_yield_10y",
       "label": "10Y real yield",
-      "message": "10Y real yield is flat over one month.",
-      "state": "flat"
+      "message": "10Y real yield is down over one month.",
+      "state": "down"
     },
     {
       "id": "dollar",
@@ -45,38 +45,38 @@
     {
       "id": "overall_regime",
       "label": "Overall regime",
-      "message": "Active data classifies the backdrop as Mixed.",
-      "state": "Mixed"
+      "message": "Active data classifies the backdrop as Strong risk-on.",
+      "state": "Strong risk-on"
     }
   ],
   "confirmations": [
     {
       "id": "credit",
       "label": "Credit",
-      "message": "Credit spreads are mixed for the active regime.",
-      "status": "mixed"
+      "message": "Credit spreads are confirming for the active regime.",
+      "status": "confirming"
     },
     {
       "id": "vix_curve",
       "label": "VIX curve",
-      "message": "Volatility is mixed and the curve is contango proxy.",
-      "status": "mixed"
+      "message": "Volatility is confirming and the curve is contango proxy.",
+      "status": "confirming"
     },
     {
       "id": "liquidity",
       "label": "Liquidity",
-      "message": "Net liquidity is mixed for the active regime.",
-      "status": "mixed"
+      "message": "Net liquidity is diverging for the active regime.",
+      "status": "diverging"
     },
     {
       "id": "rates",
       "label": "Rates",
-      "message": "Real yield momentum is mixed for the active regime.",
-      "status": "mixed"
+      "message": "Real yield momentum is confirming for the active regime.",
+      "status": "confirming"
     }
   ],
-  "date": "2026-08-24",
-  "generated_at_utc": "2026-08-24T23:43:15Z",
+  "date": "2026-08-25",
+  "generated_at_utc": "2026-08-25T23:45:50Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -242,18 +242,12 @@
   ],
   "regime": {
     "dollar_direction": "down",
-    "label": "Mixed",
+    "label": "Strong risk-on",
     "nominal_yield_direction": "flat",
-    "tips_direction": "flat",
+    "tips_direction": "down",
     "yield_driver": "mixed"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.39,
-      "date": "2025-08-08",
-      "nominal_10y": 4.27,
-      "real_yield_10y": 1.88
-    },
     {
       "breakeven_10y": 2.4,
       "date": "2025-08-11",
@@ -1807,6 +1801,12 @@
       "date": "2026-08-21",
       "nominal_10y": 4.74,
       "real_yield_10y": 2.4
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2026-08-24",
+      "nominal_10y": 4.7,
+      "real_yield_10y": 2.38
     }
   ]
 }
