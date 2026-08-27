@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-08-25T23:45:01Z",
+  "generated_at_utc": "2026-08-27T04:34:53Z",
   "observations": [
     {
       "date": "1992-02-01",
@@ -2065,20 +2065,25 @@
     {
       "date": "2026-06-01",
       "percentile_252d": 91.67,
-      "value": 335418.0
+      "value": 335653.0
+    },
+    {
+      "date": "2026-07-01",
+      "percentile_252d": 91.67,
+      "value": 339250.0
     }
   ],
   "series_id": "durable_goods_orders",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DGORDER",
   "summary": {
-    "change_12m": 23657.0,
-    "change_1d": 1576.0,
-    "change_1m": 1576.0,
-    "change_1w": 1576.0,
-    "change_3m": 14933.0,
-    "latest_date": "2026-06-01",
-    "latest_value": 335418.0,
+    "change_12m": 36218.0,
+    "change_1d": 3597.0,
+    "change_1m": 3597.0,
+    "change_1w": 3597.0,
+    "change_3m": -8517.0,
+    "latest_date": "2026-07-01",
+    "latest_value": 339250.0,
     "percentile_252d": 91.67
   },
   "units": "millions_usd"

@@ -41,10 +41,10 @@
     },
     {
       "category": "inflation",
-      "date": "2026-08-26",
+      "date": "2026-09-30",
       "id": "personal_income_outlays_pce",
       "importance": "high",
-      "notes": "Official BEA schedule row: Personal Income and Outlays, July 2026. Descriptive event context only; not scored.",
+      "notes": "Official BEA schedule row: Personal Income and Outlays, August 2026. Descriptive event context only; not scored.",
       "source": "BEA",
       "source_url": "https://www.bea.gov/news/schedule",
       "status": "scheduled",
@@ -54,10 +54,10 @@
     },
     {
       "category": "growth",
-      "date": "2026-08-26",
+      "date": "2026-09-30",
       "id": "gross_domestic_product",
       "importance": "high",
-      "notes": "Official BEA schedule row: GDP (Second Estimate) and Corporate Profits, 2nd Quarter 2026. Descriptive event context only; not scored.",
+      "notes": "Official BEA schedule row: GDP (Third Estimate), Industries, Corporate Profits, State GDP, and State Personal Income, 2nd Quarter 2026; State PCE, 2025. Descriptive event context only; not scored.",
       "source": "BEA",
       "source_url": "https://www.bea.gov/news/schedule",
       "status": "scheduled",
@@ -93,10 +93,10 @@
     },
     {
       "category": "rates",
-      "date": "2026-08-25",
+      "date": "2026-08-27",
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 2-Year Note offering amount 69000000000. Descriptive event context only; not scored.",
+      "notes": "Official FiscalData auction query row for 7-Year Note offering amount 44000000000. Descriptive event context only; not scored.",
       "source": "FiscalData",
       "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
       "status": "scheduled",
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-08-25T23:46:08Z",
+  "generated_at_utc": "2026-08-27T04:35:52Z",
   "method_version": "official-event-calendar-v2"
 }

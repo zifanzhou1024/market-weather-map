@@ -2,7 +2,7 @@
   "conflicting_signals": [],
   "data_quality": {
     "coverage_confidence": 1.0,
-    "freshness_confidence": 0.98,
+    "freshness_confidence": 0.99,
     "model_confidence": 0.97,
     "overall_confidence": 0.86,
     "reasons": [
@@ -13,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-08-25",
-  "generated_at_utc": "2026-08-25T23:45:50Z",
+  "date": "2026-08-26",
+  "generated_at_utc": "2026-08-27T04:35:35Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 98.42,
+        "credit_spread_widening": 95.24,
         "dollar_spike": 81.74,
         "liquidity_drain": 0.0,
         "positioning_crowding": -44.0,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": 10.32
+        "volatility_term_structure": 28.58
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -54,7 +54,7 @@
         "Credit spread pressure is contained.",
         "The dollar backdrop is easing."
       ],
-      "score": 32.33,
+      "score": 35.19,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -162,7 +162,7 @@
         "housing": -48.39,
         "inflation": -87.5,
         "labor": 71.36,
-        "real_yields": -83.34
+        "real_yields": -76.98
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -176,7 +176,7 @@
       "confidence": 0.99,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 0.95,
+        "freshness_confidence": 0.97,
         "model_confidence": 1.0,
         "overall_confidence": 0.99,
         "source_confidence": 1.0
@@ -190,7 +190,7 @@
         "Consumer and production inputs are firm.",
         "Consumer balance-sheet stress is contained."
       ],
-      "score": 8.41,
+      "score": 9.05,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -350,13 +350,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -1.21,
-        "credit_spreads": 26.39,
+        "commodities_inflation_impulse": -2.27,
+        "credit_spreads": 23.81,
         "dollar_global": 81.74,
-        "liquidity_funding": -14.36,
-        "rates_real_yields": -83.34,
+        "liquidity_funding": -17.1,
+        "rates_real_yields": -76.98,
         "sentiment_positioning": -44.0,
-        "volatility_tail_risk": 51.06
+        "volatility_tail_risk": 61.11
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -384,7 +384,7 @@
         "The broad dollar backdrop is easing.",
         "Volatility tail risk is contained."
       ],
-      "score": 2.03,
+      "score": 3.33,
       "source_coverage": {
         "available": [
           "high_yield_oas",
