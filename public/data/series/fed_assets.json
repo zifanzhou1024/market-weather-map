@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-08-27T04:34:45Z",
+  "generated_at_utc": "2026-08-28T06:58:51Z",
   "observations": [
     {
       "date": "2002-12-18",
@@ -6181,20 +6181,25 @@
       "date": "2026-08-19",
       "percentile_252d": 94.23,
       "value": 6745699.0
+    },
+    {
+      "date": "2026-08-26",
+      "percentile_252d": 82.69,
+      "value": 6730912.0
     }
   ],
   "series_id": "fed_assets",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/WALCL",
   "summary": {
-    "change_12m": 127284.0,
-    "change_1d": -14256.0,
-    "change_1m": -1679.0,
-    "change_1w": -14256.0,
-    "change_3m": 32056.0,
-    "latest_date": "2026-08-19",
-    "latest_value": 6745699.0,
-    "percentile_252d": 94.23
+    "change_12m": 127528.0,
+    "change_1d": -14787.0,
+    "change_1m": -7278.0,
+    "change_1w": -14787.0,
+    "change_3m": 26529.0,
+    "latest_date": "2026-08-26",
+    "latest_value": 6730912.0,
+    "percentile_252d": 82.69
   },
   "units": "millions_usd"
 }
