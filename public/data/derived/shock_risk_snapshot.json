@@ -1,28 +1,28 @@
 {
   "active_signals": [
     {
-      "change": -6.15,
+      "change": -2.66,
       "id": "vix",
       "label": "VIX",
       "message": "VIX percentile is included in active shock-risk pressure.",
-      "score": 92.06,
-      "value": 14.51
+      "score": 93.66,
+      "value": 14.43
     },
     {
-      "change": -0.1346,
+      "change": -0.0509,
       "id": "vix_vix3m_ratio",
       "label": "VIX/VIX3M ratio",
       "message": "VIX curve pressure is included in active shock-risk pressure.",
-      "score": 65.88,
-      "value": 0.8263
+      "score": 67.46,
+      "value": 0.8255
     },
     {
-      "change": -0.16,
+      "change": -0.22,
       "id": "hy_minus_ig_oas",
       "label": "Credit spreads",
       "message": "Credit spread percentile is included in active shock-risk pressure.",
-      "score": 98.42,
-      "value": 1.87
+      "score": 99.2,
+      "value": 1.84
     },
     {
       "change": -2.8447,
@@ -49,12 +49,12 @@
       "value": 5779474.0
     }
   ],
-  "date": "2026-08-27",
-  "generated_at_utc": "2026-08-28T06:59:49Z",
+  "date": "2026-08-28",
+  "generated_at_utc": "2026-08-29T04:13:41Z",
   "label": "Contained shock risk",
   "method_version": "phase5-shock-risk-v1",
   "mismatch_warnings": [],
-  "score": 51.72,
+  "score": 52.55,
   "source_gaps": [
     {
       "id": "move_index",

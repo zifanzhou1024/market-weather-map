@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-08-28T06:58:56Z",
+  "generated_at_utc": "2026-08-29T04:12:46Z",
   "observations": [
     {
       "date": "2023-06-02",
@@ -4236,6 +4236,11 @@
       "date": "2026-08-26",
       "percentile_252d": 67.06,
       "value": 0.8
+    },
+    {
+      "date": "2026-08-27",
+      "percentile_252d": 58.33,
+      "value": 0.79
     }
   ],
   "series_id": "investment_grade_oas",
@@ -4244,12 +4249,12 @@
   "summary": {
     "change_12m": 0.01,
     "change_1d": -0.01,
-    "change_1m": -0.01,
-    "change_1w": -0.01,
+    "change_1m": -0.02,
+    "change_1w": -0.03,
     "change_3m": 0.06,
-    "latest_date": "2026-08-26",
-    "latest_value": 0.8,
-    "percentile_252d": 67.06
+    "latest_date": "2026-08-27",
+    "latest_value": 0.79,
+    "percentile_252d": 58.33
   },
   "units": "percent"
 }

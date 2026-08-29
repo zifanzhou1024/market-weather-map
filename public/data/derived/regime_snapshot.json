@@ -15,14 +15,14 @@
     {
       "id": "nominal_10y",
       "label": "10Y nominal yield",
-      "message": "10Y nominal yield is up over one month.",
-      "state": "up"
+      "message": "10Y nominal yield is flat over one month.",
+      "state": "flat"
     },
     {
       "id": "yield_driver",
       "label": "Yield driver",
-      "message": "The nominal yield move is classified as breakeven inflation driven.",
-      "state": "breakeven_inflation_driven"
+      "message": "The nominal yield move is classified as mixed.",
+      "state": "mixed"
     },
     {
       "id": "vix_curve",
@@ -75,8 +75,8 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-08-27",
-  "generated_at_utc": "2026-08-28T06:59:49Z",
+  "date": "2026-08-28",
+  "generated_at_utc": "2026-08-29T04:13:41Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -243,17 +243,11 @@
   "regime": {
     "dollar_direction": "down",
     "label": "Strong risk-on",
-    "nominal_yield_direction": "up",
+    "nominal_yield_direction": "flat",
     "tips_direction": "down",
-    "yield_driver": "breakeven_inflation_driven"
+    "yield_driver": "mixed"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.37,
-      "date": "2025-08-13",
-      "nominal_10y": 4.24,
-      "real_yield_10y": 1.87
-    },
     {
       "breakeven_10y": 2.39,
       "date": "2025-08-14",
@@ -1806,6 +1800,12 @@
       "breakeven_10y": 2.32,
       "date": "2026-08-26",
       "nominal_10y": 4.66,
+      "real_yield_10y": 2.34
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2026-08-27",
+      "nominal_10y": 4.67,
       "real_yield_10y": 2.34
     }
   ]
