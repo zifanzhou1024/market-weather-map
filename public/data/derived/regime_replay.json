@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-29T04:13:41Z",
+  "generated_at_utc": "2026-09-01T01:54:35Z",
   "method_version": "phase5-regime-replay-v1",
   "scenarios": [
     {
@@ -1681,8 +1681,8 @@
       "description": "Real yields falling, dollar falling, and credit or volatility pressure contained.",
       "id": "strong_risk_on",
       "label": "Strong risk-on",
-      "last_occurrence_date": "2026-08-21",
-      "occurrence_count": 141,
+      "last_occurrence_date": "2026-08-28",
+      "occurrence_count": 146,
       "occurrences": [
         {
           "credit_20obs_change": -0.21,
@@ -2811,6 +2811,46 @@
           "nominal_10y_20obs_change": 0.05,
           "real_yield_20obs_change": -0.03,
           "vix_curve_20obs_change": -0.0881
+        },
+        {
+          "credit_20obs_change": -0.12,
+          "date": "2026-08-24",
+          "dollar_20obs_change": -2.4544,
+          "nominal_10y_20obs_change": 0.05,
+          "real_yield_20obs_change": -0.06,
+          "vix_curve_20obs_change": -0.0703
+        },
+        {
+          "credit_20obs_change": -0.14,
+          "date": "2026-08-25",
+          "dollar_20obs_change": -2.3964,
+          "nominal_10y_20obs_change": 0.03,
+          "real_yield_20obs_change": -0.09,
+          "vix_curve_20obs_change": -0.0685
+        },
+        {
+          "credit_20obs_change": -0.2,
+          "date": "2026-08-26",
+          "dollar_20obs_change": -2.3431,
+          "nominal_10y_20obs_change": -0.01,
+          "real_yield_20obs_change": -0.07,
+          "vix_curve_20obs_change": -0.1154
+        },
+        {
+          "credit_20obs_change": -0.21,
+          "date": "2026-08-27",
+          "dollar_20obs_change": -1.317,
+          "nominal_10y_20obs_change": -0.01,
+          "real_yield_20obs_change": -0.07,
+          "vix_curve_20obs_change": -0.0501
+        },
+        {
+          "credit_20obs_change": -0.25,
+          "date": "2026-08-28",
+          "dollar_20obs_change": -0.9555,
+          "nominal_10y_20obs_change": -0.02,
+          "real_yield_20obs_change": -0.05,
+          "vix_curve_20obs_change": -0.0152
         }
       ]
     },

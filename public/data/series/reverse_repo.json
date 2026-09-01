@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-08-29T04:12:41Z",
+  "generated_at_utc": "2026-09-01T01:53:41Z",
   "observations": [
     {
       "date": "2003-02-07",
@@ -16576,20 +16576,25 @@
       "date": "2026-08-28",
       "percentile_252d": 4.37,
       "value": 0.175
+    },
+    {
+      "date": "2026-08-31",
+      "percentile_252d": 76.19,
+      "value": 6.726
     }
   ],
   "series_id": "reverse_repo",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/RRPONTSYD",
   "summary": {
-    "change_12m": -47.392,
-    "change_1d": -0.281,
-    "change_1m": -0.901,
-    "change_1w": -0.025,
-    "change_3m": -11.502,
-    "latest_date": "2026-08-28",
-    "latest_value": 0.175,
-    "percentile_252d": 4.37
+    "change_12m": -21.848,
+    "change_1d": 6.551,
+    "change_1m": 4.575,
+    "change_1w": 6.346,
+    "change_3m": 5.424,
+    "latest_date": "2026-08-31",
+    "latest_value": 6.726,
+    "percentile_252d": 76.19
   },
   "units": "billions_usd"
 }

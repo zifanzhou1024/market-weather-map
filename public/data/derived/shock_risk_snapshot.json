@@ -1,44 +1,44 @@
 {
   "active_signals": [
     {
-      "change": -2.66,
+      "change": -1.07,
       "id": "vix",
       "label": "VIX",
       "message": "VIX percentile is included in active shock-risk pressure.",
-      "score": 93.66,
-      "value": 14.43
+      "score": 82.54,
+      "value": 14.92
     },
     {
-      "change": -0.0509,
+      "change": 0.0104,
       "id": "vix_vix3m_ratio",
       "label": "VIX/VIX3M ratio",
       "message": "VIX curve pressure is included in active shock-risk pressure.",
-      "score": 67.46,
-      "value": 0.8255
+      "score": 17.46,
+      "value": 0.8511
     },
     {
-      "change": -0.22,
+      "change": -0.23,
       "id": "hy_minus_ig_oas",
       "label": "Credit spreads",
       "message": "Credit spread percentile is included in active shock-risk pressure.",
       "score": 99.2,
-      "value": 1.84
+      "value": 1.81
     },
     {
-      "change": -2.8447,
+      "change": -0.9274,
       "id": "broad_dollar",
       "label": "Broad dollar",
       "message": "Broad dollar one-month change is included in active shock-risk pressure.",
-      "score": 42.67,
-      "value": 118.0628
+      "score": 13.91,
+      "value": 118.7479
     },
     {
-      "change": -0.07,
+      "change": 0.01,
       "id": "real_yield_10y",
       "label": "10Y real yield",
       "message": "Real yield one-month change is included in active shock-risk pressure.",
-      "score": 8.4,
-      "value": 2.34
+      "score": -1.2,
+      "value": 2.42
     },
     {
       "change": -45364.0,
@@ -49,12 +49,12 @@
       "value": 5779474.0
     }
   ],
-  "date": "2026-08-28",
-  "generated_at_utc": "2026-08-29T04:13:41Z",
+  "date": "2026-08-31",
+  "generated_at_utc": "2026-09-01T01:54:35Z",
   "label": "Contained shock risk",
   "method_version": "phase5-shock-risk-v1",
   "mismatch_warnings": [],
-  "score": 52.55,
+  "score": 36.01,
   "source_gaps": [
     {
       "id": "move_index",
