@@ -2,7 +2,7 @@
   "access_status": "authenticated_candidate",
   "active_scoring_allowed": false,
   "frequency": "daily",
-  "generated_at_utc": "2026-09-01T01:54:55.212310+00:00",
+  "generated_at_utc": "2026-09-02T01:09:58.206136+00:00",
   "metric_keys": [
     "vix_event_spread",
     "vix_front_spread",
@@ -17035,6 +17035,14 @@
       "vix_long_curve_spread": 1.6999999999999993,
       "vix_mid_curve_spread": 2.6400000000000006,
       "vix_term_contango_score": 0.4658176943699733
+    },
+    {
+      "date": "2026-09-01",
+      "vix_event_spread": -2.01,
+      "vix_front_spread": 1.9899999999999984,
+      "vix_long_curve_spread": 1.370000000000001,
+      "vix_mid_curve_spread": 2.2300000000000004,
+      "vix_term_contango_score": 0.34210526315789475
     }
   ],
   "public_redistribution_allowed": false,
