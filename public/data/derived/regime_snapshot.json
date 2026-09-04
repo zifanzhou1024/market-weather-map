@@ -3,8 +3,8 @@
     {
       "id": "real_yield_10y",
       "label": "10Y real yield",
-      "message": "10Y real yield is flat over one month.",
-      "state": "flat"
+      "message": "10Y real yield is up over one month.",
+      "state": "up"
     },
     {
       "id": "dollar",
@@ -45,8 +45,8 @@
     {
       "id": "overall_regime",
       "label": "Overall regime",
-      "message": "Active data classifies the backdrop as Mixed.",
-      "state": "Mixed"
+      "message": "Active data classifies the backdrop as Reallocation / rotation.",
+      "state": "Reallocation / rotation"
     }
   ],
   "confirmations": [
@@ -75,8 +75,8 @@
       "status": "mixed"
     }
   ],
-  "date": "2026-09-02",
-  "generated_at_utc": "2026-09-03T01:15:21Z",
+  "date": "2026-09-03",
+  "generated_at_utc": "2026-09-04T01:06:58Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -242,18 +242,12 @@
   ],
   "regime": {
     "dollar_direction": "down",
-    "label": "Mixed",
+    "label": "Reallocation / rotation",
     "nominal_yield_direction": "up",
-    "tips_direction": "flat",
+    "tips_direction": "up",
     "yield_driver": "breakeven_inflation_driven"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.35,
-      "date": "2025-08-19",
-      "nominal_10y": 4.3,
-      "real_yield_10y": 1.95
-    },
     {
       "breakeven_10y": 2.35,
       "date": "2025-08-20",
@@ -1807,6 +1801,12 @@
       "date": "2026-09-01",
       "nominal_10y": 4.79,
       "real_yield_10y": 2.44
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2026-09-02",
+      "nominal_10y": 4.79,
+      "real_yield_10y": 2.45
     }
   ]
 }

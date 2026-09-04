@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-02",
-  "generated_at_utc": "2026-09-03T01:15:26Z",
+  "date": "2026-09-03",
+  "generated_at_utc": "2026-09-04T01:07:02Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,41 +74,23 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 28.05
+      "score": 38.88
     },
     "long_term": {
       "confidence": 0.99,
       "label": "Mixed",
-      "score": 6.71
+      "score": 6.02
     },
     "regime": {
-      "label": "Mixed"
+      "label": "Reallocation / rotation"
     },
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 4.68
+      "score": 6.83
     }
   },
   "top_supports": [
-    {
-      "access_status": "free_public_active",
-      "category": "macro",
-      "confidence": 0.99,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Labor",
-      "horizon": "long_term",
-      "id": "labor",
-      "importance": 5,
-      "label": "Labor cycle",
-      "message": "Labor cycle is firm.",
-      "priority": 356.4,
-      "severity": 72.0,
-      "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
-    },
     {
       "access_status": "free_public_active",
       "category": "volatility",
@@ -121,11 +103,47 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is contained.",
-      "priority": 336.65,
-      "severity": 67.33,
+      "priority": 436.5,
+      "severity": 87.3,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "macro",
+      "confidence": 0.99,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Labor",
+      "horizon": "long_term",
+      "id": "labor",
+      "importance": 5,
+      "label": "Labor cycle",
+      "message": "Labor cycle is firm.",
+      "priority": 350.06,
+      "severity": 70.72,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 0.97,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Volatility curve",
+      "horizon": "short_term",
+      "id": "vix_curve",
+      "importance": 4,
+      "label": "VIX curve state",
+      "message": "VIX curve is contango-proxy and calm.",
+      "priority": 277.11,
+      "severity": 71.42,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     {
       "access_status": "free_public_active",
@@ -157,8 +175,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 163.7,
-      "severity": 32.74,
+      "priority": 158.75,
+      "severity": 31.75,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -198,24 +216,6 @@
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Broad growth conditions set the strategic backdrop for risk assets and recession risk."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.97,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Volatility curve",
-      "horizon": "short_term",
-      "id": "vix_curve",
-      "importance": 4,
-      "label": "VIX curve state",
-      "message": "VIX curve is contango-proxy and calm.",
-      "priority": 18.47,
-      "severity": 4.76,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     }
   ],
   "top_warnings": [
@@ -285,11 +285,29 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 20.07,
-      "severity": 6.69,
+      "priority": 20.82,
+      "severity": 6.94,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "liquidity",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Liquidity / Funding",
+      "horizon": "both",
+      "id": "net_liquidity",
+      "importance": 4,
+      "label": "Net liquidity",
+      "message": "Net liquidity is draining.",
+      "priority": 8.44,
+      "severity": 2.11,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     }
   ]
 }

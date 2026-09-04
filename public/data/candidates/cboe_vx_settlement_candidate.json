@@ -6,84 +6,84 @@
       "expiration_date": "2026-09-16",
       "symbol": "VX/U6",
       "tenor": "vx1",
-      "value": 16.5528
+      "value": 16.1381
     },
     {
       "expiration_date": "2026-10-21",
       "symbol": "VX/V6",
       "tenor": "vx2",
-      "value": 18.385
+      "value": 18.1013
     },
     {
       "expiration_date": "2026-11-18",
       "symbol": "VX/X6",
       "tenor": "vx3",
-      "value": 19.0537
+      "value": 18.8559
     },
     {
       "expiration_date": "2026-12-16",
       "symbol": "VX/Z6",
       "tenor": "vx4",
-      "value": 19.246
+      "value": 19.0998
     },
     {
       "expiration_date": "2027-01-20",
       "symbol": "VX/F7",
       "tenor": "vx5",
-      "value": 20.2492
+      "value": 20.1488
     },
     {
       "expiration_date": "2027-02-17",
       "symbol": "VX/G7",
       "tenor": "vx6",
-      "value": 20.75
+      "value": 20.6496
     },
     {
       "expiration_date": "2027-03-17",
       "symbol": "VX/H7",
       "tenor": "vx7",
-      "value": 21.025
+      "value": 20.8641
     },
     {
       "expiration_date": "2027-04-21",
       "symbol": "VX/J7",
       "tenor": "vx8",
-      "value": 21.25
+      "value": 21.15
     }
   ],
-  "csv_url": "https://www-api.cboe.com/us/futures/market_statistics/settlement/csv?dt=2026-09-02",
+  "csv_url": "https://www-api.cboe.com/us/futures/market_statistics/settlement/csv?dt=2026-09-03",
   "frequency": "daily",
-  "generated_at_utc": "2026-09-03T01:14:59Z",
+  "generated_at_utc": "2026-09-04T01:06:42Z",
   "latest_metrics": {
-    "date": "2026-09-02",
-    "vx1": 16.5528,
-    "vx1_vx2_ratio": 0.900343,
-    "vx2": 18.385,
-    "vx_curve_slope": 4.6972,
-    "vx_front_spread": 1.8322
+    "date": "2026-09-03",
+    "vx1": 16.1381,
+    "vx1_vx2_ratio": 0.891544,
+    "vx2": 18.1013,
+    "vx_curve_slope": 5.0119,
+    "vx_front_spread": 1.9632
   },
   "notes": "Daily Cboe VX standard monthly futures settlement candidate. Generated for source-readiness visibility only; not active in scoring until Cboe redistribution terms are approved.",
   "observations": [
     {
-      "date": "2026-09-02",
-      "vx1": 16.5528,
-      "vx1_vx2_ratio": 0.900343,
-      "vx2": 18.385,
-      "vx3": 19.0537,
-      "vx4": 19.246,
-      "vx5": 20.2492,
-      "vx6": 20.75,
-      "vx7": 21.025,
-      "vx8": 21.25,
-      "vx_curve_slope": 4.6972,
-      "vx_front_spread": 1.8322
+      "date": "2026-09-03",
+      "vx1": 16.1381,
+      "vx1_vx2_ratio": 0.891544,
+      "vx2": 18.1013,
+      "vx3": 18.8559,
+      "vx4": 19.0998,
+      "vx5": 20.1488,
+      "vx6": 20.6496,
+      "vx7": 20.8641,
+      "vx8": 21.15,
+      "vx_curve_slope": 5.0119,
+      "vx_front_spread": 1.9632
     }
   ],
   "public_redistribution_allowed": false,
   "requires_secret": false,
   "score_status": "candidate",
   "series_id": "cboe_vx_settlement_candidate",
-  "settlement_date": "2026-09-02",
+  "settlement_date": "2026-09-03",
   "source": "Cboe Futures Exchange",
   "source_url": "https://www.cboe.com/markets/us/futures/market-statistics/settlement/futures/daily/",
   "tenor_keys": [
