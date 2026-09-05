@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-03",
-  "generated_at_utc": "2026-09-04T01:07:02Z",
+  "date": "2026-09-04",
+  "generated_at_utc": "2026-09-05T01:09:04Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -44,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 31.75,
+        "severity": 27.58,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (-0.10 pp over 30 days at 1.85 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (-0.13 pp over 30 days at 1.84 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -67,11 +67,13 @@
     },
     "dollar_global": {
       "confidence": 1.0,
-      "freshness_notes": [],
+      "freshness_notes": [
+        "Broad dollar is stale."
+      ],
       "primary_support": {
         "access_status": "free_public_active",
         "confidence": 1.0,
-        "freshness_status": "ok",
+        "freshness_status": "stale",
         "id": "broad_dollar",
         "label": "Broad dollar",
         "message": "The broad dollar backdrop is easing.",
@@ -110,7 +112,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 87.3,
+        "severity": 83.34,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -130,21 +132,21 @@
         "id": "labor",
         "label": "Labor cycle",
         "message": "Labor cycle is firm.",
-        "severity": 70.72,
+        "severity": 84.62,
         "source_status": "free_public",
         "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
       },
       "sections": [
         {
-          "answer": "Growth breadth is mixed: 3 of 5 growth and labor inputs are constructive while others have softened.",
+          "answer": "Growth breadth is firm: 4 of 5 growth and labor inputs are in their constructive zones.",
           "caveat": "Breadth uses heuristic thresholds; release timing varies by indicator and some inputs may lag.",
           "eyebrow": "Growth breadth",
           "freshness_status": "ok",
           "id": "growth_breadth",
           "question": "Is broad-based growth firm, mixed, or softening across labor and production inputs?",
           "risk": null,
-          "support": null,
-          "why": "Mixed growth breadth describes an economy with both expansionary and contractionary pockets."
+          "support": "Firm growth breadth supports cyclical risk assets.",
+          "why": "Broad-based firmness across labor and production inputs describes a resilient cyclical backdrop."
         }
       ],
       "state": "support",
@@ -212,7 +214,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 2.11,
+        "severity": 5.08,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -243,13 +245,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 99.2,
+        "severity": 90.48,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by inflation breakevens (+11 bps), not real yields.",
+          "answer": "The recent 10Y move (higher) is driven by inflation breakevens (+13 bps), not real yields.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -298,13 +300,13 @@
         "id": "sentiment_positioning",
         "label": "S&P 500 positioning",
         "message": "Leveraged-money S&P 500 positioning is crowded.",
-        "severity": 30.15,
+        "severity": 27.08,
         "source_status": "free_public",
         "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
       },
       "sections": [
         {
-          "answer": "Asset-manager S&P 500 net positioning is within a neutral range at the 38th percentile of the past year (+46.6% OI).",
+          "answer": "Asset-manager S&P 500 net positioning is within a neutral range at the 29th percentile of the past year (+45.6% OI).",
           "caveat": "CFTC data is weekly and delayed by several days; short-term positioning shifts are not captured. NAAIM is a candidate source and may be absent.",
           "eyebrow": "Positioning vs sentiment",
           "freshness_status": "ok",
@@ -353,7 +355,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 87.3,
+        "severity": 83.34,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },

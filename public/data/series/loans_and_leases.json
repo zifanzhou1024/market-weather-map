@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-09-04T01:06:23Z",
+  "generated_at_utc": "2026-09-05T01:08:27Z",
   "observations": [
     {
       "date": "1973-01-03",
@@ -13945,27 +13945,27 @@
     {
       "date": "2026-06-10",
       "percentile_252d": 100.0,
-      "value": 13856.6943
+      "value": 13856.6933
     },
     {
       "date": "2026-06-17",
       "percentile_252d": 100.0,
-      "value": 13862.5655
+      "value": 13862.5645
     },
     {
       "date": "2026-06-24",
       "percentile_252d": 100.0,
-      "value": 13874.7573
+      "value": 13874.7563
     },
     {
       "date": "2026-07-01",
       "percentile_252d": 96.15,
-      "value": 13861.9845
+      "value": 13861.9875
     },
     {
       "date": "2026-07-08",
       "percentile_252d": 98.08,
-      "value": 13865.788
+      "value": 13865.7869
     },
     {
       "date": "2026-07-15",
@@ -13975,40 +13975,45 @@
     {
       "date": "2026-07-22",
       "percentile_252d": 98.08,
-      "value": 13903.0315
+      "value": 13903.0305
     },
     {
       "date": "2026-07-29",
       "percentile_252d": 100.0,
-      "value": 13925.4925
+      "value": 13925.4955
     },
     {
       "date": "2026-08-05",
       "percentile_252d": 100.0,
-      "value": 13954.2124
+      "value": 13954.0486
     },
     {
       "date": "2026-08-12",
       "percentile_252d": 100.0,
-      "value": 13981.1572
+      "value": 13981.1992
     },
     {
       "date": "2026-08-19",
       "percentile_252d": 100.0,
-      "value": 14016.4598
+      "value": 14016.5128
+    },
+    {
+      "date": "2026-08-26",
+      "percentile_252d": 100.0,
+      "value": 14033.8643
     }
   ],
   "series_id": "loans_and_leases",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/TOTLL",
   "summary": {
-    "change_12m": 978.6384,
-    "change_1d": 35.3026,
-    "change_1m": 113.4283,
-    "change_1w": 35.3026,
-    "change_3m": 208.292,
-    "latest_date": "2026-08-19",
-    "latest_value": 14016.4598,
+    "change_12m": 972.8269,
+    "change_1d": 17.3515,
+    "change_1m": 108.3688,
+    "change_1w": 17.3515,
+    "change_3m": 214.9538,
+    "latest_date": "2026-08-26",
+    "latest_value": 14033.8643,
     "percentile_252d": 100.0
   },
   "units": "billions_usd"
