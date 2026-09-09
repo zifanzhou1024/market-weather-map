@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-09-05T01:09:01Z",
+  "generated_at_utc": "2026-09-09T01:19:51Z",
   "method_version": "phase5-regime-replay-v1",
   "scenarios": [
     {
@@ -3597,8 +3597,8 @@
       "description": "Real yields rising while the dollar does not confirm broad stress.",
       "id": "reallocation_rotation",
       "label": "Reallocation / rotation",
-      "last_occurrence_date": "2026-08-18",
-      "occurrence_count": 133,
+      "last_occurrence_date": "2026-09-04",
+      "occurrence_count": 137,
       "occurrences": [
         {
           "credit_20obs_change": -0.38,
@@ -4663,6 +4663,38 @@
           "nominal_10y_20obs_change": 0.08,
           "real_yield_20obs_change": 0.04,
           "vix_curve_20obs_change": -0.0483
+        },
+        {
+          "credit_20obs_change": -0.15,
+          "date": "2026-08-31",
+          "dollar_20obs_change": -1.1272,
+          "nominal_10y_20obs_change": 0.05,
+          "real_yield_20obs_change": 0.01,
+          "vix_curve_20obs_change": 0.0133
+        },
+        {
+          "credit_20obs_change": -0.08,
+          "date": "2026-09-01",
+          "dollar_20obs_change": -0.9409,
+          "nominal_10y_20obs_change": 0.16,
+          "real_yield_20obs_change": 0.04,
+          "vix_curve_20obs_change": 0.0382
+        },
+        {
+          "credit_20obs_change": -0.09,
+          "date": "2026-09-02",
+          "dollar_20obs_change": -0.8585,
+          "nominal_10y_20obs_change": 0.16,
+          "real_yield_20obs_change": 0.04,
+          "vix_curve_20obs_change": 0.023
+        },
+        {
+          "credit_20obs_change": -0.02,
+          "date": "2026-09-04",
+          "dollar_20obs_change": -0.9917,
+          "nominal_10y_20obs_change": 0.13,
+          "real_yield_20obs_change": 0.03,
+          "vix_curve_20obs_change": 0.0292
         }
       ]
     }

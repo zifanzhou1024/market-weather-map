@@ -67,14 +67,14 @@
     },
     {
       "category": "growth",
-      "date": "2026-09-08",
+      "date": "2026-09-16",
       "id": "retail_sales",
       "importance": "high",
-      "notes": "Official Census economic indicators calendar row: Quarterly Financial Report--Retail Trade. Descriptive event context only; not scored.",
+      "notes": "Official Census economic indicators calendar row: Advance Monthly Sales for Retail and Food Services. Descriptive event context only; not scored.",
       "source": "Census",
       "source_url": "https://www.census.gov/economic-indicators/calendar-listview.html",
       "status": "scheduled",
-      "time": "10:00",
+      "time": "08:30",
       "timezone": "America/New_York",
       "title": "Advance Monthly Retail Trade"
     },
@@ -93,10 +93,10 @@
     },
     {
       "category": "rates",
-      "date": "2026-09-08",
+      "date": "2026-09-09",
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 6-Week Bill offering amount 75000000000. Descriptive event context only; not scored.",
+      "notes": "Official FiscalData auction query row for 9-Year 11-Month Note offering amount 39000000000. Descriptive event context only; not scored.",
       "source": "FiscalData",
       "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
       "status": "scheduled",
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-09-05T01:09:16Z",
+  "generated_at_utc": "2026-09-09T01:20:11Z",
   "method_version": "official-event-calendar-v2"
 }
