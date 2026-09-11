@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-09-10T01:12:52Z",
+  "generated_at_utc": "2026-09-11T01:14:27Z",
   "observations": [
     {
       "date": "2009-11-01",
@@ -990,36 +990,41 @@
     {
       "date": "2026-04-01",
       "percentile_252d": 100.0,
-      "value": 156.076
+      "value": 156.061
     },
     {
       "date": "2026-05-01",
       "percentile_252d": 100.0,
-      "value": 156.783
+      "value": 156.864
     },
     {
       "date": "2026-06-01",
       "percentile_252d": 91.67,
-      "value": 156.607
+      "value": 156.667
     },
     {
       "date": "2026-07-01",
-      "percentile_252d": 83.33,
-      "value": 156.563
+      "percentile_252d": 91.67,
+      "value": 156.784
+    },
+    {
+      "date": "2026-08-01",
+      "percentile_252d": 100.0,
+      "value": 157.411
     }
   ],
   "series_id": "ppi_final_demand",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/PPIFIS",
   "summary": {
-    "change_12m": 6.966,
-    "change_1d": -0.044,
-    "change_1m": -0.044,
-    "change_1w": -0.044,
-    "change_3m": 0.487,
-    "latest_date": "2026-07-01",
-    "latest_value": 156.563,
-    "percentile_252d": 83.33
+    "change_12m": 8.084,
+    "change_1d": 0.627,
+    "change_1m": 0.627,
+    "change_1w": 0.627,
+    "change_3m": 0.547,
+    "latest_date": "2026-08-01",
+    "latest_value": 157.411,
+    "percentile_252d": 100.0
   },
   "units": "index"
 }

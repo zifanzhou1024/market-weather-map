@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-09",
-  "generated_at_utc": "2026-09-10T01:13:34Z",
+  "date": "2026-09-10",
+  "generated_at_utc": "2026-09-11T01:15:46Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,12 +74,12 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 24.58
+      "score": 30.19
     },
     "long_term": {
       "confidence": 0.99,
       "label": "Mixed",
-      "score": 8.92
+      "score": 7.19
     },
     "regime": {
       "label": "Mixed"
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": -1.56
+      "score": -11.19
     }
   },
   "top_supports": [
@@ -147,24 +147,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "credit",
-      "confidence": 1.0,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Credit",
-      "horizon": "both",
-      "id": "credit_spreads",
-      "importance": 5,
-      "label": "Credit spreads",
-      "message": "Credit spread pressure is contained.",
-      "priority": 152.75,
-      "severity": 30.55,
-      "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "macro",
       "confidence": 0.99,
       "direction": "support",
@@ -183,21 +165,21 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "volatility",
+      "category": "credit",
       "confidence": 1.0,
       "direction": "support",
       "freshness_status": "ok",
-      "group": "Volatility & tail risk",
-      "horizon": "short_term",
-      "id": "vix_complex",
+      "group": "Credit",
+      "horizon": "both",
+      "id": "credit_spreads",
       "importance": 5,
-      "label": "VIX / VVIX complex",
-      "message": "Volatility tail risk is contained.",
-      "priority": 35.7,
-      "severity": 7.14,
+      "label": "Credit spreads",
+      "message": "Credit spread pressure is contained.",
+      "priority": 109.1,
+      "severity": 21.82,
       "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+      "urgency": "near_term",
+      "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
     },
     {
       "access_status": "free_public_active",
@@ -211,8 +193,8 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is supportive.",
-      "priority": 6.32,
-      "severity": 1.58,
+      "priority": 13.32,
+      "severity": 3.33,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
@@ -231,8 +213,8 @@
       "importance": 5,
       "label": "10Y real yields",
       "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 476.2,
-      "severity": 95.24,
+      "priority": 496.0,
+      "severity": 99.2,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
@@ -249,11 +231,47 @@
       "importance": 5,
       "label": "Inflation pressure",
       "message": "Inflation pressure remains elevated.",
-      "priority": 433.12,
-      "severity": 87.5,
+      "priority": 474.41,
+      "severity": 95.84,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility & tail risk",
+      "horizon": "short_term",
+      "id": "vix_complex",
+      "importance": 5,
+      "label": "VIX / VVIX complex",
+      "message": "Volatility tail risk is elevated.",
+      "priority": 177.25,
+      "severity": 35.45,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 0.97,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility curve",
+      "horizon": "short_term",
+      "id": "vix_curve",
+      "importance": 4,
+      "label": "VIX curve state",
+      "message": "VIX curve is in backwardation-proxy stress.",
+      "priority": 169.4,
+      "severity": 43.66,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     {
       "access_status": "free_public_active",
@@ -275,24 +293,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.97,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Volatility curve",
-      "horizon": "short_term",
-      "id": "vix_curve",
-      "importance": 4,
-      "label": "VIX curve state",
-      "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 70.85,
-      "severity": 18.26,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "macro",
       "confidence": 1.0,
       "direction": "risk",
@@ -303,8 +303,8 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 22.11,
-      "severity": 7.37,
+      "priority": 53.37,
+      "severity": 17.79,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
