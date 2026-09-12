@@ -1,25 +1,25 @@
 {
   "buckets": {
-    "commodities_inflation_impulse": -17.79,
-    "credit_spreads": 21.82,
+    "commodities_inflation_impulse": -17.89,
+    "credit_spreads": 35.12,
     "dollar_global": 80.96,
-    "liquidity_funding": 3.33,
-    "rates_real_yields": -99.2,
-    "sentiment_positioning": -27.08,
-    "volatility_tail_risk": -35.45
+    "liquidity_funding": 8.92,
+    "rates_real_yields": -100.0,
+    "sentiment_positioning": 9.38,
+    "volatility_tail_risk": 33.2
   },
-  "date": "2026-09-10",
-  "generated_at_utc": "2026-09-11T01:15:42Z",
+  "date": "2026-09-11",
+  "generated_at_utc": "2026-09-12T01:17:48Z",
   "label": "Mixed",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
-  "overall_score": -11.19,
+  "overall_score": 6.56,
   "top_risks": [
     "Real yields are elevated.",
-    "Leveraged-money S&P 500 positioning is crowded.",
-    "Volatility tail risk is elevated."
+    "Commodity inflation impulse is elevated."
   ],
   "top_supports": [
     "The broad dollar backdrop is easing.",
-    "Credit spread pressure is contained."
+    "Credit spread pressure is contained.",
+    "Volatility tail risk is contained."
   ]
 }
