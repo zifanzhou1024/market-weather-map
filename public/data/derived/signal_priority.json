@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-11",
-  "generated_at_utc": "2026-09-12T01:17:53Z",
+  "date": "2026-09-14",
+  "generated_at_utc": "2026-09-15T01:37:20Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,7 +74,7 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 48.0
+      "score": 40.1
     },
     "long_term": {
       "confidence": 0.99,
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 6.56
+      "score": 1.57
     }
   },
   "top_supports": [
@@ -114,15 +114,15 @@
       "category": "dollar",
       "confidence": 1.0,
       "direction": "support",
-      "freshness_status": "stale",
+      "freshness_status": "ok",
       "group": "Dollar / Global",
       "horizon": "short_term",
       "id": "broad_dollar",
       "importance": 4,
       "label": "Broad dollar",
       "message": "The broad dollar backdrop is easing.",
-      "priority": 259.07,
-      "severity": 80.96,
+      "priority": 301.6,
+      "severity": 75.4,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
@@ -139,29 +139,11 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 175.6,
-      "severity": 35.12,
+      "priority": 231.15,
+      "severity": 46.23,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 1.0,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Volatility & tail risk",
-      "horizon": "short_term",
-      "id": "vix_complex",
-      "importance": 5,
-      "label": "VIX / VVIX complex",
-      "message": "Volatility tail risk is contained.",
-      "priority": 166.0,
-      "severity": 33.2,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
     {
       "access_status": "free_public_active",
@@ -201,21 +183,39 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.97,
+      "category": "positioning",
+      "confidence": 1.0,
       "direction": "support",
       "freshness_status": "ok",
-      "group": "Volatility curve",
+      "group": "Positioning",
       "horizon": "short_term",
-      "id": "vix_curve",
+      "id": "sentiment_positioning",
       "importance": 4,
-      "label": "VIX curve state",
-      "message": "VIX curve is contango-proxy and calm.",
-      "priority": 73.88,
-      "severity": 19.04,
+      "label": "S&P 500 positioning",
+      "message": "S&P 500 positioning is balanced.",
+      "priority": 37.52,
+      "severity": 9.38,
       "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      "urgency": "near_term",
+      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "liquidity",
+      "confidence": 1.0,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Liquidity / Funding",
+      "horizon": "both",
+      "id": "net_liquidity",
+      "importance": 4,
+      "label": "Net liquidity",
+      "message": "Net liquidity is supportive.",
+      "priority": 35.2,
+      "severity": 8.8,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     }
   ],
   "top_warnings": [
@@ -257,6 +257,42 @@
     },
     {
       "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 0.97,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility curve",
+      "horizon": "short_term",
+      "id": "vix_curve",
+      "importance": 4,
+      "label": "VIX curve state",
+      "message": "VIX curve is in backwardation-proxy stress.",
+      "priority": 117.02,
+      "severity": 30.16,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility & tail risk",
+      "horizon": "short_term",
+      "id": "vix_complex",
+      "importance": 5,
+      "label": "VIX / VVIX complex",
+      "message": "Volatility tail risk is elevated.",
+      "priority": 62.85,
+      "severity": 12.57,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+    },
+    {
+      "access_status": "free_public_active",
       "category": "macro",
       "confidence": 1.0,
       "direction": "risk",
@@ -267,8 +303,8 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 53.67,
-      "severity": 17.89,
+      "priority": 53.4,
+      "severity": 17.8,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
