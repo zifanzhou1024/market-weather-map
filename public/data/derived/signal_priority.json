@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-14",
-  "generated_at_utc": "2026-09-15T01:37:20Z",
+  "date": "2026-09-15",
+  "generated_at_utc": "2026-09-16T01:30:52Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,10 +74,10 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 40.1
+      "score": 35.42
     },
     "long_term": {
-      "confidence": 0.99,
+      "confidence": 0.97,
       "label": "Mixed",
       "score": 6.44
     },
@@ -87,14 +87,14 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 1.57
+      "score": -2.36
     }
   },
   "top_supports": [
     {
       "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.99,
+      "confidence": 0.97,
       "direction": "support",
       "freshness_status": "ok",
       "group": "Labor",
@@ -103,7 +103,7 @@
       "importance": 5,
       "label": "Labor cycle",
       "message": "Labor cycle is firm.",
-      "priority": 418.87,
+      "priority": 410.41,
       "severity": 84.62,
       "source_status": "active",
       "urgency": "slow",
@@ -129,6 +129,24 @@
     },
     {
       "access_status": "free_public_active",
+      "category": "macro",
+      "confidence": 0.97,
+      "direction": "support",
+      "freshness_status": "stale",
+      "group": "Consumer balance sheet",
+      "horizon": "long_term",
+      "id": "consumer_balance_sheet",
+      "importance": 4,
+      "label": "Consumer balance sheet",
+      "message": "Consumer balance-sheet stress is contained.",
+      "priority": 154.73,
+      "severity": 49.85,
+      "source_status": "active",
+      "urgency": "background",
+      "why_it_matters": "Consumer fragility shapes the strategic late-cycle and recession-risk read."
+    },
+    {
+      "access_status": "free_public_active",
       "category": "credit",
       "confidence": 1.0,
       "direction": "support",
@@ -139,8 +157,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 231.15,
-      "severity": 46.23,
+      "priority": 152.75,
+      "severity": 30.55,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -148,34 +166,16 @@
     {
       "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.99,
+      "confidence": 0.97,
       "direction": "support",
       "freshness_status": "stale",
-      "group": "Consumer balance sheet",
-      "horizon": "long_term",
-      "id": "consumer_balance_sheet",
-      "importance": 4,
-      "label": "Consumer balance sheet",
-      "message": "Consumer balance-sheet stress is contained.",
-      "priority": 157.92,
-      "severity": 49.85,
-      "source_status": "active",
-      "urgency": "background",
-      "why_it_matters": "Consumer fragility shapes the strategic late-cycle and recession-risk read."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "macro",
-      "confidence": 0.99,
-      "direction": "support",
-      "freshness_status": "ok",
       "group": "Growth",
       "horizon": "long_term",
       "id": "growth",
       "importance": 5,
       "label": "Growth breadth",
       "message": "Growth inputs are supportive.",
-      "priority": 123.75,
+      "priority": 97.0,
       "severity": 25.0,
       "source_status": "active",
       "urgency": "slow",
@@ -211,8 +211,8 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is supportive.",
-      "priority": 35.2,
-      "severity": 8.8,
+      "priority": 34.76,
+      "severity": 8.69,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
@@ -240,16 +240,16 @@
     {
       "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.99,
+      "confidence": 0.97,
       "direction": "risk",
-      "freshness_status": "ok",
+      "freshness_status": "stale",
       "group": "Inflation",
       "horizon": "long_term",
       "id": "inflation",
       "importance": 5,
       "label": "Inflation pressure",
       "message": "Inflation pressure remains elevated.",
-      "priority": 495.0,
+      "priority": 388.0,
       "severity": 100.0,
       "source_status": "active",
       "urgency": "slow",
@@ -267,8 +267,8 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 117.02,
-      "severity": 30.16,
+      "priority": 123.15,
+      "severity": 31.74,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
@@ -285,8 +285,8 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is elevated.",
-      "priority": 62.85,
-      "severity": 12.57,
+      "priority": 78.05,
+      "severity": 15.61,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."

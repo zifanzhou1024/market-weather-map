@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-14",
-  "generated_at_utc": "2026-09-15T01:37:20Z",
+  "date": "2026-09-15",
+  "generated_at_utc": "2026-09-16T01:30:52Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -44,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 46.23,
+        "severity": 30.55,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (-0.07 pp over 30 days at 1.85 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (+0.04 pp over 30 days at 1.91 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -110,7 +110,7 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is in backwardation-proxy stress.",
-        "severity": 30.16,
+        "severity": 31.74,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
@@ -119,13 +119,14 @@
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     "growth": {
-      "confidence": 0.99,
+      "confidence": 0.97,
       "freshness_notes": [
-        "Consumer balance sheet is stale."
+        "Consumer balance sheet is stale.",
+        "Growth breadth is stale."
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.99,
+        "confidence": 0.97,
         "freshness_status": "ok",
         "id": "labor",
         "label": "Labor cycle",
@@ -172,12 +173,14 @@
       "why_it_matters": "Housing turnover signals consumer balance-sheet pressure."
     },
     "inflation": {
-      "confidence": 0.99,
-      "freshness_notes": [],
+      "confidence": 0.97,
+      "freshness_notes": [
+        "Inflation pressure is stale."
+      ],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 0.99,
-        "freshness_status": "ok",
+        "confidence": 0.97,
+        "freshness_status": "stale",
         "id": "inflation",
         "label": "Inflation pressure",
         "message": "Inflation pressure remains elevated.",
@@ -212,7 +215,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is supportive.",
-        "severity": 8.8,
+        "severity": 8.69,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -249,7 +252,7 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) reflects both real yields (+12 bps) and breakevens (+10 bps).",
+          "answer": "The recent 10Y move (higher) reflects both real yields (+18 bps) and breakevens (+13 bps).",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -269,15 +272,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Real yield and dollar moves are within neutral thresholds over the short window; no dominant directional driver is evident.",
+          "answer": "Real yields are rising while the dollar is falling, a diverging signal that points to reflationary or growth-driven repricing.",
           "caveat": "20D window uses closing prices; intraday volatility and FX moves not captured.",
           "eyebrow": "Regime drivers",
           "freshness_status": "ok",
           "id": "regime_drivers",
           "question": "Are real yields and the dollar tightening or easing financial conditions together?",
-          "risk": null,
-          "support": "Absence of a dominant tightening impulse leaves conditions in a holding pattern.",
-          "why": "Neutral short-window readings suggest the regime is consolidating rather than trending."
+          "risk": "Rising real yields still weigh on duration-sensitive assets despite dollar relief.",
+          "support": null,
+          "why": "A weaker dollar partly offsets rising real yields; net tightening impact depends on which force dominates."
         }
       ],
       "state": "unknown",
@@ -353,7 +356,7 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is in backwardation-proxy stress.",
-        "severity": 30.16,
+        "severity": 31.74,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
