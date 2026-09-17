@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-15",
-  "generated_at_utc": "2026-09-16T01:30:52Z",
+  "date": "2026-09-16",
+  "generated_at_utc": "2026-09-17T01:34:17Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,7 +74,7 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 35.42
+      "score": 33.83
     },
     "long_term": {
       "confidence": 0.97,
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": -2.36
+      "score": -4.5
     }
   },
   "top_supports": [
@@ -211,8 +211,8 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is supportive.",
-      "priority": 34.76,
-      "severity": 8.69,
+      "priority": 11.4,
+      "severity": 2.85,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
@@ -267,8 +267,8 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 123.15,
-      "severity": 31.74,
+      "priority": 153.96,
+      "severity": 39.68,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
@@ -285,8 +285,8 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is elevated.",
-      "priority": 78.05,
-      "severity": 15.61,
+      "priority": 114.4,
+      "severity": 22.88,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."

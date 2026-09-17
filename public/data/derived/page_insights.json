@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-15",
-  "generated_at_utc": "2026-09-16T01:30:52Z",
+  "date": "2026-09-16",
+  "generated_at_utc": "2026-09-17T01:34:17Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -110,7 +110,7 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is in backwardation-proxy stress.",
-        "severity": 31.74,
+        "severity": 39.68,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
@@ -215,7 +215,7 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is supportive.",
-        "severity": 8.69,
+        "severity": 2.85,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -252,15 +252,15 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) reflects both real yields (+18 bps) and breakevens (+13 bps).",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+21 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
+          "risk": "Rising real yields compress equity valuations across all sectors.",
           "support": null,
-          "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
+          "why": "Real-yield-driven moves tighten financial conditions more directly than inflation-driven moves."
         }
       ],
       "state": "risk",
@@ -356,7 +356,7 @@
         "id": "vix_curve",
         "label": "VIX curve state",
         "message": "VIX curve is in backwardation-proxy stress.",
-        "severity": 31.74,
+        "severity": 39.68,
         "source_status": "free_public",
         "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
       },
