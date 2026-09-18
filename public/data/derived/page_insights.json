@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-16",
-  "generated_at_utc": "2026-09-17T01:34:17Z",
+  "date": "2026-09-17",
+  "generated_at_utc": "2026-09-18T01:21:08Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -13,13 +13,13 @@
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is elevated.",
-        "severity": 17.8,
+        "severity": 35.04,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
       "sections": [
         {
-          "answer": "Commodity prices are subtracting from inflation pressure (impulse -17.8, 100th percentile of the past year).",
+          "answer": "Commodity prices are subtracting from inflation pressure (impulse -35.0, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -44,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 30.55,
+        "severity": 49.6,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.04 pp over 30 days at 1.91 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (-0.01 pp over 30 days at 1.92 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -103,35 +103,35 @@
         "Cboe SKEW source gated; no implemented candidate.",
         "VX futures curve source-gated; Cboe settlement candidate is non-scoring until redistribution review approves publication."
       ],
-      "primary_warning": {
+      "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.97,
+        "confidence": 1.0,
         "freshness_status": "ok",
-        "id": "vix_curve",
-        "label": "VIX curve state",
-        "message": "VIX curve is in backwardation-proxy stress.",
-        "severity": 39.68,
+        "id": "vix_complex",
+        "label": "VIX / VVIX complex",
+        "message": "Volatility tail risk is contained.",
+        "severity": 60.71,
         "source_status": "free_public",
-        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
-      "state": "risk",
+      "state": "support",
       "title": "Fragility / shock risk",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
     "growth": {
-      "confidence": 0.97,
+      "confidence": 0.98,
       "freshness_notes": [
         "Consumer balance sheet is stale.",
         "Growth breadth is stale."
       ],
       "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.97,
+        "confidence": 0.98,
         "freshness_status": "ok",
         "id": "labor",
         "label": "Labor cycle",
         "message": "Labor cycle is firm.",
-        "severity": 84.62,
+        "severity": 89.75,
         "source_status": "free_public",
         "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
       },
@@ -157,15 +157,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Housing activity is contracting at elevated rates: starts and permits are falling over three months with the 30Y mortgage at 6.76%.",
+          "answer": "Housing activity is resilient despite elevated rates: starts and permits are rising over three months with the 30Y mortgage at 6.95%.",
           "caveat": "Housing starts and permits are monthly; mortgage rate updates weekly. Series can move in opposite directions over short horizons.",
           "eyebrow": "Housing pulse",
           "freshness_status": "ok",
           "id": "housing_pulse",
           "question": "Is housing activity expanding or contracting given current mortgage rates?",
-          "risk": "Falling housing activity at elevated mortgage rates shows transmission through the rate-sensitive sector.",
-          "support": null,
-          "why": "Rate transmission is working through the most rate-sensitive sector of the economy."
+          "risk": null,
+          "support": "Resilient housing activity despite elevated rates suggests demand backstop.",
+          "why": "Housing turnover is holding up despite the most rate-sensitive sector facing high financing costs."
         }
       ],
       "state": "unknown",
@@ -173,13 +173,13 @@
       "why_it_matters": "Housing turnover signals consumer balance-sheet pressure."
     },
     "inflation": {
-      "confidence": 0.97,
+      "confidence": 0.98,
       "freshness_notes": [
         "Inflation pressure is stale."
       ],
       "primary_warning": {
         "access_status": "free_public_active",
-        "confidence": 0.97,
+        "confidence": 0.98,
         "freshness_status": "stale",
         "id": "inflation",
         "label": "Inflation pressure",
@@ -206,22 +206,11 @@
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
     "liquidity": {
-      "confidence": 1.0,
+      "confidence": 0.0,
       "freshness_notes": [],
-      "primary_support": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "net_liquidity",
-        "label": "Net liquidity",
-        "message": "Net liquidity is supportive.",
-        "severity": 2.85,
-        "source_status": "free_public",
-        "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
-      },
       "sections": [
         {
-          "answer": "Net liquidity is expanding (+$62B over four weeks to $5,857B); Fed balance sheet outpaces TGA and reverse repo drain.",
+          "answer": "Net liquidity is expanding (+$72B over four weeks to $5,864B); Fed balance sheet outpaces TGA and reverse repo drain.",
           "caveat": "Net liquidity is a derived weekly proxy from Fed assets, TGA, and reverse repo \u2014 not a measure of funding-market stress.",
           "eyebrow": "Liquidity & funding",
           "freshness_status": "ok",
@@ -232,9 +221,9 @@
           "why": "Rising net liquidity loosens funding conditions across risk assets and credit."
         }
       ],
-      "state": "calm",
+      "state": "unknown",
       "title": "Liquidity",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets."
     },
     "rates": {
       "confidence": 1.0,
@@ -288,23 +277,12 @@
       "why_it_matters": "The regime quadrant blends rates, dollar and risk inputs."
     },
     "sentiment": {
-      "confidence": 1.0,
+      "confidence": 0.0,
       "freshness_notes": [
         "S&P 500 benchmark (SPX) is unavailable.",
         "Put/call ratio (total) is unavailable.",
         "Put/call ratio (SPXW / 0DTE) is unavailable."
       ],
-      "primary_support": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "sentiment_positioning",
-        "label": "S&P 500 positioning",
-        "message": "S&P 500 positioning is balanced.",
-        "severity": 9.38,
-        "source_status": "free_public",
-        "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
-      },
       "sections": [
         {
           "answer": "Asset-manager S&P 500 net positioning is washed out at the 12th percentile of the past year (+44.0% OI).",
@@ -318,16 +296,16 @@
           "why": "Depressed positioning reduces the crowding risk but may reflect already-realized risk-off."
         }
       ],
-      "state": "calm",
+      "state": "unknown",
       "title": "Sentiment",
-      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
+      "why_it_matters": "Positioning extremes amplify drawdowns when sentiment turns."
     },
     "tactical": {
       "confidence": 0.0,
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "5 warnings are active on the short-term board, with 2 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
+          "answer": "3 warnings are active on the short-term board, with 2 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
@@ -349,16 +327,16 @@
         "Cboe SKEW source gated; no implemented candidate.",
         "VX futures curve source-gated; Cboe settlement candidate is non-scoring until redistribution review approves publication."
       ],
-      "primary_warning": {
+      "primary_support": {
         "access_status": "free_public_active",
-        "confidence": 0.97,
+        "confidence": 1.0,
         "freshness_status": "ok",
-        "id": "vix_curve",
-        "label": "VIX curve state",
-        "message": "VIX curve is in backwardation-proxy stress.",
-        "severity": 39.68,
+        "id": "vix_complex",
+        "label": "VIX / VVIX complex",
+        "message": "Volatility tail risk is contained.",
+        "severity": 60.71,
         "source_status": "free_public",
-        "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+        "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
       "sections": [
         {
@@ -373,9 +351,9 @@
           "why": "Term-structure inversion and VVIX-vs-VIX divergence are leading indicators ahead of headline VIX."
         }
       ],
-      "state": "risk",
+      "state": "support",
       "title": "Volatility",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-09-16T01:30:01Z",
+  "generated_at_utc": "2026-09-18T01:20:25Z",
   "observations": [
     {
       "date": "1959-01-01",
@@ -4049,27 +4049,32 @@
     },
     {
       "date": "2026-06-01",
-      "percentile_252d": 83.33,
-      "value": 1415.0
+      "percentile_252d": 91.67,
+      "value": 1439.0
     },
     {
       "date": "2026-07-01",
-      "percentile_252d": 16.67,
-      "value": 1239.0
+      "percentile_252d": 33.33,
+      "value": 1309.0
+    },
+    {
+      "date": "2026-08-01",
+      "percentile_252d": 25.0,
+      "value": 1275.0
     }
   ],
   "series_id": "housing_starts",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/HOUST",
   "summary": {
-    "change_12m": -193.0,
-    "change_1d": -176.0,
-    "change_1m": -176.0,
-    "change_1w": -176.0,
-    "change_3m": -175.0,
-    "latest_date": "2026-07-01",
-    "latest_value": 1239.0,
-    "percentile_252d": 16.67
+    "change_12m": -16.0,
+    "change_1d": -34.0,
+    "change_1m": -34.0,
+    "change_1w": -34.0,
+    "change_3m": 93.0,
+    "latest_date": "2026-08-01",
+    "latest_value": 1275.0,
+    "percentile_252d": 25.0
   },
   "units": "thousands_saar"
 }
