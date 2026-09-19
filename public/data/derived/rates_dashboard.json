@@ -1,26 +1,26 @@
 {
   "current_decomposition": {
     "breakeven_10y_pct": 2.33,
-    "nominal_10y_pct": 5.01,
-    "real_yield_10y_pct": 2.68
+    "nominal_10y_pct": 4.94,
+    "real_yield_10y_pct": 2.61
   },
   "curve_snapshots": {
     "current": [
       {
         "tenor": "2Y",
-        "value": 4.74
+        "value": 4.67
       },
       {
         "tenor": "10Y",
-        "value": 5.01
+        "value": 4.94
       },
       {
         "tenor": "20Y",
-        "value": 5.39
+        "value": 5.32
       },
       {
         "tenor": "30Y",
-        "value": 5.35
+        "value": 5.29
       }
     ],
     "one_month_ago": [
@@ -30,47 +30,47 @@
       },
       {
         "tenor": "10Y",
-        "value": 4.72
+        "value": 4.71
       },
       {
         "tenor": "20Y",
-        "value": 5.3
+        "value": 5.28
       },
       {
         "tenor": "30Y",
-        "value": 5.31
+        "value": 5.28
       }
     ],
     "one_year_ago": [
       {
         "tenor": "2Y",
-        "value": 3.56
+        "value": 3.54
       },
       {
         "tenor": "10Y",
-        "value": 4.06
+        "value": 4.05
       },
       {
         "tenor": "20Y",
-        "value": 4.65
+        "value": 4.63
       },
       {
         "tenor": "30Y",
-        "value": 4.68
+        "value": 4.66
       }
     ],
     "three_months_ago": [
       {
         "tenor": "2Y",
-        "value": 4.05
+        "value": 4.2
       },
       {
         "tenor": "10Y",
-        "value": 4.43
+        "value": 4.49
       },
       {
         "tenor": "20Y",
-        "value": 4.92
+        "value": 4.95
       },
       {
         "tenor": "30Y",
@@ -78,7 +78,7 @@
       }
     ]
   },
-  "date": "2026-09-16",
+  "date": "2026-09-17",
   "decomposition_history": [
     {
       "breakeven_pct": 1.64,
@@ -35665,34 +35665,40 @@
       "date": "2026-09-16",
       "nominal_pct": 5.01,
       "real_pct": 2.68
+    },
+    {
+      "breakeven_pct": 2.33,
+      "date": "2026-09-17",
+      "nominal_pct": 4.94,
+      "real_pct": 2.61
     }
   ],
-  "generated_at_utc": "2026-09-18T01:21:08Z",
+  "generated_at_utc": "2026-09-19T01:19:50Z",
   "method_version": "phase8-pr1-rates-dashboard-v1",
   "yield_change_windows": {
     "1M": {
       "breakeven_10y_bps": 3.0,
       "driver": "real_yield",
-      "nominal_10y_bps": 29.0,
-      "real_yield_10y_bps": 24.0
+      "nominal_10y_bps": 23.0,
+      "real_yield_10y_bps": 20.0
     },
     "1Y": {
       "breakeven_10y_bps": -4.0,
       "driver": "real_yield",
-      "nominal_10y_bps": 95.0,
-      "real_yield_10y_bps": 98.0
+      "nominal_10y_bps": 89.0,
+      "real_yield_10y_bps": 93.0
     },
     "3M": {
-      "breakeven_10y_bps": 7.0,
+      "breakeven_10y_bps": 8.0,
       "driver": "real_yield",
-      "nominal_10y_bps": 58.0,
-      "real_yield_10y_bps": 54.0
+      "nominal_10y_bps": 45.0,
+      "real_yield_10y_bps": 38.0
     },
     "6M": {
-      "breakeven_10y_bps": -4.0,
+      "breakeven_10y_bps": -5.0,
       "driver": "real_yield",
-      "nominal_10y_bps": 75.0,
-      "real_yield_10y_bps": 82.0
+      "nominal_10y_bps": 69.0,
+      "real_yield_10y_bps": 73.0
     }
   }
 }

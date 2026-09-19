@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-09-18T01:20:33Z",
+  "generated_at_utc": "2026-09-19T01:19:08Z",
   "observations": [
     {
       "date": "1973-01-03",
@@ -13965,60 +13965,65 @@
     {
       "date": "2026-07-08",
       "percentile_252d": 96.15,
-      "value": 19364.7908
+      "value": 19364.7957
     },
     {
       "date": "2026-07-15",
       "percentile_252d": 100.0,
-      "value": 19470.3516
+      "value": 19470.3616
     },
     {
       "date": "2026-07-22",
       "percentile_252d": 96.15,
-      "value": 19405.5412
+      "value": 19405.5572
     },
     {
       "date": "2026-07-29",
       "percentile_252d": 92.31,
-      "value": 19368.3582
+      "value": 19368.3782
     },
     {
       "date": "2026-08-05",
       "percentile_252d": 100.0,
-      "value": 19497.6744
+      "value": 19497.6992
     },
     {
       "date": "2026-08-12",
       "percentile_252d": 100.0,
-      "value": 19535.6543
+      "value": 19535.6163
     },
     {
       "date": "2026-08-19",
       "percentile_252d": 98.08,
-      "value": 19535.41
+      "value": 19535.31
     },
     {
       "date": "2026-08-26",
       "percentile_252d": 100.0,
-      "value": 19558.7931
+      "value": 19559.341
     },
     {
       "date": "2026-09-02",
       "percentile_252d": 100.0,
-      "value": 19565.8888
+      "value": 19565.8216
+    },
+    {
+      "date": "2026-09-09",
+      "percentile_252d": 100.0,
+      "value": 19657.1967
     }
   ],
   "series_id": "bank_deposits",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DPSACBW027SBOG",
   "summary": {
-    "change_12m": 1177.138,
-    "change_1d": 7.0957,
-    "change_1m": 68.2144,
-    "change_1w": 7.0957,
-    "change_3m": 281.0362,
-    "latest_date": "2026-09-02",
-    "latest_value": 19565.8888,
+    "change_12m": 1258.1186,
+    "change_1d": 91.3751,
+    "change_1m": 121.5804,
+    "change_1w": 91.3751,
+    "change_3m": 313.8727,
+    "latest_date": "2026-09-09",
+    "latest_value": 19657.1967,
     "percentile_252d": 100.0
   },
   "units": "billions_usd"
