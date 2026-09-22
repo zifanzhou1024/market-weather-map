@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-09-19T01:18:15Z",
+  "generated_at_utc": "2026-09-22T01:39:01Z",
   "observations": [
     {
       "date": "2009-09-18",
@@ -21381,20 +21381,25 @@
       "date": "2026-09-18",
       "percentile_252d": 7.94,
       "value": 18.24
+    },
+    {
+      "date": "2026-09-21",
+      "percentile_252d": 6.35,
+      "value": 18.08
     }
   ],
   "series_id": "vix3m",
   "source": "Cboe",
   "source_url": "https://www.cboe.com/us/indices/dashboard/",
   "summary": {
-    "change_12m": -0.2,
-    "change_1d": -0.31,
-    "change_1m": -0.33,
-    "change_1w": -0.36,
-    "change_3m": -1.33,
-    "latest_date": "2026-09-18",
-    "latest_value": 18.24,
-    "percentile_252d": 7.94
+    "change_12m": -0.44,
+    "change_1d": -0.16,
+    "change_1m": -0.98,
+    "change_1w": -1.2,
+    "change_3m": -1.68,
+    "latest_date": "2026-09-21",
+    "latest_value": 18.08,
+    "percentile_252d": 6.35
   },
   "units": "index"
 }

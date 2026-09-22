@@ -1,16 +1,16 @@
 {
-  "generated_at_utc": "2026-09-19T01:19:45Z",
+  "generated_at_utc": "2026-09-22T01:40:36Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
-        "Volatility term structure is calm.",
-        "The dollar backdrop is easing."
+        "Credit spread pressure is contained.",
+        "Volatility term structure is calm."
       ],
       "top_risks": [],
       "top_supports": [
+        "Credit spread pressure is contained.",
         "Volatility term structure is calm.",
-        "The dollar backdrop is easing.",
-        "Credit spread pressure is contained."
+        "Liquidity drains are limited."
       ]
     },
     "macro_climate": {
@@ -18,7 +18,7 @@
         "Inflation pressure remains elevated.",
         "Real yields are elevated.",
         "Consumer and production inputs are firm.",
-        "Consumer balance-sheet stress is contained."
+        "Growth inputs are supportive."
       ],
       "top_risks": [
         "Inflation pressure remains elevated.",
@@ -27,26 +27,26 @@
       ],
       "top_supports": [
         "Consumer and production inputs are firm.",
-        "Consumer balance-sheet stress is contained.",
-        "Growth inputs are supportive."
+        "Growth inputs are supportive.",
+        "Consumer balance-sheet stress is contained."
       ]
     },
     "market_weather": {
       "recent_changes": [
-        "Leveraged-money S&P 500 positioning is crowded.",
         "Real yields are elevated.",
+        "Leveraged-money S&P 500 positioning is crowded.",
         "Volatility tail risk is contained.",
-        "The broad dollar backdrop is easing."
+        "Credit spread pressure is contained."
       ],
       "top_risks": [
-        "Leveraged-money S&P 500 positioning is crowded.",
         "Real yields are elevated.",
+        "Leveraged-money S&P 500 positioning is crowded.",
         "Commodity inflation impulse is elevated."
       ],
       "top_supports": [
         "Volatility tail risk is contained.",
-        "The broad dollar backdrop is easing.",
-        "Credit spread pressure is contained."
+        "Credit spread pressure is contained.",
+        "The broad dollar backdrop is easing."
       ]
     }
   },
@@ -567,6 +567,12 @@
       "fragility": 48.3,
       "macro_climate": 6.41,
       "market_weather": 7.47
+    },
+    {
+      "date": "2026-09-21",
+      "fragility": 38.06,
+      "macro_climate": 10.75,
+      "market_weather": 1.53
     }
   ]
 }

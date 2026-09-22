@@ -9,8 +9,8 @@
     {
       "id": "dollar",
       "label": "Broad dollar",
-      "message": "The broad dollar is down over one month.",
-      "state": "down"
+      "message": "The broad dollar is up over one month.",
+      "state": "up"
     },
     {
       "id": "nominal_10y",
@@ -45,8 +45,8 @@
     {
       "id": "overall_regime",
       "label": "Overall regime",
-      "message": "Active data classifies the backdrop as Reallocation / rotation.",
-      "state": "Reallocation / rotation"
+      "message": "Active data classifies the backdrop as Tightening / risk-off.",
+      "state": "Tightening / risk-off"
     }
   ],
   "confirmations": [
@@ -59,66 +59,26 @@
     {
       "id": "vix_curve",
       "label": "VIX curve",
-      "message": "Volatility is mixed and the curve is contango proxy.",
-      "status": "mixed"
+      "message": "Volatility is diverging and the curve is contango proxy.",
+      "status": "diverging"
     },
     {
       "id": "liquidity",
       "label": "Liquidity",
-      "message": "Net liquidity is mixed for the active regime.",
-      "status": "mixed"
+      "message": "Net liquidity is diverging for the active regime.",
+      "status": "diverging"
     },
     {
       "id": "rates",
       "label": "Rates",
-      "message": "Real yield momentum is mixed for the active regime.",
-      "status": "mixed"
+      "message": "Real yield momentum is confirming for the active regime.",
+      "status": "confirming"
     }
   ],
-  "date": "2026-09-18",
-  "generated_at_utc": "2026-09-19T01:19:45Z",
+  "date": "2026-09-21",
+  "generated_at_utc": "2026-09-22T01:40:36Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
-    {
-      "credit_change": -0.07,
-      "date": "2026-08-14",
-      "dollar_change": -1.6287,
-      "nominal_yield_change": 0.13,
-      "real_yield_change": 0.1,
-      "vix_percentile": 2.38
-    },
-    {
-      "credit_change": -0.02,
-      "date": "2026-08-17",
-      "dollar_change": -1.7261,
-      "nominal_yield_change": 0.12,
-      "real_yield_change": 0.09,
-      "vix_percentile": 11.51
-    },
-    {
-      "credit_change": 0.02,
-      "date": "2026-08-18",
-      "dollar_change": -1.5948,
-      "nominal_yield_change": 0.08,
-      "real_yield_change": 0.04,
-      "vix_percentile": 22.62
-    },
-    {
-      "credit_change": 0.02,
-      "date": "2026-08-19",
-      "dollar_change": -2.2408,
-      "nominal_yield_change": -0.02,
-      "real_yield_change": -0.04,
-      "vix_percentile": 6.75
-    },
-    {
-      "credit_change": -0.05,
-      "date": "2026-08-20",
-      "dollar_change": -2.6527,
-      "nominal_yield_change": -0.02,
-      "real_yield_change": -0.08,
-      "vix_percentile": 24.21
-    },
     {
       "credit_change": -0.1,
       "date": "2026-08-21",
@@ -238,22 +198,56 @@
       "nominal_yield_change": 0.33,
       "real_yield_change": 0.21,
       "vix_percentile": 22.22
+    },
+    {
+      "credit_change": 0.04,
+      "date": "2026-09-14",
+      "dollar_change": -0.2105,
+      "nominal_yield_change": 0.29,
+      "real_yield_change": 0.19,
+      "vix_percentile": 48.02
+    },
+    {
+      "credit_change": 0.07,
+      "date": "2026-09-15",
+      "dollar_change": 0.0682,
+      "nominal_yield_change": 0.28,
+      "real_yield_change": 0.18,
+      "vix_percentile": 49.6
+    },
+    {
+      "credit_change": -0.01,
+      "date": "2026-09-16",
+      "dollar_change": -0.0625,
+      "nominal_yield_change": 0.3,
+      "real_yield_change": 0.27,
+      "vix_percentile": 57.54
+    },
+    {
+      "credit_change": 0.0,
+      "date": "2026-09-17",
+      "dollar_change": 1.0161,
+      "nominal_yield_change": 0.29,
+      "real_yield_change": 0.26,
+      "vix_percentile": 15.08
+    },
+    {
+      "credit_change": -0.02,
+      "date": "2026-09-18",
+      "dollar_change": 1.2585,
+      "nominal_yield_change": 0.32,
+      "real_yield_change": 0.33,
+      "vix_percentile": 6.75
     }
   ],
   "regime": {
-    "dollar_direction": "down",
-    "label": "Reallocation / rotation",
+    "dollar_direction": "up",
+    "label": "Tightening / risk-off",
     "nominal_yield_direction": "up",
     "tips_direction": "up",
     "yield_driver": "real_yield_driven"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.38,
-      "date": "2025-09-04",
-      "nominal_10y": 4.17,
-      "real_yield_10y": 1.79
-    },
     {
       "breakeven_10y": 2.37,
       "date": "2025-09-05",
@@ -1807,6 +1801,12 @@
       "date": "2026-09-17",
       "nominal_10y": 4.94,
       "real_yield_10y": 2.61
+    },
+    {
+      "breakeven_10y": 2.33,
+      "date": "2026-09-18",
+      "nominal_10y": 5.01,
+      "real_yield_10y": 2.68
     }
   ]
 }
