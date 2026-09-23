@@ -1,6 +1,6 @@
 {
   "frequency": "quarterly",
-  "generated_at_utc": "2026-09-22T01:39:45Z",
+  "generated_at_utc": "2026-09-23T01:34:39Z",
   "observations": [
     {
       "date": "2005-01-01",
@@ -415,17 +415,22 @@
     {
       "date": "2025-07-01",
       "percentile_252d": 24.1,
-      "value": 5.355717
+      "value": 5.355722
     },
     {
       "date": "2025-10-01",
       "percentile_252d": 29.76,
-      "value": 5.400121
+      "value": 5.400125
     },
     {
       "date": "2026-01-01",
       "percentile_252d": 17.65,
-      "value": 5.287795
+      "value": 5.285329
+    },
+    {
+      "date": "2026-04-01",
+      "percentile_252d": 17.44,
+      "value": 5.281493
     }
   ],
   "series_id": "consumer_debt_service_ratio",
@@ -433,13 +438,13 @@
   "source_url": "https://fred.stlouisfed.org/series/CDSP",
   "summary": {
     "change_12m": null,
-    "change_1d": -0.1123,
-    "change_1m": 0.2984,
-    "change_1w": -0.1452,
-    "change_3m": -0.8512,
-    "latest_date": "2026-01-01",
-    "latest_value": 5.287795,
-    "percentile_252d": 17.65
+    "change_1d": -0.0038,
+    "change_1m": 0.9914,
+    "change_1w": -0.062,
+    "change_3m": -0.7877,
+    "latest_date": "2026-04-01",
+    "latest_value": 5.281493,
+    "percentile_252d": 17.44
   },
   "units": "percent"
 }
