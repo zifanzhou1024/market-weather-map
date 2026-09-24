@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-09-23T01:35:02Z",
+  "generated_at_utc": "2026-09-24T01:31:07Z",
   "observations": [
     {
       "auction_count": 2,
@@ -20145,28 +20145,28 @@
       "value": 525000.0
     },
     {
-      "auction_count": 7,
+      "auction_count": 10,
       "date": "2026-09-21",
-      "percentile_252d": 15.38,
+      "percentile_252d": 86.54,
       "security_types": [
         "Bill",
         "Note"
       ],
-      "value": 485000.0
+      "value": 704000.0
     }
   ],
   "series_id": "treasury_auction_supply",
   "source": "FiscalData",
   "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
   "summary": {
-    "change_12m": -216000.0,
-    "change_1d": -40000.0,
-    "change_1m": -254000.0,
-    "change_1w": -40000.0,
-    "change_3m": -171000.0,
+    "change_12m": 3000.0,
+    "change_1d": 179000.0,
+    "change_1m": -35000.0,
+    "change_1w": 179000.0,
+    "change_3m": 48000.0,
     "latest_date": "2026-09-21",
-    "latest_value": 485000.0,
-    "percentile_252d": 15.38
+    "latest_value": 704000.0,
+    "percentile_252d": 86.54
   },
   "units": "millions_usd"
 }

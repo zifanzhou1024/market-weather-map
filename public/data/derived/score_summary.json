@@ -13,13 +13,13 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-09-22",
-  "generated_at_utc": "2026-09-23T01:35:24Z",
+  "date": "2026-09-23",
+  "generated_at_utc": "2026-09-24T01:31:26Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": 85.72,
+        "credit_spread_widening": 74.6,
         "dollar_spike": 8.74,
         "liquidity_drain": 65.38,
         "positioning_crowding": -41.54,
@@ -54,7 +54,7 @@
         "Volatility term structure is calm.",
         "Credit spread pressure is contained."
       ],
-      "score": 43.62,
+      "score": 40.84,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -350,10 +350,10 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -35.51,
-        "credit_spreads": 66.27,
+        "commodities_inflation_impulse": -32.23,
+        "credit_spreads": 61.51,
         "dollar_global": 8.74,
-        "liquidity_funding": -5.48,
+        "liquidity_funding": -5.72,
         "rates_real_yields": -98.42,
         "sentiment_positioning": -41.54,
         "volatility_tail_risk": 81.09
@@ -384,7 +384,7 @@
         "Volatility tail risk is contained.",
         "Credit spread pressure is contained."
       ],
-      "score": 4.16,
+      "score": 3.4,
       "source_coverage": {
         "available": [
           "high_yield_oas",

@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-22",
-  "generated_at_utc": "2026-09-23T01:35:27Z",
+  "date": "2026-09-23",
+  "generated_at_utc": "2026-09-24T01:31:29Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,7 +74,7 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Low Fragility",
-      "score": 43.62
+      "score": 40.84
     },
     "long_term": {
       "confidence": 0.99,
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 4.16
+      "score": 3.4
     }
   },
   "top_supports": [
@@ -157,8 +157,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spread pressure is contained.",
-      "priority": 331.35,
-      "severity": 66.27,
+      "priority": 307.55,
+      "severity": 61.51,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -285,8 +285,8 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 106.53,
-      "severity": 35.51,
+      "priority": 96.69,
+      "severity": 32.23,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
@@ -303,8 +303,8 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is draining.",
-      "priority": 21.92,
-      "severity": 5.48,
+      "priority": 22.88,
+      "severity": 5.72,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."

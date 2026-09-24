@@ -93,10 +93,10 @@
     },
     {
       "category": "rates",
-      "date": "2026-09-23",
+      "date": "2026-09-24",
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 5-Year Note offering amount 70000000000. Descriptive event context only; not scored.",
+      "notes": "Official FiscalData auction query row for 7-Year Note offering amount 44000000000. Descriptive event context only; not scored.",
       "source": "FiscalData",
       "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
       "status": "scheduled",
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-09-23T01:35:41Z",
+  "generated_at_utc": "2026-09-24T01:31:42Z",
   "method_version": "official-event-calendar-v2"
 }

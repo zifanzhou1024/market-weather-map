@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-09-23T01:34:30Z",
+  "generated_at_utc": "2026-09-24T01:30:36Z",
   "observations": [
     {
       "date": "1971-01-08",
@@ -14489,8 +14489,8 @@
     },
     {
       "date": "2026-07-17",
-      "percentile_252d": 26.92,
-      "value": -0.527
+      "percentile_252d": 23.08,
+      "value": -0.528
     },
     {
       "date": "2026-07-24",
@@ -14500,12 +14500,12 @@
     {
       "date": "2026-07-31",
       "percentile_252d": 15.38,
-      "value": -0.537
+      "value": -0.538
     },
     {
       "date": "2026-08-07",
       "percentile_252d": 13.46,
-      "value": -0.542
+      "value": -0.543
     },
     {
       "date": "2026-08-14",
@@ -14520,31 +14520,36 @@
     {
       "date": "2026-08-28",
       "percentile_252d": 9.62,
-      "value": -0.555
+      "value": -0.554
     },
     {
       "date": "2026-09-04",
       "percentile_252d": 9.62,
-      "value": -0.558
+      "value": -0.556
     },
     {
       "date": "2026-09-11",
-      "percentile_252d": 7.69,
-      "value": -0.56
+      "percentile_252d": 9.62,
+      "value": -0.557
+    },
+    {
+      "date": "2026-09-18",
+      "percentile_252d": 13.46,
+      "value": -0.555
     }
   ],
   "series_id": "financial_conditions",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/NFCI",
   "summary": {
-    "change_12m": -0.032,
-    "change_1d": -0.002,
-    "change_1m": -0.013,
-    "change_1w": -0.002,
-    "change_3m": -0.055,
-    "latest_date": "2026-09-11",
-    "latest_value": -0.56,
-    "percentile_252d": 7.69
+    "change_12m": -0.028,
+    "change_1d": 0.002,
+    "change_1m": -0.004,
+    "change_1w": 0.002,
+    "change_3m": -0.048,
+    "latest_date": "2026-09-18",
+    "latest_value": -0.555,
+    "percentile_252d": 13.46
   },
   "units": "index"
 }
