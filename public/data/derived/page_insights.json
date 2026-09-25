@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-23",
-  "generated_at_utc": "2026-09-24T01:31:29Z",
+  "date": "2026-09-24",
+  "generated_at_utc": "2026-09-25T01:40:13Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -13,13 +13,13 @@
         "id": "commodities_inflation_impulse",
         "label": "Commodities inflation impulse",
         "message": "Commodity inflation impulse is elevated.",
-        "severity": 32.23,
+        "severity": 31.76,
         "source_status": "free_public",
         "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
       },
       "sections": [
         {
-          "answer": "Commodity prices are subtracting from inflation pressure (impulse -32.2, 100th percentile of the past year).",
+          "answer": "Commodity prices are subtracting from inflation pressure (impulse -31.8, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -44,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spread pressure is contained.",
-        "severity": 61.51,
+        "severity": 46.42,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.03 pp over 30 days at 1.91 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (+0.07 pp over 30 days at 1.96 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -154,7 +154,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Housing activity is resilient despite elevated rates: starts and permits are rising over three months with the 30Y mortgage at 6.95%.",
+          "answer": "Housing activity is resilient despite elevated rates: starts and permits are rising over three months with the 30Y mortgage at 7.03%.",
           "caveat": "Housing starts and permits are monthly; mortgage rate updates weekly. Series can move in opposite directions over short horizons.",
           "eyebrow": "Housing pulse",
           "freshness_status": "ok",
@@ -212,21 +212,21 @@
         "id": "net_liquidity",
         "label": "Net liquidity",
         "message": "Net liquidity is draining.",
-        "severity": 5.72,
+        "severity": 25.59,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
       "sections": [
         {
-          "answer": "Net liquidity is expanding (+$72B over four weeks to $5,864B); Fed balance sheet outpaces TGA and reverse repo drain.",
+          "answer": "Net liquidity is contracting ($-9B over four weeks to $5,770B); TGA and reverse repo drain outpaces Fed balance sheet.",
           "caveat": "Net liquidity is a derived weekly proxy from Fed assets, TGA, and reverse repo \u2014 not a measure of funding-market stress.",
           "eyebrow": "Liquidity & funding",
           "freshness_status": "ok",
           "id": "liquidity_funding",
           "question": "Is net liquidity expanding or contracting, and which Fed components are driving it?",
-          "risk": null,
-          "support": "Expanding net liquidity supports risk-asset funding.",
-          "why": "Rising net liquidity loosens funding conditions across risk assets and credit."
+          "risk": "Net liquidity drains historically precede risk-off episodes.",
+          "support": null,
+          "why": "Falling net liquidity tightens funding conditions and historically pressures risk assets."
         }
       ],
       "state": "risk",
@@ -243,13 +243,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 98.42,
+        "severity": 100.0,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by real yields (+27 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+23 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -324,7 +324,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "5 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
+          "answer": "5 warnings are active on the short-term board, with 3 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",

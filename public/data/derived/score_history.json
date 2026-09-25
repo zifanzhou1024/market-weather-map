@@ -1,16 +1,19 @@
 {
-  "generated_at_utc": "2026-09-24T01:31:26Z",
+  "generated_at_utc": "2026-09-25T01:40:08Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
+        "Liquidity drains are visible.",
         "Volatility term structure is calm.",
         "Credit spread pressure is contained."
       ],
-      "top_risks": [],
+      "top_risks": [
+        "Liquidity drains are visible."
+      ],
       "top_supports": [
         "Volatility term structure is calm.",
         "Credit spread pressure is contained.",
-        "Liquidity drains are limited."
+        "The dollar backdrop is easing."
       ]
     },
     "macro_climate": {
@@ -33,14 +36,14 @@
     },
     "market_weather": {
       "recent_changes": [
-        "Leveraged-money S&P 500 positioning is crowded.",
         "Real yields are elevated.",
+        "Leveraged-money S&P 500 positioning is crowded.",
         "Volatility tail risk is contained.",
         "Credit spread pressure is contained."
       ],
       "top_risks": [
-        "Leveraged-money S&P 500 positioning is crowded.",
         "Real yields are elevated.",
+        "Leveraged-money S&P 500 positioning is crowded.",
         "Commodity inflation impulse is elevated."
       ],
       "top_supports": [
@@ -585,6 +588,12 @@
       "fragility": 40.84,
       "macro_climate": 11.18,
       "market_weather": 3.4
+    },
+    {
+      "date": "2026-09-24",
+      "fragility": 21.79,
+      "macro_climate": 11.02,
+      "market_weather": -3.69
     }
   ]
 }
