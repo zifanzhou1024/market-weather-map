@@ -2,13 +2,9 @@
   "access_status": "authenticated_candidate",
   "active_scoring_allowed": false,
   "frequency": "daily",
-  "generated_at_utc": "2026-09-25T01:39:51.831870+00:00",
+  "generated_at_utc": "2026-09-26T01:44:20.209516+00:00",
   "notes": "Authenticated TradingView candidate for the Cboe equity put/call ratio. Not treated as the official Cboe put/call. Not active in scoring.",
   "observations": [
-    {
-      "date": "2006-11-03",
-      "value": 0.933
-    },
     {
       "date": "2006-11-06",
       "value": 0.755
@@ -20003,7 +19999,11 @@
     },
     {
       "date": "2026-09-24",
-      "value": 0.803
+      "value": 0.803003
+    },
+    {
+      "date": "2026-09-25",
+      "value": 0.756082
     }
   ],
   "public_redistribution_allowed": false,

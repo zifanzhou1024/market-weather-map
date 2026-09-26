@@ -1,48 +1,47 @@
 {
   "candidates_not_shown": [
     {
+      "id": "wti_crude",
+      "priority": 95.85,
+      "reason": "below top 9 today"
+    },
+    {
       "id": "credit_spreads",
-      "priority": 232.1,
+      "priority": 56.55,
       "reason": "below top 9 today"
     },
     {
       "id": "ig_spreads",
-      "priority": 232.1,
-      "reason": "below top 9 today"
-    },
-    {
-      "id": "sp500_positioning",
-      "priority": 166.16,
-      "reason": "below top 9 today"
-    },
-    {
-      "id": "net_liquidity",
-      "priority": 102.36,
-      "reason": "below top 9 today"
-    },
-    {
-      "id": "wti_crude",
-      "priority": 95.28,
+      "priority": 56.55,
       "reason": "below top 9 today"
     },
     {
       "id": "broad_dollar",
-      "priority": 34.96,
+      "priority": 27.97,
+      "reason": "below top 9 today"
+    },
+    {
+      "id": "net_liquidity",
+      "priority": 0.0,
+      "reason": "below top 9 today"
+    },
+    {
+      "id": "sp500_positioning",
+      "priority": 0.0,
       "reason": "below top 9 today"
     }
   ],
   "composite_scores": [
     {
-      "delta_1m": -5.72,
-      "delta_7d": -15.69,
+      "delta_1m": -6.9399999999999995,
+      "delta_7d": -11.08,
       "direction": "neutral",
       "id": "market_weather",
       "label": "Market Weather",
-      "percentile_5y": 26,
-      "percentile_window_days": 90,
+      "percentile_5y": 28,
+      "percentile_window_days": 91,
       "regime_label": "Mixed",
       "sparkline_90d": [
-        7.18,
         2.71,
         -1.87,
         0.25,
@@ -131,21 +130,21 @@
         1.53,
         4.16,
         3.4,
-        -3.69
+        -3.69,
+        -3.61
       ],
-      "value": -3.69
+      "value": -3.61
     },
     {
-      "delta_1m": 2.6099999999999994,
-      "delta_7d": 4.77,
+      "delta_1m": 1.08,
+      "delta_7d": 3.7200000000000006,
       "direction": "neutral",
       "id": "macro_climate",
       "label": "Macro Climate",
-      "percentile_5y": 43,
-      "percentile_window_days": 90,
+      "percentile_5y": 38,
+      "percentile_window_days": 91,
       "regime_label": "Mixed",
       "sparkline_90d": [
-        14.44,
         13.67,
         15.57,
         14.22,
@@ -234,21 +233,21 @@
         10.75,
         11.18,
         11.18,
-        11.02
+        11.02,
+        10.13
       ],
-      "value": 11.02
+      "value": 10.13
     },
     {
-      "delta_1m": -10.54,
-      "delta_7d": -30.369999999999997,
+      "delta_1m": -19.769999999999996,
+      "delta_7d": -32.879999999999995,
       "direction": "neutral",
       "id": "fragility",
       "label": "Fragility",
-      "percentile_5y": 34,
-      "percentile_window_days": 90,
-      "regime_label": "Low Fragility",
+      "percentile_5y": 23,
+      "percentile_window_days": 91,
+      "regime_label": "Moderate",
       "sparkline_90d": [
-        39.47,
         37.78,
         26.59,
         31.27,
@@ -337,13 +336,14 @@
         38.06,
         43.62,
         40.84,
-        21.79
+        21.79,
+        15.42
       ],
-      "value": 21.79
+      "value": 15.42
     }
   ],
-  "date": "2026-09-24",
-  "generated_at_utc": "2026-09-25T01:40:34Z",
+  "date": "2026-09-25",
+  "generated_at_utc": "2026-09-26T01:44:56Z",
   "method_version": "phase-e-cockpit-v1",
   "regime": {
     "label": "Tightening / risk-off",
@@ -351,9 +351,9 @@
   },
   "vital_signs": [
     {
-      "as_of": "2026-09-23",
-      "delta_1m": 0.3799999999999999,
-      "delta_7d": 0.07999999999999963,
+      "as_of": "2026-09-24",
+      "delta_1m": 0.5300000000000002,
+      "delta_7d": 0.2400000000000002,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "real_yields",
@@ -363,7 +363,7 @@
       "percentile_window_days": 1260,
       "primary_decimals": 2,
       "primary_unit": "%",
-      "primary_value": 2.76,
+      "primary_value": 2.85,
       "priority": 500.0,
       "rank": 1,
       "score_status": "active",
@@ -372,7 +372,6 @@
         "real_yield_10y"
       ],
       "sparkline_90d": [
-        2.1,
         2.13,
         2.18,
         2.13,
@@ -461,24 +460,25 @@
         2.68,
         2.62,
         2.63,
-        2.76
+        2.76,
+        2.85
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-09-23",
-      "delta_1m": -0.14166931253355175,
-      "delta_7d": -0.024232714732550953,
+      "as_of": "2026-09-24",
+      "delta_1m": -0.007216933322502506,
+      "delta_7d": 0.1189855018133219,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "term_premium",
       "importance": 5,
       "label": "10Y Term Premium",
-      "percentile_5y": 80,
+      "percentile_5y": 92,
       "percentile_window_days": 1260,
       "primary_decimals": 2,
       "primary_unit": "%",
-      "primary_value": 0.6454023917114506,
+      "primary_value": 0.7298135984833509,
       "priority": 500.0,
       "rank": 2,
       "score_status": "active",
@@ -487,7 +487,6 @@
         "term_premium_acm_10y"
       ],
       "sparkline_90d": [
-        0.8218032091372676,
         0.8302356404824756,
         0.8796983182620828,
         0.8104787343680893,
@@ -576,14 +575,15 @@
         0.6359318178146687,
         0.5800446865245279,
         0.5758378162704947,
-        0.6454023917114506
+        0.6454023917114506,
+        0.7298135984833509
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-09-23",
-      "delta_1m": 0.41000000000000014,
-      "delta_7d": 0.10000000000000053,
+      "as_of": "2026-09-24",
+      "delta_1m": 0.54,
+      "delta_7d": 0.23999999999999932,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "us10y",
@@ -593,7 +593,7 @@
       "percentile_window_days": 1260,
       "primary_decimals": 2,
       "primary_unit": "%",
-      "primary_value": 5.11,
+      "primary_value": 5.18,
       "priority": 500.0,
       "rank": 3,
       "score_status": "active",
@@ -602,7 +602,6 @@
         "us10y"
       ],
       "sparkline_90d": [
-        4.59,
         4.61,
         4.67,
         4.57,
@@ -691,24 +690,25 @@
         5.01,
         4.96,
         4.96,
-        5.11
+        5.11,
+        5.18
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-09-23",
-      "delta_1m": -20.0,
-      "delta_7d": -1.0,
+      "as_of": "2026-09-24",
+      "delta_1m": -16.0,
+      "delta_7d": 4.0,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "yield_curve",
       "importance": 5,
       "label": "10Y\u22122Y",
-      "percentile_5y": 55,
+      "percentile_5y": 58,
       "percentile_window_days": 1260,
       "primary_decimals": 0,
       "primary_unit": " bp",
-      "primary_value": 26.0,
+      "primary_value": 31.0,
       "priority": 500.0,
       "rank": 4,
       "score_status": "active",
@@ -717,7 +717,6 @@
         "us10y_minus_us2y"
       ],
       "sparkline_90d": [
-        50.0,
         54.0,
         54.0,
         53.0,
@@ -806,7 +805,8 @@
         25.0,
         20.0,
         25.0,
-        26.0
+        26.0,
+        31.0
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
@@ -824,7 +824,7 @@
       "primary_decimals": 0,
       "primary_unit": "k",
       "primary_value": 197.0,
-      "priority": 444.26,
+      "priority": 448.75,
       "rank": 5,
       "score_status": "active",
       "secondary_values": [],
@@ -939,7 +939,7 @@
       "primary_decimals": 0,
       "primary_unit": "k m/m",
       "primary_value": 162.0,
-      "priority": 444.26,
+      "priority": 448.75,
       "rank": 6,
       "score_status": "active",
       "secondary_values": [
@@ -1048,156 +1048,27 @@
       "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
     },
     {
-      "as_of": "2026-09-22",
-      "delta_1m": -0.9199999999999999,
-      "delta_7d": -2.9899999999999984,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "id": "vix_complex",
-      "importance": 5,
-      "label": "VIX",
-      "percentile_5y": 15,
-      "percentile_window_days": 1260,
-      "primary_decimals": 1,
-      "primary_unit": "",
-      "primary_value": 14.21,
-      "priority": 405.45,
-      "rank": 7,
-      "score_status": "active",
-      "secondary_values": [
-        {
-          "label": "VIX9D",
-          "unit": "",
-          "value": 12.13
-        },
-        {
-          "label": "VIX3M",
-          "unit": "",
-          "value": 17.61
-        }
-      ],
-      "source_series_ids": [
-        "vix",
-        "vix9d",
-        "vix3m"
-      ],
-      "sparkline_90d": [
-        17.44,
-        16.76,
-        16.7,
-        16.59,
-        17.01,
-        16.29,
-        15.74,
-        15.32,
-        16.05,
-        15.77,
-        16.06,
-        15.4,
-        21.51,
-        18.92,
-        19.87,
-        22.22,
-        19.44,
-        17.68,
-        16.2,
-        16.41,
-        18.44,
-        16.4,
-        16.78,
-        17.28,
-        19.49,
-        18.63,
-        18.89,
-        18.41,
-        17.65,
-        16.45,
-        16.59,
-        16.15,
-        15.81,
-        15.57,
-        16.13,
-        16.9,
-        15.84,
-        15.03,
-        17.16,
-        16.5,
-        15.67,
-        16.73,
-        18.77,
-        18.65,
-        17.05,
-        16.64,
-        18.7,
-        18.58,
-        18.67,
-        18.21,
-        20.66,
-        17.09,
-        15.99,
-        15.86,
-        16.5,
-        15.81,
-        15.15,
-        14.9,
-        15.46,
-        15.28,
-        14.55,
-        14.63,
-        14.25,
-        15.19,
-        15.84,
-        14.89,
-        16.01,
-        15.13,
-        15.85,
-        15.45,
-        15.21,
-        14.51,
-        14.43,
-        14.92,
-        16.34,
-        15.2,
-        14.32,
-        14.53,
-        15.3,
-        15.72,
-        16.46,
-        17.84,
-        15.84,
-        17.1,
-        17.2,
-        17.71,
-        15.44,
-        14.81,
-        14.87,
-        14.21
-      ],
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
-    },
-    {
-      "as_of": "2026-09-24",
-      "delta_1m": 0.010000000000000231,
-      "delta_7d": 0.0,
+      "as_of": "2026-09-25",
+      "delta_1m": 0.020000000000000018,
+      "delta_7d": 0.009999999999999787,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "breakeven_10y",
       "importance": 5,
       "label": "10Y Breakeven",
-      "percentile_5y": 47,
+      "percentile_5y": 52,
       "percentile_window_days": 1260,
       "primary_decimals": 2,
       "primary_unit": "%",
-      "primary_value": 2.33,
-      "priority": 396.0,
-      "rank": 8,
+      "primary_value": 2.34,
+      "priority": 400.0,
+      "rank": 7,
       "score_status": "active",
       "secondary_values": [],
       "source_series_ids": [
         "breakeven_10y"
       ],
       "sparkline_90d": [
-        2.48,
         2.49,
         2.44,
         2.39,
@@ -1286,7 +1157,8 @@
         2.34,
         2.33,
         2.35,
-        2.33
+        2.33,
+        2.34
       ],
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
@@ -1304,8 +1176,8 @@
       "primary_decimals": 1,
       "primary_unit": "% YoY",
       "primary_value": 2.4461631786472546,
-      "priority": 396.0,
-      "rank": 9,
+      "priority": 400.0,
+      "rank": 8,
       "score_status": "active",
       "secondary_values": [
         {
@@ -1411,6 +1283,134 @@
         2.4461631786472546
       ],
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
+    },
+    {
+      "as_of": "2026-09-25",
+      "delta_1m": -0.34000000000000163,
+      "delta_7d": 0.05999999999999872,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "id": "vix_complex",
+      "importance": 5,
+      "label": "VIX",
+      "percentile_5y": 21,
+      "percentile_window_days": 1260,
+      "primary_decimals": 1,
+      "primary_unit": "",
+      "primary_value": 14.87,
+      "priority": 334.0,
+      "rank": 9,
+      "score_status": "active",
+      "secondary_values": [
+        {
+          "label": "VIX9D",
+          "unit": "",
+          "value": 12.76
+        },
+        {
+          "label": "VIX3M",
+          "unit": "",
+          "value": 17.93
+        }
+      ],
+      "source_series_ids": [
+        "vix",
+        "vix9d",
+        "vix3m"
+      ],
+      "sparkline_90d": [
+        16.59,
+        17.01,
+        16.29,
+        15.74,
+        15.32,
+        16.05,
+        15.77,
+        16.06,
+        15.4,
+        21.51,
+        18.92,
+        19.87,
+        22.22,
+        19.44,
+        17.68,
+        16.2,
+        16.41,
+        18.44,
+        16.4,
+        16.78,
+        17.28,
+        19.49,
+        18.63,
+        18.89,
+        18.41,
+        17.65,
+        16.45,
+        16.59,
+        16.15,
+        15.81,
+        15.57,
+        16.13,
+        16.9,
+        15.84,
+        15.03,
+        17.16,
+        16.5,
+        15.67,
+        16.73,
+        18.77,
+        18.65,
+        17.05,
+        16.64,
+        18.7,
+        18.58,
+        18.67,
+        18.21,
+        20.66,
+        17.09,
+        15.99,
+        15.86,
+        16.5,
+        15.81,
+        15.15,
+        14.9,
+        15.46,
+        15.28,
+        14.55,
+        14.63,
+        14.25,
+        15.19,
+        15.84,
+        14.89,
+        16.01,
+        15.13,
+        15.85,
+        15.45,
+        15.21,
+        14.51,
+        14.43,
+        14.92,
+        16.34,
+        15.2,
+        14.32,
+        14.53,
+        15.3,
+        15.72,
+        16.46,
+        17.84,
+        15.84,
+        17.1,
+        17.2,
+        17.71,
+        15.44,
+        14.81,
+        14.87,
+        14.21,
+        15.18,
+        15.67,
+        14.87
+      ],
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     }
   ]
 }
