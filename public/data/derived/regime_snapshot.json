@@ -75,50 +75,10 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-09-25",
-  "generated_at_utc": "2026-09-26T01:44:39Z",
+  "date": "2026-09-28",
+  "generated_at_utc": "2026-09-29T02:38:21Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
-    {
-      "credit_change": -0.1,
-      "date": "2026-08-21",
-      "dollar_change": -2.6477,
-      "nominal_yield_change": 0.05,
-      "real_yield_change": -0.03,
-      "vix_percentile": 9.92
-    },
-    {
-      "credit_change": -0.12,
-      "date": "2026-08-24",
-      "dollar_change": -2.4544,
-      "nominal_yield_change": 0.05,
-      "real_yield_change": -0.06,
-      "vix_percentile": 22.62
-    },
-    {
-      "credit_change": -0.14,
-      "date": "2026-08-25",
-      "dollar_change": -2.3964,
-      "nominal_yield_change": 0.03,
-      "real_yield_change": -0.09,
-      "vix_percentile": 15.48
-    },
-    {
-      "credit_change": -0.19,
-      "date": "2026-08-26",
-      "dollar_change": -2.3431,
-      "nominal_yield_change": -0.01,
-      "real_yield_change": -0.07,
-      "vix_percentile": 11.51
-    },
-    {
-      "credit_change": -0.2,
-      "date": "2026-08-27",
-      "dollar_change": -1.317,
-      "nominal_yield_change": -0.01,
-      "real_yield_change": -0.07,
-      "vix_percentile": 3.97
-    },
     {
       "credit_change": -0.25,
       "date": "2026-08-28",
@@ -238,6 +198,46 @@
       "nominal_yield_change": 0.32,
       "real_yield_change": 0.33,
       "vix_percentile": 6.75
+    },
+    {
+      "credit_change": 0.0,
+      "date": "2026-09-21",
+      "dollar_change": 1.3386,
+      "nominal_yield_change": 0.22,
+      "real_yield_change": 0.22,
+      "vix_percentile": 7.54
+    },
+    {
+      "credit_change": 0.03,
+      "date": "2026-09-22",
+      "dollar_change": 1.2738,
+      "nominal_yield_change": 0.26,
+      "real_yield_change": 0.25,
+      "vix_percentile": 2.38
+    },
+    {
+      "credit_change": 0.07,
+      "date": "2026-09-23",
+      "dollar_change": 1.8886,
+      "nominal_yield_change": 0.47,
+      "real_yield_change": 0.44,
+      "vix_percentile": 12.3
+    },
+    {
+      "credit_change": 0.14,
+      "date": "2026-09-24",
+      "dollar_change": 2.106,
+      "nominal_yield_change": 0.52,
+      "real_yield_change": 0.51,
+      "vix_percentile": 19.05
+    },
+    {
+      "credit_change": 0.28,
+      "date": "2026-09-25",
+      "dollar_change": 1.9717,
+      "nominal_yield_change": 0.5,
+      "real_yield_change": 0.49,
+      "vix_percentile": 8.33
     }
   ],
   "regime": {
@@ -248,12 +248,6 @@
     "yield_driver": "real_yield_driven"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.34,
-      "date": "2025-09-11",
-      "nominal_10y": 4.01,
-      "real_yield_10y": 1.67
-    },
     {
       "breakeven_10y": 2.36,
       "date": "2025-09-12",
@@ -1807,6 +1801,12 @@
       "date": "2026-09-24",
       "nominal_10y": 5.18,
       "real_yield_10y": 2.85
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2026-09-25",
+      "nominal_10y": 5.17,
+      "real_yield_10y": 2.83
     }
   ]
 }
