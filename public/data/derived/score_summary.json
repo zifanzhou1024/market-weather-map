@@ -13,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-09-28",
-  "generated_at_utc": "2026-09-29T02:38:21Z",
+  "date": "2026-09-29",
+  "generated_at_utc": "2026-09-30T02:13:50Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": -41.26,
+        "credit_spread_widening": -61.9,
         "dollar_spike": -34.12,
         "liquidity_drain": -19.24,
         "positioning_crowding": 4.31,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -26.2
+        "volatility_term_structure": -27.78
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -54,7 +54,7 @@
         "Credit spread pressure is widening.",
         "The broad dollar is spiking."
       ],
-      "score": -22.91,
+      "score": -28.39,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -162,7 +162,7 @@
         "housing": -70.84,
         "inflation": -100.0,
         "labor": 89.75,
-        "real_yields": -99.2
+        "real_yields": -100.0
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -190,7 +190,7 @@
         "Consumer and production inputs are firm.",
         "Consumer balance-sheet stress is contained."
       ],
-      "score": 10.21,
+      "score": 10.13,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -350,13 +350,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -31.76,
-        "credit_spreads": -35.31,
+        "commodities_inflation_impulse": -31.66,
+        "credit_spreads": -62.7,
         "dollar_global": -34.12,
-        "liquidity_funding": -25.95,
-        "rates_real_yields": -99.2,
+        "liquidity_funding": -26.07,
+        "rates_real_yields": -100.0,
         "sentiment_positioning": 4.31,
-        "volatility_tail_risk": 29.23
+        "volatility_tail_risk": 33.73
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -383,7 +383,7 @@
         "High-yield spreads widened over the past month.",
         "Volatility tail risk is contained."
       ],
-      "score": -29.09,
+      "score": -34.57,
       "source_coverage": {
         "available": [
           "high_yield_oas",
