@@ -59,8 +59,8 @@
     {
       "id": "vix_curve",
       "label": "VIX curve",
-      "message": "Volatility is confirming and the curve is contango proxy.",
-      "status": "confirming"
+      "message": "Volatility is mixed and the curve is contango proxy.",
+      "status": "mixed"
     },
     {
       "id": "liquidity",
@@ -75,8 +75,8 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-09-29",
-  "generated_at_utc": "2026-09-30T02:13:50Z",
+  "date": "2026-09-30",
+  "generated_at_utc": "2026-10-01T02:15:26Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -248,12 +248,6 @@
     "yield_driver": "real_yield_driven"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.37,
-      "date": "2025-09-15",
-      "nominal_10y": 4.05,
-      "real_yield_10y": 1.68
-    },
     {
       "breakeven_10y": 2.37,
       "date": "2025-09-16",
@@ -1807,6 +1801,12 @@
       "date": "2026-09-28",
       "nominal_10y": 5.24,
       "real_yield_10y": 2.9
+    },
+    {
+      "breakeven_10y": 2.35,
+      "date": "2026-09-29",
+      "nominal_10y": 5.26,
+      "real_yield_10y": 2.91
     }
   ]
 }
