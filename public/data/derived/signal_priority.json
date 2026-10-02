@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-30",
-  "generated_at_utc": "2026-10-01T02:15:31Z",
+  "date": "2026-10-01",
+  "generated_at_utc": "2026-10-02T02:21:30Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,7 +74,7 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Elevated Fragility",
-      "score": -32.0
+      "score": -28.82
     },
     "long_term": {
       "confidence": 1.0,
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Fragile",
-      "score": -36.32
+      "score": -31.27
     }
   },
   "top_supports": [
@@ -157,11 +157,29 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is contained.",
-      "priority": 164.0,
-      "severity": 32.8,
+      "priority": 150.15,
+      "severity": 30.03,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "liquidity",
+      "confidence": 1.0,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Liquidity / Funding",
+      "horizon": "both",
+      "id": "net_liquidity",
+      "importance": 4,
+      "label": "Net liquidity",
+      "message": "Net liquidity is supportive.",
+      "priority": 37.48,
+      "severity": 9.37,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
     {
       "access_status": "free_public_active",
@@ -231,8 +249,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spreads are widening.",
-      "priority": 346.25,
-      "severity": 69.25,
+      "priority": 366.1,
+      "severity": 73.22,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -257,42 +275,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.97,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Volatility curve",
-      "horizon": "short_term",
-      "id": "vix_curve",
-      "importance": 4,
-      "label": "VIX curve state",
-      "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 120.12,
-      "severity": 30.96,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "liquidity",
-      "confidence": 1.0,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Liquidity / Funding",
-      "horizon": "both",
-      "id": "net_liquidity",
-      "importance": 4,
-      "label": "Net liquidity",
-      "message": "Net liquidity is draining.",
-      "priority": 103.32,
-      "severity": 25.83,
-      "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "macro",
       "confidence": 1.0,
       "direction": "risk",
@@ -308,6 +290,24 @@
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 0.97,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility curve",
+      "horizon": "short_term",
+      "id": "vix_curve",
+      "importance": 4,
+      "label": "VIX curve state",
+      "message": "VIX curve is in backwardation-proxy stress.",
+      "priority": 98.55,
+      "severity": 25.4,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     }
   ]
 }

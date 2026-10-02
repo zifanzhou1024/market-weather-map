@@ -13,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-09-30",
-  "generated_at_utc": "2026-10-01T02:15:26Z",
+  "date": "2026-10-01",
+  "generated_at_utc": "2026-10-02T02:21:26Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": -73.8,
+        "credit_spread_widening": -79.36,
         "dollar_spike": -34.12,
-        "liquidity_drain": -19.24,
+        "liquidity_drain": 3.84,
         "positioning_crowding": 4.31,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -30.96
+        "volatility_term_structure": -25.4
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -54,7 +54,7 @@
         "Credit spread pressure is widening.",
         "The broad dollar is spiking."
       ],
-      "score": -32.0,
+      "score": -28.82,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -351,12 +351,12 @@
     "market_weather": {
       "bucket_scores": {
         "commodities_inflation_impulse": -33.76,
-        "credit_spreads": -69.25,
+        "credit_spreads": -73.22,
         "dollar_global": -34.12,
-        "liquidity_funding": -25.83,
+        "liquidity_funding": 9.37,
         "rates_real_yields": -100.0,
         "sentiment_positioning": 4.31,
-        "volatility_tail_risk": 32.8
+        "volatility_tail_risk": 30.03
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -381,9 +381,10 @@
       "recent_changes": [
         "Real yields are elevated.",
         "High-yield spreads widened over the past month.",
-        "Volatility tail risk is contained."
+        "Volatility tail risk is contained.",
+        "Liquidity funding conditions are improving."
       ],
-      "score": -36.32,
+      "score": -31.27,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -520,7 +521,8 @@
         "The broad dollar is pressuring global liquidity."
       ],
       "top_supports": [
-        "Volatility tail risk is contained."
+        "Volatility tail risk is contained.",
+        "Liquidity funding conditions are improving."
       ]
     }
   }

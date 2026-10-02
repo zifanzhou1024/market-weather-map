@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-01T02:15:26Z",
+  "generated_at_utc": "2026-10-02T02:21:26Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
@@ -35,7 +35,8 @@
       "recent_changes": [
         "Real yields are elevated.",
         "High-yield spreads widened over the past month.",
-        "Volatility tail risk is contained."
+        "Volatility tail risk is contained.",
+        "Liquidity funding conditions are improving."
       ],
       "top_risks": [
         "Real yields are elevated.",
@@ -43,7 +44,8 @@
         "The broad dollar is pressuring global liquidity."
       ],
       "top_supports": [
-        "Volatility tail risk is contained."
+        "Volatility tail risk is contained.",
+        "Liquidity funding conditions are improving."
       ]
     }
   },
@@ -612,6 +614,12 @@
       "fragility": -32.0,
       "macro_climate": 10.13,
       "market_weather": -36.32
+    },
+    {
+      "date": "2026-10-01",
+      "fragility": -28.82,
+      "macro_climate": 10.13,
+      "market_weather": -31.27
     }
   ]
 }
