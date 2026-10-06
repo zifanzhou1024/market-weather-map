@@ -1,22 +1,22 @@
 {
   "buckets": {
-    "commodities_inflation_impulse": -33.67,
-    "credit_spreads": -89.48,
-    "dollar_global": -34.12,
-    "liquidity_funding": -20.04,
-    "rates_real_yields": -97.62,
+    "commodities_inflation_impulse": -33.57,
+    "credit_spreads": -73.61,
+    "dollar_global": -89.68,
+    "liquidity_funding": -20.39,
+    "rates_real_yields": -99.2,
     "sentiment_positioning": 8.77,
-    "volatility_tail_risk": 71.69
+    "volatility_tail_risk": 60.98
   },
-  "date": "2026-10-02",
-  "generated_at_utc": "2026-10-03T02:08:27Z",
+  "date": "2026-10-05",
+  "generated_at_utc": "2026-10-06T03:10:19Z",
   "label": "Fragile",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
-  "overall_score": -33.08,
+  "overall_score": -37.05,
   "top_risks": [
     "Real yields are elevated.",
-    "High-yield spreads widened over the past month.",
-    "The broad dollar is pressuring global liquidity."
+    "The broad dollar is pressuring global liquidity.",
+    "High-yield spreads widened over the past month."
   ],
   "top_supports": [
     "Volatility tail risk is contained.",

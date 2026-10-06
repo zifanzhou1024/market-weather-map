@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-25",
-  "generated_at_utc": "2026-10-03T02:08:33Z",
+  "date": "2026-10-02",
+  "generated_at_utc": "2026-10-06T03:10:24Z",
   "method_version": "phase8-pr1-regime-dashboard-v1",
   "thresholds": {
     "dollar_neutral_pct": 0.5,
@@ -6361,6 +6361,51 @@
         "real_yield_change_bps": 85.0,
         "regime": "mixed",
         "vix_percentile": 8.33
+      },
+      {
+        "credit_change_bps": -7.0,
+        "date": "2026-09-28",
+        "dollar_change_pct": 0.3123,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 94.0,
+        "regime": "mixed",
+        "vix_percentile": 28.17
+      },
+      {
+        "credit_change_bps": 13.0,
+        "date": "2026-09-29",
+        "dollar_change_pct": 1.6546,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 95.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 27.38
+      },
+      {
+        "credit_change_bps": 21.0,
+        "date": "2026-09-30",
+        "dollar_change_pct": 1.7405,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 98.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 32.54
+      },
+      {
+        "credit_change_bps": 26.0,
+        "date": "2026-10-01",
+        "dollar_change_pct": 2.4677,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 93.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 34.52
+      },
+      {
+        "credit_change_bps": 12.0,
+        "date": "2026-10-02",
+        "dollar_change_pct": 2.0112,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 100.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 15.08
       }
     ],
     "20D": [
@@ -13617,6 +13662,51 @@
         "real_yield_change_bps": 49.0,
         "regime": "global_tightening_risk_off",
         "vix_percentile": 8.33
+      },
+      {
+        "credit_change_bps": 38.0,
+        "date": "2026-09-28",
+        "dollar_change_pct": 1.6404,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 48.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 28.17
+      },
+      {
+        "credit_change_bps": 41.0,
+        "date": "2026-09-29",
+        "dollar_change_pct": 2.0762,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 47.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 27.38
+      },
+      {
+        "credit_change_bps": 44.0,
+        "date": "2026-09-30",
+        "dollar_change_pct": 1.9489,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 49.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 32.54
+      },
+      {
+        "credit_change_bps": 53.0,
+        "date": "2026-10-01",
+        "dollar_change_pct": 2.7492,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 43.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 34.52
+      },
+      {
+        "credit_change_bps": 41.0,
+        "date": "2026-10-02",
+        "dollar_change_pct": 2.7579,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 50.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 15.08
       }
     ],
     "60D": [
@@ -20513,6 +20603,51 @@
         "real_yield_change_bps": 58.0,
         "regime": "rotation_reflation",
         "vix_percentile": 8.33
+      },
+      {
+        "credit_change_bps": 19.0,
+        "date": "2026-09-28",
+        "dollar_change_pct": 0.0046,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 64.0,
+        "regime": "mixed",
+        "vix_percentile": 28.17
+      },
+      {
+        "credit_change_bps": 27.0,
+        "date": "2026-09-29",
+        "dollar_change_pct": 0.161,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 67.0,
+        "regime": "mixed",
+        "vix_percentile": 27.38
+      },
+      {
+        "credit_change_bps": 37.0,
+        "date": "2026-09-30",
+        "dollar_change_pct": 0.1281,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 63.0,
+        "regime": "mixed",
+        "vix_percentile": 32.54
+      },
+      {
+        "credit_change_bps": 44.0,
+        "date": "2026-10-01",
+        "dollar_change_pct": 0.5428,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 57.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 34.52
+      },
+      {
+        "credit_change_bps": 31.0,
+        "date": "2026-10-02",
+        "dollar_change_pct": 0.5232,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 61.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 15.08
       }
     ]
   }
