@@ -67,7 +67,7 @@
     },
     {
       "category": "growth",
-      "date": "2026-10-15",
+      "date": "2027-01-15",
       "id": "retail_sales",
       "importance": "high",
       "notes": "Official Census economic indicators calendar row: Advance Monthly Sales for Retail and Food Services. Descriptive event context only; not scored.",
@@ -93,10 +93,10 @@
     },
     {
       "category": "rates",
-      "date": "2026-10-06",
+      "date": "2026-10-07",
       "id": "treasury_auctions",
       "importance": "medium",
-      "notes": "Official FiscalData auction query row for 3-Year Note offering amount 58000000000. Descriptive event context only; not scored.",
+      "notes": "Official FiscalData auction query row for 9-Year 10-Month Note offering amount 39000000000. Descriptive event context only; not scored.",
       "source": "FiscalData",
       "source_url": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
       "status": "scheduled",
@@ -106,7 +106,7 @@
     },
     {
       "category": "housing",
-      "date": "2026-10-20",
+      "date": "2027-01-20",
       "id": "new_residential_construction",
       "importance": "medium",
       "notes": "Official Census economic indicators calendar row: New Residential Construction (Building Permits, Housing Starts, and Housing Completions). Descriptive event context only; not scored.",
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-10-06T03:10:33Z",
+  "generated_at_utc": "2026-10-07T02:31:51Z",
   "method_version": "official-event-calendar-v2"
 }

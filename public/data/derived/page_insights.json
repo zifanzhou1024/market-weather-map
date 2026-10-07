@@ -1,6 +1,6 @@
 {
-  "date": "2026-10-05",
-  "generated_at_utc": "2026-10-06T03:10:24Z",
+  "date": "2026-10-06",
+  "generated_at_utc": "2026-10-07T02:31:38Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -44,13 +44,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spreads are widening.",
-        "severity": 73.61,
+        "severity": 73.81,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is widening (+0.41 pp over 30 days to 2.25 pp), an early sign of credit-quality dispersion.",
+          "answer": "The HY-IG OAS spread is widening (+0.41 pp over 30 days to 2.28 pp), an early sign of credit-quality dispersion.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -110,7 +110,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 60.98,
+        "severity": 75.92,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -203,14 +203,14 @@
     "liquidity": {
       "confidence": 1.0,
       "freshness_notes": [],
-      "primary_warning": {
+      "primary_support": {
         "access_status": "free_public_active",
         "confidence": 1.0,
         "freshness_status": "ok",
         "id": "net_liquidity",
         "label": "Net liquidity",
-        "message": "Net liquidity is draining.",
-        "severity": 20.39,
+        "message": "Net liquidity is supportive.",
+        "severity": 9.49,
         "source_status": "free_public",
         "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
       },
@@ -227,7 +227,7 @@
           "why": "Rising net liquidity loosens funding conditions across risk assets and credit."
         }
       ],
-      "state": "risk",
+      "state": "calm",
       "title": "Liquidity",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
@@ -241,13 +241,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 99.2,
+        "severity": 100.0,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) is driven by real yields (+44 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (higher) is driven by real yields (+47 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -322,7 +322,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "6 warnings are active on the short-term board, with 4 carrying elevated severity \u2014 led by Inflation pressure; 10Y real yields.",
+          "answer": "5 warnings are active on the short-term board, with 4 carrying elevated severity \u2014 led by 10Y real yields; Inflation pressure.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
@@ -351,7 +351,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is contained.",
-        "severity": 60.98,
+        "severity": 75.92,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
