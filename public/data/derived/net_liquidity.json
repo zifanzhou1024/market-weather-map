@@ -5,7 +5,7 @@
     "reverse_repo"
   ],
   "frequency": "weekly",
-  "generated_at_utc": "2026-10-08T02:47:13Z",
+  "generated_at_utc": "2026-10-09T03:00:44Z",
   "method": "Fed assets minus Treasury General Account and reverse repo balances aligned to Fed asset observation dates. Reverse repo values are converted from billions to millions before subtraction.",
   "observations": [
     {
@@ -6177,20 +6177,25 @@
       "date": "2026-09-30",
       "percentile_252d": 51.92,
       "value": 5782818.0
+    },
+    {
+      "date": "2026-10-07",
+      "percentile_252d": 82.69,
+      "value": 5864969.0
     }
   ],
   "series_id": "net_liquidity",
   "source": "Derived",
   "source_url": "/data/series/fed_assets.json",
   "summary": {
-    "change_12m": 11017.0,
-    "change_1d": 12659.0,
-    "change_1m": 14074.0,
-    "change_1w": 12659.0,
-    "change_3m": -60508.0,
-    "latest_date": "2026-09-30",
-    "latest_value": 5782818.0,
-    "percentile_252d": 51.92
+    "change_12m": 86813.0,
+    "change_1d": 82151.0,
+    "change_1m": 8117.0,
+    "change_1w": 82151.0,
+    "change_3m": -93231.0,
+    "latest_date": "2026-10-07",
+    "latest_value": 5864969.0,
+    "percentile_252d": 82.69
   },
   "units": "usd_millions"
 }
