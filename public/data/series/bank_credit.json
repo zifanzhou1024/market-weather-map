@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-10-09T03:00:14Z",
+  "generated_at_utc": "2026-10-10T02:27:48Z",
   "observations": [
     {
       "date": "1973-01-03",
@@ -13960,22 +13960,22 @@
     {
       "date": "2026-07-01",
       "percentile_252d": 96.15,
-      "value": 19653.9801
+      "value": 19653.973
     },
     {
       "date": "2026-07-08",
       "percentile_252d": 98.08,
-      "value": 19680.0851
+      "value": 19680.0822
     },
     {
       "date": "2026-07-15",
       "percentile_252d": 100.0,
-      "value": 19773.5404
+      "value": 19773.5375
     },
     {
       "date": "2026-07-22",
       "percentile_252d": 98.08,
-      "value": 19748.037
+      "value": 19748.0349
     },
     {
       "date": "2026-07-29",
@@ -13990,51 +13990,56 @@
     {
       "date": "2026-08-12",
       "percentile_252d": 100.0,
-      "value": 19804.2194
+      "value": 19804.3914
     },
     {
       "date": "2026-08-19",
       "percentile_252d": 100.0,
-      "value": 19840.3951
+      "value": 19840.7393
     },
     {
       "date": "2026-08-26",
       "percentile_252d": 100.0,
-      "value": 19843.9224
+      "value": 19844.3818
     },
     {
       "date": "2026-09-02",
       "percentile_252d": 100.0,
-      "value": 19846.8319
+      "value": 19847.4197
     },
     {
       "date": "2026-09-09",
       "percentile_252d": 100.0,
-      "value": 19878.4093
+      "value": 19879.0431
     },
     {
       "date": "2026-09-16",
       "percentile_252d": 100.0,
-      "value": 19887.6539
+      "value": 19888.3084
     },
     {
       "date": "2026-09-23",
       "percentile_252d": 96.15,
-      "value": 19862.5105
+      "value": 19863.1284
+    },
+    {
+      "date": "2026-09-30",
+      "percentile_252d": 98.08,
+      "value": 19883.1863
     }
   ],
   "series_id": "bank_credit",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/TOTBKCR",
   "summary": {
-    "change_12m": 1105.1645,
-    "change_1d": -25.1434,
-    "change_1m": 18.5881,
-    "change_1w": -25.1434,
-    "change_3m": 178.2868,
-    "latest_date": "2026-09-23",
-    "latest_value": 19862.5105,
-    "percentile_252d": 96.15
+    "change_12m": 1101.4998,
+    "change_1d": 20.0579,
+    "change_1m": 35.7666,
+    "change_1w": 20.0579,
+    "change_3m": 229.2133,
+    "latest_date": "2026-09-30",
+    "latest_value": 19883.1863,
+    "percentile_252d": 98.08
   },
   "units": "billions_usd"
 }
