@@ -3,92 +3,87 @@
     "treasury_auction_supply"
   ],
   "frequency": "weekly",
-  "generated_at_utc": "2026-10-10T02:28:42Z",
+  "generated_at_utc": "2026-10-14T02:02:16Z",
   "method": "30-day trailing sum of Treasury auction amounts divided by the trailing 365-day rolling mean of those sums.",
   "observations": [
     {
-      "date": "1987-09-14",
-      "value": 0.8689,
-      "window_sum": 92600.0
-    },
-    {
       "date": "1987-09-28",
-      "value": 0.8735,
+      "value": 0.8758,
       "window_sum": 92800.0
     },
     {
       "date": "1987-10-05",
-      "value": 0.914,
+      "value": 0.9164,
       "window_sum": 96900.0
     },
     {
       "date": "1987-10-12",
-      "value": 0.9122,
+      "value": 0.9145,
       "window_sum": 96500.0
     },
     {
       "date": "1987-10-19",
-      "value": 1.0849,
+      "value": 1.0875,
       "window_sum": 115000.0
     },
     {
       "date": "1987-10-26",
-      "value": 1.2002,
+      "value": 1.2029,
       "window_sum": 127800.0
     },
     {
       "date": "1987-11-02",
-      "value": 1.1261,
+      "value": 1.1285,
       "window_sum": 120250.0
     },
     {
       "date": "1987-11-09",
-      "value": 0.9951,
+      "value": 0.9972,
       "window_sum": 106250.0
     },
     {
       "date": "1987-11-16",
-      "value": 1.1643,
+      "value": 1.1666,
       "window_sum": 124750.0
     },
     {
       "date": "1987-11-23",
-      "value": 1.0603,
+      "value": 1.0623,
       "window_sum": 113750.0
     },
     {
       "date": "1987-11-30",
-      "value": 1.059,
+      "value": 1.0609,
       "window_sum": 113750.0
     },
     {
       "date": "1987-12-07",
-      "value": 0.8406,
+      "value": 0.8421,
       "window_sum": 90000.0
     },
     {
       "date": "1987-12-14",
-      "value": 0.9117,
+      "value": 0.93,
       "window_sum": 99250.0
     },
     {
       "date": "1987-12-21",
-      "value": 0.8822,
+      "value": 0.8959,
       "window_sum": 97000.0
     },
     {
       "date": "1987-12-28",
-      "value": 0.8107,
+      "value": 0.8198,
       "window_sum": 89500.0
     },
     {
       "date": "1988-01-04",
-      "value": 0.8685,
+      "value": 0.8746,
       "window_sum": 96000.0
     },
     {
       "date": "1988-01-11",
-      "value": 0.9521,
+      "value": 0.9547,
       "window_sum": 105250.0
     },
     {
@@ -10195,6 +10190,11 @@
       "date": "2026-10-05",
       "value": 1.0359,
       "window_sum": 3108000.0
+    },
+    {
+      "date": "2026-10-12",
+      "value": 0.9487,
+      "window_sum": 2843000.0
     }
   ],
   "series_id": "treasury_supply_pressure",

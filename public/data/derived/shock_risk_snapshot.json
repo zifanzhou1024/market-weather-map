@@ -1,44 +1,44 @@
 {
   "active_signals": [
     {
-      "change": -3.0,
+      "change": -1.83,
       "id": "vix",
       "label": "VIX",
       "message": "VIX percentile is included in active shock-risk pressure.",
-      "score": 84.92,
-      "value": 14.84
+      "score": 68.26,
+      "value": 15.27
     },
     {
-      "change": -0.0691,
+      "change": -0.0367,
       "id": "vix_vix3m_ratio",
       "label": "VIX/VIX3M ratio",
       "message": "VIX curve pressure is included in active shock-risk pressure.",
-      "score": 53.18,
-      "value": 0.8351
+      "score": 22.22,
+      "value": 0.8502
     },
     {
       "change": 0.43,
       "id": "hy_minus_ig_oas",
       "label": "Credit spreads",
       "message": "Credit spread percentile is included in active shock-risk pressure.",
-      "score": -92.86,
-      "value": 2.33
+      "score": -77.78,
+      "value": 2.28
     },
     {
-      "change": 2.8552,
+      "change": 3.5236,
       "id": "broad_dollar",
       "label": "Broad dollar",
       "message": "Broad dollar one-month change is included in active shock-risk pressure.",
-      "score": -42.83,
-      "value": 121.3848
+      "score": -52.85,
+      "value": 121.6023
     },
     {
-      "change": 0.41,
+      "change": 0.36,
       "id": "real_yield_10y",
       "label": "10Y real yield",
       "message": "Real yield one-month change is included in active shock-risk pressure.",
-      "score": -49.2,
-      "value": 2.87
+      "score": -43.2,
+      "value": 2.91
     },
     {
       "change": 8117.0,
@@ -49,8 +49,8 @@
       "value": 5864969.0
     }
   ],
-  "date": "2026-10-09",
-  "generated_at_utc": "2026-10-10T02:28:25Z",
+  "date": "2026-10-13",
+  "generated_at_utc": "2026-10-14T02:01:57Z",
   "label": "Mixed shock risk",
   "method_version": "phase5-shock-risk-v1",
   "mismatch_warnings": [
@@ -60,7 +60,7 @@
       "message": "Real yields, the broad dollar, and credit spreads all rose over one month, confirming tighter active financial conditions."
     }
   ],
-  "score": 2.74,
+  "score": -3.11,
   "source_gaps": [
     {
       "id": "move_index",
