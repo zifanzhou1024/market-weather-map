@@ -1,6 +1,6 @@
 {
-  "date": "2026-10-13",
-  "generated_at_utc": "2026-10-14T02:02:02Z",
+  "date": "2026-10-14",
+  "generated_at_utc": "2026-10-15T01:36:32Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -73,13 +73,13 @@
   "overall_read": {
     "fragility": {
       "confidence": 0.97,
-      "label": "Moderate",
-      "score": -18.83
+      "label": "Elevated Fragility",
+      "score": -22.6
     },
     "long_term": {
       "confidence": 1.0,
       "label": "Mixed",
-      "score": 8.45
+      "score": 2.54
     },
     "regime": {
       "label": "Tightening / risk-off"
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Fragile",
-      "score": -29.55
+      "score": -35.24
     }
   },
   "top_supports": [
@@ -111,24 +111,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 1.0,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Volatility & tail risk",
-      "horizon": "short_term",
-      "id": "vix_complex",
-      "importance": 5,
-      "label": "VIX / VVIX complex",
-      "message": "Volatility tail risk is contained.",
-      "priority": 357.8,
-      "severity": 71.56,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "macro",
       "confidence": 1.0,
       "direction": "support",
@@ -144,6 +126,24 @@
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Broad growth conditions set the strategic backdrop for risk assets and recession risk."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 1.0,
+      "direction": "support",
+      "freshness_status": "ok",
+      "group": "Volatility & tail risk",
+      "horizon": "short_term",
+      "id": "vix_complex",
+      "importance": 5,
+      "label": "VIX / VVIX complex",
+      "message": "Volatility tail risk is contained.",
+      "priority": 216.25,
+      "severity": 43.25,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
     {
       "access_status": "free_public_active",
@@ -193,8 +193,8 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is supportive.",
-      "priority": 33.0,
-      "severity": 8.25,
+      "priority": 30.12,
+      "severity": 7.53,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
@@ -249,8 +249,8 @@
       "importance": 5,
       "label": "10Y real yields",
       "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 484.1,
-      "severity": 96.82,
+      "priority": 468.3,
+      "severity": 93.66,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
@@ -285,8 +285,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spreads are widening.",
-      "priority": 334.35,
-      "severity": 66.87,
+      "priority": 374.05,
+      "severity": 74.81,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -303,8 +303,8 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 103.44,
-      "severity": 34.48,
+      "priority": 104.52,
+      "severity": 34.84,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."

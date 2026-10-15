@@ -13,13 +13,13 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-10-13",
-  "generated_at_utc": "2026-10-14T02:01:57Z",
+  "date": "2026-10-14",
+  "generated_at_utc": "2026-10-15T01:36:27Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": -77.78,
+        "credit_spread_widening": -92.86,
         "dollar_spike": -93.66,
         "liquidity_drain": 65.38,
         "positioning_crowding": 2.77,
@@ -46,7 +46,7 @@
         "Bucket missing active inputs: treasury_bond_volatility.",
         "Treasury/bond volatility source is not active."
       ],
-      "label": "Moderate",
+      "label": "Elevated Fragility",
       "missing_or_stale_notes": [
         "Treasury/bond volatility source is not active."
       ],
@@ -56,7 +56,7 @@
         "Liquidity drains are limited.",
         "Volatility term structure is calm."
       ],
-      "score": -18.83,
+      "score": -22.6,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -161,12 +161,12 @@
     "macro_climate": {
       "bucket_scores": {
         "consumer_balance_sheet": 52.52,
-        "consumer_production": 88.89,
+        "consumer_production": 50.0,
         "growth": 50.0,
         "housing": -70.84,
         "inflation": -100.0,
         "labor": 78.64,
-        "real_yields": -96.82
+        "real_yields": -93.66
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -191,10 +191,10 @@
       "recent_changes": [
         "Inflation pressure remains elevated.",
         "Real yields are elevated.",
-        "Consumer and production inputs are firm.",
-        "Consumer balance-sheet stress is contained."
+        "Consumer balance-sheet stress is contained.",
+        "Growth inputs are supportive."
       ],
-      "score": 8.45,
+      "score": 2.54,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -347,20 +347,20 @@
         "Housing activity or mortgage-rate pressure is restrictive."
       ],
       "top_supports": [
-        "Consumer and production inputs are firm.",
         "Consumer balance-sheet stress is contained.",
-        "Growth inputs are supportive."
+        "Growth inputs are supportive.",
+        "Consumer and production inputs are firm."
       ]
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -34.48,
-        "credit_spreads": -66.87,
+        "commodities_inflation_impulse": -34.84,
+        "credit_spreads": -74.81,
         "dollar_global": -93.66,
-        "liquidity_funding": 8.25,
-        "rates_real_yields": -96.82,
+        "liquidity_funding": 7.53,
+        "rates_real_yields": -93.66,
         "sentiment_positioning": 2.77,
-        "volatility_tail_risk": 71.56
+        "volatility_tail_risk": 43.25
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -388,7 +388,7 @@
         "Volatility tail risk is contained.",
         "Liquidity funding conditions are improving."
       ],
-      "score": -29.55,
+      "score": -35.24,
       "source_coverage": {
         "available": [
           "high_yield_oas",
