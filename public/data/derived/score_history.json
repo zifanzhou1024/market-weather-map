@@ -1,28 +1,27 @@
 {
-  "generated_at_utc": "2026-10-15T01:36:27Z",
+  "generated_at_utc": "2026-10-16T01:32:40Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
-        "The broad dollar is spiking.",
         "Credit spread pressure is widening.",
-        "Liquidity drains are limited.",
-        "Volatility term structure is calm."
+        "The broad dollar is spiking.",
+        "Liquidity drains are limited."
       ],
       "top_risks": [
+        "Credit spread pressure is widening.",
         "The broad dollar is spiking.",
-        "Credit spread pressure is widening."
+        "Volatility term structure is inverted."
       ],
       "top_supports": [
-        "Liquidity drains are limited.",
-        "Volatility term structure is calm."
+        "Liquidity drains are limited."
       ]
     },
     "macro_climate": {
       "recent_changes": [
         "Inflation pressure remains elevated.",
         "Real yields are elevated.",
-        "Consumer balance-sheet stress is contained.",
-        "Growth inputs are supportive."
+        "Consumer and production inputs are firm.",
+        "Consumer balance-sheet stress is contained."
       ],
       "top_risks": [
         "Inflation pressure remains elevated.",
@@ -30,26 +29,24 @@
         "Housing activity or mortgage-rate pressure is restrictive."
       ],
       "top_supports": [
+        "Consumer and production inputs are firm.",
         "Consumer balance-sheet stress is contained.",
-        "Growth inputs are supportive.",
-        "Consumer and production inputs are firm."
+        "Growth inputs are supportive."
       ]
     },
     "market_weather": {
       "recent_changes": [
-        "Real yields are elevated.",
+        "High-yield spreads widened over the past month.",
         "The broad dollar is pressuring global liquidity.",
-        "Volatility tail risk is contained.",
-        "Liquidity funding conditions are improving."
+        "Volatility tail risk is contained."
       ],
       "top_risks": [
-        "Real yields are elevated.",
+        "High-yield spreads widened over the past month.",
         "The broad dollar is pressuring global liquidity.",
-        "High-yield spreads widened over the past month."
+        "Real yields are elevated."
       ],
       "top_supports": [
-        "Volatility tail risk is contained.",
-        "Liquidity funding conditions are improving."
+        "Volatility tail risk is contained."
       ]
     }
   },
@@ -672,6 +669,12 @@
       "fragility": -22.6,
       "macro_climate": 2.54,
       "market_weather": -35.24
+    },
+    {
+      "date": "2026-10-15",
+      "fragility": -34.94,
+      "macro_climate": 3.05,
+      "market_weather": -44.7
     }
   ]
 }
