@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-10-17T01:23:27Z",
+  "generated_at_utc": "2026-10-20T01:59:01Z",
   "observations": [
     {
       "date": "2014-10-31",
@@ -685,55 +685,55 @@
     {
       "date": "2026-02-28",
       "percentile_252d": 83.33,
-      "value": 307501.4334
+      "value": 307017.1973
     },
     {
       "date": "2026-03-31",
       "percentile_252d": 50.0,
-      "value": 164100.3138
+      "value": 160528.3215
     },
     {
       "date": "2026-04-30",
       "percentile_252d": 8.33,
-      "value": -215024.1352
+      "value": -258399.9491
     },
     {
       "date": "2026-05-31",
-      "percentile_252d": 83.33,
-      "value": 292648.2573
+      "percentile_252d": 91.67,
+      "value": 315651.7414
     },
     {
       "date": "2026-06-30",
-      "percentile_252d": 33.33,
-      "value": 120305.2756
+      "percentile_252d": 25.0,
+      "value": -27009.65
     },
     {
       "date": "2026-07-31",
-      "percentile_252d": 100.0,
-      "value": 432285.728
+      "percentile_252d": 75.0,
+      "value": 291142.6603
     },
     {
       "date": "2026-08-31",
-      "percentile_252d": 58.33,
-      "value": 166778.8121
+      "percentile_252d": 100.0,
+      "value": 344791.8919
     },
     {
       "date": "2026-09-30",
       "percentile_252d": 16.67,
-      "value": 26900.3471
+      "value": -197937.7213
     }
   ],
   "series_id": "monthly_treasury_deficit_surplus",
   "source": "FiscalData",
   "source_url": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
   "summary": {
-    "change_12m": 107189.1454,
-    "change_1d": -139878.465,
-    "change_1m": -139878.465,
-    "change_1w": -139878.465,
-    "change_3m": -93404.9285,
+    "change_12m": -117648.923,
+    "change_1d": -542729.6132,
+    "change_1m": -542729.6132,
+    "change_1w": -542729.6132,
+    "change_3m": -170928.0713,
     "latest_date": "2026-09-30",
-    "latest_value": 26900.3471,
+    "latest_value": -197937.7213,
     "percentile_252d": 16.67
   },
   "units": "millions_usd"

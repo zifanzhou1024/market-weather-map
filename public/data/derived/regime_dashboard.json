@@ -1,6 +1,6 @@
 {
-  "date": "2026-10-09",
-  "generated_at_utc": "2026-10-17T01:24:07Z",
+  "date": "2026-10-16",
+  "generated_at_utc": "2026-10-20T01:59:43Z",
   "method_version": "phase8-pr1-regime-dashboard-v1",
   "thresholds": {
     "dollar_neutral_pct": 0.5,
@@ -6451,6 +6451,42 @@
         "real_yield_change_bps": 100.0,
         "regime": "global_tightening_risk_off",
         "vix_percentile": 7.54
+      },
+      {
+        "credit_change_bps": 28.0,
+        "date": "2026-10-13",
+        "dollar_change_pct": 2.5417,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 96.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 15.87
+      },
+      {
+        "credit_change_bps": 36.0,
+        "date": "2026-10-14",
+        "dollar_change_pct": 2.8696,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 92.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 46.03
+      },
+      {
+        "credit_change_bps": 33.0,
+        "date": "2026-10-15",
+        "dollar_change_pct": 2.4039,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 86.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 40.08
+      },
+      {
+        "credit_change_bps": 40.0,
+        "date": "2026-10-16",
+        "dollar_change_pct": 2.2534,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 85.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 82.14
       }
     ],
     "20D": [
@@ -13797,6 +13833,42 @@
         "real_yield_change_bps": 31.0,
         "regime": "global_tightening_risk_off",
         "vix_percentile": 7.54
+      },
+      {
+        "credit_change_bps": 42.0,
+        "date": "2026-10-13",
+        "dollar_change_pct": 2.3178,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 28.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 15.87
+      },
+      {
+        "credit_change_bps": 45.0,
+        "date": "2026-10-14",
+        "dollar_change_pct": 2.6257,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 22.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 46.03
+      },
+      {
+        "credit_change_bps": 47.0,
+        "date": "2026-10-15",
+        "dollar_change_pct": 2.2273,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 10.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 40.08
+      },
+      {
+        "credit_change_bps": 54.0,
+        "date": "2026-10-16",
+        "dollar_change_pct": 1.7226,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 13.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 82.14
       }
     ],
     "60D": [
@@ -20783,6 +20855,42 @@
         "real_yield_change_bps": 56.0,
         "regime": "global_tightening_risk_off",
         "vix_percentile": 7.54
+      },
+      {
+        "credit_change_bps": 39.0,
+        "date": "2026-10-13",
+        "dollar_change_pct": 0.7565,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 57.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 15.87
+      },
+      {
+        "credit_change_bps": 50.0,
+        "date": "2026-10-14",
+        "dollar_change_pct": 1.2142,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 49.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 46.03
+      },
+      {
+        "credit_change_bps": 48.0,
+        "date": "2026-10-15",
+        "dollar_change_pct": 0.8222,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 41.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 40.08
+      },
+      {
+        "credit_change_bps": 56.0,
+        "date": "2026-10-16",
+        "dollar_change_pct": 0.6894,
+        "fragility_score": 0.0,
+        "real_yield_change_bps": 35.0,
+        "regime": "global_tightening_risk_off",
+        "vix_percentile": 82.14
       }
     ]
   }

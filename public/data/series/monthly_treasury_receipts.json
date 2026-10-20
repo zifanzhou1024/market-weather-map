@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-10-17T01:23:27Z",
+  "generated_at_utc": "2026-10-20T01:59:01Z",
   "observations": [
     {
       "date": "2014-10-31",
@@ -684,56 +684,56 @@
     },
     {
       "date": "2026-02-28",
-      "percentile_252d": 16.67,
-      "value": 313121.6852
+      "percentile_252d": 8.33,
+      "value": 296423.6838
     },
     {
       "date": "2026-03-31",
       "percentile_252d": 50.0,
-      "value": 384862.602
+      "value": 367645.4309
     },
     {
       "date": "2026-04-30",
       "percentile_252d": 100.0,
-      "value": 837342.691
+      "value": 850169.3178
     },
     {
       "date": "2026-05-31",
-      "percentile_252d": 33.33,
-      "value": 335512.1832
+      "percentile_252d": 50.0,
+      "value": 371228.8571
     },
     {
       "date": "2026-06-30",
       "percentile_252d": 75.0,
-      "value": 495761.4816
+      "value": 526445.3518
     },
     {
       "date": "2026-07-31",
-      "percentile_252d": 25.0,
-      "value": 334009.8756
+      "percentile_252d": 33.33,
+      "value": 338491.8484
     },
     {
       "date": "2026-08-31",
-      "percentile_252d": 41.67,
-      "value": 360032.7358
+      "percentile_252d": 33.33,
+      "value": 344315.322
     },
     {
       "date": "2026-09-30",
       "percentile_252d": 83.33,
-      "value": 557874.5192
+      "value": 543663.0732
     }
   ],
   "series_id": "monthly_treasury_receipts",
   "source": "FiscalData",
   "source_url": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
   "summary": {
-    "change_12m": 30884.9274,
-    "change_1d": 197841.7834,
-    "change_1m": 197841.7834,
-    "change_1w": 197841.7834,
-    "change_3m": 62113.0376,
+    "change_12m": 16673.4814,
+    "change_1d": 199347.7512,
+    "change_1m": 199347.7512,
+    "change_1w": 199347.7512,
+    "change_3m": 17217.7214,
     "latest_date": "2026-09-30",
-    "latest_value": 557874.5192,
+    "latest_value": 543663.0732,
     "percentile_252d": 83.33
   },
   "units": "millions_usd"

@@ -1,25 +1,24 @@
 {
   "buckets": {
-    "commodities_inflation_impulse": -35.34,
-    "credit_spreads": -84.13,
-    "dollar_global": -93.66,
-    "liquidity_funding": 7.25,
-    "rates_real_yields": -88.88,
+    "commodities_inflation_impulse": -35.25,
+    "credit_spreads": -89.09,
+    "dollar_global": -87.3,
+    "liquidity_funding": -22.52,
+    "rates_real_yields": -87.3,
     "sentiment_positioning": 5.54,
-    "volatility_tail_risk": -22.75
+    "volatility_tail_risk": -44.44
   },
-  "date": "2026-10-16",
-  "generated_at_utc": "2026-10-17T01:24:02Z",
-  "label": "Fragile",
+  "date": "2026-10-19",
+  "generated_at_utc": "2026-10-20T01:59:38Z",
+  "label": "Stressed",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
-  "overall_score": -46.29,
+  "overall_score": -55.12,
   "top_risks": [
-    "The broad dollar is pressuring global liquidity.",
     "High-yield spreads widened over the past month.",
-    "Real yields are elevated."
+    "Real yields are elevated.",
+    "The broad dollar is pressuring global liquidity."
   ],
   "top_supports": [
-    "Liquidity funding conditions are improving.",
     "Equity positioning is not crowded."
   ]
 }

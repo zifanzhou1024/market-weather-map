@@ -2,11 +2,10 @@
   "conflicting_signals": [],
   "data_quality": {
     "coverage_confidence": 1.0,
-    "freshness_confidence": 0.97,
+    "freshness_confidence": 0.98,
     "model_confidence": 0.97,
     "overall_confidence": 0.86,
     "reasons": [
-      "High-importance stale series: broad_dollar.",
       "Bucket missing active inputs: treasury_bond_volatility.",
       "Catalog source tier mix: 41 sources gated, 20 candidate-only of 122 total.",
       "Treasury/bond volatility source is not active."
@@ -14,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-10-16",
-  "generated_at_utc": "2026-10-17T01:24:02Z",
+  "date": "2026-10-19",
+  "generated_at_utc": "2026-10-20T01:59:38Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": -97.62,
-        "dollar_spike": -93.66,
+        "credit_spread_widening": -98.42,
+        "dollar_spike": -87.3,
         "liquidity_drain": 65.38,
         "positioning_crowding": 5.54,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -32.54
+        "volatility_term_structure": -70.64
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -38,14 +37,13 @@
       "confidence": 0.97,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 0.98,
+        "freshness_confidence": 1.0,
         "model_confidence": 0.9,
         "overall_confidence": 0.97,
         "source_confidence": 1.0
       },
       "confidence_reasons": [
         "Bucket missing active inputs: treasury_bond_volatility.",
-        "High-importance stale series: broad_dollar.",
         "Treasury/bond volatility source is not active."
       ],
       "label": "Elevated Fragility",
@@ -57,7 +55,7 @@
         "The broad dollar is spiking.",
         "Liquidity drains are limited."
       ],
-      "score": -34.32,
+      "score": -41.19,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -167,7 +165,7 @@
         "housing": -70.84,
         "inflation": -100.0,
         "labor": 74.78,
-        "real_yields": -88.88
+        "real_yields": -87.3
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -195,7 +193,7 @@
         "Consumer and production inputs are firm.",
         "Consumer balance-sheet stress is contained."
       ],
-      "score": 3.21,
+      "score": 3.37,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -355,13 +353,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -35.34,
-        "credit_spreads": -84.13,
-        "dollar_global": -93.66,
-        "liquidity_funding": 7.25,
-        "rates_real_yields": -88.88,
+        "commodities_inflation_impulse": -35.25,
+        "credit_spreads": -89.09,
+        "dollar_global": -87.3,
+        "liquidity_funding": -22.52,
+        "rates_real_yields": -87.3,
         "sentiment_positioning": 5.54,
-        "volatility_tail_risk": -22.75
+        "volatility_tail_risk": -44.44
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -375,23 +373,20 @@
       "confidence": 1.0,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 0.99,
+        "freshness_confidence": 1.0,
         "model_confidence": 1.0,
         "overall_confidence": 1.0,
         "source_confidence": 1.0
       },
-      "confidence_reasons": [
-        "High-importance stale series: broad_dollar."
-      ],
-      "label": "Fragile",
+      "confidence_reasons": [],
+      "label": "Stressed",
       "missing_or_stale_notes": [],
       "recent_changes": [
-        "The broad dollar is pressuring global liquidity.",
         "High-yield spreads widened over the past month.",
-        "Liquidity funding conditions are improving.",
+        "Real yields are elevated.",
         "Equity positioning is not crowded."
       ],
-      "score": -46.29,
+      "score": -55.12,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -523,12 +518,11 @@
         "missing": []
       },
       "top_risks": [
-        "The broad dollar is pressuring global liquidity.",
         "High-yield spreads widened over the past month.",
-        "Real yields are elevated."
+        "Real yields are elevated.",
+        "The broad dollar is pressuring global liquidity."
       ],
       "top_supports": [
-        "Liquidity funding conditions are improving.",
         "Equity positioning is not crowded."
       ]
     }

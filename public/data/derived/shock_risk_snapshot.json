@@ -1,44 +1,44 @@
 {
   "active_signals": [
     {
-      "change": -1.25,
+      "change": 3.63,
       "id": "vix",
       "label": "VIX",
       "message": "VIX percentile is included in active shock-risk pressure.",
-      "score": 19.84,
-      "value": 16.46
+      "score": -38.1,
+      "value": 18.44
     },
     {
-      "change": -0.0074,
+      "change": 0.1288,
       "id": "vix_vix3m_ratio",
       "label": "VIX/VIX3M ratio",
       "message": "VIX curve pressure is included in active shock-risk pressure.",
-      "score": -32.54,
-      "value": 0.8902
+      "score": -70.64,
+      "value": 0.9408
     },
     {
-      "change": 0.47,
+      "change": 0.54,
       "id": "hy_minus_ig_oas",
       "label": "Credit spreads",
       "message": "Credit spread percentile is included in active shock-risk pressure.",
-      "score": -97.62,
-      "value": 2.39
+      "score": -98.42,
+      "value": 2.46
     },
     {
-      "change": 3.5236,
+      "change": 2.4842,
       "id": "broad_dollar",
       "label": "Broad dollar",
       "message": "Broad dollar one-month change is included in active shock-risk pressure.",
-      "score": -52.85,
-      "value": 121.6023
+      "score": -37.26,
+      "value": 121.4048
     },
     {
-      "change": 0.16,
+      "change": 0.06,
       "id": "real_yield_10y",
       "label": "10Y real yield",
       "message": "Real yield one-month change is included in active shock-risk pressure.",
-      "score": -19.2,
-      "value": 2.78
+      "score": -7.2,
+      "value": 2.74
     },
     {
       "change": 7920.0,
@@ -49,9 +49,9 @@
       "value": 5872065.0
     }
   ],
-  "date": "2026-10-16",
-  "generated_at_utc": "2026-10-17T01:24:02Z",
-  "label": "Mixed shock risk",
+  "date": "2026-10-19",
+  "generated_at_utc": "2026-10-20T01:59:38Z",
+  "label": "Elevated shock risk",
   "method_version": "phase5-shock-risk-v1",
   "mismatch_warnings": [
     {
@@ -60,7 +60,7 @@
       "message": "Real yields, the broad dollar, and credit spreads all rose over one month, confirming tighter active financial conditions."
     }
   ],
-  "score": -25.11,
+  "score": -41.16,
   "source_gaps": [
     {
       "id": "move_index",
