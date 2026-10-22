@@ -1,5 +1,6 @@
 {
-  "generated_at_utc": "2026-10-21T01:45:14Z",
+  "generated_at_utc": "2026-10-22T01:39:02Z",
+  "last_attempt_utc": "2026-10-22T01:39:02Z",
   "last_successful_update_utc": "2026-10-21T01:45:14Z",
   "overall_status": "partial",
   "series": {
@@ -1530,5 +1531,7 @@
       "source": "FRED",
       "status": "ok"
     }
-  }
+  },
+  "update_message": "ValueError: missing expected observation_date/DGS2 columns for DGS2; got ['<!doctype html>']",
+  "update_status": "failed"
 }
