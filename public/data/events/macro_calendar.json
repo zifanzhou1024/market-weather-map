@@ -67,13 +67,13 @@
     },
     {
       "category": "growth",
-      "date": "2027-01-15",
+      "date": null,
       "id": "retail_sales",
       "importance": "high",
-      "notes": "Official Census economic indicators calendar row: Advance Monthly Sales for Retail and Food Services. Descriptive event context only; not scored.",
+      "notes": "Census source page for Advance Monthly Retail Trade and Food Services releases.",
       "source": "Census",
-      "source_url": "https://www.census.gov/economic-indicators/calendar-listview.html",
-      "status": "scheduled",
+      "source_url": "https://www.census.gov/retail/",
+      "status": "source_link",
       "time": "08:30",
       "timezone": "America/New_York",
       "title": "Advance Monthly Retail Trade"
@@ -106,13 +106,13 @@
     },
     {
       "category": "housing",
-      "date": "2027-01-20",
+      "date": null,
       "id": "new_residential_construction",
       "importance": "medium",
-      "notes": "Official Census economic indicators calendar row: New Residential Construction (Building Permits, Housing Starts, and Housing Completions). Descriptive event context only; not scored.",
+      "notes": "Census housing starts and building permits release source.",
       "source": "Census",
-      "source_url": "https://www.census.gov/economic-indicators/calendar-listview.html",
-      "status": "scheduled",
+      "source_url": "https://www.census.gov/construction/nrc/",
+      "status": "source_link",
       "time": "08:30",
       "timezone": "America/New_York",
       "title": "New Residential Construction"
@@ -131,6 +131,6 @@
       "title": "Commitments of Traders"
     }
   ],
-  "generated_at_utc": "2026-10-23T01:41:47Z",
+  "generated_at_utc": "2026-10-24T01:44:54Z",
   "method_version": "official-event-calendar-v2"
 }

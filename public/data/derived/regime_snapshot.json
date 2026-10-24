@@ -3,8 +3,8 @@
     {
       "id": "real_yield_10y",
       "label": "10Y real yield",
-      "message": "10Y real yield is up over one month.",
-      "state": "up"
+      "message": "10Y real yield is flat over one month.",
+      "state": "flat"
     },
     {
       "id": "dollar",
@@ -15,14 +15,14 @@
     {
       "id": "nominal_10y",
       "label": "10Y nominal yield",
-      "message": "10Y nominal yield is up over one month.",
-      "state": "up"
+      "message": "10Y nominal yield is flat over one month.",
+      "state": "flat"
     },
     {
       "id": "yield_driver",
       "label": "Yield driver",
-      "message": "The nominal yield move is classified as real yield driven.",
-      "state": "real_yield_driven"
+      "message": "The nominal yield move is classified as mixed.",
+      "state": "mixed"
     },
     {
       "id": "vix_curve",
@@ -45,38 +45,38 @@
     {
       "id": "overall_regime",
       "label": "Overall regime",
-      "message": "Active data classifies the backdrop as Tightening / risk-off.",
-      "state": "Tightening / risk-off"
+      "message": "Active data classifies the backdrop as Mixed.",
+      "state": "Mixed"
     }
   ],
   "confirmations": [
     {
       "id": "credit",
       "label": "Credit",
-      "message": "Credit spreads are confirming for the active regime.",
-      "status": "confirming"
+      "message": "Credit spreads are mixed for the active regime.",
+      "status": "mixed"
     },
     {
       "id": "vix_curve",
       "label": "VIX curve",
-      "message": "Volatility is confirming and the curve is contango proxy.",
-      "status": "confirming"
+      "message": "Volatility is mixed and the curve is contango proxy.",
+      "status": "mixed"
     },
     {
       "id": "liquidity",
       "label": "Liquidity",
-      "message": "Net liquidity is diverging for the active regime.",
-      "status": "diverging"
+      "message": "Net liquidity is mixed for the active regime.",
+      "status": "mixed"
     },
     {
       "id": "rates",
       "label": "Rates",
-      "message": "Real yield momentum is confirming for the active regime.",
-      "status": "confirming"
+      "message": "Real yield momentum is mixed for the active regime.",
+      "status": "mixed"
     }
   ],
-  "date": "2026-10-22",
-  "generated_at_utc": "2026-10-23T01:41:30Z",
+  "date": "2026-10-23",
+  "generated_at_utc": "2026-10-24T01:44:39Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -242,18 +242,12 @@
   ],
   "regime": {
     "dollar_direction": "up",
-    "label": "Tightening / risk-off",
-    "nominal_yield_direction": "up",
-    "tips_direction": "up",
-    "yield_driver": "real_yield_driven"
+    "label": "Mixed",
+    "nominal_yield_direction": "flat",
+    "tips_direction": "flat",
+    "yield_driver": "mixed"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.35,
-      "date": "2025-10-07",
-      "nominal_10y": 4.14,
-      "real_yield_10y": 1.79
-    },
     {
       "breakeven_10y": 2.35,
       "date": "2025-10-08",
@@ -1807,6 +1801,12 @@
       "date": "2026-10-21",
       "nominal_10y": 5.13,
       "real_yield_10y": 2.76
+    },
+    {
+      "breakeven_10y": 2.32,
+      "date": "2026-10-22",
+      "nominal_10y": 4.96,
+      "real_yield_10y": 2.64
     }
   ]
 }
