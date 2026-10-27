@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-10-24T01:43:58Z",
+  "generated_at_utc": "2026-10-27T02:10:47Z",
   "observations": [
     {
       "date": "1967-05-01",
@@ -3540,7 +3540,7 @@
     {
       "date": "2026-04-01",
       "percentile_252d": 100.0,
-      "value": 0.08
+      "value": 0.07
     },
     {
       "date": "2026-05-01",
@@ -3550,31 +3550,36 @@
     {
       "date": "2026-06-01",
       "percentile_252d": 83.33,
-      "value": 0.01
+      "value": 0.02
     },
     {
       "date": "2026-07-01",
-      "percentile_252d": 66.67,
-      "value": -0.01
+      "percentile_252d": 83.33,
+      "value": 0.02
     },
     {
       "date": "2026-08-01",
-      "percentile_252d": 83.33,
+      "percentile_252d": 66.67,
       "value": 0.01
+    },
+    {
+      "date": "2026-09-01",
+      "percentile_252d": 91.67,
+      "value": 0.03
     }
   ],
   "series_id": "cfnai_3m_avg",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/CFNAIMA3",
   "summary": {
-    "change_12m": 0.15,
+    "change_12m": 0.25,
     "change_1d": 0.02,
     "change_1m": 0.02,
     "change_1w": 0.02,
-    "change_3m": 0.03,
-    "latest_date": "2026-08-01",
-    "latest_value": 0.01,
-    "percentile_252d": 83.33
+    "change_3m": 0.01,
+    "latest_date": "2026-09-01",
+    "latest_value": 0.03,
+    "percentile_252d": 91.67
   },
   "units": "index"
 }

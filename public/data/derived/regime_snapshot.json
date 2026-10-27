@@ -3,8 +3,8 @@
     {
       "id": "real_yield_10y",
       "label": "10Y real yield",
-      "message": "10Y real yield is flat over one month.",
-      "state": "flat"
+      "message": "10Y real yield is down over one month.",
+      "state": "down"
     },
     {
       "id": "dollar",
@@ -15,14 +15,14 @@
     {
       "id": "nominal_10y",
       "label": "10Y nominal yield",
-      "message": "10Y nominal yield is flat over one month.",
-      "state": "flat"
+      "message": "10Y nominal yield is down over one month.",
+      "state": "down"
     },
     {
       "id": "yield_driver",
       "label": "Yield driver",
-      "message": "The nominal yield move is classified as mixed.",
-      "state": "mixed"
+      "message": "The nominal yield move is classified as real yield easing.",
+      "state": "real_yield_easing"
     },
     {
       "id": "vix_curve",
@@ -45,8 +45,8 @@
     {
       "id": "overall_regime",
       "label": "Overall regime",
-      "message": "Active data classifies the backdrop as Mixed.",
-      "state": "Mixed"
+      "message": "Active data classifies the backdrop as Bonds-first / safe haven.",
+      "state": "Bonds-first / safe haven"
     }
   ],
   "confirmations": [
@@ -75,50 +75,10 @@
       "status": "mixed"
     }
   ],
-  "date": "2026-10-23",
-  "generated_at_utc": "2026-10-24T01:44:39Z",
+  "date": "2026-10-26",
+  "generated_at_utc": "2026-10-27T02:11:31Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
-    {
-      "credit_change": -0.02,
-      "date": "2026-09-18",
-      "dollar_change": 1.2585,
-      "nominal_yield_change": 0.32,
-      "real_yield_change": 0.33,
-      "vix_percentile": 6.75
-    },
-    {
-      "credit_change": 0.0,
-      "date": "2026-09-21",
-      "dollar_change": 1.3386,
-      "nominal_yield_change": 0.22,
-      "real_yield_change": 0.22,
-      "vix_percentile": 7.54
-    },
-    {
-      "credit_change": 0.03,
-      "date": "2026-09-22",
-      "dollar_change": 1.2738,
-      "nominal_yield_change": 0.26,
-      "real_yield_change": 0.25,
-      "vix_percentile": 2.38
-    },
-    {
-      "credit_change": 0.07,
-      "date": "2026-09-23",
-      "dollar_change": 1.8886,
-      "nominal_yield_change": 0.47,
-      "real_yield_change": 0.44,
-      "vix_percentile": 12.3
-    },
-    {
-      "credit_change": 0.14,
-      "date": "2026-09-24",
-      "dollar_change": 2.106,
-      "nominal_yield_change": 0.52,
-      "real_yield_change": 0.51,
-      "vix_percentile": 19.05
-    },
     {
       "credit_change": 0.28,
       "date": "2026-09-25",
@@ -238,22 +198,56 @@
       "nominal_yield_change": 0.15,
       "real_yield_change": 0.13,
       "vix_percentile": 82.14
+    },
+    {
+      "credit_change": 0.51,
+      "date": "2026-10-19",
+      "dollar_change": 1.8115,
+      "nominal_yield_change": 0.14,
+      "real_yield_change": 0.12,
+      "vix_percentile": 69.05
+    },
+    {
+      "credit_change": 0.57,
+      "date": "2026-10-20",
+      "dollar_change": 1.7146,
+      "nominal_yield_change": 0.16,
+      "real_yield_change": 0.15,
+      "vix_percentile": 54.76
+    },
+    {
+      "credit_change": 0.48,
+      "date": "2026-10-21",
+      "dollar_change": 1.7489,
+      "nominal_yield_change": 0.17,
+      "real_yield_change": 0.13,
+      "vix_percentile": 42.86
+    },
+    {
+      "credit_change": 0.55,
+      "date": "2026-10-22",
+      "dollar_change": 1.2362,
+      "nominal_yield_change": -0.15,
+      "real_yield_change": -0.12,
+      "vix_percentile": 75.79
+    },
+    {
+      "credit_change": 0.46,
+      "date": "2026-10-23",
+      "dollar_change": 0.7681,
+      "nominal_yield_change": -0.18,
+      "real_yield_change": -0.19,
+      "vix_percentile": 78.17
     }
   ],
   "regime": {
     "dollar_direction": "up",
-    "label": "Mixed",
-    "nominal_yield_direction": "flat",
-    "tips_direction": "flat",
-    "yield_driver": "mixed"
+    "label": "Bonds-first / safe haven",
+    "nominal_yield_direction": "down",
+    "tips_direction": "down",
+    "yield_driver": "real_yield_easing"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.35,
-      "date": "2025-10-08",
-      "nominal_10y": 4.13,
-      "real_yield_10y": 1.78
-    },
     {
       "breakeven_10y": 2.34,
       "date": "2025-10-09",
@@ -1807,6 +1801,12 @@
       "date": "2026-10-22",
       "nominal_10y": 4.96,
       "real_yield_10y": 2.64
+    },
+    {
+      "breakeven_10y": 2.34,
+      "date": "2026-10-23",
+      "nominal_10y": 5.0,
+      "real_yield_10y": 2.66
     }
   ]
 }

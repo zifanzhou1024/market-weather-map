@@ -1,6 +1,6 @@
 {
-  "date": "2026-10-23",
-  "generated_at_utc": "2026-10-24T01:44:41Z",
+  "date": "2026-10-26",
+  "generated_at_utc": "2026-10-27T02:11:36Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -73,21 +73,21 @@
   "overall_read": {
     "fragility": {
       "confidence": 0.97,
-      "label": "High Fragility",
-      "score": -50.3
+      "label": "Elevated Fragility",
+      "score": -46.05
     },
     "long_term": {
       "confidence": 0.99,
       "label": "Mixed",
-      "score": 4.5
+      "score": 7.5
     },
     "regime": {
-      "label": "Mixed"
+      "label": "Bonds-first / safe haven"
     },
     "short_term": {
       "confidence": 1.0,
-      "label": "Stressed",
-      "score": -51.09
+      "label": "Fragile",
+      "score": -48.55
     }
   },
   "top_supports": [
@@ -115,6 +115,24 @@
       "confidence": 0.99,
       "direction": "support",
       "freshness_status": "ok",
+      "group": "Growth",
+      "horizon": "long_term",
+      "id": "growth",
+      "importance": 5,
+      "label": "Growth breadth",
+      "message": "Growth inputs are supportive.",
+      "priority": 330.02,
+      "severity": 66.67,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Broad growth conditions set the strategic backdrop for risk assets and recession risk."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "macro",
+      "confidence": 0.99,
+      "direction": "support",
+      "freshness_status": "ok",
       "group": "Consumer balance sheet",
       "horizon": "long_term",
       "id": "consumer_balance_sheet",
@@ -129,24 +147,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "macro",
-      "confidence": 0.99,
-      "direction": "support",
-      "freshness_status": "stale",
-      "group": "Growth",
-      "horizon": "long_term",
-      "id": "growth",
-      "importance": 5,
-      "label": "Growth breadth",
-      "message": "Growth inputs are supportive.",
-      "priority": 198.0,
-      "severity": 50.0,
-      "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Broad growth conditions set the strategic backdrop for risk assets and recession risk."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "liquidity",
       "confidence": 1.0,
       "direction": "support",
@@ -157,8 +157,8 @@
       "importance": 4,
       "label": "Net liquidity",
       "message": "Net liquidity is supportive.",
-      "priority": 46.96,
-      "severity": 11.74,
+      "priority": 44.12,
+      "severity": 11.03,
       "source_status": "active",
       "urgency": "slow",
       "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
@@ -195,8 +195,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spreads are widening.",
-      "priority": 479.15,
-      "severity": 95.83,
+      "priority": 485.15,
+      "severity": 97.03,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -239,6 +239,24 @@
     },
     {
       "access_status": "free_public_active",
+      "category": "dollar",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Dollar / Global",
+      "horizon": "short_term",
+      "id": "broad_dollar",
+      "importance": 4,
+      "label": "Broad dollar",
+      "message": "The broad dollar is firming and tightening global liquidity.",
+      "priority": 326.96,
+      "severity": 81.74,
+      "source_status": "active",
+      "urgency": "near_term",
+      "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
+    },
+    {
+      "access_status": "free_public_active",
       "category": "volatility",
       "confidence": 0.97,
       "direction": "risk",
@@ -249,8 +267,8 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 292.55,
-      "severity": 75.4,
+      "priority": 234.04,
+      "severity": 60.32,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
@@ -267,29 +285,11 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is elevated.",
-      "priority": 283.75,
-      "severity": 56.75,
+      "priority": 203.05,
+      "severity": 40.61,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "dollar",
-      "confidence": 1.0,
-      "direction": "risk",
-      "freshness_status": "stale",
-      "group": "Dollar / Global",
-      "horizon": "short_term",
-      "id": "broad_dollar",
-      "importance": 4,
-      "label": "Broad dollar",
-      "message": "The broad dollar is firming and tightening global liquidity.",
-      "priority": 279.36,
-      "severity": 87.3,
-      "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
     },
     {
       "access_status": "free_public_active",
@@ -303,8 +303,8 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 93.78,
-      "severity": 31.26,
+      "priority": 95.19,
+      "severity": 31.73,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."

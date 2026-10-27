@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-10-24T01:44:23Z",
+  "generated_at_utc": "2026-10-27T02:11:10Z",
   "observations": [
     {
       "date": "1871-02-01",
@@ -9344,22 +9344,22 @@
     },
     {
       "date": "2026-10-01",
-      "percentile_252d": 83.33,
-      "value": 40.36
+      "percentile_252d": 91.67,
+      "value": 40.66
     }
   ],
   "series_id": "cape_ratio",
   "source": "Robert Shiller / multpl.com",
   "source_url": "https://www.multpl.com/shiller-pe/table/by-month",
   "summary": {
-    "change_12m": 1.05,
-    "change_1d": -0.06,
-    "change_1m": -0.06,
-    "change_1w": -0.06,
-    "change_3m": 0.34,
+    "change_12m": 1.35,
+    "change_1d": 0.24,
+    "change_1m": 0.24,
+    "change_1w": 0.24,
+    "change_3m": 0.64,
     "latest_date": "2026-10-01",
-    "latest_value": 40.36,
-    "percentile_252d": 83.33
+    "latest_value": 40.66,
+    "percentile_252d": 91.67
   },
   "units": "ratio"
 }
