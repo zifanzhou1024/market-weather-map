@@ -2,7 +2,7 @@
   "candidates_not_shown": [
     {
       "id": "payrolls",
-      "priority": 389.27,
+      "priority": 393.2,
       "reason": "below top 9 today"
     },
     {
@@ -12,17 +12,17 @@
     },
     {
       "id": "vix_complex",
-      "priority": 203.05,
+      "priority": 113.75,
       "reason": "below top 9 today"
     },
     {
       "id": "wti_crude",
-      "priority": 95.19,
+      "priority": 95.76,
       "reason": "below top 9 today"
     },
     {
       "id": "net_liquidity",
-      "priority": 44.12,
+      "priority": 41.72,
       "reason": "below top 9 today"
     },
     {
@@ -33,16 +33,15 @@
   ],
   "composite_scores": [
     {
-      "delta_1m": -44.94,
-      "delta_7d": 6.57,
+      "delta_1m": -41.69,
+      "delta_7d": 0.5700000000000003,
       "direction": "neutral",
       "id": "market_weather",
       "label": "Market Weather",
-      "percentile_5y": 2,
-      "percentile_window_days": 110,
+      "percentile_5y": 5,
+      "percentile_window_days": 111,
       "regime_label": "Fragile",
       "sparkline_90d": [
-        -6.11,
         0.75,
         14.55,
         10.38,
@@ -131,21 +130,21 @@
         -45.87,
         -46.99,
         -51.09,
-        -48.55
+        -48.55,
+        -45.3
       ],
-      "value": -48.55
+      "value": -45.3
     },
     {
-      "delta_1m": -2.630000000000001,
-      "delta_7d": 4.13,
+      "delta_1m": -1.7400000000000002,
+      "delta_7d": 5.680000000000001,
       "direction": "neutral",
       "id": "macro_climate",
       "label": "Macro Climate",
-      "percentile_5y": 23,
-      "percentile_window_days": 110,
+      "percentile_5y": 33,
+      "percentile_window_days": 111,
       "regime_label": "Mixed",
       "sparkline_90d": [
-        18.78,
         19.34,
         19.26,
         13.08,
@@ -234,21 +233,21 @@
         2.71,
         4.11,
         4.5,
-        7.5
+        7.5,
+        8.39
       ],
-      "value": 7.5
+      "value": 8.39
     },
     {
-      "delta_1m": -61.47,
-      "delta_7d": -4.859999999999999,
+      "delta_1m": -55.88,
+      "delta_7d": -3.280000000000001,
       "direction": "neutral",
       "id": "fragility",
       "label": "Fragility",
-      "percentile_5y": 1,
-      "percentile_window_days": 110,
+      "percentile_5y": 4,
+      "percentile_window_days": 111,
       "regime_label": "Elevated Fragility",
       "sparkline_90d": [
-        4.38,
         16.4,
         42.47,
         42.95,
@@ -337,13 +336,14 @@
         -37.18,
         -41.17,
         -50.3,
-        -46.05
+        -46.05,
+        -40.46
       ],
-      "value": -46.05
+      "value": -40.46
     }
   ],
-  "date": "2026-10-26",
-  "generated_at_utc": "2026-10-27T02:11:51Z",
+  "date": "2026-10-27",
+  "generated_at_utc": "2026-10-28T02:26:47Z",
   "method_version": "phase-e-cockpit-v1",
   "regime": {
     "label": "Bonds-first / safe haven",
@@ -351,20 +351,20 @@
   },
   "vital_signs": [
     {
-      "as_of": "2026-10-23",
-      "delta_1m": 65.0,
-      "delta_7d": 7.0,
+      "as_of": "2026-10-26",
+      "delta_1m": 37.0,
+      "delta_7d": 1.0,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "credit_spreads",
       "importance": 5,
       "label": "HY OAS",
-      "percentile_5y": 74,
-      "percentile_window_days": 890,
+      "percentile_5y": 71,
+      "percentile_window_days": 891,
       "primary_decimals": 0,
       "primary_unit": " bp",
-      "primary_value": 338.0,
-      "priority": 485.15,
+      "primary_value": 330.0,
+      "priority": 469.25,
       "rank": 1,
       "score_status": "active",
       "secondary_values": [],
@@ -372,7 +372,6 @@
         "high_yield_oas"
       ],
       "sparkline_90d": [
-        265.0,
         271.0,
         276.0,
         278.0,
@@ -461,25 +460,26 @@
         333.0,
         327.0,
         340.0,
-        338.0
+        338.0,
+        330.0
       ],
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
     },
     {
-      "as_of": "2026-10-23",
-      "delta_1m": 14.0,
-      "delta_7d": 6.0,
+      "as_of": "2026-10-26",
+      "delta_1m": 9.0,
+      "delta_7d": 3.0,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "ig_spreads",
       "importance": 5,
       "label": "IG OAS",
-      "percentile_5y": 57,
-      "percentile_window_days": 889,
+      "percentile_5y": 55,
+      "percentile_window_days": 890,
       "primary_decimals": 0,
       "primary_unit": " bp",
-      "primary_value": 91.0,
-      "priority": 485.15,
+      "primary_value": 90.0,
+      "priority": 469.25,
       "rank": 2,
       "score_status": "active",
       "secondary_values": [],
@@ -487,7 +487,6 @@
         "investment_grade_oas"
       ],
       "sparkline_90d": [
-        74.0,
         74.0,
         75.0,
         76.0,
@@ -576,14 +575,15 @@
         87.0,
         88.0,
         89.0,
-        91.0
+        91.0,
+        90.0
       ],
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
     },
     {
-      "as_of": "2026-10-23",
-      "delta_1m": -0.09999999999999964,
-      "delta_7d": -0.08000000000000007,
+      "as_of": "2026-10-26",
+      "delta_1m": -0.16999999999999993,
+      "delta_7d": -0.13999999999999968,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "real_yields",
@@ -602,7 +602,6 @@
         "real_yield_10y"
       ],
       "sparkline_90d": [
-        2.14,
         2.23,
         2.21,
         2.28,
@@ -691,24 +690,25 @@
         2.77,
         2.76,
         2.64,
+        2.66,
         2.66
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-10-23",
-      "delta_1m": 0.031745979308465344,
-      "delta_7d": -0.08265552261409059,
+      "as_of": "2026-10-26",
+      "delta_1m": -0.141546719782923,
+      "delta_7d": -0.16957980024408226,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "term_premium",
       "importance": 5,
       "label": "10Y Term Premium",
-      "percentile_5y": 85,
+      "percentile_5y": 77,
       "percentile_window_days": 1260,
       "primary_decimals": 2,
       "primary_unit": "%",
-      "primary_value": 0.673546354215131,
+      "primary_value": 0.6299755876394606,
       "priority": 412.7,
       "rank": 4,
       "score_status": "active",
@@ -717,7 +717,6 @@
         "term_premium_acm_10y"
       ],
       "sparkline_90d": [
-        0.5806236604925052,
         0.5341882530296242,
         0.5033993602846705,
         0.526912076889265,
@@ -806,14 +805,15 @@
         0.7298472159788307,
         0.7180080539687586,
         0.6387285239293181,
-        0.673546354215131
+        0.673546354215131,
+        0.6299755876394606
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-10-23",
-      "delta_1m": -0.11000000000000032,
-      "delta_7d": -0.08999999999999986,
+      "as_of": "2026-10-26",
+      "delta_1m": -0.16999999999999993,
+      "delta_7d": -0.15000000000000036,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "us10y",
@@ -832,7 +832,6 @@
         "us10y"
       ],
       "sparkline_90d": [
-        4.43,
         4.49,
         4.46,
         4.51,
@@ -921,24 +920,25 @@
         5.12,
         5.13,
         4.96,
+        5.0,
         5.0
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-10-23",
-      "delta_1m": 5.0,
-      "delta_7d": -4.0,
+      "as_of": "2026-10-26",
+      "delta_1m": -4.0,
+      "delta_7d": -6.0,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "yield_curve",
       "importance": 5,
       "label": "10Y\u22122Y",
-      "percentile_5y": 58,
+      "percentile_5y": 59,
       "percentile_window_days": 1260,
       "primary_decimals": 0,
       "primary_unit": " bp",
-      "primary_value": 31.0,
+      "primary_value": 32.0,
       "priority": 412.7,
       "rank": 6,
       "score_status": "active",
@@ -947,7 +947,6 @@
         "us10y_minus_us2y"
       ],
       "sparkline_90d": [
-        38.0,
         28.999999999999996,
         27.0,
         27.0,
@@ -1036,25 +1035,26 @@
         33.0,
         32.0,
         31.0,
-        31.0
+        31.0,
+        32.0
       ],
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
-      "as_of": "2026-10-26",
-      "delta_1m": 0.0,
-      "delta_7d": -0.010000000000000231,
+      "as_of": "2026-10-27",
+      "delta_1m": 0.010000000000000231,
+      "delta_7d": 0.0,
       "direction": "risk",
       "freshness_status": "ok",
       "id": "breakeven_10y",
       "importance": 5,
       "label": "10Y Breakeven",
-      "percentile_5y": 52,
+      "percentile_5y": 57,
       "percentile_window_days": 1260,
       "primary_decimals": 2,
       "primary_unit": "%",
-      "primary_value": 2.34,
-      "priority": 396.0,
+      "primary_value": 2.35,
+      "priority": 400.0,
       "rank": 7,
       "score_status": "active",
       "secondary_values": [],
@@ -1062,7 +1062,6 @@
         "breakeven_10y"
       ],
       "sparkline_90d": [
-        2.26,
         2.25,
         2.23,
         2.21,
@@ -1151,7 +1150,8 @@
         2.37,
         2.32,
         2.34,
-        2.34
+        2.34,
+        2.35
       ],
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
@@ -1169,7 +1169,7 @@
       "primary_decimals": 1,
       "primary_unit": "% YoY",
       "primary_value": 2.5658408440218174,
-      "priority": 396.0,
+      "priority": 400.0,
       "rank": 8,
       "score_status": "active",
       "secondary_values": [
@@ -1291,7 +1291,7 @@
       "primary_decimals": 0,
       "primary_unit": "k",
       "primary_value": 194.0,
-      "priority": 389.27,
+      "priority": 393.2,
       "rank": 9,
       "score_status": "active",
       "secondary_values": [],

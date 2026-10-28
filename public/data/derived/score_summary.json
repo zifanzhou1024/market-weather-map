@@ -2,9 +2,9 @@
   "conflicting_signals": [],
   "data_quality": {
     "coverage_confidence": 1.0,
-    "freshness_confidence": 0.99,
+    "freshness_confidence": 1.0,
     "model_confidence": 0.97,
-    "overall_confidence": 0.86,
+    "overall_confidence": 0.87,
     "reasons": [
       "Bucket missing active inputs: treasury_bond_volatility.",
       "Catalog source tier mix: 41 sources gated, 20 candidate-only of 122 total.",
@@ -13,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-10-26",
-  "generated_at_utc": "2026-10-27T02:11:31Z",
+  "date": "2026-10-27",
+  "generated_at_utc": "2026-10-28T02:26:30Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": -97.62,
+        "credit_spread_widening": -93.66,
         "dollar_spike": -81.74,
         "liquidity_drain": 11.54,
         "positioning_crowding": 6.3,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -60.32
+        "volatility_term_structure": -37.3
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -55,7 +55,7 @@
         "The broad dollar is spiking.",
         "Liquidity drains are limited."
       ],
-      "score": -46.05,
+      "score": -40.46,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -160,7 +160,7 @@
     "macro_climate": {
       "bucket_scores": {
         "consumer_balance_sheet": 52.52,
-        "consumer_production": 55.55,
+        "consumer_production": 61.11,
         "growth": 66.67,
         "housing": -71.15,
         "inflation": -100.0,
@@ -176,12 +176,12 @@
         "labor": 0.18,
         "real_yields": 0.1
       },
-      "confidence": 0.99,
+      "confidence": 1.0,
       "confidence_breakdown": {
         "coverage_confidence": 1.0,
-        "freshness_confidence": 0.97,
+        "freshness_confidence": 0.99,
         "model_confidence": 1.0,
-        "overall_confidence": 0.99,
+        "overall_confidence": 1.0,
         "source_confidence": 1.0
       },
       "confidence_reasons": [],
@@ -193,7 +193,7 @@
         "Growth inputs are supportive.",
         "Consumer and production inputs are firm."
       ],
-      "score": 7.5,
+      "score": 8.39,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -353,13 +353,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -31.73,
-        "credit_spreads": -97.03,
+        "commodities_inflation_impulse": -31.92,
+        "credit_spreads": -93.85,
         "dollar_global": -81.74,
-        "liquidity_funding": 11.03,
+        "liquidity_funding": 10.43,
         "rates_real_yields": -82.54,
         "sentiment_positioning": 6.3,
-        "volatility_tail_risk": -40.61
+        "volatility_tail_risk": -22.75
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -387,7 +387,7 @@
         "Liquidity funding conditions are improving.",
         "Equity positioning is not crowded."
       ],
-      "score": -48.55,
+      "score": -45.3,
       "source_coverage": {
         "available": [
           "high_yield_oas",
