@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-10-28T02:25:45Z",
+  "generated_at_utc": "2026-10-29T02:33:32Z",
   "observations": [
     {
       "date": "1971-01-08",
@@ -14500,7 +14500,7 @@
     {
       "date": "2026-07-31",
       "percentile_252d": 13.46,
-      "value": -0.543
+      "value": -0.542
     },
     {
       "date": "2026-08-07",
@@ -14525,7 +14525,7 @@
     {
       "date": "2026-09-04",
       "percentile_252d": 21.15,
-      "value": -0.544
+      "value": -0.545
     },
     {
       "date": "2026-09-11",
@@ -14550,25 +14550,30 @@
     {
       "date": "2026-10-09",
       "percentile_252d": 84.62,
-      "value": -0.502
+      "value": -0.501
     },
     {
       "date": "2026-10-16",
       "percentile_252d": 86.54,
-      "value": -0.496
+      "value": -0.494
+    },
+    {
+      "date": "2026-10-23",
+      "percentile_252d": 86.54,
+      "value": -0.487
     }
   ],
   "series_id": "financial_conditions",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/NFCI",
   "summary": {
-    "change_12m": 0.023,
-    "change_1d": 0.006,
-    "change_1m": 0.032,
-    "change_1w": 0.006,
-    "change_3m": 0.035,
-    "latest_date": "2026-10-16",
-    "latest_value": -0.496,
+    "change_12m": 0.03,
+    "change_1d": 0.007,
+    "change_1m": 0.031,
+    "change_1w": 0.007,
+    "change_3m": 0.051,
+    "latest_date": "2026-10-23",
+    "latest_value": -0.487,
     "percentile_252d": 86.54
   },
   "units": "index"
