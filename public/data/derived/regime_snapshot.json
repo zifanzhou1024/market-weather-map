@@ -34,13 +34,13 @@
       "id": "credit",
       "label": "Credit spreads",
       "message": "Credit spread pressure is based on HY minus IG OAS when available.",
-      "state": "up"
+      "state": "flat"
     },
     {
       "id": "liquidity",
       "label": "Net liquidity",
       "message": "Net liquidity confirmation uses the one-month change.",
-      "state": "up"
+      "state": "down"
     },
     {
       "id": "overall_regime",
@@ -75,8 +75,8 @@
       "status": "mixed"
     }
   ],
-  "date": "2026-10-28",
-  "generated_at_utc": "2026-10-29T02:34:29Z",
+  "date": "2026-10-29",
+  "generated_at_utc": "2026-10-30T02:43:31Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -248,12 +248,6 @@
     "yield_driver": "real_yield_easing"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.3,
-      "date": "2025-10-14",
-      "nominal_10y": 4.03,
-      "real_yield_10y": 1.73
-    },
     {
       "breakeven_10y": 2.29,
       "date": "2025-10-15",
@@ -1807,6 +1801,12 @@
       "date": "2026-10-27",
       "nominal_10y": 4.99,
       "real_yield_10y": 2.64
+    },
+    {
+      "breakeven_10y": 2.38,
+      "date": "2026-10-28",
+      "nominal_10y": 5.05,
+      "real_yield_10y": 2.67
     }
   ]
 }
