@@ -1,6 +1,6 @@
 {
-  "date": "2026-10-29",
-  "generated_at_utc": "2026-10-30T02:43:36Z",
+  "date": "2026-10-30",
+  "generated_at_utc": "2026-10-31T02:33:42Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -73,21 +73,21 @@
   "overall_read": {
     "fragility": {
       "confidence": 0.97,
-      "label": "Elevated Fragility",
-      "score": -39.34
+      "label": "High Fragility",
+      "score": -51.29
     },
     "long_term": {
       "confidence": 0.99,
       "label": "Mixed",
-      "score": 8.85
+      "score": 9.25
     },
     "regime": {
       "label": "Bonds-first / safe haven"
     },
     "short_term": {
       "confidence": 1.0,
-      "label": "Fragile",
-      "score": -42.4
+      "label": "Stressed",
+      "score": -52.06
     }
   },
   "top_supports": [
@@ -157,8 +157,8 @@
       "importance": 4,
       "label": "S&P 500 positioning",
       "message": "S&P 500 positioning is balanced.",
-      "priority": 25.2,
-      "severity": 6.3,
+      "priority": 31.36,
+      "severity": 7.84,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
@@ -185,24 +185,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "rates",
-      "confidence": 1.0,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Rates / Real-Yield Pressure",
-      "horizon": "both",
-      "id": "real_yields",
-      "importance": 5,
-      "label": "10Y real yields",
-      "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 412.7,
-      "severity": 82.54,
-      "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "credit",
       "confidence": 1.0,
       "direction": "risk",
@@ -213,25 +195,61 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spreads are widening.",
-      "priority": 376.95,
-      "severity": 75.39,
+      "priority": 448.4,
+      "severity": 89.68,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
     },
     {
       "access_status": "free_public_active",
-      "category": "dollar",
+      "category": "rates",
       "confidence": 1.0,
       "direction": "risk",
       "freshness_status": "ok",
+      "group": "Rates / Real-Yield Pressure",
+      "horizon": "both",
+      "id": "real_yields",
+      "importance": 5,
+      "label": "10Y real yields",
+      "message": "Real yields are elevated and pressuring valuations.",
+      "priority": 392.9,
+      "severity": 78.58,
+      "source_status": "active",
+      "urgency": "near_term",
+      "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility & tail risk",
+      "horizon": "short_term",
+      "id": "vix_complex",
+      "importance": 5,
+      "label": "VIX / VVIX complex",
+      "message": "Volatility tail risk is elevated.",
+      "priority": 295.65,
+      "severity": 59.13,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "dollar",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "stale",
       "group": "Dollar / Global",
       "horizon": "short_term",
       "id": "broad_dollar",
       "importance": 4,
       "label": "Broad dollar",
       "message": "The broad dollar is firming and tightening global liquidity.",
-      "priority": 326.96,
+      "priority": 261.57,
       "severity": 81.74,
       "source_status": "active",
       "urgency": "near_term",
@@ -249,8 +267,8 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 107.79,
-      "severity": 27.78,
+      "priority": 255.61,
+      "severity": 65.88,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
@@ -267,29 +285,11 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 94.02,
-      "severity": 31.34,
+      "priority": 93.48,
+      "severity": 31.16,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 1.0,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Volatility & tail risk",
-      "horizon": "short_term",
-      "id": "vix_complex",
-      "importance": 5,
-      "label": "VIX / VVIX complex",
-      "message": "Volatility tail risk is elevated.",
-      "priority": 53.6,
-      "severity": 10.72,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     }
   ]
 }
