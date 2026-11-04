@@ -1,14 +1,25 @@
 {
-  "date": "2026-11-02",
-  "generated_at_utc": "2026-11-03T03:58:32Z",
+  "date": "2026-11-03",
+  "generated_at_utc": "2026-11-04T03:04:23Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
-      "confidence": 0.0,
+      "confidence": 1.0,
       "freshness_notes": [],
+      "primary_warning": {
+        "access_status": "free_public_active",
+        "confidence": 1.0,
+        "freshness_status": "ok",
+        "id": "commodities_inflation_impulse",
+        "label": "Commodities inflation impulse",
+        "message": "Commodity inflation impulse is elevated.",
+        "severity": 31.26,
+        "source_status": "free_public",
+        "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
+      },
       "sections": [
         {
-          "answer": "Commodity prices are subtracting from inflation pressure (impulse -30.8, 100th percentile of the past year).",
+          "answer": "Commodity prices are subtracting from inflation pressure (impulse -31.3, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -19,9 +30,9 @@
           "why": "A negative commodity impulse eases headline inflation pressure and supports disinflation."
         }
       ],
-      "state": "unknown",
+      "state": "risk",
       "title": "Commodities",
-      "why_it_matters": "Commodity prices feed inflation expectations and rates."
+      "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
     },
     "credit": {
       "confidence": 1.0,
@@ -33,21 +44,21 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spreads are widening.",
-        "severity": 99.2,
+        "severity": 98.81,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.12 pp over 30 days at 2.50 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is widening (+0.24 pp over 30 days to 2.49 pp), an early sign of credit-quality dispersion.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
           "id": "credit_dispersion",
           "question": "Is the HY-IG spread widening (early credit stress) or tightening (risk-on)?",
-          "risk": null,
-          "support": "Steady credit dispersion is not amplifying cross-asset stress.",
-          "why": "Stable HY-IG dispersion describes a credit market without a directional impulse."
+          "risk": "HY-IG widening typically leads broader risk-off.",
+          "support": null,
+          "why": "Widening HY-IG dispersion signals lower-quality credit underperforming higher-quality credit."
         }
       ],
       "state": "risk",
@@ -99,7 +110,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 77.91,
+        "severity": 72.49,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -192,19 +203,8 @@
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
     "liquidity": {
-      "confidence": 1.0,
+      "confidence": 0.0,
       "freshness_notes": [],
-      "primary_warning": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "net_liquidity",
-        "label": "Net liquidity",
-        "message": "Net liquidity is draining.",
-        "severity": 37.2,
-        "source_status": "free_public",
-        "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
-      },
       "sections": [
         {
           "answer": "Net liquidity is contracting ($-37B over four weeks to $5,746B); TGA and reverse repo drain outpaces Fed balance sheet.",
@@ -218,9 +218,9 @@
           "why": "Falling net liquidity tightens funding conditions and historically pressures risk assets."
         }
       ],
-      "state": "risk",
+      "state": "unknown",
       "title": "Liquidity",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets."
     },
     "rates": {
       "confidence": 1.0,
@@ -232,13 +232,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 74.6,
+        "severity": 76.98,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (lower) is driven by real yields (-28 bps), not inflation expectations.",
+          "answer": "The recent 10Y move (lower) is driven by real yields (-33 bps), not inflation expectations.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -258,15 +258,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Real yields are falling while the dollar is rising, a diverging signal consistent with a safe-haven or growth-scare environment.",
+          "answer": "Real yield and dollar moves are within neutral thresholds over the short window; no dominant directional driver is evident.",
           "caveat": "20D window uses closing prices; intraday volatility and FX moves not captured.",
           "eyebrow": "Regime drivers",
           "freshness_status": "ok",
           "id": "regime_drivers",
           "question": "Are real yields and the dollar tightening or easing financial conditions together?",
-          "risk": "Dollar strength tightens global financial conditions even as domestic real yields fall.",
-          "support": null,
-          "why": "Dollar strength alongside falling real yields often reflects flight to Treasuries, which compresses yields while demand for dollars rises."
+          "risk": null,
+          "support": "Absence of a dominant tightening impulse leaves conditions in a holding pattern.",
+          "why": "Neutral short-window readings suggest the regime is consolidating rather than trending."
         }
       ],
       "state": "unknown",
@@ -342,7 +342,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 77.91,
+        "severity": 72.49,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
