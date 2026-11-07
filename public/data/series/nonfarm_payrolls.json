@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-11-06T03:30:07Z",
+  "generated_at_utc": "2026-11-07T02:57:34Z",
   "observations": [
     {
       "date": "1939-01-01",
@@ -5260,25 +5260,30 @@
     {
       "date": "2026-08-01",
       "percentile_252d": 100.0,
-      "value": 159015.0
+      "value": 159068.0
     },
     {
       "date": "2026-09-01",
       "percentile_252d": 100.0,
-      "value": 159044.0
+      "value": 159128.0
+    },
+    {
+      "date": "2026-10-01",
+      "percentile_252d": 100.0,
+      "value": 159293.0
     }
   ],
   "series_id": "nonfarm_payrolls",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/PAYEMS",
   "summary": {
-    "change_12m": 496.0,
-    "change_1d": 29.0,
-    "change_1m": 29.0,
-    "change_1w": 29.0,
-    "change_3m": 152.0,
-    "latest_date": "2026-09-01",
-    "latest_value": 159044.0,
+    "change_12m": 885.0,
+    "change_1d": 165.0,
+    "change_1m": 165.0,
+    "change_1w": 165.0,
+    "change_3m": 411.0,
+    "latest_date": "2026-10-01",
+    "latest_value": 159293.0,
     "percentile_252d": 100.0
   },
   "units": "thousands"
