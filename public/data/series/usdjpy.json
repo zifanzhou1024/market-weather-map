@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-11-07T02:57:36Z",
+  "generated_at_utc": "2026-11-10T04:42:11Z",
   "observations": [
     {
       "date": "1971-01-04",
@@ -69971,20 +69971,45 @@
       "date": "2026-10-30",
       "percentile_252d": 39.68,
       "value": 157.47
+    },
+    {
+      "date": "2026-11-02",
+      "percentile_252d": 45.63,
+      "value": 157.81
+    },
+    {
+      "date": "2026-11-03",
+      "percentile_252d": 57.94,
+      "value": 158.5
+    },
+    {
+      "date": "2026-11-04",
+      "percentile_252d": 55.95,
+      "value": 158.44
+    },
+    {
+      "date": "2026-11-05",
+      "percentile_252d": 44.05,
+      "value": 157.76
+    },
+    {
+      "date": "2026-11-06",
+      "percentile_252d": 52.78,
+      "value": 158.23
     }
   ],
   "series_id": "usdjpy",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/DEXJPUS",
   "summary": {
-    "change_12m": 5.33,
-    "change_1d": -0.36,
-    "change_1m": 0.22,
-    "change_1w": 0.6,
-    "change_3m": -1.69,
-    "latest_date": "2026-10-30",
-    "latest_value": 157.47,
-    "percentile_252d": 39.68
+    "change_12m": 4.68,
+    "change_1d": 0.47,
+    "change_1m": 0.12,
+    "change_1w": 0.76,
+    "change_3m": 0.69,
+    "latest_date": "2026-11-06",
+    "latest_value": 158.23,
+    "percentile_252d": 52.78
   },
   "units": "jpy_per_usd"
 }

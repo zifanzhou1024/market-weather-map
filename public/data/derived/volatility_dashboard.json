@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-06",
-  "generated_at_utc": "2026-11-07T02:58:16Z",
+  "date": "2026-11-09",
+  "generated_at_utc": "2026-11-10T04:42:48Z",
   "hidden_stress": [
     {
       "date": "2006-03-06",
@@ -46279,23 +46279,32 @@
       "vix_value": 25.64,
       "vvix_percentile": 92.3,
       "vvix_value": 121.94
+    },
+    {
+      "date": "2026-11-09",
+      "hidden_stress_score": -5.32,
+      "state": "calm",
+      "vix_percentile": 66.75,
+      "vix_value": 19.92,
+      "vvix_percentile": 61.43,
+      "vvix_value": 98.43
     }
   ],
   "latest_curve": [
     {
-      "percentile_5y": 89.29,
+      "percentile_5y": 70.63,
       "tenor": "9D",
-      "value": 27.18
+      "value": 19.88
     },
     {
-      "percentile_5y": 87.3,
+      "percentile_5y": 67.06,
       "tenor": "30D",
-      "value": 25.64
+      "value": 19.92
     },
     {
-      "percentile_5y": 78.49,
+      "percentile_5y": 58.49,
       "tenor": "3M",
-      "value": 24.6
+      "value": 20.85
     }
   ],
   "method_version": "phase8-pr1-volatility-dashboard-v1",
@@ -66224,6 +66233,11 @@
       "date": "2026-11-06",
       "vix9d_vix": 1.0601,
       "vix_vix3m": 1.0423
+    },
+    {
+      "date": "2026-11-09",
+      "vix9d_vix": 0.998,
+      "vix_vix3m": 0.9554
     }
   ],
   "thresholds": {

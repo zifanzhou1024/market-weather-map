@@ -1,15 +1,15 @@
 {
-  "generated_at_utc": "2026-11-07T02:58:13Z",
+  "generated_at_utc": "2026-11-10T04:42:45Z",
   "latest_attribution": {
     "fragility": {
       "recent_changes": [
-        "Credit spread pressure is widening.",
-        "Volatility term structure is inverted."
+        "The broad dollar is spiking.",
+        "Credit spread pressure is widening."
       ],
       "top_risks": [
+        "The broad dollar is spiking.",
         "Credit spread pressure is widening.",
-        "Volatility term structure is inverted.",
-        "The broad dollar is spiking."
+        "Volatility term structure is inverted."
       ],
       "top_supports": []
     },
@@ -33,14 +33,14 @@
     },
     "market_weather": {
       "recent_changes": [
-        "High-yield spreads widened over the past month.",
         "The broad dollar is pressuring global liquidity.",
+        "High-yield spreads widened over the past month.",
         "Equity positioning is not crowded."
       ],
       "top_risks": [
-        "High-yield spreads widened over the past month.",
         "The broad dollar is pressuring global liquidity.",
-        "Volatility tail risk is elevated."
+        "High-yield spreads widened over the past month.",
+        "Real yields are elevated."
       ],
       "top_supports": [
         "Equity positioning is not crowded."
@@ -762,6 +762,12 @@
       "fragility": -58.5,
       "macro_climate": 10.23,
       "market_weather": -60.15
+    },
+    {
+      "date": "2026-11-09",
+      "fragility": -53.7,
+      "macro_climate": 9.76,
+      "market_weather": -55.59
     }
   ]
 }
