@@ -13,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-11-09",
-  "generated_at_utc": "2026-11-10T04:42:45Z",
+  "date": "2026-11-10",
+  "generated_at_utc": "2026-11-11T02:53:24Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": -96.04,
+        "credit_spread_widening": -91.26,
         "dollar_spike": -98.42,
         "liquidity_drain": -7.7,
         "positioning_crowding": 5.54,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -73.02
+        "volatility_term_structure": -65.88
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -54,7 +54,7 @@
         "The broad dollar is spiking.",
         "Credit spread pressure is widening."
       ],
-      "score": -53.7,
+      "score": -51.08,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -162,7 +162,7 @@
         "housing": -65.38,
         "inflation": -100.0,
         "labor": 79.28,
-        "real_yields": -76.98
+        "real_yields": -81.74
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -190,7 +190,7 @@
         "Growth inputs are supportive.",
         "Consumer and production inputs are firm."
       ],
-      "score": 9.76,
+      "score": 9.28,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -350,13 +350,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -26.8,
-        "credit_spreads": -97.42,
+        "commodities_inflation_impulse": -26.79,
+        "credit_spreads": -92.26,
         "dollar_global": -98.42,
-        "liquidity_funding": -12.96,
-        "rates_real_yields": -76.98,
+        "liquidity_funding": -12.6,
+        "rates_real_yields": -81.74,
         "sentiment_positioning": 5.54,
-        "volatility_tail_risk": -55.42
+        "volatility_tail_risk": -42.33
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -383,7 +383,7 @@
         "High-yield spreads widened over the past month.",
         "Equity positioning is not crowded."
       ],
-      "score": -55.59,
+      "score": -53.14,
       "source_coverage": {
         "available": [
           "high_yield_oas",

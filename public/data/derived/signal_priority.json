@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-09",
-  "generated_at_utc": "2026-11-10T04:42:48Z",
+  "date": "2026-11-10",
+  "generated_at_utc": "2026-11-11T02:53:29Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,12 +74,12 @@
     "fragility": {
       "confidence": 0.97,
       "label": "High Fragility",
-      "score": -53.7
+      "score": -51.08
     },
     "long_term": {
       "confidence": 0.99,
       "label": "Mixed",
-      "score": 9.76
+      "score": 9.28
     },
     "regime": {
       "label": "Bonds-first / safe haven"
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Stressed",
-      "score": -55.59
+      "score": -53.14
     }
   },
   "top_supports": [
@@ -195,11 +195,29 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spreads are widening.",
-      "priority": 487.1,
-      "severity": 97.42,
+      "priority": 461.3,
+      "severity": 92.26,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "rates",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Rates / Real-Yield Pressure",
+      "horizon": "both",
+      "id": "real_yields",
+      "importance": 5,
+      "label": "10Y real yields",
+      "message": "Real yields are elevated and pressuring valuations.",
+      "priority": 408.7,
+      "severity": 81.74,
+      "source_status": "active",
+      "urgency": "near_term",
+      "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
     },
     {
       "access_status": "free_public_active",
@@ -221,24 +239,6 @@
     },
     {
       "access_status": "free_public_active",
-      "category": "rates",
-      "confidence": 1.0,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Rates / Real-Yield Pressure",
-      "horizon": "both",
-      "id": "real_yields",
-      "importance": 5,
-      "label": "10Y real yields",
-      "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 384.9,
-      "severity": 76.98,
-      "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
-    },
-    {
-      "access_status": "free_public_active",
       "category": "volatility",
       "confidence": 0.97,
       "direction": "risk",
@@ -249,8 +249,8 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 283.32,
-      "severity": 73.02,
+      "priority": 255.61,
+      "severity": 65.88,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
@@ -267,8 +267,8 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is elevated.",
-      "priority": 277.1,
-      "severity": 55.42,
+      "priority": 211.65,
+      "severity": 42.33,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
@@ -285,8 +285,8 @@
       "importance": 3,
       "label": "Commodities inflation impulse",
       "message": "Commodity inflation impulse is elevated.",
-      "priority": 80.4,
-      "severity": 26.8,
+      "priority": 80.37,
+      "severity": 26.79,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
