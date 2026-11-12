@@ -11,13 +11,13 @@
       "reason": "below top 9 today"
     },
     {
-      "id": "vix_complex",
-      "priority": 211.65,
+      "id": "wti_crude",
+      "priority": 80.37,
       "reason": "below top 9 today"
     },
     {
-      "id": "wti_crude",
-      "priority": 80.37,
+      "id": "net_liquidity",
+      "priority": 50.4,
       "reason": "below top 9 today"
     },
     {
@@ -26,23 +26,22 @@
       "reason": "below top 9 today"
     },
     {
-      "id": "net_liquidity",
+      "id": "vix_complex",
       "priority": 0.0,
       "reason": "below top 9 today"
     }
   ],
   "composite_scores": [
     {
-      "delta_1m": -25.35,
-      "delta_7d": 3.8800000000000026,
+      "delta_1m": -19.32,
+      "delta_7d": -3.039999999999999,
       "direction": "neutral",
       "id": "market_weather",
       "label": "Market Weather",
-      "percentile_5y": 5,
-      "percentile_window_days": 121,
-      "regime_label": "Stressed",
+      "percentile_5y": 8,
+      "percentile_window_days": 122,
+      "regime_label": "Fragile",
       "sparkline_90d": [
-        -9.54,
         -2.36,
         3.15,
         2.56,
@@ -131,21 +130,21 @@
         -61.03,
         -60.15,
         -55.59,
-        -53.14
+        -53.14,
+        -47.11
       ],
-      "value": -53.14
+      "value": -47.11
     },
     {
       "delta_1m": 0.5199999999999996,
-      "delta_7d": -0.13000000000000078,
+      "delta_7d": 0.1899999999999995,
       "direction": "neutral",
       "id": "macro_climate",
       "label": "Macro Climate",
       "percentile_5y": 42,
-      "percentile_window_days": 121,
+      "percentile_window_days": 122,
       "regime_label": "Mixed",
       "sparkline_90d": [
-        4.72,
         4.17,
         7.96,
         8.12,
@@ -234,21 +233,21 @@
         9.52,
         10.23,
         9.76,
+        9.28,
         9.28
       ],
       "value": 9.28
     },
     {
-      "delta_1m": -35.269999999999996,
-      "delta_7d": 7.359999999999999,
+      "delta_1m": -30.82,
+      "delta_7d": -1.0900000000000034,
       "direction": "neutral",
       "id": "fragility",
       "label": "Fragility",
-      "percentile_5y": 5,
-      "percentile_window_days": 121,
-      "regime_label": "High Fragility",
+      "percentile_5y": 7,
+      "percentile_window_days": 122,
+      "regime_label": "Elevated Fragility",
       "sparkline_90d": [
-        -6.66,
         3.46,
         9.32,
         19.59,
@@ -337,13 +336,14 @@
         -56.8,
         -58.5,
         -53.7,
-        -51.08
+        -51.08,
+        -46.63
       ],
-      "value": -51.08
+      "value": -46.63
     }
   ],
-  "date": "2026-11-10",
-  "generated_at_utc": "2026-11-11T02:53:43Z",
+  "date": "2026-11-11",
+  "generated_at_utc": "2026-11-12T03:58:02Z",
   "method_version": "phase-e-cockpit-v1",
   "regime": {
     "label": "Bonds-first / safe haven",

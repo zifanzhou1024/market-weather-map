@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-10",
-  "generated_at_utc": "2026-11-11T02:53:29Z",
+  "date": "2026-11-11",
+  "generated_at_utc": "2026-11-12T03:57:52Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -73,8 +73,8 @@
   "overall_read": {
     "fragility": {
       "confidence": 0.97,
-      "label": "High Fragility",
-      "score": -51.08
+      "label": "Elevated Fragility",
+      "score": -46.63
     },
     "long_term": {
       "confidence": 0.99,
@@ -86,8 +86,8 @@
     },
     "short_term": {
       "confidence": 1.0,
-      "label": "Stressed",
-      "score": -53.14
+      "label": "Fragile",
+      "score": -47.11
     }
   },
   "top_supports": [
@@ -249,29 +249,11 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 255.61,
-      "severity": 65.88,
+      "priority": 169.4,
+      "severity": 43.66,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 1.0,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Volatility & tail risk",
-      "horizon": "short_term",
-      "id": "vix_complex",
-      "importance": 5,
-      "label": "VIX / VVIX complex",
-      "message": "Volatility tail risk is elevated.",
-      "priority": 211.65,
-      "severity": 42.33,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
     {
       "access_status": "free_public_active",
@@ -290,6 +272,24 @@
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Commodity-driven inflation impulse pressures rates and discount-rate-sensitive assets."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "liquidity",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Liquidity / Funding",
+      "horizon": "both",
+      "id": "net_liquidity",
+      "importance": 4,
+      "label": "Net liquidity",
+      "message": "Net liquidity is draining.",
+      "priority": 50.4,
+      "severity": 12.6,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     }
   ]
 }

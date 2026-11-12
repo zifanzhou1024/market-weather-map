@@ -13,8 +13,8 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-11-10",
-  "generated_at_utc": "2026-11-11T02:53:24Z",
+  "date": "2026-11-11",
+  "generated_at_utc": "2026-11-12T03:57:48Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
@@ -24,7 +24,7 @@
         "liquidity_drain": -7.7,
         "positioning_crowding": 5.54,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -65.88
+        "volatility_term_structure": -43.66
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -46,7 +46,7 @@
         "Bucket missing active inputs: treasury_bond_volatility.",
         "Treasury/bond volatility source is not active."
       ],
-      "label": "High Fragility",
+      "label": "Elevated Fragility",
       "missing_or_stale_notes": [
         "Treasury/bond volatility source is not active."
       ],
@@ -54,7 +54,7 @@
         "The broad dollar is spiking.",
         "Credit spread pressure is widening."
       ],
-      "score": -51.08,
+      "score": -46.63,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -356,7 +356,7 @@
         "liquidity_funding": -12.6,
         "rates_real_yields": -81.74,
         "sentiment_positioning": 5.54,
-        "volatility_tail_risk": -42.33
+        "volatility_tail_risk": -2.12
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -376,14 +376,14 @@
         "source_confidence": 1.0
       },
       "confidence_reasons": [],
-      "label": "Stressed",
+      "label": "Fragile",
       "missing_or_stale_notes": [],
       "recent_changes": [
         "The broad dollar is pressuring global liquidity.",
         "High-yield spreads widened over the past month.",
         "Equity positioning is not crowded."
       ],
-      "score": -53.14,
+      "score": -47.11,
       "source_coverage": {
         "available": [
           "high_yield_oas",
