@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-11-12T03:57:07Z",
+  "generated_at_utc": "2026-11-13T03:28:06Z",
   "observations": [
     {
       "date": "2023-06-02",
@@ -4506,6 +4506,11 @@
       "date": "2026-11-09",
       "percentile_252d": 96.03,
       "value": 1.13
+    },
+    {
+      "date": "2026-11-11",
+      "percentile_252d": 93.65,
+      "value": 1.12
     }
   ],
   "series_id": "bbb_oas",
@@ -4513,13 +4518,13 @@
   "source_url": "https://fred.stlouisfed.org/series/BAMLC0A4CBBB",
   "summary": {
     "change_12m": 0.05,
-    "change_1d": -0.03,
-    "change_1m": 0.11,
+    "change_1d": -0.01,
+    "change_1m": 0.1,
     "change_1w": -0.04,
-    "change_3m": 0.15,
-    "latest_date": "2026-11-09",
-    "latest_value": 1.13,
-    "percentile_252d": 96.03
+    "change_3m": 0.14,
+    "latest_date": "2026-11-11",
+    "latest_value": 1.12,
+    "percentile_252d": 93.65
   },
   "units": "percent"
 }

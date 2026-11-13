@@ -13,18 +13,18 @@
     "source_confidence": 0.58,
     "tier": "high"
   },
-  "date": "2026-11-11",
-  "generated_at_utc": "2026-11-12T03:57:48Z",
+  "date": "2026-11-12",
+  "generated_at_utc": "2026-11-13T03:29:00Z",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
   "scores": {
     "fragility": {
       "bucket_scores": {
-        "credit_spread_widening": -91.26,
+        "credit_spread_widening": -88.1,
         "dollar_spike": -98.42,
-        "liquidity_drain": -7.7,
+        "liquidity_drain": 46.16,
         "positioning_crowding": 5.54,
         "treasury_bond_volatility": 0.0,
-        "volatility_term_structure": -43.66
+        "volatility_term_structure": -59.52
       },
       "bucket_weights": {
         "credit_spread_widening": 0.25,
@@ -52,9 +52,10 @@
       ],
       "recent_changes": [
         "The broad dollar is spiking.",
-        "Credit spread pressure is widening."
+        "Credit spread pressure is widening.",
+        "Liquidity drains are limited."
       ],
-      "score": -46.63,
+      "score": -40.94,
       "source_coverage": {
         "available": [
           "high_yield_oas",
@@ -152,17 +153,19 @@
         "Credit spread pressure is widening.",
         "Volatility term structure is inverted."
       ],
-      "top_supports": []
+      "top_supports": [
+        "Liquidity drains are limited."
+      ]
     },
     "macro_climate": {
       "bucket_scores": {
         "consumer_balance_sheet": 52.52,
         "consumer_production": 61.11,
         "growth": 66.67,
-        "housing": -65.38,
+        "housing": -63.46,
         "inflation": -100.0,
-        "labor": 79.28,
-        "real_yields": -81.74
+        "labor": 71.59,
+        "real_yields": -88.1
       },
       "bucket_weights": {
         "consumer_balance_sheet": 0.1,
@@ -190,7 +193,7 @@
         "Growth inputs are supportive.",
         "Consumer and production inputs are firm."
       ],
-      "score": 9.28,
+      "score": 7.49,
       "source_coverage": {
         "available": [
           "cfnai",
@@ -350,13 +353,13 @@
     },
     "market_weather": {
       "bucket_scores": {
-        "commodities_inflation_impulse": -26.79,
-        "credit_spreads": -92.26,
+        "commodities_inflation_impulse": -15.25,
+        "credit_spreads": -88.29,
         "dollar_global": -98.42,
-        "liquidity_funding": -12.6,
-        "rates_real_yields": -81.74,
+        "liquidity_funding": -3.45,
+        "rates_real_yields": -88.1,
         "sentiment_positioning": 5.54,
-        "volatility_tail_risk": -2.12
+        "volatility_tail_risk": -31.08
       },
       "bucket_weights": {
         "commodities_inflation_impulse": 0.1,
@@ -383,7 +386,7 @@
         "High-yield spreads widened over the past month.",
         "Equity positioning is not crowded."
       ],
-      "score": -47.11,
+      "score": -48.73,
       "source_coverage": {
         "available": [
           "high_yield_oas",

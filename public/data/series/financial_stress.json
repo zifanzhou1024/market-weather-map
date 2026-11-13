@@ -1,6 +1,6 @@
 {
   "frequency": "weekly",
-  "generated_at_utc": "2026-11-12T03:57:04Z",
+  "generated_at_utc": "2026-11-13T03:28:02Z",
   "observations": [
     {
       "date": "1993-12-31",
@@ -8485,27 +8485,27 @@
     {
       "date": "2026-07-03",
       "percentile_252d": 23.08,
-      "value": -0.7206
+      "value": -0.7204
     },
     {
       "date": "2026-07-10",
       "percentile_252d": 3.85,
-      "value": -0.8813
+      "value": -0.8807
     },
     {
       "date": "2026-07-17",
       "percentile_252d": 26.92,
-      "value": -0.6979
+      "value": -0.6976
     },
     {
       "date": "2026-07-24",
       "percentile_252d": 7.69,
-      "value": -0.8253
+      "value": -0.8246
     },
     {
       "date": "2026-07-31",
       "percentile_252d": 65.38,
-      "value": -0.5027
+      "value": -0.5025
     },
     {
       "date": "2026-08-07",
@@ -8515,42 +8515,42 @@
     {
       "date": "2026-08-14",
       "percentile_252d": 7.69,
-      "value": -0.8259
+      "value": -0.8257
     },
     {
       "date": "2026-08-21",
       "percentile_252d": 11.54,
-      "value": -0.8086
+      "value": -0.8083
     },
     {
       "date": "2026-08-28",
       "percentile_252d": 7.69,
-      "value": -0.8492
+      "value": -0.8493
     },
     {
       "date": "2026-09-04",
       "percentile_252d": 15.38,
-      "value": -0.7889
+      "value": -0.7881
     },
     {
       "date": "2026-09-11",
       "percentile_252d": 9.62,
-      "value": -0.8474
+      "value": -0.8466
     },
     {
       "date": "2026-09-18",
       "percentile_252d": 34.62,
-      "value": -0.6996
+      "value": -0.6989
     },
     {
       "date": "2026-09-25",
       "percentile_252d": 17.31,
-      "value": -0.8059
+      "value": -0.8052
     },
     {
       "date": "2026-10-02",
       "percentile_252d": 75.0,
-      "value": -0.4612
+      "value": -0.4598
     },
     {
       "date": "2026-10-09",
@@ -8560,31 +8560,36 @@
     {
       "date": "2026-10-16",
       "percentile_252d": 59.62,
-      "value": -0.634
+      "value": -0.6344
     },
     {
       "date": "2026-10-23",
       "percentile_252d": 63.46,
-      "value": -0.5842
+      "value": -0.5844
     },
     {
       "date": "2026-10-30",
       "percentile_252d": 69.23,
-      "value": -0.5224
+      "value": -0.5227
+    },
+    {
+      "date": "2026-11-06",
+      "percentile_252d": 75.0,
+      "value": -0.4918
     }
   ],
   "series_id": "financial_stress",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/STLFSI4",
   "summary": {
-    "change_12m": -0.0606,
-    "change_1d": 0.0618,
-    "change_1m": -0.0612,
-    "change_1w": 0.0618,
-    "change_3m": -0.0197,
-    "latest_date": "2026-10-30",
-    "latest_value": -0.5224,
-    "percentile_252d": 69.23
+    "change_12m": -0.1788,
+    "change_1d": 0.0309,
+    "change_1m": 0.2285,
+    "change_1w": 0.0309,
+    "change_3m": 0.2746,
+    "latest_date": "2026-11-06",
+    "latest_value": -0.4918,
+    "percentile_252d": 75.0
   },
   "units": "index"
 }
