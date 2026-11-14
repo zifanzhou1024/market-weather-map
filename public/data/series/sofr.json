@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-11-13T03:28:02Z",
+  "generated_at_utc": "2026-11-14T03:24:06Z",
   "observations": [
     {
       "date": "2018-04-03",
@@ -10751,6 +10751,11 @@
       "date": "2026-11-10",
       "percentile_252d": 84.92,
       "value": 3.89
+    },
+    {
+      "date": "2026-11-12",
+      "percentile_252d": 87.7,
+      "value": 3.9
     }
   ],
   "series_id": "sofr",
@@ -10759,12 +10764,12 @@
   "summary": {
     "change_12m": -0.02,
     "change_1d": 0.01,
-    "change_1m": 0.02,
-    "change_1w": -0.08,
-    "change_3m": 0.25,
-    "latest_date": "2026-11-10",
-    "latest_value": 3.89,
-    "percentile_252d": 84.92
+    "change_1m": 0.01,
+    "change_1w": -0.04,
+    "change_3m": 0.28,
+    "latest_date": "2026-11-12",
+    "latest_value": 3.9,
+    "percentile_252d": 87.7
   },
   "units": "percent"
 }

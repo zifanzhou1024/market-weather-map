@@ -3,8 +3,8 @@
     {
       "id": "real_yield_10y",
       "label": "10Y real yield",
-      "message": "10Y real yield is down over one month.",
-      "state": "down"
+      "message": "10Y real yield is flat over one month.",
+      "state": "flat"
     },
     {
       "id": "dollar",
@@ -34,7 +34,7 @@
       "id": "credit",
       "label": "Credit spreads",
       "message": "Credit spread pressure is based on HY minus IG OAS when available.",
-      "state": "up"
+      "state": "flat"
     },
     {
       "id": "liquidity",
@@ -45,8 +45,8 @@
     {
       "id": "overall_regime",
       "label": "Overall regime",
-      "message": "Active data classifies the backdrop as Bonds-first / safe haven.",
-      "state": "Bonds-first / safe haven"
+      "message": "Active data classifies the backdrop as Mixed.",
+      "state": "Mixed"
     }
   ],
   "confirmations": [
@@ -75,8 +75,8 @@
       "status": "mixed"
     }
   ],
-  "date": "2026-11-12",
-  "generated_at_utc": "2026-11-13T03:29:00Z",
+  "date": "2026-11-13",
+  "generated_at_utc": "2026-11-14T03:24:54Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -242,18 +242,12 @@
   ],
   "regime": {
     "dollar_direction": "up",
-    "label": "Bonds-first / safe haven",
+    "label": "Mixed",
     "nominal_yield_direction": "down",
-    "tips_direction": "down",
+    "tips_direction": "flat",
     "yield_driver": "real_yield_easing"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.28,
-      "date": "2025-10-28",
-      "nominal_10y": 3.99,
-      "real_yield_10y": 1.71
-    },
     {
       "breakeven_10y": 2.3,
       "date": "2025-10-29",
@@ -1807,6 +1801,12 @@
       "date": "2026-11-10",
       "nominal_10y": 4.98,
       "real_yield_10y": 2.78
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2026-11-12",
+      "nominal_10y": 5.1,
+      "real_yield_10y": 2.86
     }
   ]
 }
