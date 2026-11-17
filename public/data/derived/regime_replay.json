@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-11-14T03:24:54Z",
+  "generated_at_utc": "2026-11-17T05:09:04Z",
   "method_version": "phase5-regime-replay-v1",
   "scenarios": [
     {
@@ -7,8 +7,8 @@
       "description": "Real yields rising, dollar rising, and credit or volatility pressure rising.",
       "id": "tightening_risk_off",
       "label": "Tightening / risk-off",
-      "last_occurrence_date": "2026-10-21",
-      "occurrence_count": 231,
+      "last_occurrence_date": "2026-11-13",
+      "occurrence_count": 233,
       "occurrences": [
         {
           "credit_20obs_change": -0.01,
@@ -1857,6 +1857,22 @@
           "nominal_10y_20obs_change": 0.17,
           "real_yield_20obs_change": 0.13,
           "vix_curve_20obs_change": 0.0841
+        },
+        {
+          "credit_20obs_change": -0.05,
+          "date": "2026-11-12",
+          "dollar_20obs_change": 0.5396,
+          "nominal_10y_20obs_change": -0.09,
+          "real_yield_20obs_change": 0.02,
+          "vix_curve_20obs_change": 0.0344
+        },
+        {
+          "credit_20obs_change": 0.0,
+          "date": "2026-11-13",
+          "dollar_20obs_change": 1.081,
+          "nominal_10y_20obs_change": 0.05,
+          "real_yield_20obs_change": 0.13,
+          "vix_curve_20obs_change": 0.0458
         }
       ]
     },
@@ -3043,8 +3059,8 @@
       "description": "Real yields falling while the dollar rises and credit or volatility pressure is mixed.",
       "id": "bonds_first_safe_haven",
       "label": "Bonds-first / safe haven",
-      "last_occurrence_date": "2026-11-06",
-      "occurrence_count": 101,
+      "last_occurrence_date": "2026-11-10",
+      "occurrence_count": 103,
       "occurrences": [
         {
           "credit_20obs_change": -0.16,
@@ -3853,6 +3869,22 @@
           "nominal_10y_20obs_change": -0.36,
           "real_yield_20obs_change": -0.24,
           "vix_curve_20obs_change": 0.19
+        },
+        {
+          "credit_20obs_change": 0.23,
+          "date": "2026-11-09",
+          "dollar_20obs_change": 0.06,
+          "nominal_10y_20obs_change": -0.36,
+          "real_yield_20obs_change": -0.25,
+          "vix_curve_20obs_change": 0.1203
+        },
+        {
+          "credit_20obs_change": 0.14,
+          "date": "2026-11-10",
+          "dollar_20obs_change": 0.671,
+          "nominal_10y_20obs_change": -0.23,
+          "real_yield_20obs_change": -0.1,
+          "vix_curve_20obs_change": 0.0926
         }
       ]
     },

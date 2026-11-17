@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-13",
-  "generated_at_utc": "2026-11-14T03:24:58Z",
+  "date": "2026-11-16",
+  "generated_at_utc": "2026-11-17T05:09:07Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -74,27 +74,27 @@
     "fragility": {
       "confidence": 0.97,
       "label": "Elevated Fragility",
-      "score": -38.08
+      "score": -49.53
     },
     "long_term": {
-      "confidence": 0.99,
+      "confidence": 0.97,
       "label": "Mixed",
-      "score": 7.18
+      "score": 6.62
     },
     "regime": {
-      "label": "Mixed"
+      "label": "Tightening / risk-off"
     },
     "short_term": {
       "confidence": 1.0,
       "label": "Stressed",
-      "score": -54.48
+      "score": -59.23
     }
   },
   "top_supports": [
     {
       "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.99,
+      "confidence": 0.97,
       "direction": "support",
       "freshness_status": "ok",
       "group": "Labor",
@@ -103,7 +103,7 @@
       "importance": 5,
       "label": "Labor cycle",
       "message": "Labor cycle is firm.",
-      "priority": 354.37,
+      "priority": 347.21,
       "severity": 71.59,
       "source_status": "active",
       "urgency": "slow",
@@ -112,16 +112,16 @@
     {
       "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.99,
+      "confidence": 0.97,
       "direction": "support",
-      "freshness_status": "ok",
+      "freshness_status": "stale",
       "group": "Growth",
       "horizon": "long_term",
       "id": "growth",
       "importance": 5,
       "label": "Growth breadth",
       "message": "Growth inputs are supportive.",
-      "priority": 330.02,
+      "priority": 258.68,
       "severity": 66.67,
       "source_status": "active",
       "urgency": "slow",
@@ -130,7 +130,7 @@
     {
       "access_status": "free_public_active",
       "category": "macro",
-      "confidence": 0.99,
+      "confidence": 0.97,
       "direction": "support",
       "freshness_status": "stale",
       "group": "Consumer balance sheet",
@@ -139,50 +139,14 @@
       "importance": 4,
       "label": "Consumer balance sheet",
       "message": "Consumer balance-sheet stress is contained.",
-      "priority": 166.38,
+      "priority": 163.02,
       "severity": 52.52,
       "source_status": "active",
       "urgency": "background",
       "why_it_matters": "Consumer fragility shapes the strategic late-cycle and recession-risk read."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "positioning",
-      "confidence": 1.0,
-      "direction": "support",
-      "freshness_status": "ok",
-      "group": "Positioning",
-      "horizon": "short_term",
-      "id": "sentiment_positioning",
-      "importance": 4,
-      "label": "S&P 500 positioning",
-      "message": "S&P 500 positioning is balanced.",
-      "priority": 22.16,
-      "severity": 5.54,
-      "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
     }
   ],
   "top_warnings": [
-    {
-      "access_status": "free_public_active",
-      "category": "macro",
-      "confidence": 0.99,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Inflation",
-      "horizon": "long_term",
-      "id": "inflation",
-      "importance": 5,
-      "label": "Inflation pressure",
-      "message": "Inflation pressure remains elevated.",
-      "priority": 495.0,
-      "severity": 100.0,
-      "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
-    },
     {
       "access_status": "free_public_active",
       "category": "rates",
@@ -195,8 +159,8 @@
       "importance": 5,
       "label": "10Y real yields",
       "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 456.3,
-      "severity": 91.26,
+      "priority": 484.1,
+      "severity": 96.82,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
@@ -213,8 +177,8 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spreads are widening.",
-      "priority": 403.75,
-      "severity": 80.75,
+      "priority": 408.7,
+      "severity": 81.74,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
@@ -224,36 +188,18 @@
       "category": "dollar",
       "confidence": 1.0,
       "direction": "risk",
-      "freshness_status": "stale",
+      "freshness_status": "ok",
       "group": "Dollar / Global",
       "horizon": "short_term",
       "id": "broad_dollar",
       "importance": 4,
       "label": "Broad dollar",
       "message": "The broad dollar is firming and tightening global liquidity.",
-      "priority": 314.94,
-      "severity": 98.42,
+      "priority": 400.0,
+      "severity": 100.0,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 0.97,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Volatility curve",
-      "horizon": "short_term",
-      "id": "vix_curve",
-      "importance": 4,
-      "label": "VIX curve state",
-      "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 237.15,
-      "severity": 61.12,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     {
       "access_status": "free_public_active",
@@ -267,29 +213,65 @@
       "importance": 5,
       "label": "VIX / VVIX complex",
       "message": "Volatility tail risk is elevated.",
-      "priority": 209.0,
-      "severity": 41.8,
+      "priority": 397.5,
+      "severity": 79.5,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
     {
       "access_status": "free_public_active",
-      "category": "liquidity",
+      "category": "macro",
+      "confidence": 0.97,
+      "direction": "risk",
+      "freshness_status": "stale",
+      "group": "Inflation",
+      "horizon": "long_term",
+      "id": "inflation",
+      "importance": 5,
+      "label": "Inflation pressure",
+      "message": "Inflation pressure remains elevated.",
+      "priority": 388.0,
+      "severity": 100.0,
+      "source_status": "active",
+      "urgency": "slow",
+      "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 0.97,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility curve",
+      "horizon": "short_term",
+      "id": "vix_curve",
+      "importance": 4,
+      "label": "VIX curve state",
+      "message": "VIX curve is in backwardation-proxy stress.",
+      "priority": 338.72,
+      "severity": 87.3,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "positioning",
       "confidence": 1.0,
       "direction": "risk",
       "freshness_status": "ok",
-      "group": "Liquidity / Funding",
-      "horizon": "both",
-      "id": "net_liquidity",
+      "group": "Positioning",
+      "horizon": "short_term",
+      "id": "sentiment_positioning",
       "importance": 4,
-      "label": "Net liquidity",
-      "message": "Net liquidity is draining.",
-      "priority": 131.68,
-      "severity": 32.92,
+      "label": "S&P 500 positioning",
+      "message": "Leveraged-money S&P 500 positioning is crowded.",
+      "priority": 110.8,
+      "severity": 27.7,
       "source_status": "active",
-      "urgency": "slow",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+      "urgency": "near_term",
+      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
     }
   ]
 }

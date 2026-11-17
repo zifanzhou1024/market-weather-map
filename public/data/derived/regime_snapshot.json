@@ -3,8 +3,8 @@
     {
       "id": "real_yield_10y",
       "label": "10Y real yield",
-      "message": "10Y real yield is flat over one month.",
-      "state": "flat"
+      "message": "10Y real yield is up over one month.",
+      "state": "up"
     },
     {
       "id": "dollar",
@@ -15,14 +15,14 @@
     {
       "id": "nominal_10y",
       "label": "10Y nominal yield",
-      "message": "10Y nominal yield is down over one month.",
-      "state": "down"
+      "message": "10Y nominal yield is flat over one month.",
+      "state": "flat"
     },
     {
       "id": "yield_driver",
       "label": "Yield driver",
-      "message": "The nominal yield move is classified as real yield easing.",
-      "state": "real_yield_easing"
+      "message": "The nominal yield move is classified as mixed.",
+      "state": "mixed"
     },
     {
       "id": "vix_curve",
@@ -34,7 +34,7 @@
       "id": "credit",
       "label": "Credit spreads",
       "message": "Credit spread pressure is based on HY minus IG OAS when available.",
-      "state": "flat"
+      "state": "down"
     },
     {
       "id": "liquidity",
@@ -45,72 +45,40 @@
     {
       "id": "overall_regime",
       "label": "Overall regime",
-      "message": "Active data classifies the backdrop as Mixed.",
-      "state": "Mixed"
+      "message": "Active data classifies the backdrop as Tightening / risk-off.",
+      "state": "Tightening / risk-off"
     }
   ],
   "confirmations": [
     {
       "id": "credit",
       "label": "Credit",
-      "message": "Credit spreads are mixed for the active regime.",
-      "status": "mixed"
+      "message": "Credit spreads are diverging for the active regime.",
+      "status": "diverging"
     },
     {
       "id": "vix_curve",
       "label": "VIX curve",
-      "message": "Volatility is mixed and the curve is contango proxy.",
-      "status": "mixed"
+      "message": "Volatility is confirming and the curve is contango proxy.",
+      "status": "confirming"
     },
     {
       "id": "liquidity",
       "label": "Liquidity",
-      "message": "Net liquidity is mixed for the active regime.",
-      "status": "mixed"
+      "message": "Net liquidity is confirming for the active regime.",
+      "status": "confirming"
     },
     {
       "id": "rates",
       "label": "Rates",
-      "message": "Real yield momentum is mixed for the active regime.",
-      "status": "mixed"
+      "message": "Real yield momentum is confirming for the active regime.",
+      "status": "confirming"
     }
   ],
-  "date": "2026-11-13",
-  "generated_at_utc": "2026-11-14T03:24:54Z",
+  "date": "2026-11-16",
+  "generated_at_utc": "2026-11-17T05:09:04Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
-    {
-      "credit_change": 0.43,
-      "date": "2026-10-09",
-      "dollar_change": 3.3897,
-      "nominal_yield_change": 0.28,
-      "real_yield_change": 0.31,
-      "vix_percentile": 7.54
-    },
-    {
-      "credit_change": 0.42,
-      "date": "2026-10-13",
-      "dollar_change": 2.751,
-      "nominal_yield_change": 0.24,
-      "real_yield_change": 0.28,
-      "vix_percentile": 15.87
-    },
-    {
-      "credit_change": 0.45,
-      "date": "2026-10-14",
-      "dollar_change": 3.1215,
-      "nominal_yield_change": 0.19,
-      "real_yield_change": 0.22,
-      "vix_percentile": 46.03
-    },
-    {
-      "credit_change": 0.47,
-      "date": "2026-10-15",
-      "dollar_change": 2.6487,
-      "nominal_yield_change": 0.09,
-      "real_yield_change": 0.1,
-      "vix_percentile": 40.08
-    },
     {
       "credit_change": 0.54,
       "date": "2026-10-16",
@@ -238,22 +206,48 @@
       "nominal_yield_change": -0.36,
       "real_yield_change": -0.24,
       "vix_percentile": 95.24
+    },
+    {
+      "credit_change": 0.15,
+      "date": "2026-11-09",
+      "dollar_change": 0.06,
+      "nominal_yield_change": -0.36,
+      "real_yield_change": -0.25,
+      "vix_percentile": 80.95
+    },
+    {
+      "credit_change": 0.07,
+      "date": "2026-11-10",
+      "dollar_change": 0.671,
+      "nominal_yield_change": -0.23,
+      "real_yield_change": -0.1,
+      "vix_percentile": 78.17
+    },
+    {
+      "credit_change": -0.1,
+      "date": "2026-11-12",
+      "dollar_change": 0.5396,
+      "nominal_yield_change": -0.09,
+      "real_yield_change": 0.02,
+      "vix_percentile": 72.22
+    },
+    {
+      "credit_change": -0.05,
+      "date": "2026-11-13",
+      "dollar_change": 1.081,
+      "nominal_yield_change": 0.05,
+      "real_yield_change": 0.13,
+      "vix_percentile": 77.38
     }
   ],
   "regime": {
     "dollar_direction": "up",
-    "label": "Mixed",
-    "nominal_yield_direction": "down",
-    "tips_direction": "flat",
-    "yield_driver": "real_yield_easing"
+    "label": "Tightening / risk-off",
+    "nominal_yield_direction": "flat",
+    "tips_direction": "up",
+    "yield_driver": "mixed"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.3,
-      "date": "2025-10-29",
-      "nominal_10y": 4.08,
-      "real_yield_10y": 1.78
-    },
     {
       "breakeven_10y": 2.29,
       "date": "2025-10-30",
@@ -1807,6 +1801,12 @@
       "date": "2026-11-12",
       "nominal_10y": 5.1,
       "real_yield_10y": 2.86
+    },
+    {
+      "breakeven_10y": 2.24,
+      "date": "2026-11-13",
+      "nominal_10y": 5.15,
+      "real_yield_10y": 2.91
     }
   ]
 }
