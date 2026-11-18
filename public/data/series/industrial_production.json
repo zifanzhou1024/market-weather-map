@@ -1,6 +1,6 @@
 {
   "frequency": "monthly",
-  "generated_at_utc": "2026-11-17T05:08:24Z",
+  "generated_at_utc": "2026-11-18T04:36:37Z",
   "observations": [
     {
       "date": "1919-01-01",
@@ -6445,41 +6445,46 @@
     {
       "date": "2026-05-01",
       "percentile_252d": 100.0,
-      "value": 102.7232
+      "value": 102.6925
     },
     {
       "date": "2026-06-01",
       "percentile_252d": 100.0,
-      "value": 102.961
+      "value": 102.9673
     },
     {
       "date": "2026-07-01",
       "percentile_252d": 100.0,
-      "value": 103.2006
+      "value": 103.1675
     },
     {
       "date": "2026-08-01",
-      "percentile_252d": 100.0,
-      "value": 103.2664
+      "percentile_252d": 91.67,
+      "value": 103.0954
     },
     {
       "date": "2026-09-01",
       "percentile_252d": 100.0,
-      "value": 103.9506
+      "value": 103.8458
+    },
+    {
+      "date": "2026-10-01",
+      "percentile_252d": 91.67,
+      "value": 103.3954
     }
   ],
   "series_id": "industrial_production",
   "source": "FRED",
   "source_url": "https://fred.stlouisfed.org/series/INDPRO",
   "summary": {
-    "change_12m": 2.2826,
-    "change_1d": 0.6842,
-    "change_1m": 0.6842,
-    "change_1w": 0.6842,
-    "change_3m": 0.9896,
-    "latest_date": "2026-09-01",
-    "latest_value": 103.9506,
-    "percentile_252d": 100.0
+    "change_12m": 2.1759,
+    "change_1d": -0.4504,
+    "change_1m": -0.4504,
+    "change_1w": -0.4504,
+    "change_3m": 0.2279,
+    "latest_date": "2026-10-01",
+    "latest_value": 103.3954,
+    "percentile_252d": 91.67
   },
   "units": "index"
 }

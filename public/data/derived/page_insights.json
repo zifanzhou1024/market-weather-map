@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-16",
-  "generated_at_utc": "2026-11-17T05:09:07Z",
+  "date": "2026-11-17",
+  "generated_at_utc": "2026-11-18T04:37:40Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -33,13 +33,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spreads are widening.",
-        "severity": 81.74,
+        "severity": 89.88,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (-0.05 pp over 30 days at 2.34 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (-0.02 pp over 30 days at 2.44 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -99,7 +99,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 79.5,
+        "severity": 89.55,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -195,8 +195,19 @@
       "why_it_matters": "Inflation trajectory drives Fed policy expectations and real-yield direction."
     },
     "liquidity": {
-      "confidence": 0.0,
+      "confidence": 1.0,
       "freshness_notes": [],
+      "primary_warning": {
+        "access_status": "free_public_active",
+        "confidence": 1.0,
+        "freshness_status": "ok",
+        "id": "net_liquidity",
+        "label": "Net liquidity",
+        "message": "Net liquidity is draining.",
+        "severity": 34.23,
+        "source_status": "free_public",
+        "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
+      },
       "sections": [
         {
           "answer": "Net liquidity is contracting ($-28B over four weeks to $5,844B); TGA and reverse repo drain outpaces Fed balance sheet.",
@@ -210,9 +221,9 @@
           "why": "Falling net liquidity tightens funding conditions and historically pressures risk assets."
         }
       ],
-      "state": "unknown",
+      "state": "risk",
       "title": "Liquidity",
-      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets."
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     },
     "rates": {
       "confidence": 1.0,
@@ -224,13 +235,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 96.82,
+        "severity": 98.42,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (lower) is driven by inflation breakevens (-11 bps), not real yields.",
+          "answer": "The recent 10Y move (lower) is driven by inflation breakevens (-12 bps), not real yields.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -250,15 +261,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Real yield and dollar moves are within neutral thresholds over the short window; no dominant directional driver is evident.",
+          "answer": "Both real yields and the dollar are rising over the short window, creating a joint tightening of global financial conditions.",
           "caveat": "20D window uses closing prices; intraday volatility and FX moves not captured.",
           "eyebrow": "Regime drivers",
           "freshness_status": "ok",
           "id": "regime_drivers",
           "question": "Are real yields and the dollar tightening or easing financial conditions together?",
-          "risk": null,
-          "support": "Absence of a dominant tightening impulse leaves conditions in a holding pattern.",
-          "why": "Neutral short-window readings suggest the regime is consolidating rather than trending."
+          "risk": "Dual tightening historically pressures EM assets and credit spreads simultaneously.",
+          "support": null,
+          "why": "When real yields and the dollar rise together, cross-asset liquidity tightens via both the discount rate and dollar funding."
         }
       ],
       "state": "unknown",
@@ -266,23 +277,12 @@
       "why_it_matters": "The regime quadrant blends rates, dollar and risk inputs."
     },
     "sentiment": {
-      "confidence": 1.0,
+      "confidence": 0.0,
       "freshness_notes": [
         "S&P 500 benchmark (SPX) is unavailable.",
         "Put/call ratio (total) is unavailable.",
         "Put/call ratio (SPXW / 0DTE) is unavailable."
       ],
-      "primary_warning": {
-        "access_status": "free_public_active",
-        "confidence": 1.0,
-        "freshness_status": "ok",
-        "id": "sentiment_positioning",
-        "label": "S&P 500 positioning",
-        "message": "Leveraged-money S&P 500 positioning is crowded.",
-        "severity": 27.7,
-        "source_status": "free_public",
-        "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
-      },
       "sections": [
         {
           "answer": "Asset-manager S&P 500 net positioning is within a neutral range at the 25th percentile of the past year (+45.3% OI).",
@@ -296,9 +296,9 @@
           "why": "Neutral positioning does not add amplification pressure in either direction."
         }
       ],
-      "state": "risk",
+      "state": "unknown",
       "title": "Sentiment",
-      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
+      "why_it_matters": "Positioning extremes amplify drawdowns when sentiment turns."
     },
     "tactical": {
       "confidence": 0.0,
@@ -334,7 +334,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 79.5,
+        "severity": 89.55,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },

@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-16",
-  "generated_at_utc": "2026-11-17T05:09:07Z",
+  "date": "2026-11-17",
+  "generated_at_utc": "2026-11-18T04:37:40Z",
   "method_version": "phase6-pr1-signal-priority-v1",
   "missing_high_value_signals": [
     {
@@ -73,13 +73,13 @@
   "overall_read": {
     "fragility": {
       "confidence": 0.97,
-      "label": "Elevated Fragility",
-      "score": -49.53
+      "label": "High Fragility",
+      "score": -54.09
     },
     "long_term": {
       "confidence": 0.97,
       "label": "Mixed",
-      "score": 6.62
+      "score": 5.57
     },
     "regime": {
       "label": "Tightening / risk-off"
@@ -87,7 +87,7 @@
     "short_term": {
       "confidence": 1.0,
       "label": "Stressed",
-      "score": -59.23
+      "score": -68.38
     }
   },
   "top_supports": [
@@ -159,8 +159,8 @@
       "importance": 5,
       "label": "10Y real yields",
       "message": "Real yields are elevated and pressuring valuations.",
-      "priority": 484.1,
-      "severity": 96.82,
+      "priority": 492.1,
+      "severity": 98.42,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
@@ -177,11 +177,29 @@
       "importance": 5,
       "label": "Credit spreads",
       "message": "Credit spreads are widening.",
-      "priority": 408.7,
-      "severity": 81.74,
+      "priority": 449.4,
+      "severity": 89.88,
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
+    },
+    {
+      "access_status": "free_public_active",
+      "category": "volatility",
+      "confidence": 1.0,
+      "direction": "risk",
+      "freshness_status": "ok",
+      "group": "Volatility & tail risk",
+      "horizon": "short_term",
+      "id": "vix_complex",
+      "importance": 5,
+      "label": "VIX / VVIX complex",
+      "message": "Volatility tail risk is elevated.",
+      "priority": 447.75,
+      "severity": 89.55,
+      "source_status": "active",
+      "urgency": "immediate",
+      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
     {
       "access_status": "free_public_active",
@@ -200,24 +218,6 @@
       "source_status": "active",
       "urgency": "near_term",
       "why_it_matters": "Dollar moves transmit global liquidity and risk-off pressure across asset classes."
-    },
-    {
-      "access_status": "free_public_active",
-      "category": "volatility",
-      "confidence": 1.0,
-      "direction": "risk",
-      "freshness_status": "ok",
-      "group": "Volatility & tail risk",
-      "horizon": "short_term",
-      "id": "vix_complex",
-      "importance": 5,
-      "label": "VIX / VVIX complex",
-      "message": "Volatility tail risk is elevated.",
-      "priority": 397.5,
-      "severity": 79.5,
-      "source_status": "active",
-      "urgency": "immediate",
-      "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
     },
     {
       "access_status": "free_public_active",
@@ -249,29 +249,29 @@
       "importance": 4,
       "label": "VIX curve state",
       "message": "VIX curve is in backwardation-proxy stress.",
-      "priority": 338.72,
-      "severity": 87.3,
+      "priority": 369.53,
+      "severity": 95.24,
       "source_status": "active",
       "urgency": "immediate",
       "why_it_matters": "VIX curve backwardation flags acute near-term event risk and dealer-driven stress."
     },
     {
       "access_status": "free_public_active",
-      "category": "positioning",
+      "category": "liquidity",
       "confidence": 1.0,
       "direction": "risk",
       "freshness_status": "ok",
-      "group": "Positioning",
-      "horizon": "short_term",
-      "id": "sentiment_positioning",
+      "group": "Liquidity / Funding",
+      "horizon": "both",
+      "id": "net_liquidity",
       "importance": 4,
-      "label": "S&P 500 positioning",
-      "message": "Leveraged-money S&P 500 positioning is crowded.",
-      "priority": 110.8,
-      "severity": 27.7,
+      "label": "Net liquidity",
+      "message": "Net liquidity is draining.",
+      "priority": 136.92,
+      "severity": 34.23,
       "source_status": "active",
-      "urgency": "near_term",
-      "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
+      "urgency": "slow",
+      "why_it_matters": "Net liquidity defines the funding backdrop for risk assets and dealer balance sheets."
     }
   ]
 }
