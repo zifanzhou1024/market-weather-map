@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-18",
-  "generated_at_utc": "2026-11-19T04:17:23Z",
+  "date": "2026-11-19",
+  "generated_at_utc": "2026-11-20T04:05:21Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -8,7 +8,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Commodity prices are subtracting from inflation pressure (impulse -12.8, 100th percentile of the past year).",
+          "answer": "Commodity prices are subtracting from inflation pressure (impulse -12.5, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -33,13 +33,13 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spreads are widening.",
-        "severity": 96.04,
+        "severity": 98.8,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.09 pp over 30 days at 2.51 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is roughly stable (+0.08 pp over 30 days at 2.54 pp); credit dispersion is not currently widening or tightening.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
@@ -99,7 +99,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 79.63,
+        "severity": 94.31,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -120,7 +120,7 @@
         "id": "labor",
         "label": "Labor cycle",
         "message": "Labor cycle is firm.",
-        "severity": 71.59,
+        "severity": 69.02,
         "source_status": "free_public",
         "why_it_matters": "Labor cycle data drives the strategic recession-risk and consumer-income read."
       },
@@ -146,7 +146,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Housing activity is contracting at elevated rates: starts and permits are falling over three months with the 30Y mortgage at 7.11%.",
+          "answer": "Housing activity is contracting at elevated rates: starts and permits are falling over three months with the 30Y mortgage at 7.28%.",
           "caveat": "Housing starts and permits are monthly; mortgage rate updates weekly. Series can move in opposite directions over short horizons.",
           "eyebrow": "Housing pulse",
           "freshness_status": "ok",
@@ -199,15 +199,15 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Net liquidity is contracting ($-28B over four weeks to $5,844B); TGA and reverse repo drain outpaces Fed balance sheet.",
+          "answer": "Net liquidity is expanding (+$23B over four weeks to $5,825B); Fed balance sheet outpaces TGA and reverse repo drain.",
           "caveat": "Net liquidity is a derived weekly proxy from Fed assets, TGA, and reverse repo \u2014 not a measure of funding-market stress.",
           "eyebrow": "Liquidity & funding",
           "freshness_status": "ok",
           "id": "liquidity_funding",
           "question": "Is net liquidity expanding or contracting, and which Fed components are driving it?",
-          "risk": "Net liquidity drains historically precede risk-off episodes.",
-          "support": null,
-          "why": "Falling net liquidity tightens funding conditions and historically pressures risk assets."
+          "risk": null,
+          "support": "Expanding net liquidity supports risk-asset funding.",
+          "why": "Rising net liquidity loosens funding conditions across risk assets and credit."
         }
       ],
       "state": "unknown",
@@ -224,13 +224,13 @@
         "id": "real_yields",
         "label": "10Y real yields",
         "message": "Real yields are elevated and pressuring valuations.",
-        "severity": 92.06,
+        "severity": 91.26,
         "source_status": "free_public",
         "why_it_matters": "Higher real yields tighten financial conditions and weigh on valuation-sensitive assets."
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) reflects both real yields (+14 bps) and breakevens (-14 bps).",
+          "answer": "The recent 10Y move (higher) reflects both real yields (+15 bps) and breakevens (-16 bps).",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
@@ -334,7 +334,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 79.63,
+        "severity": 94.31,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },

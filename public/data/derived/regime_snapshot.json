@@ -15,14 +15,14 @@
     {
       "id": "nominal_10y",
       "label": "10Y nominal yield",
-      "message": "10Y nominal yield is flat over one month.",
-      "state": "flat"
+      "message": "10Y nominal yield is down over one month.",
+      "state": "down"
     },
     {
       "id": "yield_driver",
       "label": "Yield driver",
-      "message": "The nominal yield move is classified as mixed.",
-      "state": "mixed"
+      "message": "The nominal yield move is classified as safe haven or growth scare.",
+      "state": "safe_haven_or_growth_scare"
     },
     {
       "id": "vix_curve",
@@ -40,7 +40,7 @@
       "id": "liquidity",
       "label": "Net liquidity",
       "message": "Net liquidity confirmation uses the one-month change.",
-      "state": "down"
+      "state": "up"
     },
     {
       "id": "overall_regime",
@@ -65,8 +65,8 @@
     {
       "id": "liquidity",
       "label": "Liquidity",
-      "message": "Net liquidity is confirming for the active regime.",
-      "status": "confirming"
+      "message": "Net liquidity is diverging for the active regime.",
+      "status": "diverging"
     },
     {
       "id": "rates",
@@ -75,8 +75,8 @@
       "status": "confirming"
     }
   ],
-  "date": "2026-11-18",
-  "generated_at_utc": "2026-11-19T04:17:20Z",
+  "date": "2026-11-19",
+  "generated_at_utc": "2026-11-20T04:05:16Z",
   "method_version": "phase5-horizon-regime-v1",
   "quadrant_trail": [
     {
@@ -243,17 +243,11 @@
   "regime": {
     "dollar_direction": "up",
     "label": "Tightening / risk-off",
-    "nominal_yield_direction": "flat",
+    "nominal_yield_direction": "down",
     "tips_direction": "up",
-    "yield_driver": "mixed"
+    "yield_driver": "safe_haven_or_growth_scare"
   },
   "yield_decomposition": [
-    {
-      "breakeven_10y": 2.31,
-      "date": "2025-11-03",
-      "nominal_10y": 4.13,
-      "real_yield_10y": 1.82
-    },
     {
       "breakeven_10y": 2.29,
       "date": "2025-11-04",
@@ -1807,6 +1801,12 @@
       "date": "2026-11-17",
       "nominal_10y": 5.1,
       "real_yield_10y": 2.89
+    },
+    {
+      "breakeven_10y": 2.19,
+      "date": "2026-11-18",
+      "nominal_10y": 5.07,
+      "real_yield_10y": 2.88
     }
   ]
 }

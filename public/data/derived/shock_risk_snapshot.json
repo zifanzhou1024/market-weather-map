@@ -1,28 +1,28 @@
 {
   "active_signals": [
     {
-      "change": 7.25,
+      "change": 11.76,
       "id": "vix",
       "label": "VIX",
       "message": "VIX percentile is included in active shock-risk pressure.",
-      "score": -85.72,
-      "value": 24.56
+      "score": -97.62,
+      "value": 28.44
     },
     {
-      "change": 0.0996,
+      "change": 0.1612,
       "id": "vix_vix3m_ratio",
       "label": "VIX/VIX3M ratio",
       "message": "VIX curve pressure is included in active shock-risk pressure.",
-      "score": -92.86,
-      "value": 1.0111
+      "score": -97.62,
+      "value": 1.0522
     },
     {
-      "change": 0.09,
+      "change": 0.08,
       "id": "hy_minus_ig_oas",
       "label": "Credit spreads",
       "message": "Credit spread percentile is included in active shock-risk pressure.",
-      "score": -98.42,
-      "value": 2.51
+      "score": -99.2,
+      "value": 2.54
     },
     {
       "change": 0.6466,
@@ -33,24 +33,24 @@
       "value": 122.6503
     },
     {
-      "change": 0.15,
+      "change": 0.08,
       "id": "real_yield_10y",
       "label": "10Y real yield",
       "message": "Real yield one-month change is included in active shock-risk pressure.",
-      "score": -18.0,
-      "value": 2.89
+      "score": -9.6,
+      "value": 2.88
     },
     {
-      "change": -27720.0,
+      "change": 23143.0,
       "id": "net_liquidity",
       "label": "Net liquidity",
       "message": "Net liquidity one-month change is included in active shock-risk pressure.",
-      "score": -100.0,
-      "value": 5844345.0
+      "score": 100.0,
+      "value": 5824508.0
     }
   ],
-  "date": "2026-11-18",
-  "generated_at_utc": "2026-11-19T04:17:20Z",
+  "date": "2026-11-19",
+  "generated_at_utc": "2026-11-20T04:05:16Z",
   "label": "Elevated shock risk",
   "method_version": "phase5-shock-risk-v1",
   "mismatch_warnings": [
@@ -60,7 +60,7 @@
       "message": "Real yields, the broad dollar, and credit spreads all rose over one month, confirming tighter active financial conditions."
     }
   ],
-  "score": -73.99,
+  "score": -56.26,
   "source_gaps": [
     {
       "id": "move_index",

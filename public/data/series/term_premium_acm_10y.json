@@ -1,6 +1,6 @@
 {
   "frequency": "daily",
-  "generated_at_utc": "2026-11-19T04:16:59Z",
+  "generated_at_utc": "2026-11-20T04:04:54Z",
   "observations": [
     {
       "date": "1961-06-14",
@@ -81606,20 +81606,25 @@
       "date": "2026-11-17",
       "percentile_252d": 73.41,
       "value": 0.7475178595800775
+    },
+    {
+      "date": "2026-11-18",
+      "percentile_252d": 51.59,
+      "value": 0.6919023545568983
     }
   ],
   "series_id": "term_premium_acm_10y",
   "source": "Federal Reserve Bank of New York",
   "source_url": "https://www.newyorkfed.org/research/data_indicators/term-premia-tabs",
   "summary": {
-    "change_12m": 0.157,
-    "change_1d": 0.0123,
-    "change_1m": -0.011,
-    "change_1w": 0.039,
-    "change_3m": -0.1438,
-    "latest_date": "2026-11-17",
-    "latest_value": 0.7475178595800775,
-    "percentile_252d": 73.41
+    "change_12m": 0.0703,
+    "change_1d": -0.0556,
+    "change_1m": -0.11,
+    "change_1w": 0.0416,
+    "change_3m": -0.1754,
+    "latest_date": "2026-11-18",
+    "latest_value": 0.6919023545568983,
+    "percentile_252d": 51.59
   },
   "units": "percent"
 }
