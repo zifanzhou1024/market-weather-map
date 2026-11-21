@@ -1,22 +1,22 @@
 {
   "buckets": {
-    "commodities_inflation_impulse": -12.52,
-    "credit_spreads": -98.8,
+    "commodities_inflation_impulse": -12.11,
+    "credit_spreads": -100.0,
     "dollar_global": -100.0,
-    "liquidity_funding": -20.96,
+    "liquidity_funding": -21.32,
     "rates_real_yields": -91.26,
-    "sentiment_positioning": -27.7,
-    "volatility_tail_risk": -94.31
+    "sentiment_positioning": -47.7,
+    "volatility_tail_risk": -99.6
   },
-  "date": "2026-11-19",
-  "generated_at_utc": "2026-11-20T04:05:16Z",
+  "date": "2026-11-20",
+  "generated_at_utc": "2026-11-21T04:06:18Z",
   "label": "Stressed",
   "method_version": "phase5-pr4-strategic-macro-completeness-v1",
-  "overall_score": -67.37,
+  "overall_score": -70.45,
   "top_risks": [
-    "The broad dollar is pressuring global liquidity.",
     "High-yield spreads widened over the past month.",
-    "Volatility tail risk is elevated."
+    "The broad dollar is pressuring global liquidity.",
+    "Leveraged-money S&P 500 positioning is crowded."
   ],
   "top_supports": []
 }

@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-19",
-  "generated_at_utc": "2026-11-20T04:05:21Z",
+  "date": "2026-11-20",
+  "generated_at_utc": "2026-11-21T04:06:21Z",
   "method_version": "phase8-pr1-page-insights-v1",
   "routes": {
     "commodities": {
@@ -8,7 +8,7 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "Commodity prices are subtracting from inflation pressure (impulse -12.5, 100th percentile of the past year).",
+          "answer": "Commodity prices are subtracting from inflation pressure (impulse -12.1, 100th percentile of the past year).",
           "caveat": "Commodity impulse blends oil and crop momentum with breakeven confirmation; monthly food/oil pass-through varies.",
           "eyebrow": "Commodity impulse",
           "freshness_status": "ok",
@@ -33,21 +33,21 @@
         "id": "credit_spreads",
         "label": "Credit spreads",
         "message": "Credit spreads are widening.",
-        "severity": 98.8,
+        "severity": 100.0,
         "source_status": "free_public",
         "why_it_matters": "Credit spreads confirm whether stress is spreading beyond equities into corporate funding markets."
       },
       "sections": [
         {
-          "answer": "The HY-IG OAS spread is roughly stable (+0.08 pp over 30 days at 2.54 pp); credit dispersion is not currently widening or tightening.",
+          "answer": "The HY-IG OAS spread is widening (+0.19 pp over 30 days to 2.58 pp), an early sign of credit-quality dispersion.",
           "caveat": "OAS spreads are derived daily from ICE BofA indices via FRED; intraday credit moves not reflected.",
           "eyebrow": "Credit dispersion",
           "freshness_status": "ok",
           "id": "credit_dispersion",
           "question": "Is the HY-IG spread widening (early credit stress) or tightening (risk-on)?",
-          "risk": null,
-          "support": "Steady credit dispersion is not amplifying cross-asset stress.",
-          "why": "Stable HY-IG dispersion describes a credit market without a directional impulse."
+          "risk": "HY-IG widening typically leads broader risk-off.",
+          "support": null,
+          "why": "Widening HY-IG dispersion signals lower-quality credit underperforming higher-quality credit."
         }
       ],
       "state": "risk",
@@ -56,11 +56,13 @@
     },
     "dollar_global": {
       "confidence": 1.0,
-      "freshness_notes": [],
+      "freshness_notes": [
+        "Broad dollar is stale."
+      ],
       "primary_warning": {
         "access_status": "free_public_active",
         "confidence": 1.0,
-        "freshness_status": "ok",
+        "freshness_status": "stale",
         "id": "broad_dollar",
         "label": "Broad dollar",
         "message": "The broad dollar is firming and tightening global liquidity.",
@@ -99,7 +101,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 94.31,
+        "severity": 99.6,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
@@ -230,15 +232,15 @@
       },
       "sections": [
         {
-          "answer": "The recent 10Y move (higher) reflects both real yields (+15 bps) and breakevens (-16 bps).",
+          "answer": "The recent 10Y move (lower) is driven by inflation breakevens (-19 bps), not real yields.",
           "caveat": "Decomposition uses FRED TIPS and nominal yields; intraday moves not reflected.",
           "eyebrow": "Rates pressure",
           "freshness_status": "ok",
           "id": "rates_pressure",
           "question": "Is the recent 10Y move coming from real yields, breakevens, or curve shape?",
-          "risk": "Simultaneous rise in both components narrows the room for risk-asset relief.",
-          "support": null,
-          "why": "Balanced moves suggest broad repricing of both growth and inflation expectations."
+          "risk": null,
+          "support": "Falling breakevens suggest inflation pressure is easing.",
+          "why": "Breakeven-driven moves signal changing inflation expectations rather than Fed policy tightening."
         }
       ],
       "state": "risk",
@@ -279,21 +281,21 @@
         "id": "sentiment_positioning",
         "label": "S&P 500 positioning",
         "message": "Leveraged-money S&P 500 positioning is crowded.",
-        "severity": 27.7,
+        "severity": 47.7,
         "source_status": "free_public",
         "why_it_matters": "Crowded leveraged-money positioning amplifies drawdowns when sentiment turns."
       },
       "sections": [
         {
-          "answer": "Asset-manager S&P 500 net positioning is within a neutral range at the 25th percentile of the past year (+45.3% OI).",
+          "answer": "Asset-manager S&P 500 net positioning is washed out at the 10th percentile of the past year (+42.7% OI).",
           "caveat": "CFTC data is weekly and delayed by several days; short-term positioning shifts are not captured. NAAIM is a candidate source and may be absent.",
           "eyebrow": "Positioning vs sentiment",
           "freshness_status": "ok",
           "id": "positioning_vs_candidate_sentiment",
           "question": "Is positioning crowded enough to amplify downside?",
           "risk": null,
-          "support": "Positioning is not stretched enough to generate a crowding-driven unwind.",
-          "why": "Neutral positioning does not add amplification pressure in either direction."
+          "support": "Low long concentration reduces the amplification risk from forced selling.",
+          "why": "Depressed positioning reduces the crowding risk but may reflect already-realized risk-off."
         }
       ],
       "state": "risk",
@@ -305,13 +307,13 @@
       "freshness_notes": [],
       "sections": [
         {
-          "answer": "7 warnings are active on the short-term board, with 6 carrying elevated severity \u2014 led by Broad dollar; Inflation pressure.",
+          "answer": "7 warnings are active on the short-term board, with 7 carrying elevated severity \u2014 led by Credit spreads; Inflation pressure.",
           "caveat": "Signal priority reflects the most recent daily update; intraday moves are not captured.",
           "eyebrow": "Tactical stress",
           "freshness_status": "ok",
           "id": "tactical_stress_board",
           "question": "Which warnings are clustering on the short-term board today?",
-          "risk": "6 signals above the elevated-severity threshold are clustering simultaneously.",
+          "risk": "7 signals above the elevated-severity threshold are clustering simultaneously.",
           "support": null,
           "why": "Multiple high-severity warnings across channels describe a tactically stressed environment."
         }
@@ -334,7 +336,7 @@
         "id": "vix_complex",
         "label": "VIX / VVIX complex",
         "message": "Volatility tail risk is elevated.",
-        "severity": 94.31,
+        "severity": 99.6,
         "source_status": "free_public",
         "why_it_matters": "Implied equity volatility frames near-term equity stress and dealer hedging pressure."
       },
